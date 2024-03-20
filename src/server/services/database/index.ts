@@ -1,8 +1,8 @@
-import { OnInit, Service } from "@flamework/core";
+import { Service, type OnInit } from "@flamework/core";
 import Signal from "@rbxts/signal";
 
-import { DataValue } from "shared/data-models/generic";
 import { Events, Functions } from "server/network";
+import type { DataValue } from "shared/data-models/generic";
 import Firebase from "./firebase";
 import Log from "shared/logger";
 
@@ -44,6 +44,8 @@ export class DatabaseService implements OnInit, LogStart {
 
 	private setup(player: Player): void {
     this.initialize(player, "playtime", 0);
+		this.initialize(player, "runes", 0);
+		this.initialize(player, "characters", []);
 		this.loaded.Fire(player);
 		Log.info("Initialized data");
 	}

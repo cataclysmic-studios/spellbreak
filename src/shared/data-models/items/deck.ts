@@ -1,5 +1,5 @@
 import type { Spell } from "../../structs/spell";
-import type Gear from "./gear";
+import type { Gear } from "./gear";
 
 export default interface Deck extends Gear {
   readonly maxSpells: number;

@@ -1,20 +1,24 @@
-import type GearCategories from "shared/data-models/gear-categories";
-import type Gear from "shared/data-models/items/gear";
-import { PlayableSchool } from "shared/data-models/school";
+import type { PlayableSchool } from "shared/data-models/school";
+import type { GearCategory, Gear } from "./items/gear";
+import type { Housing } from "./items/housing";
+import type CharacterStats from "./character-stats";
 
 export const enum BadgeCategory {
-  "Wizard Village" = "Wizard Village"
+  WizardVillage = "Wizard Village"
 }
 
 export interface CharacterData {
+  readonly id: string;
   readonly name: string;
   readonly school: PlayableSchool;
   readonly xp: number;
   readonly level: number;
-
   readonly gold: number;
   readonly arenaTickets: number;
   readonly trainingPoints: number;
-  readonly equippedGear: GearCategories<Gear>;
-  readonly backpack: GearCategories<Gear[]>;
+
+  readonly stats: CharacterStats;
+  readonly equippedGear: Partial<Record<GearCategory, Gear>>;
+  readonly backpack: Gear[];
+  readonly housingItems: Housing[];
 }

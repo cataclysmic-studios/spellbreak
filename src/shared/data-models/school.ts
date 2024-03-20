@@ -1,4 +1,4 @@
-export type PlayableSchool = Omit<typeof School, "Solar" | "Lunar" | "Stellar" | "Darkness">;
+export type PlayableSchool = keyof Omit<typeof School, "Solar" | "Lunar" | "Stellar" | "Darkness" | "doesBoost" | "doesResist">;
 
 export enum School {
   Fire = "Fire",
@@ -7,6 +7,7 @@ export enum School {
   Life = "Life",
   Death = "Death",
   Myth = "Myth",
+  Balance = "Balance",
   Solar = "Solar",
   Lunar = "Lunar",
   Stellar = "Stellar",

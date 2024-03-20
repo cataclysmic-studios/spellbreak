@@ -21,6 +21,7 @@ export class DeckHand extends DestroyableComponent<{}, Frame & { UIListLayout: U
     for (const card of this.getCards()) {
       const scale = new Instance("UIScale", card);
       scale.Scale = 1;
+      card.AddTag("CardButton");
     }
 
     this.janitor.Add(this.instance);

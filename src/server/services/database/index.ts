@@ -10,7 +10,7 @@ import type { LogStart } from "shared/hooks";
 
 const PlayerData = Firebase.fetch("playerData");
 
-@Service()
+@Service({ loadOrder: 0 })
 export class DatabaseService implements OnInit, LogStart {
 	public readonly loaded = new Signal<(player: Player) => void>;
 
@@ -21,9 +21,9 @@ export class DatabaseService implements OnInit, LogStart {
 		Functions.data.get.setCallback((player, key) => this.get(player, key));
 	}
 
-	public get<T extends DataValue>(player: Player, directory: string): T {
+	public get<T extends DataValue>(player: Player, directory: string, defaultValue?: T): T {
 		const fullDirectory = this.getDirectoryForPlayer(player, directory);
-		return PlayerData.get(fullDirectory);
+		return PlayerData.get(fullDirectory) ?? <T>defaultValue;
 	}
 
 	public set<T extends DataValue>(player: Player, directory: string, value: T): void {
@@ -45,7 +45,7 @@ export class DatabaseService implements OnInit, LogStart {
 	private setup(player: Player): void {
     this.initialize(player, "playtime", 0);
 		this.initialize(player, "runes", 0);
-		this.initialize(player, "characters", []);
+		this.initialize(player, "characters", [{ id: "init" }]);
 		this.loaded.Fire(player);
 		Log.info("Initialized data");
 	}

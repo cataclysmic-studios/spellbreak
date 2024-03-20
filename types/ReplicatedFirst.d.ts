@@ -1,3 +1,7 @@
 interface ReplicatedFirst extends Instance {
-  Assets: Folder;
+  Assets: Folder & {
+    CustomFonts: Folder & {
+      Shermlock: Folder;
+    }
+  };
 }

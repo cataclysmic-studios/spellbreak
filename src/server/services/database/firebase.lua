@@ -11,7 +11,6 @@ local FirebaseService = {};
 local UseFirebase = true;
 
 --== Script;
-
 function FirebaseService:useFirebase(use)
 	UseFirebase = use;
 end

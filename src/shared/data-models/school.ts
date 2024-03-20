@@ -1,4 +1,4 @@
-export type PlayableSchool = keyof Omit<typeof School, "Solar" | "Lunar" | "Stellar" | "Darkness" | "doesBoost" | "doesResist">;
+export type PlayableSchool = keyof Omit<typeof School, "Solar" | "Lunar" | "Stellar" | "Darkness">;
 
 export enum School {
   Fire = "Fire",
@@ -14,7 +14,7 @@ export enum School {
   Darkness = "Darkness"
 }
 
-export namespace School {
+export namespace SchoolUtil {
   // TODO: astral schools + extra boosts
   export function doesBoost(schoolA: School, schoolB: School): boolean {
     switch (schoolA) {

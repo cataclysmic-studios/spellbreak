@@ -1,4 +1,4 @@
-import type { School } from "./school";
+import type { School } from "../data-models/school";
 import type { SpellAction } from "./spell-action";
 
 interface SpellCost {

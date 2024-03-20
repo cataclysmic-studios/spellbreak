@@ -8,7 +8,7 @@ import type { GitHubCommitResponse, GitHubInfo, GitHubTag } from "shared/structs
 @Service()
 export class GitHubInfoService implements OnInit, LogStart {
   // Put your repo name here! e.g. R-unic/tabletop-lounge
-  private readonly baseURL = "https://api.github.com/repos/R-unic/tabletop-lounge";
+  private readonly baseURL = "https://api.github.com/repos/R-unic/spellbreak";
 
   public onInit(): void {
     const repeatTryGet = (): GitHubInfo => {

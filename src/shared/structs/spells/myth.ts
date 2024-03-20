@@ -1,4 +1,4 @@
-import { School } from "shared/structs/school";
+import { School } from "shared/data-models/school";
 import { SpellType, type Spell } from "shared/structs/spell";
 import { SpellActionType } from "shared/structs/spell-action";
 import Range from "shared/utility/range";

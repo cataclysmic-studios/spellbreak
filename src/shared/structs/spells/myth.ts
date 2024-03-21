@@ -8,7 +8,7 @@ const MythSpells: SpellsList = {
   [SpellType.Damage]: [
     {
       type: SpellType.Damage,
-      image: "rbxassetid://16807903671",
+      cardImage: "rbxassetid://16807903671",
       name: "Goblin",
       school: School.Myth,
       accuracy: 85,
@@ -30,7 +30,7 @@ const MythSpells: SpellsList = {
   [SpellType.Charm]: [
     {
       type: SpellType.Charm,
-      image: "",
+      cardImage: "",
       name: "Mythblade",
       school: School.Myth,
       accuracy: 100,

@@ -2,7 +2,7 @@ import type { School } from "../data-models/school";
 import type { SpellAction } from "./spell-action";
 
 interface SpellCost {
-  readonly pips: number;
+  readonly pips: number | "X";
   readonly shadowPips: number;
 }
 
@@ -23,7 +23,7 @@ export const enum SpellType {
 
 export interface Spell<T extends SpellType = SpellType> {
   readonly type: T;
-  readonly image: string;
+  readonly cardImage: string;
   readonly name: string;
   readonly school: School;
   readonly accuracy: number;

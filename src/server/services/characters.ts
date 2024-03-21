@@ -27,7 +27,7 @@ export class CharactersService implements OnPlayerJoin, LogStart {
     private readonly db: DatabaseService
   ) {}
 
-   // TEMP
+   // *TEMP
   public onPlayerJoin(player: Player): void {
     const characters = this.getAll(player);
     if (!characters.isEmpty()) return;

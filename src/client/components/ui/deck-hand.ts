@@ -4,7 +4,7 @@ import { Component, type Components } from "@flamework/components";
 import type { LogStart } from "shared/hooks";
 import type { Spell } from "shared/structs/spell";
 import { Player, PlayerGui } from "shared/utility/client";
-import DestroyableComponent from "client/base-components/destroyable-component";
+import DestroyableComponent from "shared/base-components/destroyable-component";
 import Range from "shared/utility/range";
 
 import type { CardButton } from "./card-button";

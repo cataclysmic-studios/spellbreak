@@ -1,16 +1,15 @@
 import type { OnStart } from "@flamework/core";
 import { Component, Components } from "@flamework/components";
+import Object from "@rbxts/object-utils";
 
 import type { School } from "shared/data-models/school";
 import { Player, PlayerGui } from "shared/utility/client";
-import DestroyableComponent from "client/base-components/destroyable-component";
+import { Exception } from "shared/exceptions";
+import { flatten } from "shared/utility/helpers";
+import DestroyableComponent from "shared/base-components/destroyable-component";
 import Range from "shared/utility/range";
 import Spells from "shared/structs/spells";
-import Object from "@rbxts/object-utils";
-import { Spell } from "shared/structs/spell";
 import SpellsList from "shared/structs/spells/list";
-import { flatten } from "shared/utility/helpers";
-import { Exception } from "shared/exceptions";
 
 const SELECTION_BORDER_TEMPLATE = new Instance("UIStroke");
 SELECTION_BORDER_TEMPLATE.Thickness = 1.6;

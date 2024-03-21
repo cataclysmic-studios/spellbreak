@@ -32,7 +32,7 @@ const NEW_CHARACTER: Omit<CharacterData, "id" | "name" | "school"> = {
       [School.Solar]: 0,
       [School.Lunar]: 0,
       [School.Stellar]: 0,
-      [School.Darkness]: 0
+      [School.Shadow]: 0
     },
     flatDamage: {
       [School.Fire]: 0,
@@ -45,7 +45,7 @@ const NEW_CHARACTER: Omit<CharacterData, "id" | "name" | "school"> = {
       [School.Solar]: 0,
       [School.Lunar]: 0,
       [School.Stellar]: 0,
-      [School.Darkness]: 0
+      [School.Shadow]: 0
     },
     resist: {
       [School.Fire]: 0,
@@ -58,7 +58,7 @@ const NEW_CHARACTER: Omit<CharacterData, "id" | "name" | "school"> = {
       [School.Solar]: 0,
       [School.Lunar]: 0,
       [School.Stellar]: 0,
-      [School.Darkness]: 0
+      [School.Shadow]: 0
     },
     flatResist: {
       [School.Fire]: 0,
@@ -71,7 +71,7 @@ const NEW_CHARACTER: Omit<CharacterData, "id" | "name" | "school"> = {
       [School.Solar]: 0,
       [School.Lunar]: 0,
       [School.Stellar]: 0,
-      [School.Darkness]: 0
+      [School.Shadow]: 0
     },
     accuracy: {
       [School.Fire]: 0,
@@ -84,7 +84,7 @@ const NEW_CHARACTER: Omit<CharacterData, "id" | "name" | "school"> = {
       [School.Solar]: 0,
       [School.Lunar]: 0,
       [School.Stellar]: 0,
-      [School.Darkness]: 0
+      [School.Shadow]: 0
     },
     criticalRating: {
       [School.Fire]: 0,
@@ -97,7 +97,7 @@ const NEW_CHARACTER: Omit<CharacterData, "id" | "name" | "school"> = {
       [School.Solar]: 0,
       [School.Lunar]: 0,
       [School.Stellar]: 0,
-      [School.Darkness]: 0
+      [School.Shadow]: 0
     },
     criticalBlockRating: {
       [School.Fire]: 0,
@@ -110,7 +110,7 @@ const NEW_CHARACTER: Omit<CharacterData, "id" | "name" | "school"> = {
       [School.Solar]: 0,
       [School.Lunar]: 0,
       [School.Stellar]: 0,
-      [School.Darkness]: 0
+      [School.Shadow]: 0
     },
     piercing: {
       [School.Fire]: 0,
@@ -123,7 +123,7 @@ const NEW_CHARACTER: Omit<CharacterData, "id" | "name" | "school"> = {
       [School.Solar]: 0,
       [School.Lunar]: 0,
       [School.Stellar]: 0,
-      [School.Darkness]: 0
+      [School.Shadow]: 0
     }
   },
   equippedGear: {},

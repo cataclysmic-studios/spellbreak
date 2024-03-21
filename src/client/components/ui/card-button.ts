@@ -1,10 +1,16 @@
 import type { OnStart } from "@flamework/core";
 import { Component, Components } from "@flamework/components";
 
-import type { Spell } from "shared/structs/spell";
+import type { School } from "shared/data-models/school";
 import { Player, PlayerGui } from "shared/utility/client";
 import DestroyableComponent from "client/base-components/destroyable-component";
 import Range from "shared/utility/range";
+import Spells from "shared/structs/spells";
+import Object from "@rbxts/object-utils";
+import { Spell } from "shared/structs/spell";
+import SpellsList from "shared/structs/spells/list";
+import { flatten } from "shared/utility/helpers";
+import { Exception } from "shared/exceptions";
 
 const SELECTION_BORDER_TEMPLATE = new Instance("UIStroke");
 SELECTION_BORDER_TEMPLATE.Thickness = 1.6;
@@ -13,13 +19,18 @@ SELECTION_BORDER_TEMPLATE.Color = new Color3(1, 1, 1);
 SELECTION_BORDER_TEMPLATE.LineJoinMode = Enum.LineJoinMode.Round;
 SELECTION_BORDER_TEMPLATE.ApplyStrokeMode = Enum.ApplyStrokeMode.Border;
 
+interface Attributes {
+  School: School;
+  SpellName: string;
+}
+
 @Component({
   tag: "CardButton",
   ancestorWhitelist: [ PlayerGui ]
 })
-export class CardButton extends DestroyableComponent<{}, ImageButton> implements OnStart {
+export class CardButton extends DestroyableComponent<Attributes, ImageButton> implements OnStart {
   public readonly selectionBorder = SELECTION_BORDER_TEMPLATE.Clone();
-  public associatedSpell?: Spell;
+  public associatedSpell = flatten(Object.values(<SpellsList>Spells[this.attributes.School])).find(spell => spell.name === this.attributes.SpellName)!;
   public selected = false;
 
   private readonly mouse = Player.GetMouse();
@@ -29,8 +40,10 @@ export class CardButton extends DestroyableComponent<{}, ImageButton> implements
   ) { super(); }
 
   public onStart(): void {
-    this.selectionBorder.Parent = this.instance;
+    if (!this.associatedSpell)
+      throw new Exception("InvalidSpellOrSchool", `Tried to find spell in school ${this.attributes.School} named "${this.attributes.SpellName}"`);
 
+    this.selectionBorder.Parent = this.instance;
     this.janitor.Add(this.instance);
     this.janitor.Add(this.instance.MouseButton1Click.Connect(() => this.select()));
     this.janitor.Add(this.mouse.Button1Down.Connect(() => {
@@ -41,11 +54,15 @@ export class CardButton extends DestroyableComponent<{}, ImageButton> implements
       const dimensionsY = new Range(position.Y, position.Y + size.Y);
 
       if (dimensionsX.numberIsWithin(X) && dimensionsY.numberIsWithin(Y)) return;
-      if (this.associatedSpell?.cost.pips === "X") // TODO: else if an enemy was clicked on
+      if (this.associatedSpell.cost.pips === "X") // TODO: else if an enemy was clicked on
         return this.castAssociatedSpell();
 
       this.deselectAll();
     }));
+  }
+
+  public is(otherCard: CardButton): boolean {
+    return otherCard.instance === this.instance && otherCard.attributes === this.attributes;
   }
 
   private castAssociatedSpell(): void {
@@ -54,8 +71,8 @@ export class CardButton extends DestroyableComponent<{}, ImageButton> implements
 
   private select(): void {
     for (const card of this.components.getAllComponents<CardButton>()) {
-      card.selectionBorder.Enabled = card === this;
-      card.selected = card === this;
+      card.selectionBorder.Enabled = card.is(this);
+      card.selected = card.is(this);
     }
   }
 
@@ -64,5 +81,10 @@ export class CardButton extends DestroyableComponent<{}, ImageButton> implements
       card.selectionBorder.Enabled = false;
       card.selected = false;
     }
+  }
+
+  private canCast(): boolean {
+    // check pip counts
+    return true;
   }
 }

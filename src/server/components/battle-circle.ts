@@ -10,12 +10,19 @@ import { TweenInfoBuilder } from "@rbxts/builders";
 type Combatant = Player | Enemy;
 
 const MAX_COMBATANTS = 4;
+const ANIMATIONS = {
+  Idle: "",
+  OnAdd: "",
+  OnRemove: ""
+};
 
+// TODO: battle circle animastions
 @Component({ tag: "BattleCircle" })
 export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Assets"]["BattleCircle"]> implements OnStart {
+  public pvp = false;
+
   private readonly team: Player[] = [];
   private readonly opponents: Combatant[] = [];
-  private pvp = false;
 
   public constructor(
     private readonly components: Components
@@ -40,14 +47,17 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
 
   public addTeammate(player: Player): void {
     if (this.team.includes(player)) return;
+    if (this.team.size() === MAX_COMBATANTS) return;
     this.team.push(player);
-    this.pullInCombatant(player)
+    this.pullInCombatant(player);
   }
 
   public addOpponent(opponent: Combatant): void {
     if (this.opponents.includes(opponent)) return;
+    if (this.opponents.size() === MAX_COMBATANTS) return;
+    if (this.opponents.size() >= this.team.size() + 1) return;
     this.opponents.push(opponent);
-    this.pullInCombatant(opponent)
+    this.pullInCombatant(opponent);
   }
 
   public destroy(): void {
@@ -60,32 +70,57 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
     }
   }
 
-  private toggleMovement(combatant: Player, on: boolean) {
+  private toggleMovement(combatant: Player, on: boolean): void {
+    if (!on) {
+      const combatantIsNPC = combatant instanceof Enemy;
+      const character = combatantIsNPC ? combatant.instance : combatant.Character!;
+      character.PrimaryPart!.Anchored = true;
+      character.PrimaryPart!.AssemblyLinearVelocity = new Vector3;
+    }
+
     const movementMode = on ? <ExtractKeys<typeof Enum.DevComputerMovementMode, EnumItem>>combatant.GetAttribute("DefaultMovementMode") : "Scriptable";
     const touchMode = on ? <ExtractKeys<typeof Enum.DevTouchMovementMode, EnumItem>>combatant.GetAttribute("DefaultTouchMode") : "Scriptable";
     combatant.DevComputerMovementMode = Enum.DevComputerMovementMode[movementMode];
     combatant.DevTouchMovementMode = Enum.DevTouchMovementMode[touchMode];
   }
 
-  private pullInCombatant(combatant: Combatant) {
-    const combatantIsNPC = combatant instanceof Enemy;
-    const character = combatantIsNPC ? combatant.instance : combatant.Character!;
-    if (!combatantIsNPC) {
-      combatant.SetAttribute("DefaultMovementMode", combatant.DevComputerMovementMode.Name);
-      combatant.SetAttribute("DefaultTouchMode", combatant.DevTouchMovementMode.Name)
-      combatant.DevComputerMovementMode = Enum.DevComputerMovementMode.Scriptable;
-      combatant.DevTouchMovementMode = Enum.DevTouchMovementMode.Scriptable;
-    }
+  private playAnimation(name: keyof typeof ANIMATIONS) : void {
 
-    const combatantCollection = this.opponents.includes(combatant) ? this.opponents : this.team;
-    const positions = this.instance[this.opponents.includes(combatant) ? "OpponentPositions" : "TeamPositions"];
-    const position = <BasePart>positions.FindFirstChild(combatantCollection.size() + 1);
-    const tweenInfo = new TweenInfoBuilder()
-      .SetTime(1)
-      .SetEasingStyle(Enum.EasingStyle.Linear);
+  }
 
-    const movement = tween(character.PrimaryPart!, tweenInfo, { CFrame: position.CFrame });
-    if (combatantIsNPC) return;
-    movement.Completed.Once(() => {}); // TODO: set camera mode to Battle, enable DeckHand UI, and add cards from deck to hand
+  private async pullInCombatant(combatant: Combatant): Promise<void> {
+    return new Promise<void>(resolve => {
+      const combatantIsNPC = combatant instanceof Enemy;
+      const character = combatantIsNPC ? combatant.instance : combatant.Character!;
+      const humanoid = character.FindFirstChildOfClass("Humanoid")!;
+      const runAnim = <Maybe<Animation>>character.FindFirstChild("Animate")?.FindFirstChild("run")?.FindFirstChild("RunAnim");
+      let runTrack: Maybe<AnimationTrack>;
+      if (runAnim) {
+        runTrack = humanoid.LoadAnimation(runAnim)
+        runTrack.Play();
+      }
+
+      if (!combatantIsNPC)
+        this.toggleMovement(combatant, false);
+
+      const combatantCollection = this.opponents.includes(combatant) ? this.opponents : this.team;
+      const positionParts = this.instance[this.opponents.includes(combatant) ? "OpponentPositions" : "TeamPositions"];
+      const positionPart = <BasePart>positionParts.FindFirstChild(combatantCollection.size());
+      const tweenInfo = new TweenInfoBuilder()
+        .SetEasingStyle(Enum.EasingStyle.Linear);
+
+      const [_, characterSize] = character.GetBoundingBox();
+      tween(character.PrimaryPart!, tweenInfo.SetTime(1), { Position: positionPart.Position.add(new Vector3(0, characterSize.Y / 2, 0)) }).Completed.Wait();
+
+      runTrack?.Stop();
+      tween(character.PrimaryPart!, tweenInfo.SetTime(0.3), { Orientation: positionPart.Orientation })
+        .Completed.Once(() => {
+          character.PrimaryPart!.Anchored = true;
+          if (combatantIsNPC) return;
+        });
+
+      resolve();
+    });
+    // TODO: set camera mode to Battle, enable DeckHand UI, and add cards from deck to hand
   }
 }

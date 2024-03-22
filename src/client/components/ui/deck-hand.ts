@@ -51,6 +51,8 @@ export class DeckHand extends DestroyableComponent<{}, Frame & { UIListLayout: U
   }
 
   private updateCardHoverStatus(): void {
+    if (!this.screen.Enabled) return;
+
     const { X, Y } = this.mouse;
     const framePosition = this.instance.AbsolutePosition;
     const frameSize = this.instance.AbsoluteSize;

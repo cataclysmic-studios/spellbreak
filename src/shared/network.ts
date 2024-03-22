@@ -11,6 +11,9 @@ interface ServerEvents {
 }
 
 interface ClientEvents {
+  general: {
+    addTag(instancePath: string, tag: string): void;
+  };
   data: {
     updated(directory: string, value: DataValue): void;
   };

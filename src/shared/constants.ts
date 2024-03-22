@@ -1,5 +1,6 @@
 import { School } from "./data-models/school";
 
+export const MAX_BATTLE_COMBATANTS = 4;
 export const LARGE_SCHOOL_ICON_OVERHEAD = "rbxassetid://16821859312";
 export const LARGE_SCHOOL_ICON_OFFSETS: Record<School, Vector2> = {
   [School.Fire]: new Vector2(364, 52),
@@ -13,4 +14,4 @@ export const LARGE_SCHOOL_ICON_OFFSETS: Record<School, Vector2> = {
   [School.Lunar]: new Vector2(156, 312),
   [School.Stellar]: new Vector2(104, 312),
   [School.Shadow]: new Vector2(104, 416)
-}
+};

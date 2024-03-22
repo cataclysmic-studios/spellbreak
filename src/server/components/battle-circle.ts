@@ -1,30 +1,39 @@
 import type { OnStart } from "@flamework/core";
 import { Component, Components } from "@flamework/components";
-import { Players, Workspace as World } from "@rbxts/services";
+import { Players, Workspace as World, HttpService as HTTP } from "@rbxts/services";
 import { TweenInfoBuilder } from "@rbxts/builders";
 
 import { tween } from "shared/utility/ui";
+import { Assets } from "shared/utility/helpers";
+import { MAX_BATTLE_COMBATANTS } from "shared/constants";
 import DestroyableComponent from "shared/base-components/destroyable-component";
+import BattleLogic from "server/classes/battle-logic";
 
 import { Enemy } from "./enemy";
+import type { BattleTriangle } from "./battle-triangle";
 
 type Combatant = Player | Enemy;
 
-const MAX_COMBATANTS = 4;
-
-// TODO: battle circle animastions
 @Component({ tag: "BattleCircle" })
 export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Assets"]["BattleCircle"]> implements OnStart {
+  public readonly battleLogic: BattleLogic;
+  public readonly battleTriangle: BattleTriangle;
+  public readonly team: Player[] = [];
+  public readonly opponents: Combatant[] = [];
   public pvp = false;
 
-  private readonly team: Player[] = [];
-  private readonly opponents: Combatant[] = [];
   private readonly animations;
 
   public constructor(
     private readonly components: Components
   ) {
     super();
+    const battleTriangleModel = Assets.BattleTriangle.Clone();
+    battleTriangleModel.Parent = this.instance;
+    this.battleTriangle = components.addComponent(battleTriangleModel);
+    this.battleLogic = new BattleLogic(this);
+    battleTriangleModel.Parent = undefined;
+
     this.fadeIn();
     const firstCombatantPosition = <Vector3>this.instance.GetAttribute("FirstCombatantPosition");
     this.instance.Parent = World.BattleCircles;
@@ -40,8 +49,7 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
   public onStart(): void {
     const conn = this.animations.OnAdd.KeyframeReached.Connect(kf => {
       if (kf !== "Final") return;
-      this.animations.OnAdd.AdjustSpeed(0);
-      this.playAnimation("Idle");
+      this.battleBegan();
       conn.Disconnect();
     });
     this.playAnimation("OnAdd");
@@ -65,14 +73,14 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
 
   public addTeammate(player: Player): void {
     if (this.team.includes(player)) return;
-    if (this.team.size() === MAX_COMBATANTS) return;
+    if (this.team.size() === MAX_BATTLE_COMBATANTS) return;
     this.team.push(player);
     this.pullInCombatant(player);
   }
 
   public addOpponent(opponent: Combatant): void {
     if (this.opponents.includes(opponent)) return;
-    if (this.opponents.size() === MAX_COMBATANTS) return;
+    if (this.opponents.size() === MAX_BATTLE_COMBATANTS) return;
     if (this.opponents.size() >= this.team.size() + 1) return;
     this.opponents.push(opponent);
     this.pullInCombatant(opponent);
@@ -91,6 +99,13 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
     this.fadeOut().Completed.Once(() => this.janitor.Destroy());
   }
 
+  private battleBegan() {
+    this.animations.OnAdd.AdjustSpeed(0);
+    this.playAnimation("Idle");
+    this.battleTriangle.instance.Parent = this.instance;
+    this.battleLogic.updateTriangle(false);
+  }
+
   private getClosestPosition(rootPosition: Vector3): Vector3 {
     const locations = World.BattleCircleLocations.GetChildren()
       .filter((i): i is Part => i.IsA("Part"))
@@ -103,7 +118,7 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
         return distA < distB;
       });
 
-    return closest;
+    return closest.add(new Vector3(0, 0.05, 0));
   }
 
   private fadeOut(): Tween {
@@ -129,19 +144,7 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
   }
 
   private playAnimation(name: keyof typeof this.animations): void {
-    const track = this.animations[name];
-    track.Play(0);
-
-    switch(name) {
-      case "OnAdd": {
-        // TODO: fade in circle & glow effect
-        break;
-      }
-      case "OnRemove": {
-        // TODO: fade out
-        break;
-      }
-    }
+    this.animations[name].Play(0);
   }
 
   private toggleMovement(combatant: Player, on: boolean): void {

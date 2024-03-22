@@ -9,6 +9,9 @@ interface ReplicatedFirst extends Instance {
         };
       };
     };
+    BattleTriangle: Part & {
+      Decal: Decal;
+    };
     BattleCircle: Model & {
       Main: MeshPart & {
         Decal: Decal;

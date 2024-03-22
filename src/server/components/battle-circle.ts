@@ -26,7 +26,9 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
   ) {
     super();
     this.fadeIn();
+    const firstCombatantPosition = <Vector3>this.instance.GetAttribute("FirstCombatantPosition");
     this.instance.Parent = World.BattleCircles;
+    this.instance.Main.CFrame = new CFrame(this.getClosestPosition(firstCombatantPosition));
 
     this.animations = {
       Idle: this.instance.AnimationController.LoadAnimation(this.instance.Animations.Idle),
@@ -59,14 +61,6 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
         else if (enemyWhoTouched !== undefined)
           this.addOpponent(enemyWhoTouched);
     }));
-    this.janitor.Add(() => {
-      for (const combatant of this.team)
-        this.toggleMovement(combatant, true);
-      for (const combatant of this.opponents) {
-        if (combatant instanceof Enemy) continue;
-        this.toggleMovement(combatant, true);
-      }
-    });
   }
 
   public addTeammate(player: Player): void {
@@ -85,9 +79,31 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
   }
 
   public destroy(): void {
+    for (const combatant of this.team)
+      this.toggleMovement(combatant, true);
+    for (const combatant of this.opponents) {
+      if (combatant instanceof Enemy) continue;
+      this.toggleMovement(combatant, true);
+    }
+
     this.animations.Idle.Stop();
     this.playAnimation("OnRemove");
     this.fadeOut().Completed.Once(() => this.janitor.Destroy());
+  }
+
+  private getClosestPosition(rootPosition: Vector3): Vector3 {
+    const locations = World.BattleCircleLocations.GetChildren()
+      .filter((i): i is Part => i.IsA("Part"))
+      .map(part => part.Position);
+
+    const [closest] = locations
+      .sort((a, b) => {
+        const distA = rootPosition.sub(a).Magnitude;
+        const distB = rootPosition.sub(b).Magnitude;
+        return distA < distB;
+      });
+
+    return closest;
   }
 
   private fadeOut(): Tween {
@@ -105,11 +121,11 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
     this.instance.Vortex.Decal.Transparency = 1;
     this.instance.Glow.Decal.Transparency = 1;
 
-    const fadeInfo = new TweenInfoBuilder().SetTime(0.35);
-    const glowInfo = new TweenInfoBuilder().SetTime(0.4).SetReverses(true);
+    const fadeInfo = new TweenInfoBuilder().SetTime(0.4);
+    const glowInfo = new TweenInfoBuilder().SetTime(0.5).SetReverses(true);
     tween(this.instance.Main.Decal, fadeInfo, { Transparency: 0 });
     tween(this.instance.Vortex.Decal, fadeInfo, { Transparency: 0 });
-    tween(this.instance.Glow.Decal, glowInfo, { Transparency: 0 });
+    tween(this.instance.Glow.Decal, glowInfo, { Transparency: 0.3 });
   }
 
   private playAnimation(name: keyof typeof this.animations): void {

@@ -10,13 +10,24 @@ interface ReplicatedFirst extends Instance {
       };
     };
     BattleCircle: Model & {
-      Main: MeshPart;
-      Glow: MeshPart;
-      Vortex: MeshPart;
+      Main: MeshPart & {
+        Decal: Decal;
+      };
+      Glow: MeshPart & {
+        Decal: Decal;
+      };
+      Vortex: MeshPart & {
+        Decal: Decal;
+      };
       Root: Part;
       TeamPositions: Folder;
       OpponentPositions: Folder;
       AnimationController: AnimationController;
+      Animations: Folder & {
+        Idle: Animation;
+        OnAdd: Animation;
+        OnRemove: Animation;
+      };
     };
   };
 }

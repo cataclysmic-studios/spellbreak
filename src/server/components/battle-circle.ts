@@ -1,20 +1,16 @@
 import type { OnStart } from "@flamework/core";
 import { Component, Components } from "@flamework/components";
-import { Players } from "@rbxts/services";
+import { Players, Workspace as World } from "@rbxts/services";
+import { TweenInfoBuilder } from "@rbxts/builders";
+
+import { tween } from "shared/utility/ui";
+import DestroyableComponent from "shared/base-components/destroyable-component";
 
 import { Enemy } from "./enemy";
-import DestroyableComponent from "shared/base-components/destroyable-component";
-import { tween } from "shared/utility/ui";
-import { TweenInfoBuilder } from "@rbxts/builders";
 
 type Combatant = Player | Enemy;
 
 const MAX_COMBATANTS = 4;
-const ANIMATIONS = {
-  Idle: "",
-  OnAdd: "",
-  OnRemove: ""
-};
 
 // TODO: battle circle animastions
 @Component({ tag: "BattleCircle" })
@@ -23,12 +19,32 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
 
   private readonly team: Player[] = [];
   private readonly opponents: Combatant[] = [];
+  private readonly animations;
 
   public constructor(
     private readonly components: Components
-  ) { super(); }
+  ) {
+    super();
+    this.fadeIn();
+    this.instance.Parent = World.BattleCircles;
+
+    this.animations = {
+      Idle: this.instance.AnimationController.LoadAnimation(this.instance.Animations.Idle),
+      OnAdd: this.instance.AnimationController.LoadAnimation(this.instance.Animations.OnAdd),
+      OnRemove: this.instance.AnimationController.LoadAnimation(this.instance.Animations.OnRemove)
+    };
+  }
 
   public onStart(): void {
+    const conn = this.animations.OnAdd.KeyframeReached.Connect(kf => {
+      if (kf !== "Final") return;
+      this.animations.OnAdd.AdjustSpeed(0);
+      this.playAnimation("Idle");
+      conn.Disconnect();
+    });
+    this.playAnimation("OnAdd");
+
+    this.janitor.Add(this.instance);
     this.janitor.Add(this.instance.Main.Touched.Connect(hit => {
       const modelThatTouched = hit.FindFirstAncestorOfClass("Model");
       if (!modelThatTouched?.FindFirstChildOfClass("Humanoid")) return;
@@ -43,6 +59,14 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
         else if (enemyWhoTouched !== undefined)
           this.addOpponent(enemyWhoTouched);
     }));
+    this.janitor.Add(() => {
+      for (const combatant of this.team)
+        this.toggleMovement(combatant, true);
+      for (const combatant of this.opponents) {
+        if (combatant instanceof Enemy) continue;
+        this.toggleMovement(combatant, true);
+      }
+    });
   }
 
   public addTeammate(player: Player): void {
@@ -61,12 +85,46 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
   }
 
   public destroy(): void {
-    this.janitor.Destroy();
-    for (const combatant of this.team)
-      this.toggleMovement(combatant, true);
-    for (const combatant of this.opponents) {
-      if (combatant instanceof Enemy) continue;
-      this.toggleMovement(combatant, true);
+    this.animations.Idle.Stop();
+    this.playAnimation("OnRemove");
+    this.fadeOut().Completed.Once(() => this.janitor.Destroy());
+  }
+
+  private fadeOut(): Tween {
+    const fadeInfo = new TweenInfoBuilder()
+      .SetTime(1)
+      .SetEasingStyle(Enum.EasingStyle.Cubic)
+      .SetEasingDirection(Enum.EasingDirection.In);
+
+    tween(this.instance.Main.Decal, fadeInfo, { Transparency: 1 });
+    return tween(this.instance.Vortex.Decal, fadeInfo, { Transparency: 1 });
+  }
+
+  private fadeIn(): void {
+    this.instance.Main.Decal.Transparency = 1;
+    this.instance.Vortex.Decal.Transparency = 1;
+    this.instance.Glow.Decal.Transparency = 1;
+
+    const fadeInfo = new TweenInfoBuilder().SetTime(0.35);
+    const glowInfo = new TweenInfoBuilder().SetTime(0.4).SetReverses(true);
+    tween(this.instance.Main.Decal, fadeInfo, { Transparency: 0 });
+    tween(this.instance.Vortex.Decal, fadeInfo, { Transparency: 0 });
+    tween(this.instance.Glow.Decal, glowInfo, { Transparency: 0 });
+  }
+
+  private playAnimation(name: keyof typeof this.animations): void {
+    const track = this.animations[name];
+    track.Play(0);
+
+    switch(name) {
+      case "OnAdd": {
+        // TODO: fade in circle & glow effect
+        break;
+      }
+      case "OnRemove": {
+        // TODO: fade out
+        break;
+      }
     }
   }
 
@@ -82,10 +140,6 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
     const touchMode = on ? <ExtractKeys<typeof Enum.DevTouchMovementMode, EnumItem>>combatant.GetAttribute("DefaultTouchMode") : "Scriptable";
     combatant.DevComputerMovementMode = Enum.DevComputerMovementMode[movementMode];
     combatant.DevTouchMovementMode = Enum.DevTouchMovementMode[touchMode];
-  }
-
-  private playAnimation(name: keyof typeof ANIMATIONS) : void {
-
   }
 
   private async pullInCombatant(combatant: Combatant): Promise<void> {

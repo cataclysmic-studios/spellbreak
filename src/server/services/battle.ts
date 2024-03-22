@@ -33,7 +33,7 @@ export class BattleService {
   private createCircle(firstCombatant: Combatant): BattleCircle {
     const combatantIsNPC = firstCombatant instanceof Enemy;
     const character = combatantIsNPC ? firstCombatant.instance : firstCombatant.Character!;
-    const battleCircleModel = Assets.BattleCircle.Clone();
+    const battleCircleModel = Assets.Battle.BattleCircle.Clone();
     battleCircleModel.SetAttribute("FirstCombatantPosition", character.PrimaryPart!.Position);
     return this.components.addComponent<BattleCircle>(battleCircleModel);
   }

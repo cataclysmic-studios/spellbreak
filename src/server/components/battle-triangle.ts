@@ -8,7 +8,7 @@ import type { BattleCircle } from "./battle-circle";
 
 // TODO: glow animations
 @Component({ tag: "BattleTriangle" })
-export class BattleTriangle extends DestroyableComponent<{}, ReplicatedFirst["Assets"]["BattleTriangle"]> {
+export class BattleTriangle extends DestroyableComponent<{}, ReplicatedFirst["Assets"]["Battle"]["BattleTriangle"]> {
   public readonly battleCircle: BattleCircle;
   private spinTweenInfo = new TweenInfoBuilder()
     .SetTime(0.25);

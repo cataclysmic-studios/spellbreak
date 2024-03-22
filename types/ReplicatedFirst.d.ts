@@ -9,27 +9,30 @@ interface ReplicatedFirst extends Instance {
         };
       };
     };
-    BattleTriangle: Part & {
-      Decal: Decal;
-    };
-    BattleCircle: Model & {
-      Main: MeshPart & {
+    Battle: Folder & {
+      PlayerBattleSigil: MeshPart;
+      BattleTriangle: Part & {
         Decal: Decal;
       };
-      Glow: MeshPart & {
-        Decal: Decal;
-      };
-      Vortex: MeshPart & {
-        Decal: Decal;
-      };
-      Root: Part;
-      TeamPositions: Folder;
-      OpponentPositions: Folder;
-      AnimationController: AnimationController;
-      Animations: Folder & {
-        Idle: Animation;
-        OnAdd: Animation;
-        OnRemove: Animation;
+      BattleCircle: Model & {
+        Main: MeshPart & {
+          Decal: Decal;
+        };
+        Glow: MeshPart & {
+          Decal: Decal;
+        };
+        Vortex: MeshPart & {
+          Decal: Decal;
+        };
+        Root: Part;
+        TeamPositions: Folder;
+        OpponentPositions: Folder;
+        AnimationController: AnimationController;
+        Animations: Folder & {
+          Idle: Animation;
+          OnAdd: Animation;
+          OnRemove: Animation;
+        };
       };
     };
   };

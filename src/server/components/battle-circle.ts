@@ -15,7 +15,7 @@ import type { BattleTriangle } from "./battle-triangle";
 type Combatant = Player | Enemy;
 
 @Component({ tag: "BattleCircle" })
-export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Assets"]["BattleCircle"]> implements OnStart {
+export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Assets"]["Battle"]["BattleCircle"]> implements OnStart {
   public readonly battleLogic: BattleLogic;
   public readonly battleTriangle: BattleTriangle;
   public readonly team: Player[] = [];
@@ -28,7 +28,7 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
     private readonly components: Components
   ) {
     super();
-    const battleTriangleModel = Assets.BattleTriangle.Clone();
+    const battleTriangleModel = Assets.Battle.BattleTriangle.Clone();
     battleTriangleModel.Parent = this.instance;
     this.battleTriangle = components.addComponent(battleTriangleModel);
     this.battleLogic = new BattleLogic(this);
@@ -179,6 +179,10 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
       const combatantCollection = this.opponents.includes(combatant) ? this.opponents : this.team;
       const positionParts = this.instance[this.opponents.includes(combatant) ? "OpponentPositions" : "TeamPositions"];
       const positionPart = <BasePart>positionParts.FindFirstChild(combatantCollection.size());
+      const playerSigil = Assets.Battle.PlayerBattleSigil.Clone();
+      playerSigil.Position = positionPart.Position.sub(new Vector3(0, 0.1, 0));
+      playerSigil.Parent = this.instance;
+
       const tweenInfo = new TweenInfoBuilder()
         .SetEasingStyle(Enum.EasingStyle.Linear);
 

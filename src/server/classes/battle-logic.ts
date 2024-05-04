@@ -1,6 +1,8 @@
+import { Events } from "server/network";
+
+import { Enemy } from "server/components/enemy";
 import type { BattleTriangle } from "server/components/battle-triangle";
 import type { BattleCircle } from "server/components/battle-circle";
-import type { Enemy } from "server/components/enemy";
 
 type Combatant = Player | Enemy;
 
@@ -37,8 +39,8 @@ export default class BattleLogic {
 
   private advanceTurn(): void {
     this.currentTurnIndex += 1;
-    this.currentTurnIndex %= 4;
-    if (this.currentTurnIndex === 0) {
+    this.currentTurnIndex %= this.currentCombatants.size();
+    if (this.currentTurnIndex === 0) { // switch teams after going through one team
       this.currentCombatants = this.currentCombatants === this.circle.team ? this.circle.opponents : this.circle.team;
       this.currentPositions = this.currentPositions === this.circle.instance.TeamPositions ? this.circle.instance.OpponentPositions : this.circle.instance.TeamPositions;
     }

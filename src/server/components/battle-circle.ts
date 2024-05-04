@@ -3,6 +3,7 @@ import { Component, Components } from "@flamework/components";
 import { Players, Workspace as World, HttpService as HTTP } from "@rbxts/services";
 import { TweenInfoBuilder } from "@rbxts/builders";
 
+import { Events } from "server/network";
 import { tween } from "shared/utility/ui";
 import { Assets } from "shared/utility/helpers";
 import { MAX_BATTLE_COMBATANTS } from "shared/constants";
@@ -11,11 +12,13 @@ import BattleLogic from "server/classes/battle-logic";
 
 import { Enemy } from "./enemy";
 import type { BattleTriangle } from "./battle-triangle";
+import BattleCameraState from "shared/structs/battle-camera-state";
 
 type Combatant = Player | Enemy;
 
 @Component({ tag: "BattleCircle" })
 export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Assets"]["Battle"]["BattleCircle"]> implements OnStart {
+  public readonly id = HTTP.GenerateGUID();
   public readonly battleLogic: BattleLogic;
   public readonly battleTriangle: BattleTriangle;
   public readonly team: Player[] = [];
@@ -180,7 +183,7 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
       const positionParts = this.instance[this.opponents.includes(combatant) ? "OpponentPositions" : "TeamPositions"];
       const positionPart = <BasePart>positionParts.FindFirstChild(combatantCollection.size());
       const playerSigil = Assets.Battle.PlayerBattleSigil.Clone();
-      playerSigil.Position = positionPart.Position.sub(new Vector3(0, 0.1, 0));
+      playerSigil.Position = positionPart.Position.sub(new Vector3(0, 0.05, 0));
       playerSigil.Parent = this.instance;
 
       const tweenInfo = new TweenInfoBuilder()
@@ -194,10 +197,11 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
         .Completed.Once(() => {
           character.PrimaryPart!.Anchored = true;
           if (combatantIsNPC) return;
+          Events.battle.toggleUI(combatant, true);
+          // TODO: add cards from deck to hand
         });
 
       resolve();
     });
-    // TODO: set camera mode to Battle, enable DeckHand UI, and add cards from deck to hand
   }
 }

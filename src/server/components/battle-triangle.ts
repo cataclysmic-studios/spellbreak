@@ -19,7 +19,7 @@ export class BattleTriangle extends DestroyableComponent<{}, ReplicatedFirst["As
   }
 
   public pointAt(position: Vector3, doTween = true): void {
-    const newPosition = this.battleCircle.instance.Main.Position.add(new Vector3(0, 0.15, 0))
+    const newPosition = this.battleCircle.instance.Main.Position.add(new Vector3(0, 0.05, 0))
     let destination = CFrame.lookAt(newPosition, position);
     destination = destination.add(destination.LookVector.mul(6.25));
 

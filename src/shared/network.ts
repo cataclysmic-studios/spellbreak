@@ -1,8 +1,12 @@
 import { Networking } from "@flamework/networking";
-import type{ DataValue } from "./data-models/generic";
+import type { DataValue } from "./data-models/generic";
 import type { GitHubInfo } from "./structs/github";
+import type BattleCameraState from "./structs/battle-camera-state";
 
 interface ServerEvents {
+  battle: {
+
+  };
   data: {
     initialize(): void;
     set(directory: string, value: DataValue): void;
@@ -13,6 +17,10 @@ interface ServerEvents {
 interface ClientEvents {
   general: {
     addTag(instancePath: string, tag: string): void;
+  };
+  battle: {
+    toggleUI(on: boolean): void;
+    setCameraState(battleCircleID: string, state: BattleCameraState): void;
   };
   data: {
     updated(directory: string, value: DataValue): void;

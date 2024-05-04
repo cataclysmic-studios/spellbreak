@@ -8,6 +8,7 @@ import DestroyableComponent from "shared/base-components/destroyable-component";
 import Range from "shared/utility/range";
 
 import type { CardButton } from "./card-button";
+import { Events } from "client/network";
 
 type CardFrame = (ImageLabel | ImageButton) & {
   UIScale: UIScale;
@@ -30,6 +31,7 @@ export class DeckHand extends DestroyableComponent<{}, Frame & { UIListLayout: U
   public onStart(): void {
     this.janitor.Add(this.instance);
     this.janitor.Add(this.mouse.Move.Connect(() => this.updateCardHoverStatus()));
+    this.janitor.Add(Events.battle.toggleUI.connect(on => this.screen.Enabled = on));
   }
 
   public addCard({ name, cardImage }: Spell): CardButton {

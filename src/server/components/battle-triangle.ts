@@ -2,8 +2,8 @@ import { Component, type Components } from "@flamework/components";
 import { TweenInfoBuilder } from "@rbxts/builders";
 
 import { tween } from "shared/utility/ui";
-import DestroyableComponent from "shared/base-components/destroyable";
 
+import DestroyableComponent from "shared/base-components/destroyable";
 import type { BattleCircle } from "./battle-circle";
 
 // TODO: glow animations

@@ -4,17 +4,16 @@ import { Players } from "@rbxts/services";
 import { startsWith } from "@rbxts/string-utils";
 
 import { Assets } from "shared/utility/instances";
-import type { School } from "shared/data-models/school";
-import DestroyableComponent from "shared/base-components/destroyable";
-
-import type { BattleService } from "server/services/battle";
 import { LARGE_SCHOOL_ICON_OVERHEAD, LARGE_SCHOOL_ICON_OFFSETS } from "shared/constants";
-import { Events } from "server/network";
+import type { School } from "shared/data-models/school";
+
+import DestroyableComponent from "shared/base-components/destroyable";
+import type { BattleService } from "server/services/battle";
 
 interface Attributes {
-  Rank: number;
-  School: School;
-  Title: EnemyTitle;
+  Enemy_Rank: number;
+  Enemy_School: School;
+  Enemy_Title: EnemyTitle;
 }
 
 interface EnemyModel extends Model {
@@ -54,12 +53,12 @@ export class Enemy extends DestroyableComponent<Attributes, EnemyModel> implemen
   private createNametag(): void {
     const nametag = Assets.UI.EnemyNametag.Clone();
     nametag.Title.Text = this.instance.Name.upper();
-    nametag.Title.TextColor3 = NAMETAG_COLORS[this.attributes.Title];
-    nametag.Bottom.Info.Text = `RANK ${this.attributes.Rank}${startsWith(this.attributes.Title, "Regular") ? "" : " " + this.attributes.Title.upper()}`;
-    nametag.Bottom.Info.TextColor3 = NAMETAG_COLORS[this.attributes.Title];
+    nametag.Title.TextColor3 = NAMETAG_COLORS[this.attributes.Enemy_Title];
+    nametag.Bottom.Info.Text = `RANK ${this.attributes.Enemy_Rank}${startsWith(this.attributes.Enemy_Title, "Regular") ? "" : " " + this.attributes.Enemy_Title.upper()}`;
+    nametag.Bottom.Info.TextColor3 = NAMETAG_COLORS[this.attributes.Enemy_Title];
     nametag.Bottom.SchoolIcon.Image = LARGE_SCHOOL_ICON_OVERHEAD;
     nametag.Bottom.SchoolIcon.ImageRectSize = new Vector2(52, 52);
-    nametag.Bottom.SchoolIcon.ImageRectOffset = LARGE_SCHOOL_ICON_OFFSETS[this.attributes.School];
+    nametag.Bottom.SchoolIcon.ImageRectOffset = LARGE_SCHOOL_ICON_OFFSETS[this.attributes.Enemy_School];
     nametag.Adornee = this.instance.PrimaryPart;
     nametag.Parent = this.instance;
   }

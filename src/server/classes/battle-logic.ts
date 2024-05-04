@@ -1,5 +1,3 @@
-import { Events } from "server/network";
-
 import { Enemy } from "server/components/enemy";
 import type { BattleTriangle } from "server/components/battle-triangle";
 import type { BattleCircle } from "server/components/battle-circle";

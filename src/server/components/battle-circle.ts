@@ -7,9 +7,9 @@ import { Events } from "server/network";
 import { Assets } from "shared/utility/instances";
 import { tween } from "shared/utility/ui";
 import { MAX_BATTLE_COMBATANTS } from "shared/constants";
-import DestroyableComponent from "shared/base-components/destroyable";
 import BattleLogic from "server/classes/battle-logic";
 
+import DestroyableComponent from "shared/base-components/destroyable";
 import { Enemy } from "./enemy";
 import type { BattleTriangle } from "./battle-triangle";
 import type { CharacterDataService } from "server/services/character-data";

@@ -72,7 +72,7 @@ export class DeckHand extends DestroyableComponent<{}, Frame & { UIListLayout: U
       const cardIndex = randomIndex(cards);
       if (cardIndex === -1) break;
 
-      const spell = this.spellHelper.mustGetSpellFromReference(cards[cardIndex]);
+      const spell = this.spellHelper.mustGetFromReference(cards[cardIndex]);
       this.addCard(spell, cards === this.treasureCardsRemaining);
       cards.remove(cardIndex);
     }

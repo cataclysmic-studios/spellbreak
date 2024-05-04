@@ -1,6 +1,5 @@
 import { type PlayableSchool, School } from "../data-models/school";
 import type { CharacterData } from "../data-models/character-data";
-import StarterDeck from "./items/gear/decks/starter-deck";
 
 export const DEFAULT_HEALTHS: Record<PlayableSchool, number> = {
   Fire: 415,
@@ -138,11 +137,7 @@ export const NEW_CHARACTER: Omit<CharacterData, "id" | "name" | "school"> = {
     }
   },
   trainedSpells: [],
-  equippedGear: {
-    Deck: StarterDeck
-  },
-  backpack: [
-    StarterDeck
-  ],
+  equippedGear: {},
+  backpack: [],
   housingItems: []
 };

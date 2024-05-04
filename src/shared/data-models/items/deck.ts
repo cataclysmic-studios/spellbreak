@@ -1,16 +1,20 @@
+import { Dependency } from "@flamework/core";
+
 import { Socket } from "../sockets";
 import type { Spell } from "../../structs/spell";
 import { type Gear, GearCategory } from "./gear";
-import { Dependency } from "@flamework/core";
 import SpellHelper from "shared/helpers/spell";
 
-export interface DeckData extends Gear {
+export interface DeckLinkedData {
+  spells: string[],
+  sideboardSpells: string[]
+}
+
+export interface DeckData extends DeckLinkedData, Gear {
   readonly maxSpells: number,
   readonly maxSideboardSpells: number,
   readonly maxCopies: number,
   readonly maxSchoolCopies: number,
-  readonly spells: string[],
-  readonly sideboardSpells: string[]
 }
 
 export class Deck implements DeckData {
@@ -41,7 +45,7 @@ export class Deck implements DeckData {
   public addSpell(spell: Spell): void {
     if (this.spells.size() === this.maxSpells) return;
     const spellHelper = Dependency<SpellHelper>();
-    this.spells.push(spellHelper.createSpellReference(spell));
+    this.spells.push(spellHelper.createReference(spell));
   }
 
   public removeSpell(index: number): void {
@@ -55,7 +59,7 @@ export class Deck implements DeckData {
   public addSideboardSpell(spell: Spell): void {
     if (this.sideboardSpells.size() === this.maxSpells) return;
     const spellHelper = Dependency<SpellHelper>();
-    this.sideboardSpells.push(spellHelper.createSpellReference(spell));
+    this.sideboardSpells.push(spellHelper.createReference(spell));
   }
 
   public removeSideboardSpell(index: number): void {

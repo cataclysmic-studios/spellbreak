@@ -1,9 +1,7 @@
 import type { PlayableSchool } from "shared/data-models/school";
-import type { GearCategory, Gear } from "./items/gear";
-import type { Housing } from "./items/housing";
-import type { DeckData } from "./items/deck";
-import type { Spell } from "shared/structs/spell";
+import type { GearCategory } from "./items/gear";
 import type CharacterStats from "./character-stats";
+import { ItemReference } from "./item-reference";
 
 export const enum BadgeCategory {
   WizardVillage = "Wizard Village"
@@ -21,9 +19,7 @@ export interface CharacterData {
 
   readonly stats: CharacterStats;
   readonly trainedSpells: string[];
-  readonly equippedGear: Partial<{
-    [GearCategory.Deck]: DeckData;
-  }>;
-  readonly backpack: Gear[];
-  readonly housingItems: Housing[];
+  readonly equippedGear: Partial<Record<GearCategory, ItemReference>>;
+  readonly backpack: ItemReference[];
+  readonly housingItems: string[];
 }

@@ -1,4 +1,4 @@
-import type Jewel from "./items/jewel";
+import type { Jewel } from "./items/jewel";
 
 export interface Socket<SocketType extends string = string> {
   readonly type: SocketType;

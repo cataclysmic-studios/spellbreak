@@ -1,5 +1,5 @@
-import type { School } from "../school";
-import type CharacterStats from "../character-stats";
+import type { School } from "./school";
+import type CharacterStats from "./character-stats";
 
 export interface CharacterItem {
   readonly name: string;

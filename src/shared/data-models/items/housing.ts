@@ -1,4 +1,4 @@
-import type { CharacterItem } from "./base";
+import type { CharacterItem } from "../character-item";
 
 export const enum HousingCategory {
   Castle = "Castle",

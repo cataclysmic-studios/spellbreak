@@ -23,20 +23,20 @@ export default class SpellHelper {
     return spell;
   }
 
-  public getSpellFromReference(reference: string): Maybe<Spell> {
+  public getFromReference(reference: string): Maybe<Spell> {
     const [school, category, name] = reference.split(".");
     return Spells[<School>school][<SpellType>category].find(spell => spell.name === name);
   }
 
-  public mustGetSpellFromReference(reference: string): Spell {
-    const spell = this.getSpellFromReference(reference);
+  public mustGetFromReference(reference: string): Spell {
+    const spell = this.getFromReference(reference);
     if (spell === undefined)
       throw new Log.Exception("FailedToGetSpellFromReference", `Failed to get spell from reference "${reference}"`);
 
     return spell;
   }
 
-  public createSpellReference(spell: Spell): string {
+  public createReference(spell: Spell): string {
     return `${spell.school}.${spell.type}.${spell.name}`;
   }
 

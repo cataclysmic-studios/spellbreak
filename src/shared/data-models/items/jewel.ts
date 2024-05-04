@@ -1,5 +1,5 @@
-import type { CharacterItem, WithCharacterStats } from "./base";
+import type { CharacterItem } from "../character-item";
 
-export default interface Jewel extends CharacterItem {
+export interface Jewel extends CharacterItem {
 
 }

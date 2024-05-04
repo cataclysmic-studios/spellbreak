@@ -6,26 +6,29 @@ import type { LogStart } from "shared/hooks";
 import { USE_CURLY_BRACES_FOR_UUIDS } from "shared/constants";
 import { isValidUUID } from "shared/utility/strings";
 import { School, type PlayableSchool } from "shared/data-models/school";
+import { GearCategory } from "shared/data-models/items/gear";
 import type { CharacterData } from "shared/data-models/character-data";
 import { NEW_CHARACTER, DEFAULT_HEALTHS } from "shared/default-structs/new-character";
+import StarterDeck from "shared/default-structs/items/gear/decks/starter-deck";
 
 import type { DatabaseService } from "./third-party/database";
 import type { CharacterService } from "./character";
 import type CharacterHelper from "shared/helpers/character";
+import type ItemHelper from "shared/helpers/item";
 
 @Service()
 export class CharacterDataService implements OnPlayerJoin, LogStart {
   public constructor(
     private readonly db: DatabaseService,
     private readonly character: CharacterService,
-    private readonly characterHelper: CharacterHelper
+    private readonly characterHelper: CharacterHelper,
+    private readonly itemHelper: ItemHelper
   ) { }
 
   // *TEMP
   public onPlayerJoin(player: Player): void {
     const characters = this.getAll(player);
     if (!characters.isEmpty()) return;
-
     this.create(player, "Runic", School.Myth);
   }
 
@@ -33,12 +36,19 @@ export class CharacterDataService implements OnPlayerJoin, LogStart {
     return this.db.get(player, `characters/${this.character.getCurrentIndex()}`);
   }
 
+  public equipItem(character: CharacterData, category: GearCategory, backpackIndex: number): void {
+    const item = character.backpack[backpackIndex];
+    character.equippedGear[category] = item;
+  }
+
   public create(player: Player, name: string, school: PlayableSchool): CharacterData {
     const characters = this.getAll(player);
     const id = HTTP.GenerateGUID(USE_CURLY_BRACES_FOR_UUIDS);
     const character = { id, name, school, ...NEW_CHARACTER };
-    this.characterHelper.trainFirstSpell(character);
+    const deckIndex = character.backpack.push(this.itemHelper.createReference(StarterDeck)) - 1;
+    this.equipItem(character, GearCategory.Deck, deckIndex);
     character.stats.health = DEFAULT_HEALTHS[school];
+    this.characterHelper.trainFirstSpell(character);
     characters.push(character);
 
     this.update(player, characters);

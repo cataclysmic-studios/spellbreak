@@ -1,4 +1,4 @@
-import type { CharacterItem } from "./base";
+import type { CharacterItem } from "../character-item";
 import type { Socket } from "../sockets";
 
 export const enum GearCategory {

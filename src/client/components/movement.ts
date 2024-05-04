@@ -11,8 +11,6 @@ import { isNaN } from "shared/utility/numbers";
 import { InputInfluenced } from "client/base-components/input-influenced";
 import { removeDuplicates } from "shared/utility/array";
 
-const { rad } = math;
-
 type KeyName = ExtractKeys<typeof Enum.KeyCode, EnumItem>;
 
 const enum MoveDirection {
@@ -62,7 +60,7 @@ const NO_JUMP_STATES: Enum.HumanoidStateType[] = [
     Movement_JumpForce: 0,
     Movement_GravitationalConstant: 9.81, // m/s, 9.81 is earth's constant
     Movement_Restrictive: true,
-    Movement_RestrictiveMaxLedgeHeight: 1,
+    Movement_RestrictiveMaxLedgeHeight: 0.5,
     Movement_Rotational: true,
     Movement_RotationSpeed: 1,
   }
@@ -159,11 +157,12 @@ export class Movement extends InputInfluenced<Attributes, Model> implements OnSt
         .Build();
 
       const characterSize = this.instance.GetBoundingBox()[1];
-      const raySize = (characterSize.Y / 2) + 0.5;
+      const distanceToGround = characterSize.Y / 2;
       const distanceAhead = 1;
-      const direction = new Vector3(0, -1, 0);
+      const down = new Vector3(0, -1, 0);
+      const edgeRaySize = distanceToGround + this.getRestrictiveMaxLedgeHeight();
       const position = this.root.Position.add(this.root.CFrame.LookVector.mul(distanceAhead));
-      const edgeResult = World.Raycast(position, direction.mul(raySize), rayParams);
+      const edgeResult = World.Raycast(position, down.mul(edgeRaySize), rayParams);
       if (edgeResult?.Instance === undefined)
         this.velocity = new Vector3;
     }

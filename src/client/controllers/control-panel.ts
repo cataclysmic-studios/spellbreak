@@ -174,6 +174,16 @@ export class ControlPanelController implements OnStart {
     if (gravitationalConstant.numberChanged())
       movement.attributes.Movement_GravitationalConstant = gravitationalConstant.state.number.get();
 
+    const isRotational = Iris.Checkbox(["Is Rotational?"], { isChecked: Iris.State(movement.isRotational()) });
+    if (isRotational.checked())
+      movement.attributes.Movement_Rotational = true;
+    if (isRotational.unchecked())
+      movement.attributes.Movement_Rotational = false;
+
+    const rotationSpeed = Iris.SliderNum(["RotationSpeed", 0.05, 0.05, 30], { number: Iris.State(movement.getRotationSpeed()) });
+    if (rotationSpeed.numberChanged())
+      movement.attributes.Movement_RotationSpeed = rotationSpeed.state.number.get();
+
     Iris.End();
   }
 

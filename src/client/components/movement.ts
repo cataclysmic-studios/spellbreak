@@ -9,6 +9,9 @@ import { STUDS_TO_METERS_CONSTANT, studsToMeters } from "shared/utility/3D";
 import { isNaN } from "shared/utility/numbers";
 
 import { InputInfluenced } from "client/base-components/input-influenced";
+import { removeDuplicates } from "shared/utility/array";
+
+const { rad } = math;
 
 type KeyName = ExtractKeys<typeof Enum.KeyCode, EnumItem>;
 
@@ -28,6 +31,8 @@ interface Attributes {
   Movement_JumpCooldown: number;
   Movement_JumpForce: number;
   Movement_GravitationalConstant: number;
+  Movement_Rotational: boolean;
+  Movement_RotationSpeed: number;
 }
 
 const NO_JUMP_STATES: Enum.HumanoidStateType[] = [
@@ -47,13 +52,15 @@ const NO_JUMP_STATES: Enum.HumanoidStateType[] = [
   tag: "Movement",
   defaults: {
     Movement_Speed: 1,
-    Movement_Acceleration: 0.5,
-    Movement_Friction: 0.175,
+    Movement_Acceleration: 1,
+    Movement_Friction: 1,
     Movement_AirFriction: 0.01,
-    Movement_CanMoveMidair: true,
-    Movement_JumpCooldown: 0.4,
-    Movement_JumpForce: 6,
-    Movement_GravitationalConstant: 3 // m/s, 9.81 is earth's constant
+    Movement_CanMoveMidair: false,
+    Movement_JumpCooldown: 0.6,
+    Movement_JumpForce: 0,
+    Movement_GravitationalConstant: 9.81, // m/s, 9.81 is earth's constant
+    Movement_Rotational: true,
+    Movement_RotationSpeed: 1
   }
 })
 export class Movement extends InputInfluenced<Attributes, Model> implements OnStart, OnPhysics, LogStart {
@@ -63,6 +70,7 @@ export class Movement extends InputInfluenced<Attributes, Model> implements OnSt
   private readonly humanoid = <Humanoid>this.instance.WaitForChild("Humanoid");
   private readonly moveDirections: MoveDirection[] = [];
   private velocity = new Vector3;
+  private angularVelocity = new Vector3;
   private touchingGround = false;
   private spacebarDown = false;
   private canJump = true;
@@ -118,14 +126,33 @@ export class Movement extends InputInfluenced<Attributes, Model> implements OnSt
       : this.getAirFriction();
 
     const speed = studsToMeters(this.getSpeed());
-    const dontApplyForce = (!this.canMoveMidair() && !this.touchingGround) || isNaN(directionVector.X);
+    const dontApplyAirForce = !this.canMoveMidair() && !this.touchingGround;
+    const dontApplyForce = dontApplyAirForce || isNaN(directionVector.X);
     const desiredForce = directionVector.Unit.mul(speed);
     const force = dontApplyForce ? new Vector3 : desiredForce.sub(this.velocity);
-    this.velocity = this.velocity
-      .mul(this.isMoving() ? 1 : 1 - this.friction)
-      .add(force.mul(studsToMeters(this.getAcceleration() * dt * 60)));
+    this.velocity = this.applyFriction(this.velocity)
+      .add(this.applyAcceleration(force, dt));
 
-    this.root.CFrame = this.root.CFrame.add(this.velocity);
+    if (this.isRotational()) {
+      const rotationSpeed = studsToMeters(this.getRotationSpeed());
+      const angularMovementDirections = removeDuplicates(this.moveDirections.filter(dir => [MoveDirection.Left, MoveDirection.Right].includes(dir)));
+      let angularDirection = new Vector3;
+      for (const direction of angularMovementDirections)
+        angularDirection = angularDirection.add(new Vector3(direction === MoveDirection.Left ? -1 : 1, 0, 0).mul(-1));
+
+      const dontApplyAngularForce = dontApplyAirForce || isNaN(angularDirection.X);
+      const desiredAngularForce = angularDirection.mul(rotationSpeed);
+      const angularForce = dontApplyAngularForce ? new Vector3 : desiredAngularForce;
+      this.angularVelocity = this.applyFriction(this.angularVelocity)
+        .add(this.applyAcceleration(angularForce, dt));
+    }
+
+    const { X: turn } = this.angularVelocity;
+    this.root.CFrame = this.root.CFrame
+      .add(this.velocity)
+      .mul(CFrame.Angles(0, turn / 1.75, 0));
+
+    this.angularVelocity = new Vector3;
   }
 
   public getVelocity(): Vector3 {
@@ -160,8 +187,24 @@ export class Movement extends InputInfluenced<Attributes, Model> implements OnSt
     return this.attributes.Movement_GravitationalConstant;
   }
 
+  public isRotational(): boolean {
+    return this.attributes.Movement_Rotational;
+  }
+
+  public getRotationSpeed(): number {
+    return this.attributes.Movement_RotationSpeed;
+  }
+
   public isMoving(): boolean {
     return this.moveDirections.size() > 0;
+  }
+
+  private applyAcceleration(force: Vector3, dt: number): Vector3 {
+    return force.mul(studsToMeters(this.getAcceleration() * dt * 60));
+  }
+
+  private applyFriction(velocity: Vector3): Vector3 {
+    return velocity.mul(this.isMoving() ? 1 : 1 - this.friction);
   }
 
   private getRootVelocity(): Vector3 {
@@ -244,9 +287,9 @@ export class Movement extends InputInfluenced<Attributes, Model> implements OnSt
       case MoveDirection.Backwards:
         return LookVector.mul(-1);
       case MoveDirection.Left:
-        return RightVector.mul(-1);
+        return this.isRotational() ? new Vector3 : RightVector.mul(-1);
       case MoveDirection.Right:
-        return RightVector;
+        return this.isRotational() ? new Vector3 : RightVector;
     }
   }
 

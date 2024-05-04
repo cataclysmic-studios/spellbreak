@@ -3,13 +3,20 @@ import { Component, Components } from "@flamework/components";
 import Object from "@rbxts/object-utils";
 
 import type { School } from "shared/data-models/school";
+import { Events } from "client/network";
 import { Player, PlayerGui } from "shared/utility/client";
 import { flatten } from "shared/utility/array";
 import { Range } from "shared/utility/range";
-import DestroyableComponent from "shared/base-components/destroyable";
 import Spells from "shared/default-structs/spells";
 import SpellsList from "shared/default-structs/spells/list";
 import Log from "shared/logger";
+
+import DestroyableComponent from "shared/base-components/destroyable";
+import type { BattleController } from "client/controllers/battle";
+import { isEven } from "shared/utility/numbers";
+import BattleClient from "client/classes/battle-client";
+
+const { floor } = math;
 
 const SELECTION_BORDER_TEMPLATE = new Instance("UIStroke");
 SELECTION_BORDER_TEMPLATE.Thickness = 1.6;
@@ -36,7 +43,8 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
   private readonly mouse = Player.GetMouse();
 
   public constructor(
-    private readonly components: Components
+    private readonly components: Components,
+    private readonly battle: BattleController
   ) { super(); }
 
   public onStart(): void {
@@ -69,7 +77,23 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
   }
 
   private castAssociatedSpell(): void {
+    const battleClient = this.battle.getClient();
+    if (battleClient === undefined)
+      return Player.Kick("stop tinkering bitch");
+
+    if (!this.canCast()) return; // TODO: also grey out card
     this.destroy();
+
+    const { shadowPips } = this.associatedSpell.cost;
+    const pipsToUse = this.getPipCost();
+    if (isEven(pipsToUse))
+      battleClient.usePowerPips(pipsToUse / 2);
+    else {
+      battleClient.usePowerPips(floor(pipsToUse / 2));
+      battleClient.usePips(pipsToUse % 2);
+    }
+
+    Events.character.updateStats(stats => stats.mana -= pipsToUse + shadowPips);
   }
 
   private discard(): void {
@@ -93,7 +117,20 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
   }
 
   private canCast(): boolean {
-    // check pip counts
-    return true;
+    const battleClient = this.battle.getClient()!
+    const pipCost = this.getPipCost();
+    return battleClient.characterData.stats.mana >= pipCost
+      && battleClient.getTotalPips() >= pipCost
+      && battleClient.getShadowPips() >= this.getShadowPipCost()
+  }
+
+  private getPipCost(): number {
+    const spellCost = this.associatedSpell.cost;
+    const battleClient = this.battle.getClient()!;
+    return spellCost.pips === "X" ? battleClient.getTotalPips() : spellCost.pips;
+  }
+
+  private getShadowPipCost(): number {
+    return this.associatedSpell.cost.shadowPips;
   }
 }

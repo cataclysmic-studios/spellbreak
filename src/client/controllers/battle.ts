@@ -35,6 +35,6 @@ export class BattleController implements OnInit {
     if (battleCircle === undefined)
       return Log.warning(`Failed to initialize BattleClient: Could not find battle circle model with ID "${battleCircleID}"`);
 
-    this.client = new BattleClient(this, this.camera, this.characterHelper.getEquippedDeck(characterData), battleCircle, opponent);
+    this.client = new BattleClient(this, this.camera, this.characterHelper, characterData, battleCircle, opponent);
   }
 }

@@ -7,7 +7,7 @@ export class CharacterService implements OnInit {
   private currentIndex = 0;
 
   public onInit(): void {
-    Events.character.playAs.connect((player, index) => this.currentIndex = index);
+    Events.character.playAs.connect((_, index) => this.currentIndex = index);
     Events.character.toggleDefaultMovement.connect((player, on) => this.toggleDefaultMovement(player, on));
   }
 

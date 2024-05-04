@@ -11,6 +11,9 @@ export const DEFAULT_HEALTHS: Record<PlayableSchool, number> = {
   Balance: 480
 };
 
+const DEFAULT_MANA = 10;
+const DEFAULT_ENERGY = 40;
+
 export const NEW_CHARACTER: Omit<CharacterData, "id" | "name" | "school"> = {
   xp: 0,
   level: 0,
@@ -19,13 +22,17 @@ export const NEW_CHARACTER: Omit<CharacterData, "id" | "name" | "school"> = {
   trainingPoints: 0,
 
   stats: {
+    maxHealth: 0,
+    maxMana: DEFAULT_MANA,
+    maxEnergy: DEFAULT_ENERGY,
     health: 0,
-    mana: 10,
-    energy: 40,
+    mana: DEFAULT_MANA,
+    energy: DEFAULT_ENERGY,
 
     powerPipChance: 0,
     shadowPipRating: 0,
     stunResistance: 0,
+    maxShadowPips: 0,
     healing: {
       incoming: 0,
       outgoing: 0

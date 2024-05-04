@@ -1,6 +1,9 @@
 import type { School } from "./school";
 
 export default interface CharacterStats {
+  maxHealth: number;
+  maxMana: number;
+  maxEnergy: number;
   health: number;
   mana: number;
   energy: number;
@@ -16,6 +19,8 @@ export default interface CharacterStats {
   powerPipChance: number;
   shadowPipRating: number;
   stunResistance: number;
+  maxShadowPips: number;
+
   readonly healing: {
     incoming: number;
     outgoing: number;

@@ -1,13 +1,14 @@
-import { Service } from "@flamework/core";
+import { Service, type OnInit } from "@flamework/core";
 import { HttpService as HTTP } from "@rbxts/services";
 
 import type { OnPlayerJoin } from "server/hooks";
 import type { LogStart } from "shared/hooks";
+import { Events } from "server/network";
 import { USE_CURLY_BRACES_FOR_UUIDS } from "shared/constants";
 import { isValidUUID } from "shared/utility/strings";
 import { School, type PlayableSchool } from "shared/data-models/school";
-import { GearCategory } from "shared/data-models/items/gear";
 import type { CharacterData } from "shared/data-models/character-data";
+import { GearCategory } from "shared/data-models/items/gear";
 import { NEW_CHARACTER, DEFAULT_HEALTHS } from "shared/default-structs/new-character";
 import StarterDeck from "shared/default-structs/items/gear/decks/starter-deck";
 
@@ -17,7 +18,7 @@ import type CharacterHelper from "shared/helpers/character";
 import type ItemHelper from "shared/helpers/item";
 
 @Service()
-export class CharacterDataService implements OnPlayerJoin, LogStart {
+export class CharacterDataService implements OnInit, OnPlayerJoin, LogStart {
   public constructor(
     private readonly db: DatabaseService,
     private readonly character: CharacterService,
@@ -25,11 +26,23 @@ export class CharacterDataService implements OnPlayerJoin, LogStart {
     private readonly itemHelper: ItemHelper
   ) { }
 
+  public onInit(): void {
+    Events.character.updateStats.connect((player, update) => {
+      const character = this.getCurrent(player);
+      update(character.stats);
+      this.updateCurrent(player, character);
+    });
+  }
+
   // *TEMP
   public onPlayerJoin(player: Player): void {
     const characters = this.getAll(player);
     if (!characters.isEmpty()) return;
     this.create(player, "Runic", School.Myth);
+  }
+
+  public updateCurrent(player: Player, newCharacter: CharacterData): void {
+    this.db.set(player, `characters/${this.character.getCurrentIndex()}`, newCharacter);
   }
 
   public getCurrent(player: Player): CharacterData {

@@ -1,8 +1,8 @@
 import { Networking } from "@flamework/networking";
 import type { DataValue } from "./data-models/generic";
-import type { CharacterData } from "./data-models/character-data";
 import type { GitHubInfo } from "./structs/github";
 import type { GamepassInfo } from "./structs/roblox-api";
+import type CharacterStats from "./data-models/character-stats";
 
 interface ServerEvents {
   battle: {
@@ -16,6 +16,7 @@ interface ServerEvents {
   character: {
     playAs(index: number): void;
     toggleDefaultMovement(on: boolean): void;
+    updateStats(updater: (stats: CharacterStats) => void): void;
   };
 }
 

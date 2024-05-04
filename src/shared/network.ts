@@ -28,7 +28,10 @@ interface ClientEvents {
   };
   data: {
     updated(directory: string, value: DataValue): void;
-  }
+  };
+  character: {
+    toggleCustomMovement(on: boolean): void;
+  };
 }
 
 interface ClientEvents {

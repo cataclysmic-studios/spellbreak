@@ -158,10 +158,7 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
       character.PrimaryPart!.AssemblyLinearVelocity = new Vector3;
     }
 
-    const movementMode = on ? <ExtractKeys<typeof Enum.DevComputerMovementMode, EnumItem>>combatant.GetAttribute("DefaultMovementMode") : "Scriptable";
-    const touchMode = on ? <ExtractKeys<typeof Enum.DevTouchMovementMode, EnumItem>>combatant.GetAttribute("DefaultTouchMode") : "Scriptable";
-    combatant.DevComputerMovementMode = Enum.DevComputerMovementMode[movementMode];
-    combatant.DevTouchMovementMode = Enum.DevTouchMovementMode[touchMode];
+    Events.character.toggleCustomMovement(combatant, on);
   }
 
   private async pullInCombatant(combatant: Combatant): Promise<void> {

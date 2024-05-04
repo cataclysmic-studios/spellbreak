@@ -66,6 +66,7 @@ export class Movement extends InputInfluenced<Attributes, Model> implements OnSt
   private touchingGround = false;
   private spacebarDown = false;
   private canJump = true;
+  private canMove = true;
 
   public static start(character: Model): void {
     Events.character.toggleDefaultMovement(false);
@@ -78,9 +79,12 @@ export class Movement extends InputInfluenced<Attributes, Model> implements OnSt
     this.updateGravity();
     this.onAttributeChanged("Movement_GravitationalConstant", () => this.updateGravity());
 
+    this.janitor.Add(Events.character.toggleCustomMovement.connect(on => this.canMove = on));
+
     const moveKeys: KeyName[] = ["W", "A", "S", "D", "Up", "Left", "Down", "Right"];
     this.janitor.Add(InputService.InputBegan.Connect(({ KeyCode: key }) => {
       if (key.Name !== "Space") return;
+      if (!this.canMove) return;
       this.spacebarDown = true;
       this.jump();
     }));
@@ -91,6 +95,7 @@ export class Movement extends InputInfluenced<Attributes, Model> implements OnSt
 
     this.janitor.Add(InputService.InputBegan.Connect(({ KeyCode: key }) => {
       if (!moveKeys.includes(key.Name)) return;
+      if (!this.canMove) return;
 
       const direction = this.getDirectionFromKey(key.Name);
       this.applyMovementDirection(direction);

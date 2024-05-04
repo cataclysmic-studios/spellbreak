@@ -1,10 +1,16 @@
 import type Jewel from "./items/jewel";
 
-export interface Socket {
-  readonly type: string;
+export interface Socket<SocketType extends string = string> {
+  readonly type: SocketType;
 }
 
-export interface JewelSocket extends Socket {
-  readonly type: "Square" | "Circle" | "Triangle" | "Star";
+export const enum JewelSocketType {
+  Square = "Square",
+  Circle = "Circle",
+  Triangle = "Triangle",
+  Star = "Star"
+}
+
+export interface JewelSocket extends Socket<JewelSocketType> {
   readonly jewel: Maybe<Jewel>;
 }

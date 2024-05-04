@@ -7,8 +7,8 @@ import { Player, PlayerGui } from "shared/utility/client";
 import { flatten } from "shared/utility/array";
 import DestroyableComponent from "shared/base-components/destroyable";
 import Range from "shared/utility/range";
-import Spells from "shared/structs/spells";
-import SpellsList from "shared/structs/spells/list";
+import Spells from "shared/default-structs/spells";
+import SpellsList from "shared/default-structs/spells/list";
 import Log from "shared/logger";
 
 const SELECTION_BORDER_TEMPLATE = new Instance("UIStroke");

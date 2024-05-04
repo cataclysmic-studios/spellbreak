@@ -131,7 +131,6 @@ export class Movement extends InputInfluenced<Attributes, Model> implements OnSt
     const desiredForce = directionVector.mul(speed);
     const dontApplyForce = dontApplyAirForce || isNaN(directionVector.X) || isNaN(desiredForce.X);
     const force = dontApplyForce ? new Vector3 : desiredForce.sub(this.velocity);
-    print(this.velocity, force)
     this.velocity = this.applyFriction(this.velocity)
       .add(this.applyAcceleration(force, dt));
 

@@ -6,6 +6,7 @@ import * as Dependencies from "shared/dependencies";
 try {
 	Dependencies.registerAll();
 	Flamework.addPaths("src/server/hook-managers");
+	Flamework.addPaths("src/shared/helpers");
 	Flamework.addPaths("src/server/components");
 	Flamework.addPaths("src/server/services");
 	Flamework.ignite();

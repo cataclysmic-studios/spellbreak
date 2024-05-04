@@ -21,15 +21,14 @@ export function removeDuplicates<T extends defined>(array: T[]): T[] {
   });
 }
 
-export function flatten<T extends defined>(array: (T | T[])[]): T[] {
+export function flatten<T extends defined>(array: (T | T[])[], recursive = true): T[] {
   const result: T[] = [];
   for (const value of array) {
-    if (typeOf(value) === "table") {
-      const flattenedSubtable = flatten(<T[]>value);
+    if (typeOf(value) === "table" && 1 in value) {
+      const flattenedSubtable = flatten(<T[]>value, recursive ? true : false);
       for (const subValue of flattenedSubtable)
         result.push(subValue);
-    }
-    else
+    } else
       result.push(<T>value);
   }
   return result;

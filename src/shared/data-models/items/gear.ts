@@ -14,7 +14,7 @@ export const enum GearCategory {
   Deck = "Deck"
 }
 
-export interface Gear extends CharacterItem, WithRequirements, WithCharacterStats {
+export interface Gear extends CharacterItem {
   readonly category: GearCategory;
   readonly sockets: Socket[];
 }

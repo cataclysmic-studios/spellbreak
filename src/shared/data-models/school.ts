@@ -1,6 +1,6 @@
 export type PlayableSchool = keyof Omit<typeof School, "Solar" | "Lunar" | "Stellar" | "Shadow">;
 
-export const enum School {
+export enum School {
   Fire = "Fire",
   Frost = "Frost",
   Storm = "Storm",

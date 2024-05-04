@@ -1,5 +1,6 @@
-import { School } from "./school";
-import type { CharacterData } from "./character-data";
+import { School } from "../data-models/school";
+import type { CharacterData } from "../data-models/character-data";
+import StarterDeck from "./items/gear/decks/starter-deck";
 
 const NEW_CHARACTER: Omit<CharacterData, "id" | "name" | "school"> = {
   xp: 0,
@@ -126,8 +127,12 @@ const NEW_CHARACTER: Omit<CharacterData, "id" | "name" | "school"> = {
       [School.Shadow]: 0
     }
   },
-  equippedGear: {},
-  backpack: [],
+  equippedGear: {
+    Deck: StarterDeck
+  },
+  backpack: [
+    StarterDeck
+  ],
   housingItems: []
 };
 

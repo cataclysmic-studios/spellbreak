@@ -28,7 +28,7 @@ A Roblox game heavily inspired by Wizard101. An MMORPG with turn-based combat us
   - XP & levels
   - Interaction & dialogue
 - Movement
-  - Make more restrictive
+  - Figure out a way to have edge detection not detect slopes as edges
   - Walking animation
   - Jump animation
 - UI

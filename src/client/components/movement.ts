@@ -31,6 +31,8 @@ interface Attributes {
   Movement_JumpCooldown: number;
   Movement_JumpForce: number;
   Movement_GravitationalConstant: number;
+  Movement_Restrictive: boolean;
+  Movement_RestrictiveMaxLedgeHeight: number;
   Movement_Rotational: boolean;
   Movement_RotationSpeed: number;
 }
@@ -59,8 +61,10 @@ const NO_JUMP_STATES: Enum.HumanoidStateType[] = [
     Movement_JumpCooldown: 0.6,
     Movement_JumpForce: 0,
     Movement_GravitationalConstant: 9.81, // m/s, 9.81 is earth's constant
+    Movement_Restrictive: true,
+    Movement_RestrictiveMaxLedgeHeight: 1,
     Movement_Rotational: true,
-    Movement_RotationSpeed: 1
+    Movement_RotationSpeed: 1,
   }
 })
 export class Movement extends InputInfluenced<Attributes, Model> implements OnStart, OnPhysics, LogStart {
@@ -148,6 +152,22 @@ export class Movement extends InputInfluenced<Attributes, Model> implements OnSt
         .add(this.applyAcceleration(angularForce, dt));
     }
 
+    if (this.isRestrictive()) {
+      const rayParams = new RaycastParamsBuilder()
+        .SetIgnoreWater(true)
+        .AddToFilter(this.instance)
+        .Build();
+
+      const characterSize = this.instance.GetBoundingBox()[1];
+      const raySize = (characterSize.Y / 2) + 0.5;
+      const distanceAhead = 1;
+      const direction = new Vector3(0, -1, 0);
+      const position = this.root.Position.add(this.root.CFrame.LookVector.mul(distanceAhead));
+      const edgeResult = World.Raycast(position, direction.mul(raySize), rayParams);
+      if (edgeResult?.Instance === undefined)
+        this.velocity = new Vector3;
+    }
+
     const { X: turn } = this.angularVelocity;
     this.root.CFrame = this.root.CFrame
       .add(this.velocity)
@@ -186,6 +206,14 @@ export class Movement extends InputInfluenced<Attributes, Model> implements OnSt
 
   public getG(): number {
     return this.attributes.Movement_GravitationalConstant;
+  }
+
+  public isRestrictive(): boolean {
+    return this.attributes.Movement_Restrictive;
+  }
+
+  public getRestrictiveMaxLedgeHeight(): number {
+    return this.attributes.Movement_RestrictiveMaxLedgeHeight;
   }
 
   public isRotational(): boolean {
@@ -265,6 +293,20 @@ export class Movement extends InputInfluenced<Attributes, Model> implements OnSt
     return vector.Unit;
   }
 
+  private getVectorFromDirection(cframe: CFrame, direction: MoveDirection): Vector3 {
+    const { LookVector, RightVector } = cframe;
+    switch (direction) {
+      case MoveDirection.Forwards:
+        return LookVector;
+      case MoveDirection.Backwards:
+        return LookVector.mul(-1);
+      case MoveDirection.Left:
+        return this.isRotational() ? new Vector3 : RightVector.mul(-1);
+      case MoveDirection.Right:
+        return this.isRotational() ? new Vector3 : RightVector;
+    }
+  }
+
   private getDirectionFromKey(key: KeyName): MoveDirection {
     switch (key) {
       case "W":
@@ -282,20 +324,6 @@ export class Movement extends InputInfluenced<Attributes, Model> implements OnSt
     }
 
     return <MoveDirection><unknown>undefined;
-  }
-
-  private getVectorFromDirection(cframe: CFrame, direction: MoveDirection): Vector3 {
-    const { LookVector, RightVector } = cframe;
-    switch (direction) {
-      case MoveDirection.Forwards:
-        return LookVector;
-      case MoveDirection.Backwards:
-        return LookVector.mul(-1);
-      case MoveDirection.Left:
-        return this.isRotational() ? new Vector3 : RightVector.mul(-1);
-      case MoveDirection.Right:
-        return this.isRotational() ? new Vector3 : RightVector;
-    }
   }
 
   private isTouchingGround(): boolean {

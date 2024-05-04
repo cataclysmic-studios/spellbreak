@@ -3,6 +3,7 @@ import type { DataValue } from "./data-models/generic";
 import type { GitHubInfo } from "./structs/github";
 import type { GamepassInfo } from "./structs/roblox-api";
 import type CharacterStats from "./data-models/character-stats";
+import { CharacterData } from "./data-models/character-data";
 
 interface ServerEvents {
   battle: {
@@ -16,13 +17,13 @@ interface ServerEvents {
   character: {
     playAs(index: number): void;
     toggleDefaultMovement(on: boolean): void;
-    updateStats(updater: (stats: CharacterStats) => void): void;
+    updateStats(stats: unknown): void;
   };
 }
 
 interface ClientEvents {
   battle: {
-    createClient(battleCircleID: string, opponents: Model[], characterData: unknown): void;
+    createClient(battleCircleID: string, team: Model[], opponents: Model[], characterData: unknown): void;
   };
   data: {
     updated(directory: string, value: DataValue): void;
@@ -40,6 +41,9 @@ interface ClientEvents {
 }
 
 interface ServerFunctions {
+  character: {
+    getStats(): unknown;
+  };
   data: {
     get(directory: string): unknown;
   };

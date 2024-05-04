@@ -198,7 +198,9 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
           character.PrimaryPart!.Anchored = true;
           if (combatantIsNPC) return;
           task.delay(0.5, () => Events.battle.createClient(
-            combatant, this.id, this.opponents.map(combatant => combatant instanceof Enemy ? combatant.instance : combatant.Character!),
+            combatant, this.id,
+            this.team.map(player => player.Character!),
+            this.opponents.map(combatant => combatant instanceof Enemy ? combatant.instance : combatant.Character!),
             this.characterData.getCurrent(combatant),
           ));
         });

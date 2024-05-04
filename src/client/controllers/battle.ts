@@ -25,21 +25,21 @@ export class BattleController implements OnInit {
   ) { }
 
   public onInit(): void {
-    Events.battle.createClient.connect((battleCircleID, opponents, characterData) => this.initializeClient(battleCircleID, opponents, <CharacterData>characterData));
+    Events.battle.createClient.connect((battleCircleID, team, opponents, characterData) => this.initializeClient(battleCircleID, team, opponents, <CharacterData>characterData));
   }
 
   public getClient(): Maybe<BattleClient> {
     return this.client;
   }
 
-  private async initializeClient(battleCircleID: string, opponents: Model[], characterData: CharacterData): Promise<void> {
+  private async initializeClient(battleCircleID: string, team: Model[], opponents: Model[], characterData: CharacterData): Promise<void> {
     const battleCircle = <ReplicatedFirst["Assets"]["Battle"]["BattleCircle"]>World.BattleCircles.GetChildren().find(circle => circle.GetAttribute("ID") === battleCircleID);
     if (battleCircle === undefined)
       return Log.warning(`Failed to initialize BattleClient: Could not find battle circle model with ID "${battleCircleID}"`);
 
     this.client = new BattleClient(
       this, this.character, this.camera, this.characterHelper,
-      characterData, opponents, battleCircle
+      characterData, team, opponents, battleCircle
     );
   }
 }

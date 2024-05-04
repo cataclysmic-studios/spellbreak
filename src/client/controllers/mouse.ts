@@ -88,7 +88,7 @@ export class MouseController implements OnInit, OnRender {
     return raycastResult !== undefined ? raycastResult.Position : Origin.add(Direction.mul(distance));
   }
 
-  public target(distance = MOUSE_RAY_DISTANCE): Maybe<BasePart> {
+  public getTarget(distance = MOUSE_RAY_DISTANCE): Maybe<BasePart> {
     return this.createRay(distance)?.Instance;
   }
 

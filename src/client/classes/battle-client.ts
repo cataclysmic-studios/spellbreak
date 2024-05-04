@@ -26,6 +26,7 @@ export default class BattleClient {
     camera: CameraController,
     private readonly characterHelper: CharacterHelper,
     public readonly characterData: CharacterData,
+    public readonly team: Model[],
     public readonly opponents: Model[],
     circle: ReplicatedFirst["Assets"]["Battle"]["BattleCircle"]
   ) {

@@ -3,7 +3,7 @@ import { HttpService as HTTP } from "@rbxts/services";
 
 import type { OnPlayerJoin } from "server/hooks";
 import type { LogStart } from "shared/hooks";
-import { Events } from "server/network";
+import { Events, Functions } from "server/network";
 import { USE_CURLY_BRACES_FOR_UUIDS } from "shared/constants";
 import { isValidUUID } from "shared/utility/strings";
 import { School, type PlayableSchool } from "shared/data-models/school";
@@ -16,6 +16,7 @@ import type { DatabaseService } from "./third-party/database";
 import type { CharacterService } from "./character";
 import type CharacterHelper from "shared/helpers/character";
 import type ItemHelper from "shared/helpers/item";
+import CharacterStats from "shared/data-models/character-stats";
 
 @Service()
 export class CharacterDataService implements OnInit, OnPlayerJoin, LogStart {
@@ -27,9 +28,10 @@ export class CharacterDataService implements OnInit, OnPlayerJoin, LogStart {
   ) { }
 
   public onInit(): void {
-    Events.character.updateStats.connect((player, update) => {
+    Functions.character.getStats.setCallback(player => this.getCurrent(player).stats);
+    Events.character.updateStats.connect((player, newStats) => {
       const character = this.getCurrent(player);
-      update(character.stats);
+      character.stats = <CharacterStats>newStats;
       this.updateCurrent(player, character);
     });
   }

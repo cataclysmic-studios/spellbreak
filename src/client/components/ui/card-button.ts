@@ -5,12 +5,13 @@ import { Janitor } from "@rbxts/janitor";
 import Object from "@rbxts/object-utils";
 
 import type { School } from "shared/data-models/school";
-import { Events } from "client/network";
+import { Events, Functions } from "client/network";
 import { Assets } from "shared/utility/instances";
 import { Player, PlayerGui } from "shared/utility/client";
 import { isEven } from "shared/utility/numbers";
 import { flatten } from "shared/utility/array";
 import { Range } from "shared/utility/range";
+import type CharacterStats from "shared/data-models/character-stats";
 import type BattleClient from "client/classes/battle-client";
 import Spells from "shared/default-structs/spells";
 import SpellsList from "shared/default-structs/spells/list";
@@ -18,6 +19,7 @@ import Log from "shared/logger";
 
 import DestroyableComponent from "shared/base-components/destroyable";
 import type SpellHelper from "shared/helpers/spell";
+import type { MouseController } from "client/controllers/mouse";
 import type { BattleController } from "client/controllers/battle";
 
 const { floor, rad } = math;
@@ -59,17 +61,20 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
 
   private readonly selectionStorage = new Instance("Folder", World);
   private readonly selectionJanitor = new Janitor;
-  private readonly mouse = Player.GetMouse();
+  private characterStats!: CharacterStats;
 
   public constructor(
     private readonly components: Components,
+    private readonly mouse: MouseController,
     private readonly battle: BattleController,
     private readonly spellHelper: SpellHelper
   ) { super(); }
 
-  public onStart(): void {
+  public async onStart(): Promise<void> {
     if (!this.associatedSpell)
-      throw new Log.Exception("InvalidSpellOrSchool", `Tried to find spell in school ${this.attributes.CardButton_School} named "${this.attributes.CardButton_Name}"`);
+      throw new Log.Exception("FailedToFindSpell", `Failed to find spell in school ${this.attributes.CardButton_School} named "${this.attributes.CardButton_Name}"`);
+
+    this.characterStats = <CharacterStats>await Functions.character.getStats();
 
     this.selectionStorage.Name = "SelectionStorage";
     this.selectionBorder.Parent = this.instance;
@@ -80,17 +85,25 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
 
       this.select();
     }));
-    this.janitor.Add(this.mouse.Button2Down.Connect(() => this.discard()));
-    this.janitor.Add(this.mouse.Button1Down.Connect(() => {
-      const { X, Y } = this.mouse;
+    this.janitor.Add(this.mouse.rmbDown.Connect(() => this.discard()));
+    this.janitor.Add(this.mouse.lmbDown.Connect(() => {
+      const { X, Y } = this.mouse.getPosition();
       const position = this.instance.AbsolutePosition;
       const size = this.instance.AbsoluteSize;
       const dimensionsX = new Range(position.X, position.X + size.X);
       const dimensionsY = new Range(position.Y, position.Y + size.Y);
 
       if (dimensionsX.numberIsWithin(X) && dimensionsY.numberIsWithin(Y)) return;
-      if (this.associatedSpell.cost.pips === "X") // TODO: else if an enemy was clicked on
-        return this.castAssociatedSpell();
+      const target = this.mouse.getTarget();
+      const selection = target?.Parent;
+      if (target !== undefined && selection?.IsA("Model") && selection.Name === "Selection") {
+        const battleClient = this.getBattleClient();
+        const combatantIndex = <number>selection.GetAttribute("CombatantIndex");
+        const combatantIsOpponent = <boolean>selection.GetAttribute("CombatantIsOpponent");
+        const combatants = combatantIsOpponent ? battleClient.opponents : battleClient.team;
+        const combatant = combatants[combatantIndex];
+        this.castAssociatedSpell(combatant);
+      }
 
       this.deselectAll();
     }));
@@ -102,7 +115,7 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
     return otherCard.instance === this.instance && otherCard.attributes === this.attributes;
   }
 
-  private castAssociatedSpell(): void {
+  private castAssociatedSpell(target?: Model): void {
     const battleClient = this.getBattleClient();
     if (!this.canCast()) return; // TODO: also grey out card
 
@@ -115,8 +128,12 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
       battleClient.usePips(pipsToUse % 2);
     }
 
-    Events.character.updateStats(stats => stats.mana -= pipsToUse + shadowPips);
+    this.characterStats.mana -= pipsToUse + shadowPips;
+    Events.character.updateStats(this.characterStats);
+
     // TODO: when spell casting starts call this.destroy();
+    const isAOE = target === undefined;
+    Log.info(`Casted ${this.associatedSpell.name} on ${target ?? "all"}`);
   }
 
   private discard(): void {
@@ -124,18 +141,13 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
   }
 
   private select(): void {
-    const selectionColors = this.spellHelper.targetsTeam(this.associatedSpell) ? TEAM_SELECTION_COLORS : OPPONENT_SELECTION_COLORS;
+    const battleClient = this.getBattleClient();
+    const targetsTeam = this.spellHelper.targetsTeam(this.associatedSpell);
+    const selectionColors = targetsTeam ? TEAM_SELECTION_COLORS : OPPONENT_SELECTION_COLORS;
+    const combatantTargets = targetsTeam ? battleClient.team : battleClient.opponents;
     let i = 0;
-    for (const opponent of this.getBattleClient().opponents) {
-      const color = selectionColors[i];
-      const selection = this.selectionJanitor.Add(Assets.Battle.Selection.Clone());
-      for (const decal of selection.GetDescendants().filter((i): i is Decal => i.IsA("Decal")))
-        decal.Color3 = color;
-
-      const pivot = opponent.GetPivot();
-      const postion = pivot.Position.add(new Vector3(0, 1, 0));
-      selection.PivotTo(CFrame.lookAlong(postion, pivot.LookVector).mul(CFrame.Angles(0, 0, rad(90))));
-      selection.Parent = this.selectionStorage;
+    for (const combatant of combatantTargets) {
+      this.createSelectionAura(selectionColors, i, combatant);
       i++;
     }
 
@@ -144,6 +156,20 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
         card.selectionBorder.Enabled = card.is(this);
         card.selected = card.is(this);
       });
+  }
+
+  private createSelectionAura(selectionColors: Color3[], i: number, combatant: Model) {
+    const color = selectionColors[i];
+    const selection = this.selectionJanitor.Add(Assets.Battle.Selection.Clone());
+    for (const decal of selection.GetDescendants().filter((i): i is Decal => i.IsA("Decal")))
+      decal.Color3 = color;
+
+    const pivot = combatant.GetPivot();
+    const postion = pivot.Position.add(new Vector3(0, 1, 0));
+    selection.PivotTo(CFrame.lookAlong(postion, pivot.LookVector).mul(CFrame.Angles(0, 0, rad(90))));
+    selection.SetAttribute("CombatantIndex", i);
+    selection.SetAttribute("CombatantIsOpponent", this.getBattleClient().opponents.includes(combatant));
+    selection.Parent = this.selectionStorage;
   }
 
   private deselectAll(): void {

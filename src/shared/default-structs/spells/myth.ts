@@ -8,6 +8,7 @@ const MythSpells: SpellsList = {
     {
       type: SpellType.Damage,
       cardImage: "rbxassetid://16807903671",
+      greyscaleCardImage: "rbxassetid://17387736137",
       hasTarget: true,
       name: "Goblin",
       school: School.Myth,
@@ -35,6 +36,7 @@ const MythSpells: SpellsList = {
       type: SpellType.Charm,
       hasTarget: true,
       cardImage: "",
+      greyscaleCardImage: "",
       name: "Mythblade",
       school: School.Myth,
       accuracy: 100,

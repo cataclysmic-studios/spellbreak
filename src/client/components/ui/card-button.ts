@@ -96,7 +96,7 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
       if (dimensionsX.numberIsWithin(X) && dimensionsY.numberIsWithin(Y)) return;
       const target = this.mouse.getTarget();
       const selection = target?.Parent;
-      if (target !== undefined && selection?.IsA("Model") && selection.Name === "Selection") {
+      if (this.selected && target !== undefined && selection?.IsA("Model") && selection.Name === "Selection") {
         const battleClient = this.getBattleClient();
         const combatantIndex = <number>selection.GetAttribute("CombatantIndex");
         const combatantIsOpponent = <boolean>selection.GetAttribute("CombatantIsOpponent");
@@ -111,14 +111,19 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
     this.deselectAll();
   }
 
-  public is(otherCard: CardButton): boolean {
-    return otherCard.instance === this.instance && otherCard.attributes === this.attributes;
+  public canCast(): boolean {
+    const battleClient = this.getBattleClient();
+    const pipCost = this.getPipCost();
+    return battleClient.characterData.stats.mana >= pipCost
+      && battleClient.getTotalPips() >= pipCost
+      && battleClient.getShadowPips() >= this.getShadowPipCost()
   }
 
   private castAssociatedSpell(target?: Model): void {
     const battleClient = this.getBattleClient();
-    if (!this.canCast()) return; // TODO: also grey out card
+    if (!this.canCast()) return;
 
+    this.destroy();
     const { shadowPips } = this.associatedSpell.cost;
     const pipsToUse = this.getPipCost();
     if (isEven(pipsToUse))
@@ -131,9 +136,13 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
     this.characterStats.mana -= pipsToUse + shadowPips;
     Events.character.updateStats(this.characterStats);
 
-    // TODO: when spell casting starts call this.destroy();
     const isAOE = target === undefined;
     Log.info(`Casted ${this.associatedSpell.name} on ${target ?? "all"}`);
+    // TODO: wait everyone to have chosen a spell before casting
+  }
+
+  private is(otherCard: CardButton): boolean {
+    return otherCard.instance === this.instance && otherCard.attributes === this.attributes;
   }
 
   private discard(): void {
@@ -141,6 +150,7 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
   }
 
   private select(): void {
+    if (!this.canCast()) return;
     const battleClient = this.getBattleClient();
     const targetsTeam = this.spellHelper.targetsTeam(this.associatedSpell);
     const selectionColors = targetsTeam ? TEAM_SELECTION_COLORS : OPPONENT_SELECTION_COLORS;
@@ -187,14 +197,6 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
       return <BattleClient><unknown>Player.Kick("stop tinkering bitch");
 
     return battleClient;
-  }
-
-  private canCast(): boolean {
-    const battleClient = this.getBattleClient();
-    const pipCost = this.getPipCost();
-    return battleClient.characterData.stats.mana >= pipCost
-      && battleClient.getTotalPips() >= pipCost
-      && battleClient.getShadowPips() >= this.getShadowPipCost()
   }
 
   private getPipCost(): number {

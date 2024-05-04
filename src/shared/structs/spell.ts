@@ -25,6 +25,7 @@ export interface Spell<T extends SpellType = SpellType> {
   readonly type: T;
   readonly hasTarget: boolean;
   readonly cardImage: string;
+  readonly greyscaleCardImage: string;
   readonly name: string;
   readonly school: School;
   readonly accuracy: number;

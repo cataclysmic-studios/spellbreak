@@ -78,11 +78,16 @@ export class DeckHand extends DestroyableComponent<{}, Frame & { UIListLayout: U
     }
   }
 
-  private addCard({ name, cardImage, school }: Spell, treasure = false): void {
+  private addCard({ name, cardImage, greyscaleCardImage, school }: Spell, treasure = false): void {
     task.spawn(() => {
       const cardButton = new Instance("ImageButton", this.instance);
+      cardButton.SetAttribute("CardButton_Name", name);
+      cardButton.SetAttribute("CardButton_School", school);
+      cardButton.SetAttribute("CardButton_TreasureCard", treasure);
+
+      const card = this.components.addComponent<CardButton>(cardButton);
       cardButton.Name = name;
-      cardButton.Image = cardImage;
+      cardButton.Image = card.canCast() ? cardImage : greyscaleCardImage;
       cardButton.AutoButtonColor = false;
       cardButton.BackgroundTransparency = 1;
       cardButton.AnchorPoint = new Vector2(1, 1);
@@ -93,11 +98,6 @@ export class DeckHand extends DestroyableComponent<{}, Frame & { UIListLayout: U
 
       const ratioConstraint = new Instance("UIAspectRatioConstraint", cardButton);
       ratioConstraint.AspectRatio = 0.652;
-
-      cardButton.SetAttribute("CardButton_Name", name);
-      cardButton.SetAttribute("CardButton_School", school);
-      cardButton.SetAttribute("CardButton_TreasureCard", treasure);
-      this.components.addComponent<CardButton>(cardButton);
     });
   }
 

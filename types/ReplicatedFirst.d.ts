@@ -10,6 +10,7 @@ interface ReplicatedFirst extends Instance {
       };
     };
     Battle: Folder & {
+      Selection: Model;
       PlayerBattleSigil: MeshPart;
       BattleTriangle: Part & {
         Decal: Decal;

@@ -12,6 +12,18 @@ const ALL_SPELLS = flatten(Object.values(Spells).map(list => flatten(Object.valu
 
 @Singleton()
 export default class SpellHelper {
+  public targetsTeam(spell: Spell): boolean {
+    const actionTypes = spell.actions.map(action => action.type);
+    return spell.type === SpellType.Healing
+      || actionTypes.includes(SpellActionType.Heal)
+      || actionTypes.includes(SpellActionType.HealAOE)
+      || actionTypes.includes(SpellActionType.Buff.Blade)
+      || actionTypes.includes(SpellActionType.Debuff.Shield)
+      || actionTypes.includes(SpellActionType.Manipulation.CleanseNegativeCharms)
+      || actionTypes.includes(SpellActionType.Manipulation.CleanseTraps)
+      || actionTypes.includes(SpellActionType.Manipulation.GainPips);
+  }
+
   public find(school: School, name: string): Maybe<Spell> {
     return ALL_SPELLS.find(spell => spell.school === school && spell.name === name);
   }

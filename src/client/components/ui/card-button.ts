@@ -1,21 +1,39 @@
 import type { OnStart } from "@flamework/core";
 import { Component, Components } from "@flamework/components";
+import { Workspace as World } from "@rbxts/services";
+import { Janitor } from "@rbxts/janitor";
 import Object from "@rbxts/object-utils";
 
 import type { School } from "shared/data-models/school";
 import { Events } from "client/network";
+import { Assets } from "shared/utility/instances";
 import { Player, PlayerGui } from "shared/utility/client";
 import { isEven } from "shared/utility/numbers";
 import { flatten } from "shared/utility/array";
 import { Range } from "shared/utility/range";
+import type BattleClient from "client/classes/battle-client";
 import Spells from "shared/default-structs/spells";
 import SpellsList from "shared/default-structs/spells/list";
 import Log from "shared/logger";
 
 import DestroyableComponent from "shared/base-components/destroyable";
+import type SpellHelper from "shared/helpers/spell";
 import type { BattleController } from "client/controllers/battle";
 
-const { floor } = math;
+const { floor, rad } = math;
+
+const OPPONENT_SELECTION_COLORS: Color3[] = [
+  Color3.fromRGB(247, 64, 204),
+  Color3.fromRGB(255, 56, 96),
+  Color3.fromRGB(255, 196, 46),
+  Color3.fromRGB(251, 255, 44)
+];
+const TEAM_SELECTION_COLORS: Color3[] = [
+  Color3.fromRGB(154, 255, 21),
+  Color3.fromRGB(10, 255, 182),
+  Color3.fromRGB(82, 186, 255),
+  Color3.fromRGB(137, 108, 255)
+]
 
 const SELECTION_BORDER_TEMPLATE = new Instance("UIStroke");
 SELECTION_BORDER_TEMPLATE.Thickness = 1.6;
@@ -39,17 +57,21 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
   public associatedSpell = flatten(Object.values(<SpellsList>Spells[this.attributes.CardButton_School])).find(spell => spell.name === this.attributes.CardButton_Name)!;
   public selected = false;
 
+  private readonly selectionStorage = new Instance("Folder", World);
+  private readonly selectionJanitor = new Janitor;
   private readonly mouse = Player.GetMouse();
 
   public constructor(
     private readonly components: Components,
-    private readonly battle: BattleController
+    private readonly battle: BattleController,
+    private readonly spellHelper: SpellHelper
   ) { super(); }
 
   public onStart(): void {
     if (!this.associatedSpell)
       throw new Log.Exception("InvalidSpellOrSchool", `Tried to find spell in school ${this.attributes.CardButton_School} named "${this.attributes.CardButton_Name}"`);
 
+    this.selectionStorage.Name = "SelectionStorage";
     this.selectionBorder.Parent = this.instance;
     this.janitor.LinkToInstance(this.instance, true);
     this.janitor.Add(this.instance.MouseButton1Click.Connect(() => {
@@ -81,11 +103,9 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
   }
 
   private castAssociatedSpell(): void {
-    const battleClient = this.battle.getClient();
-    if (battleClient === undefined)
-      return Player.Kick("stop tinkering bitch");
-
+    const battleClient = this.getBattleClient();
     if (!this.canCast()) return; // TODO: also grey out card
+
     const { shadowPips } = this.associatedSpell.cost;
     const pipsToUse = this.getPipCost();
     if (isEven(pipsToUse))
@@ -104,6 +124,21 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
   }
 
   private select(): void {
+    const selectionColors = this.spellHelper.targetsTeam(this.associatedSpell) ? TEAM_SELECTION_COLORS : OPPONENT_SELECTION_COLORS;
+    let i = 0;
+    for (const opponent of this.getBattleClient().opponents) {
+      const color = selectionColors[i];
+      const selection = this.selectionJanitor.Add(Assets.Battle.Selection.Clone());
+      for (const decal of selection.GetDescendants().filter((i): i is Decal => i.IsA("Decal")))
+        decal.Color3 = color;
+
+      const pivot = opponent.GetPivot();
+      const postion = pivot.Position.add(new Vector3(0, 1, 0));
+      selection.PivotTo(CFrame.lookAlong(postion, pivot.LookVector).mul(CFrame.Angles(0, 0, rad(90))));
+      selection.Parent = this.selectionStorage;
+      i++;
+    }
+
     for (const card of this.components.getAllComponents<CardButton>())
       task.spawn(() => {
         card.selectionBorder.Enabled = card.is(this);
@@ -112,6 +147,7 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
   }
 
   private deselectAll(): void {
+    this.selectionJanitor.Cleanup();
     for (const card of this.components.getAllComponents<CardButton>())
       task.spawn(() => {
         card.selectionBorder.Enabled = false;
@@ -119,8 +155,16 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
       });
   }
 
+  private getBattleClient(): BattleClient {
+    const battleClient = this.battle.getClient();
+    if (battleClient === undefined)
+      return <BattleClient><unknown>Player.Kick("stop tinkering bitch");
+
+    return battleClient;
+  }
+
   private canCast(): boolean {
-    const battleClient = this.battle.getClient()!
+    const battleClient = this.getBattleClient();
     const pipCost = this.getPipCost();
     return battleClient.characterData.stats.mana >= pipCost
       && battleClient.getTotalPips() >= pipCost
@@ -129,7 +173,7 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
 
   private getPipCost(): number {
     const spellCost = this.associatedSpell.cost;
-    const battleClient = this.battle.getClient()!;
+    const battleClient = this.getBattleClient();
     return spellCost.pips === "X" ? battleClient.getTotalPips() : spellCost.pips;
   }
 

@@ -22,7 +22,7 @@ interface ServerEvents {
 
 interface ClientEvents {
   battle: {
-    createClient(battleCircleID: string, characterData: unknown, opponent: boolean): void;
+    createClient(battleCircleID: string, opponents: Model[], characterData: unknown): void;
   };
   data: {
     updated(directory: string, value: DataValue): void;

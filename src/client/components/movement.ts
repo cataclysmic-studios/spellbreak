@@ -93,6 +93,7 @@ export class Movement extends InputInfluenced<Attributes, Model> implements OnSt
     this.janitor.Add(InputService.InputBegan.Connect(({ KeyCode: key }) => {
       if (key.Name !== "Space") return;
       if (!this.canMove) return;
+
       this.spacebarDown = true;
       this.jump();
     }));
@@ -127,15 +128,16 @@ export class Movement extends InputInfluenced<Attributes, Model> implements OnSt
 
     const speed = studsToMeters(this.getSpeed());
     const dontApplyAirForce = !this.canMoveMidair() && !this.touchingGround;
-    const dontApplyForce = dontApplyAirForce || isNaN(directionVector.X);
-    const desiredForce = directionVector.Unit.mul(speed);
+    const desiredForce = directionVector.mul(speed);
+    const dontApplyForce = dontApplyAirForce || isNaN(directionVector.X) || isNaN(desiredForce.X);
     const force = dontApplyForce ? new Vector3 : desiredForce.sub(this.velocity);
+    print(this.velocity, force)
     this.velocity = this.applyFriction(this.velocity)
       .add(this.applyAcceleration(force, dt));
 
     if (this.isRotational()) {
       const rotationSpeed = studsToMeters(this.getRotationSpeed());
-      const angularMovementDirections = removeDuplicates(this.moveDirections.filter(dir => [MoveDirection.Left, MoveDirection.Right].includes(dir)));
+      const angularMovementDirections = this.getAngularMovementDirections();
       let angularDirection = new Vector3;
       for (const direction of angularMovementDirections)
         angularDirection = angularDirection.add(new Vector3(direction === MoveDirection.Left ? -1 : 1, 0, 0).mul(-1));
@@ -196,7 +198,11 @@ export class Movement extends InputInfluenced<Attributes, Model> implements OnSt
   }
 
   public isMoving(): boolean {
-    return this.moveDirections.size() > 0;
+    return (this.isRotational() ? this.moveDirections.filter(v => !this.getAngularMovementDirections().includes(v)) : this.moveDirections).size() > 0;
+  }
+
+  private getAngularMovementDirections(): MoveDirection[] {
+    return removeDuplicates(this.moveDirections.filter(dir => [MoveDirection.Left, MoveDirection.Right].includes(dir)));
   }
 
   private applyAcceleration(force: Vector3, dt: number): Vector3 {

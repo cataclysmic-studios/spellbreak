@@ -1,100 +1,107 @@
-import { Controller, OnInit } from "@flamework/core";
-import { CollectionService as Collection, HttpService as HTTP, UserInputService as UIS, Workspace as World } from "@rbxts/services";
+import { Controller, type OnInit, type OnRender } from "@flamework/core";
+import { UserInputService as UIS, Workspace as World } from "@rbxts/services";
 import { RaycastParamsBuilder } from "@rbxts/builders";
 import { Context as InputContext } from "@rbxts/gamejoy";
-import { Axis, Union } from "@rbxts/gamejoy/out/Actions";
-import { StrictMap } from "@rbxts/strict-map";
+import { Action, Axis, Union } from "@rbxts/gamejoy/out/Actions";
+import Signal from "@rbxts/signal";
 
 import { Player } from "shared/utility/client";
 
 const { abs } = math;
 
-export const enum MouseIcon {
-  Default,
-  Drag,
-}
+const MOUSE_RAY_DISTANCE = 1000;
 
 @Controller()
-export class MouseController implements OnInit {
-  public down = false;
+export class MouseController implements OnInit, OnRender {
+  public readonly lmbUp = new Signal<() => void>;
+  public readonly rmbUp = new Signal<() => void>;
+  public readonly mmbUp = new Signal<() => void>;
+  public readonly lmbDown = new Signal<() => void>;
+  public readonly rmbDown = new Signal<() => void>;
+  public readonly mmbDown = new Signal<() => void>;
+  public readonly scrolled = new Signal<(delta: number) => void>;
 
-  private readonly mouseRayDistance = 1000;
+  public isLmbDown = false;
+  public isRmbDown = false;
+  public isMmbDown = false;
+  public behavior: Enum.MouseBehavior = Enum.MouseBehavior.Default;
+
   private readonly playerMouse = Player.GetMouse();
   private readonly clickAction = new Union(["MouseButton1", "Touch"]);
+  private readonly rightClickAction = new Action("MouseButton2");
+  private readonly middleClickAction = new Action("MouseButton3");
   private readonly scrollAction = new Axis("MouseWheel");
-  private readonly clickCallbacks = new StrictMap<string, Callback>;
   private readonly input = new InputContext({
     ActionGhosting: 0,
     Process: false,
-    RunSynchronously: true
+    RunSynchronously: false
   });
 
   public onInit(): void {
+    // Mouse controls
     this.input
       .Bind(this.clickAction, () => {
-        this.down = true;
-        this.clickCallbacks.forEach(callback => task.spawn(callback));
+        this.isLmbDown = true;
+        this.lmbDown.Fire();
       })
-      .BindEvent("onRelease", this.clickAction.Released, () => {
-        this.down = false
+      .BindEvent("onLmbRelease", this.clickAction.Released, () => {
+        this.isLmbDown = false
       });
 
-    UIS.TouchStarted.Connect(() => this.down = true);
-    UIS.TouchEnded.Connect(() => this.down = false);
+    this.input
+      .Bind(this.rightClickAction, () => {
+        this.isRmbDown = true;
+        this.rmbDown.Fire();
+      })
+      .BindEvent("onRmbRelease", this.rightClickAction.Released, () => {
+        this.isRmbDown = false
+      });
+
+    this.input
+      .Bind(this.scrollAction, () => this.scrolled.Fire(-this.scrollAction.Position.Z))
+      .Bind(this.middleClickAction, () => {
+        this.isMmbDown = true;
+        this.mmbDown.Fire();
+      })
+      .BindEvent("onMmbRelease", this.middleClickAction.Released, () => {
+        this.isMmbDown = false
+      });
+
+    // Touch controls
+    UIS.TouchPinch.Connect((_, scale) => this.scrolled.Fire((scale < 1 ? 1 : -1) * abs(scale - 2)));
+    UIS.TouchStarted.Connect(() => this.isLmbDown = true);
+    UIS.TouchEnded.Connect(() => this.isLmbDown = false);
   }
 
-  // returns a function that removes the listener
-  public onClick(callback: Callback, predicate?: () => boolean): Callback {
-    const id = HTTP.GenerateGUID();
-    const disconnect = () => this.clickCallbacks.delete(id);
-    this.clickCallbacks.set(id, () => {
-      if (predicate && !predicate()) return;
-      callback()
-    });
-
-    return disconnect;
+  public onRender(dt: number): void {
+    UIS.MouseBehavior = this.behavior;
   }
 
-  public onScroll(callback: (direction: number) => void): Callback {
-    this.input.Bind(this.scrollAction, () => callback(-this.scrollAction.Position.Z));
-    const pinchConn = UIS.TouchPinch.Connect((_, scale) => callback((scale < 1 ? 1 : -1) * abs(scale - 2)));
-
-    return () => {
-      this.input.Unbind(this.scrollAction);
-      pinchConn.Disconnect();
-    };
+  public getPosition(): Vector2 {
+    return UIS.GetMouseLocation();
   }
 
-  public getWorldPosition(distance = this.mouseRayDistance): Vector3 {
+  public getWorldPosition(distance = MOUSE_RAY_DISTANCE): Vector3 {
     const { X, Y } = UIS.GetMouseLocation();
     const { Origin, Direction } = World.CurrentCamera!.ViewportPointToRay(X, Y);
     const raycastResult = this.createRay(distance);
-    if (raycastResult)
-      return raycastResult.Position;
-    else
-      return Origin.add(Direction.mul(distance));
+    return raycastResult !== undefined ? raycastResult.Position : Origin.add(Direction.mul(distance));
   }
 
-  public target(distance = this.mouseRayDistance): Maybe<BasePart> {
+  public target(distance = MOUSE_RAY_DISTANCE): Maybe<BasePart> {
     return this.createRay(distance)?.Instance;
   }
 
-  public delta(): Vector2 {
+  public getDelta(): Vector2 {
     return UIS.GetMouseDelta();
   }
 
-  public setTargetFilter(filterInstance: Instance) {
+  public setTargetFilter(filterInstance: Instance): void {
     this.playerMouse.TargetFilter = filterInstance;
   }
 
-  public setBehavior(behavior: Enum.MouseBehavior) {
-    UIS.MouseBehavior = behavior;
-  }
-
-  public setIcon(icon: MouseIcon): void {
-    return;
-    const assetID = this.getMouseIcon(icon);
-    this.playerMouse.Icon = assetID;
+  public setIcon(icon: string): void {
+    UIS.MouseIcon = icon;
   }
 
   private createRay(distance: number, filter: Instance[] = []): Maybe<RaycastResult> {
@@ -107,14 +114,5 @@ export class MouseController implements OnInit {
       .Build();
 
     return World.Raycast(Origin, Direction.mul(distance), raycastParams);
-  }
-
-  private getMouseIcon(icon: MouseIcon): string {
-    switch (icon) {
-      case MouseIcon.Default:
-        return "rbxasset://SystemCursors/Arrow";
-      case MouseIcon.Drag:
-        return "rbxasset://SystemCursors/PointingHand";
-    }
   }
 }

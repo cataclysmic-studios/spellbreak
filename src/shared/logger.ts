@@ -1,6 +1,10 @@
 import { BaseComponent } from "@flamework/components";
-import { getInstancePath } from "./utility/helpers";
-import { Reflect } from "@flamework/core";
+import { RunService as Runtime } from "@rbxts/services";
+
+import { flatten } from "./utility/array";
+import { getInstancePath } from "./utility/instances";
+import { getName } from "./utility/meta";
+import repr from "./utility/repr";
 
 type LogFunctionName = ExtractKeys<typeof Log, Callback>;
 
@@ -8,20 +12,42 @@ const DISABLED: Partial<Record<LogFunctionName, boolean>> = {
 
 };
 
-const log = (category: LogFunctionName, ...messages: unknown[]): void => {
+const log = (category: LogFunctionName, ...messages: defined[]): void => {
   if (DISABLED[category]) return;
-  print(`[${category.upper()}]:`, ...messages);
+
+  const prefix = `[${category.upper().gsub("_", " ")[0]}]:`;
+  if (category === "fatal")
+    error(`${prefix} ${flatten(messages).map(v => typeOf(v) === "table" ? repr(v) : v).join(" ")}`, 0);
+  else
+    print(prefix, ...messages);
 }
 
-const getName = (obj: object) => (<string>Reflect.getMetadata(obj, "identifier")).split("@")[1];
-
 namespace Log {
-  export function info(...messages: unknown[]): void {
+  export class Exception {
+    public constructor(
+      name: string,
+      public readonly message: string,
+      public readonly level?: number
+    ) {
+      Log.fatal(`${name}Exception: ${message}`);
+    }
+  }
+
+  export function debug(...messages: defined[]): void {
+    if (!Runtime.IsStudio()) return;
+    log("debug", ...messages);
+  }
+
+  export function info(...messages: defined[]): void {
     log("info", ...messages);
   }
 
-  export function warning(message: string): void {
-    log("warning", message);
+  export function warning(...messages: defined[]): void {
+    log("warning", ...messages);
+  }
+
+  export function fatal(...messages: defined[]): void {
+    log("fatal", ...messages);
   }
 
   /**

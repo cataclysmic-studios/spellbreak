@@ -1,7 +1,11 @@
 {
 	"files.eol": "\n",
 	"[typescript]": {
+<<<<<<< HEAD
 		"editor.defaultFormatter": "dbaeumer.vscode-eslint",
+=======
+		"editor.defaultFormatter": "vscode.typescript-language-features",
+>>>>>>> f2e1ddc71ef937d32926143fb78852707b0763c1
 		"editor.formatOnSave": true
 	},
 	"[typescriptreact]": {

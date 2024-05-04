@@ -1,5 +1,8 @@
 import { School } from "./data-models/school";
 
+export const CREATOR_ID = game.CreatorType === Enum.CreatorType.User ? game.CreatorId : 44966864; // add your user ID here if you're the creator
+export const DEVELOPERS = [CREATOR_ID]; // add extra developer user IDs here
+
 export const MAX_BATTLE_COMBATANTS = 4;
 export const LARGE_SCHOOL_ICON_OVERHEAD = "rbxassetid://16821859312";
 export const LARGE_SCHOOL_ICON_OFFSETS: Record<School, Vector2> = {

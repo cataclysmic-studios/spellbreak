@@ -10,7 +10,7 @@ const REFRESH_RATE = 180; //seconds (3 mins)
 
 @Component({
   tag: "VersionLabel",
-  ancestorWhitelist: [ PlayerGui ]
+  ancestorWhitelist: [PlayerGui]
 })
 export class VersionLabel extends BaseComponent<{}, TextLabel> implements OnStart, LogStart {
   public onStart(): void {

@@ -23,6 +23,7 @@ export const enum SpellType {
 
 export interface Spell<T extends SpellType = SpellType> {
   readonly type: T;
+  readonly hasTarget: boolean;
   readonly cardImage: string;
   readonly name: string;
   readonly school: School;

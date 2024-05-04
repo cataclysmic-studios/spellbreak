@@ -5,6 +5,7 @@ import Object from "@rbxts/object-utils";
 import type { School } from "shared/data-models/school";
 import { Events } from "client/network";
 import { Player, PlayerGui } from "shared/utility/client";
+import { isEven } from "shared/utility/numbers";
 import { flatten } from "shared/utility/array";
 import { Range } from "shared/utility/range";
 import Spells from "shared/default-structs/spells";
@@ -13,8 +14,6 @@ import Log from "shared/logger";
 
 import DestroyableComponent from "shared/base-components/destroyable";
 import type { BattleController } from "client/controllers/battle";
-import { isEven } from "shared/utility/numbers";
-import BattleClient from "client/classes/battle-client";
 
 const { floor } = math;
 
@@ -53,7 +52,12 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
 
     this.selectionBorder.Parent = this.instance;
     this.janitor.LinkToInstance(this.instance, true);
-    this.janitor.Add(this.instance.MouseButton1Click.Connect(() => this.select()));
+    this.janitor.Add(this.instance.MouseButton1Click.Connect(() => {
+      if (!this.associatedSpell.hasTarget)
+        return this.castAssociatedSpell();
+
+      this.select();
+    }));
     this.janitor.Add(this.mouse.Button2Down.Connect(() => this.discard()));
     this.janitor.Add(this.mouse.Button1Down.Connect(() => {
       const { X, Y } = this.mouse;
@@ -82,8 +86,6 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
       return Player.Kick("stop tinkering bitch");
 
     if (!this.canCast()) return; // TODO: also grey out card
-    this.destroy();
-
     const { shadowPips } = this.associatedSpell.cost;
     const pipsToUse = this.getPipCost();
     if (isEven(pipsToUse))
@@ -94,6 +96,7 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
     }
 
     Events.character.updateStats(stats => stats.mana -= pipsToUse + shadowPips);
+    // TODO: when spell casting starts call this.destroy();
   }
 
   private discard(): void {

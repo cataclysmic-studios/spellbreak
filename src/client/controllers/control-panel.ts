@@ -87,51 +87,9 @@ export class ControlPanelController implements OnStart {
   private renderProceduralAnimationsTab(): void {
     Iris.Tree(["Procedural Animations"]);
     {
-      Iris.Tree(["First Person Animated Camera"]);
-      {
-        const camera = this.camera.get<FirstPersonAnimatedCamera>("FirstPersonAnimated");
-        Iris.Tree(["Landing"]);
-        {
-          const animation = camera.animator.animations.landing;
-          const damping = Iris.SliderNum(["Damping", 0.1, 0.1, 10], { number: Iris.State(animation.damping) });
-          if (damping.numberChanged())
-            animation.damping = damping.state.number.get();
 
-          this.renderSpringSettings(animation.spring);
-        }
-        Iris.End();
-        Iris.Tree(["Mouse Sway"]);
-        {
-          const animation = camera.animator.animations.mouseSway;
-          const damping = Iris.SliderNum(["Damping", 0.1, 0.1, 10], { number: Iris.State(animation.damping) });
-          if (damping.numberChanged())
-            animation.damping = damping.state.number.get();
-
-          const limit = Iris.SliderNum(["Limit", 0.05, 0.05, 5], { number: Iris.State(animation.limit) });
-          if (limit.numberChanged())
-            animation.limit = limit.state.number.get();
-        }
-        Iris.End();
-        Iris.Tree(["Walk Cycle"]);
-        {
-          const animation = camera.animator.animations.walkCycle;
-          const damping = Iris.SliderNum(["Damping", 0.1, 0.1, 10], { number: Iris.State(animation.damping) });
-          if (damping.numberChanged())
-            animation.damping = damping.state.number.get();
-
-          const minimumSpeed = Iris.SliderNum(["Minimum Walk Speed", 0.5, 0, 30], { number: Iris.State(animation.minimumSpeed) });
-          if (minimumSpeed.numberChanged())
-            animation.minimumSpeed = minimumSpeed.state.number.get();
-
-          this.renderSpringSettings(animation.spring);
-          this.renderWaveSettings(animation.sineWave);
-          this.renderWaveSettings(animation.cosineWave, "Cosine");
-        }
-        Iris.End();
-      }
-      Iris.End();
     }
-    Iris.End()
+    Iris.End();
   }
 
   private renderMovementTab(movement?: Movement): void {

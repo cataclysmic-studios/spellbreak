@@ -21,7 +21,7 @@ export class InitializationController implements OnStart, OnCharacterAdd {
       instance.AddTag(tag);
     });
 
-    this.camera.set("Default"); // set to preferred camera
+    this.camera.set("Follow"); // set to preferred camera
   }
 
   public onCharacterAdd(character: CharacterModel): void {

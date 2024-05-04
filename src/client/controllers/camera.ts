@@ -8,17 +8,15 @@ import { AerialCamera } from "client/components/cameras/aerial";
 import { FixedCamera } from "client/components/cameras/fixed";
 import { FlyOnTheWallCamera } from "client/components/cameras/fly-on-the-wall";
 import { FirstPersonAnimatedCamera } from "client/components/cameras/first-person-animated";
+import { FollowCamera } from "client/components/cameras/follow";
 
 import type { CameraControllerComponent } from "client/base-components/camera-controller-component";
 
 // add new camera components here
 interface Cameras {
-  readonly Default: DefaultCamera;
-  readonly FirstPerson: FirstPersonCamera;
   readonly Aerial: AerialCamera;
   readonly Fixed: FixedCamera;
-  readonly FlyOnTheWall: FlyOnTheWallCamera;
-  readonly FirstPersonAnimated: FirstPersonAnimatedCamera;
+  readonly Follow: FollowCamera;
 }
 
 @Controller()
@@ -30,12 +28,9 @@ export class CameraController implements OnInit, OnRender, LogStart {
   public onInit(): void {
     this.cameraStorage.Name = "Cameras";
     this.cameras = {
-      Default: DefaultCamera.create(this),
-      FirstPerson: FirstPersonCamera.create(this),
       Aerial: AerialCamera.create(this),
       Fixed: FixedCamera.create(this),
-      FlyOnTheWall: FlyOnTheWallCamera.create(this),
-      FirstPersonAnimated: FirstPersonAnimatedCamera.create(this)
+      Follow: FollowCamera.create(this)
     };
   }
 

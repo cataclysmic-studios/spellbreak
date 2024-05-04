@@ -23,7 +23,7 @@ interface ClientEvents {
     addTag(instancePath: string, tag: string): void;
   };
   battle: {
-    toggleUI(on: boolean): void;
+    createClient(battleCircleID: string, opponent: boolean): void;
     setCameraState(battleCircleID: string, state: BattleCameraState): void;
   };
   data: {

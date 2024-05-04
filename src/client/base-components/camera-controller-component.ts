@@ -14,6 +14,10 @@ export class CameraControllerComponent<A extends {} = {}> extends BaseComponent<
     this.instance.CFrame = cframe;
   }
 
+  public lerpCFrame(goal: CFrame, t: number): void {
+    this.instance.CFrame = this.instance.CFrame.Lerp(goal, t);
+  }
+
   public setPosition(position: Vector3): void {
     this.setCFrame(new CFrame(position));
   }

@@ -2,13 +2,10 @@ import { Controller, OnRender, type OnInit } from "@flamework/core";
 import { Workspace as World } from "@rbxts/services";
 
 import type { LogStart } from "shared/hooks";
-import { DefaultCamera } from "client/components/cameras/default";
-import { FirstPersonCamera } from "client/components/cameras/first-person";
 import { AerialCamera } from "client/components/cameras/aerial";
 import { FixedCamera } from "client/components/cameras/fixed";
-import { FlyOnTheWallCamera } from "client/components/cameras/fly-on-the-wall";
-import { FirstPersonAnimatedCamera } from "client/components/cameras/first-person-animated";
 import { FollowCamera } from "client/components/cameras/follow";
+import { BattleCamera } from "client/components/cameras/battle";
 
 import type { CameraControllerComponent } from "client/base-components/camera-controller-component";
 
@@ -17,6 +14,7 @@ interface Cameras {
   readonly Aerial: AerialCamera;
   readonly Fixed: FixedCamera;
   readonly Follow: FollowCamera;
+  readonly Battle: BattleCamera;
 }
 
 @Controller()
@@ -30,7 +28,8 @@ export class CameraController implements OnInit, OnRender, LogStart {
     this.cameras = {
       Aerial: AerialCamera.create(this),
       Fixed: FixedCamera.create(this),
-      Follow: FollowCamera.create(this)
+      Follow: FollowCamera.create(this),
+      Battle: BattleCamera.create(this)
     };
   }
 
@@ -48,7 +47,17 @@ export class CameraController implements OnInit, OnRender, LogStart {
       this.get(otherCameraName).toggle(cameraName === otherCameraName);
   }
 
+  public setAtLastCFrame(cameraName: keyof typeof this.cameras): void {
+    const camera = this.get(cameraName);
+    camera.setCFrame(this.getLastCFrame());
+    this.set(cameraName);
+  }
+
   public get<T extends CameraControllerComponent>(cameraName: keyof typeof this.cameras = this.currentName): T {
     return <T>this.cameras[cameraName];
+  }
+
+  public getLastCFrame(cameraName: keyof typeof this.cameras = this.currentName): CFrame {
+    return this.get(cameraName).instance.CFrame;
   }
 }

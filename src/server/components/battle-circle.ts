@@ -12,7 +12,6 @@ import BattleLogic from "server/classes/battle-logic";
 
 import { Enemy } from "./enemy";
 import type { BattleTriangle } from "./battle-triangle";
-import BattleCameraState from "shared/structs/battle-camera-state";
 
 type Combatant = Player | Enemy;
 
@@ -31,6 +30,8 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
     private readonly components: Components
   ) {
     super();
+    this.instance.SetAttribute("ID", this.id);
+
     const battleTriangleModel = Assets.Battle.BattleTriangle.Clone();
     battleTriangleModel.Parent = this.instance;
     this.battleTriangle = components.addComponent(battleTriangleModel);
@@ -194,8 +195,7 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
         .Completed.Once(() => {
           character.PrimaryPart!.Anchored = true;
           if (combatantIsNPC) return;
-          Events.battle.toggleUI(combatant, true);
-          // TODO: add cards from deck to hand
+          task.delay(0.5, () => Events.battle.createClient(combatant, this.id, this.opponents.includes(combatant)));
         });
 
       resolve();

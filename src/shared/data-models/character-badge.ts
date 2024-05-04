@@ -1,6 +1,6 @@
 import { BadgeCategory } from "./character-data";
 
-interface CharacterBadge {
+export interface CharacterBadge {
   readonly name: string;
   readonly category: BadgeCategory;
 }

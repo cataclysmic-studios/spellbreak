@@ -8,13 +8,15 @@ import DestroyableComponent from "shared/base-components/destroyable";
 import Range from "shared/utility/range";
 
 import type { CardButton } from "./card-button";
-import { Events } from "client/network";
+import type { BattleController } from "client/controllers/battle";
 
 type CardFrame = (ImageLabel | ImageButton) & {
   UIScale: UIScale;
 };
 
 const MAX_CARDS_IN_HAND = 7;
+
+// TODO: add cards from deck to hand
 
 @Component({
   tag: "DeckHand",
@@ -25,13 +27,14 @@ export class DeckHand extends DestroyableComponent<{}, Frame & { UIListLayout: U
   private readonly screen = this.instance.FindFirstAncestorOfClass("ScreenGui")!;
 
   public constructor(
-    private readonly components: Components
+    private readonly components: Components,
+    private readonly battle: BattleController
   ) { super(); }
 
   public onStart(): void {
-    this.janitor.Add(this.instance);
+    this.janitor.LinkToInstance(this.instance, true);
     this.janitor.Add(this.mouse.Move.Connect(() => this.updateCardHoverStatus()));
-    this.janitor.Add(Events.battle.toggleUI.connect(on => this.screen.Enabled = on));
+    this.janitor.Add(this.battle.deckUIToggled.Connect(on => this.screen.Enabled = on));
   }
 
   public addCard({ name, cardImage }: Spell): CardButton {

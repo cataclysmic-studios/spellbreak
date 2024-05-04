@@ -1,6 +1,5 @@
-import type { CharacterItem } from "./base";
-import type CharacterStats from "../character-stats";
+import type { CharacterItem, WithCharacterStats } from "./base";
 
 export default interface Jewel extends CharacterItem {
-  readonly stats: CharacterStats;
+
 }

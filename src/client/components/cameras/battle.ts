@@ -6,25 +6,28 @@ import { Player } from "shared/utility/client";
 import { CameraControllerComponent } from "client/base-components/camera-controller-component";
 import type { CameraController } from "client/controllers/camera";
 import type { CharacterController } from "client/controllers/character";
+import { lerp } from "shared/utility/numbers";
 
 interface Attributes {
-  FollowCamera_Height: number;
-  FollowCamera_Distance: number;
+
 }
 
 @Component({
-  tag: "FollowCamera",
+  tag: "BattleCamera",
   defaults: {
-    FollowCamera_Height: 4,
-    FollowCamera_Distance: 8
+
   }
 })
-export class FollowCamera extends CameraControllerComponent<Attributes> implements OnRender {
-  public static create(controller: CameraController): FollowCamera {
+export class BattleCamera extends CameraControllerComponent<Attributes> implements OnRender {
+  private target = new CFrame;
+  private targetFOV = this.instance.FieldOfView;
+  private lerpSpeed = 0.4;
+
+  public static create(controller: CameraController): BattleCamera {
     const components = Dependency<Components>();
     const camera = World.CurrentCamera!.Clone();
     camera.CameraType = Enum.CameraType.Scriptable;
-    camera.Name = "FollowCamera";
+    camera.Name = "BattleCamera";
     camera.Parent = controller.cameraStorage;
 
     return components.addComponent(camera);
@@ -35,26 +38,20 @@ export class FollowCamera extends CameraControllerComponent<Attributes> implemen
   ) { super(); }
 
   public onRender(dt: number): void {
-    const root = this.character.getRoot();
-    if (root === undefined) return;
+    this.instance.FieldOfView = lerp(this.instance.FieldOfView, this.targetFOV, this.lerpSpeed * dt * 4);
+    this.lerpCFrame(this.target, this.lerpSpeed * dt * 4);
+  }
 
-    const position = root.Position
-      .add(new Vector3(0, this.getHeight(), 0))
-      .sub(root.CFrame.LookVector.mul(this.getDistance()));
+  public setTarget(target: CFrame): void {
+    this.target = target;
+  }
 
-    this.setCFrame(CFrame.lookAt(position, root.Position));
+  public setTargetFOV(targetFOV: number): void {
+    this.targetFOV = targetFOV;
   }
 
   public override toggle(on: boolean): void {
     super.toggle(on);
     Player.CameraMode = on ? Enum.CameraMode.Classic : Player.CameraMode;
-  }
-
-  private getDistance(): number {
-    return this.attributes.FollowCamera_Distance;
-  }
-
-  private getHeight(): number {
-    return this.attributes.FollowCamera_Height;
   }
 }

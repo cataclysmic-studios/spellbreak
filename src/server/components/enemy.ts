@@ -62,8 +62,6 @@ export class Enemy extends DestroyableComponent<Attributes, EnemyModel> implemen
     nametag.Bottom.SchoolIcon.ImageRectOffset = LARGE_SCHOOL_ICON_OFFSETS[this.attributes.School];
     nametag.Adornee = this.instance.PrimaryPart;
     nametag.Parent = this.instance;
-
-    Events.general.addTag.broadcast(nametag.Bottom.Info.GetFullName(), "AutoSizedText");
   }
 
   private registerTouch(): void {

@@ -5,7 +5,7 @@ import { RaycastParamsBuilder } from "@rbxts/builders";
 
 import type { LogStart } from "shared/hooks";
 import { Events } from "client/network";
-import { STUDS_TO_METERS_CONSTANT, studsToMeters } from "shared/utility/3D";
+import { createRayVisualizer, STUDS_TO_METERS_CONSTANT, studsToMeters } from "shared/utility/3D";
 import { isNaN } from "shared/utility/numbers";
 
 import { InputInfluenced } from "client/base-components/input-influenced";
@@ -30,7 +30,7 @@ interface Attributes {
   Movement_JumpForce: number;
   Movement_GravitationalConstant: number;
   Movement_Restrictive: boolean;
-  Movement_RestrictiveMaxLedgeHeight: number;
+  Movement_RestrictiveMaxEdgeHeight: number;
   Movement_Rotational: boolean;
   Movement_RotationSpeed: number;
 }
@@ -60,7 +60,7 @@ const NO_JUMP_STATES: Enum.HumanoidStateType[] = [
     Movement_JumpForce: 0,
     Movement_GravitationalConstant: 9.81, // m/s, 9.81 is earth's constant
     Movement_Restrictive: true,
-    Movement_RestrictiveMaxLedgeHeight: 0.5,
+    Movement_RestrictiveMaxEdgeHeight: 1,
     Movement_Rotational: true,
     Movement_RotationSpeed: 1,
   }
@@ -160,10 +160,15 @@ export class Movement extends InputInfluenced<Attributes, Model> implements OnSt
       const distanceToGround = characterSize.Y / 2;
       const distanceAhead = 1;
       const down = new Vector3(0, -1, 0);
-      const edgeRaySize = distanceToGround + this.getRestrictiveMaxLedgeHeight();
-      const position = this.root.Position.add(this.root.CFrame.LookVector.mul(distanceAhead));
+      const forward = directionVector;
+      const edgeRaySize = distanceToGround + this.getRestrictiveMaxEdgeHeight();
+      const wallRaySize = 0.5;
+      const position = this.root.Position.add(forward.mul(distanceAhead));
       const edgeResult = World.Raycast(position, down.mul(edgeRaySize), rayParams);
+      const wallResult = World.Raycast(this.root.Position, forward.mul(wallRaySize), rayParams);
       if (edgeResult?.Instance === undefined)
+        this.velocity = new Vector3;
+      if (wallResult?.Instance !== undefined && wallResult.Instance.CanCollide)
         this.velocity = new Vector3;
     }
 
@@ -211,8 +216,8 @@ export class Movement extends InputInfluenced<Attributes, Model> implements OnSt
     return this.attributes.Movement_Restrictive;
   }
 
-  public getRestrictiveMaxLedgeHeight(): number {
-    return this.attributes.Movement_RestrictiveMaxLedgeHeight;
+  public getRestrictiveMaxEdgeHeight(): number {
+    return this.attributes.Movement_RestrictiveMaxEdgeHeight;
   }
 
   public isRotational(): boolean {

@@ -17,7 +17,8 @@ export function toRegion3({ CFrame, Size }: Part, areaShrink = 0): Region3 {
   );
 }
 
-export function createRayVisualizer(position: Vector3, direction: Vector3, raySize: number, decayTime = 3, transparency = 0.7, color = new Color3(1, 0, 0)): void {
+export function createRayVisualizer(position: Vector3, direction: Vector3, decayTime = 3, transparency = 0.7, color = new Color3(1, 0, 0)): void {
+  const raySize = direction.Magnitude;
   const visual = new Instance("Part", World);
   visual.Color = color;
   visual.Transparency = transparency;

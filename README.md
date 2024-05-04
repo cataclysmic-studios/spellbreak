@@ -9,10 +9,12 @@ A Roblox game heavily inspired by Wizard101. An MMORPG with turn-based combat us
   - Pip models
   - NPC AI
   - Sounds
+- Health/mana/energy regeneration
 - Spell casting player animations & camera manipulation
 - Spell casting system
   - Camera manipulation
   - Animation
+  - Accuracy & fizzling
   - Damage/heal numbers
   - Receive damage/heal player animations
   - Executing spell actions
@@ -23,9 +25,12 @@ A Roblox game heavily inspired by Wizard101. An MMORPG with turn-based combat us
     - Charms/wards
     - Auras
 - Quest system
-- Restrictive movement
-- Walking animation
-- Jump animation
+  - XP & levels
+  - Interaction & dialogue
+- Movement
+  - Make more restrictive
+  - Walking animation
+  - Jump animation
 - UI
   - Stats (health/mana/energy first)
   - Book

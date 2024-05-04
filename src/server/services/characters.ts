@@ -4,11 +4,11 @@ import { HttpService as HTTP } from "@rbxts/services";
 import type { OnPlayerJoin } from "server/hooks";
 import type { LogStart } from "shared/hooks";
 import type { CharacterData } from "shared/data-models/character-data";
+import { isValidUUID } from "shared/utility/strings";
 import { School, type PlayableSchool } from "shared/data-models/school";
-import { isValidUUID } from "shared/utility/helpers";
 import NEW_CHARACTER from "shared/data-models/new-character";
 
-import type { DatabaseService } from "./database";
+import type { DatabaseService } from "./third-party/database";
 
 const USE_CURLY_BRACES_FOR_UUIDS = true;
 const DEFAULT_HEALTHS: Record<PlayableSchool, number> = {
@@ -25,9 +25,9 @@ const DEFAULT_HEALTHS: Record<PlayableSchool, number> = {
 export class CharactersService implements OnPlayerJoin, LogStart {
   public constructor(
     private readonly db: DatabaseService
-  ) {}
+  ) { }
 
-   // *TEMP
+  // *TEMP
   public onPlayerJoin(player: Player): void {
     const characters = this.getAll(player);
     if (!characters.isEmpty()) return;

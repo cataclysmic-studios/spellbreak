@@ -3,9 +3,9 @@ import { Component } from "@flamework/components";
 import { Players } from "@rbxts/services";
 import { startsWith } from "@rbxts/string-utils";
 
-import { Assets } from "shared/utility/helpers";
+import { Assets } from "shared/utility/instances";
 import type { School } from "shared/data-models/school";
-import DestroyableComponent from "shared/base-components/destroyable-component";
+import DestroyableComponent from "shared/base-components/destroyable";
 
 import type { BattleService } from "server/services/battle";
 import { LARGE_SCHOOL_ICON_OVERHEAD, LARGE_SCHOOL_ICON_OFFSETS } from "shared/constants";

@@ -1,7 +1,7 @@
 import { Service } from "@flamework/core";
 import { Components } from "@flamework/components";
 
-import { Assets } from "shared/utility/helpers";
+import { Assets } from "shared/utility/instances";
 
 import { Enemy } from "server/components/enemy";
 import type { BattleCircle } from "server/components/battle-circle";
@@ -12,7 +12,7 @@ type Combatant = Player | Enemy;
 export class BattleService {
   public constructor(
     private readonly components: Components
-  ) {}
+  ) { }
 
   public startPvE(player: Player, enemy: Enemy): void {
     const battleCircle = this.createCircle(player);

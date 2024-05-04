@@ -4,12 +4,12 @@ import Object from "@rbxts/object-utils";
 
 import type { School } from "shared/data-models/school";
 import { Player, PlayerGui } from "shared/utility/client";
-import { Exception } from "shared/exceptions";
-import { flatten } from "shared/utility/helpers";
-import DestroyableComponent from "shared/base-components/destroyable-component";
+import { flatten } from "shared/utility/array";
+import DestroyableComponent from "shared/base-components/destroyable";
 import Range from "shared/utility/range";
 import Spells from "shared/structs/spells";
 import SpellsList from "shared/structs/spells/list";
+import Log from "shared/logger";
 
 const SELECTION_BORDER_TEMPLATE = new Instance("UIStroke");
 SELECTION_BORDER_TEMPLATE.Thickness = 1.6;
@@ -25,7 +25,7 @@ interface Attributes {
 
 @Component({
   tag: "CardButton",
-  ancestorWhitelist: [ PlayerGui ]
+  ancestorWhitelist: [PlayerGui]
 })
 export class CardButton extends DestroyableComponent<Attributes, ImageButton> implements OnStart {
   public readonly selectionBorder = SELECTION_BORDER_TEMPLATE.Clone();
@@ -40,7 +40,7 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
 
   public onStart(): void {
     if (!this.associatedSpell)
-      throw new Exception("InvalidSpellOrSchool", `Tried to find spell in school ${this.attributes.School} named "${this.attributes.SpellName}"`);
+      throw new Log.Exception("InvalidSpellOrSchool", `Tried to find spell in school ${this.attributes.School} named "${this.attributes.SpellName}"`);
 
     this.selectionBorder.Parent = this.instance;
     this.janitor.Add(this.instance);

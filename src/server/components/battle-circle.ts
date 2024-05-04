@@ -4,10 +4,10 @@ import { Players, Workspace as World, HttpService as HTTP } from "@rbxts/service
 import { TweenInfoBuilder } from "@rbxts/builders";
 
 import { Events } from "server/network";
+import { Assets } from "shared/utility/instances";
 import { tween } from "shared/utility/ui";
-import { Assets } from "shared/utility/helpers";
 import { MAX_BATTLE_COMBATANTS } from "shared/constants";
-import DestroyableComponent from "shared/base-components/destroyable-component";
+import DestroyableComponent from "shared/base-components/destroyable";
 import BattleLogic from "server/classes/battle-logic";
 
 import { Enemy } from "./enemy";

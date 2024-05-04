@@ -4,7 +4,7 @@ import { Component, type Components } from "@flamework/components";
 import type { LogStart } from "shared/hooks";
 import type { Spell } from "shared/structs/spell";
 import { Player, PlayerGui } from "shared/utility/client";
-import DestroyableComponent from "shared/base-components/destroyable-component";
+import DestroyableComponent from "shared/base-components/destroyable";
 import Range from "shared/utility/range";
 
 import type { CardButton } from "./card-button";
@@ -18,7 +18,7 @@ const MAX_CARDS_IN_HAND = 7;
 
 @Component({
   tag: "DeckHand",
-  ancestorWhitelist: [ PlayerGui ]
+  ancestorWhitelist: [PlayerGui]
 })
 export class DeckHand extends DestroyableComponent<{}, Frame & { UIListLayout: UIListLayout }> implements OnStart, LogStart {
   private readonly mouse = Player.GetMouse();

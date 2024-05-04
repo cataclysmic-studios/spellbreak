@@ -1,7 +1,7 @@
 import { School } from "shared/data-models/school";
 import { SpellType } from "shared/structs/spell";
 import { SpellActionType } from "shared/structs/spell-action";
-import Range from "shared/utility/range";
+import { RangeData } from "shared/utility/range";
 import SpellsList from "./list";
 
 const FrostSpells: SpellsList = {

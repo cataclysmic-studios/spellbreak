@@ -1,6 +1,17 @@
 const { max, min, floor, random } = math;
 
-export function shuffle<T>(array: T[]): T[] {
+export function randomElement<T extends defined>(array: T[]): T {
+  return array[randomIndex(array)];
+}
+
+export function randomIndex(array: defined[]): number {
+  if (array.size() === 0)
+    return -1;
+
+  return math.random(0, array.size() - 1);
+}
+
+export function shuffle<T extends defined>(array: T[]): T[] {
   // Fisher-Yates shuffle algorithm
   const shuffledArray = [...array];
   for (let i = shuffledArray.size() - 1; i > 0; i--) {

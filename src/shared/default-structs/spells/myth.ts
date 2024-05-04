@@ -1,7 +1,6 @@
 import { School } from "shared/data-models/school";
 import { SpellType } from "shared/structs/spell";
 import { SpellActionType } from "shared/structs/spell-action";
-import Range from "shared/utility/range";
 import SpellsList from "./list";
 
 const MythSpells: SpellsList = {
@@ -19,7 +18,10 @@ const MythSpells: SpellsList = {
       actions: [
         {
           type: SpellActionType.Damage.Hit,
-          value: new Range(100, 135)
+          value: {
+            minimum: 100,
+            maximum: 135
+          }
         }
       ]
     }

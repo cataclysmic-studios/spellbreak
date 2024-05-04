@@ -1,9 +1,9 @@
-import type Range from "shared/utility/range";
+import type { RangeData } from "shared/utility/range";
 
 export type SpellActionValueType =
   | number
   | [number, number]
-  | Range
+  | RangeData
   | undefined;
 
 export enum SpellActionType {

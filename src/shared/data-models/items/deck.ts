@@ -2,8 +2,17 @@ import { Socket } from "../sockets";
 import type { Spell } from "../../structs/spell";
 import { type Gear, GearCategory } from "./gear";
 
-export default class Deck implements Gear {
-  public readonly category: GearCategory;
+export interface DeckData extends Gear {
+  readonly maxSpells: number,
+  readonly maxSideboardSpells: number,
+  readonly maxCopies: number,
+  readonly maxSchoolCopies: number,
+  readonly spells: Spell[],
+  readonly sideboardSpells: Spell[]
+}
+
+export class Deck implements DeckData {
+  public readonly category: GearCategory = GearCategory.Deck;
 
   public constructor(
     public readonly name: string,
@@ -18,8 +27,13 @@ export default class Deck implements Gear {
     public readonly maxSchoolCopies: number,
     public readonly spells: Spell[],
     public readonly sideboardSpells: Spell[]
-  ) {
-    this.category = GearCategory.Deck;
+  ) { }
+
+  public static from(data: DeckData): Deck {
+    return new Deck(
+      data.name, data.noAuction, data.noTrade, data.pvpOnly, data.noPvp, data.sockets,
+      data.maxSpells, data.maxSideboardSpells, data.maxCopies, data.maxSchoolCopies, data.spells, data.sideboardSpells
+    );
   }
 
   public addSpell(spell: Spell): void {

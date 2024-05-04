@@ -1,8 +1,13 @@
-export default class Range {
+export interface RangeData {
+  readonly minimum: number;
+  readonly maximum: number;
+}
+
+export class Range implements RangeData {
   public constructor(
     public readonly minimum: number,
     public readonly maximum: number = minimum
-  ) {}
+  ) { }
 
   public randomInteger(): number {
     return (new Random).NextInteger(this.minimum, this.maximum);

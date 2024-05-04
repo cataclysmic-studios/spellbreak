@@ -1,6 +1,8 @@
 import type { PlayableSchool } from "shared/data-models/school";
 import type { GearCategory, Gear } from "./items/gear";
 import type { Housing } from "./items/housing";
+import type { DeckData } from "./items/deck";
+import type { Spell } from "shared/structs/spell";
 import type CharacterStats from "./character-stats";
 
 export const enum BadgeCategory {
@@ -18,7 +20,10 @@ export interface CharacterData {
   readonly trainingPoints: number;
 
   readonly stats: CharacterStats;
-  readonly equippedGear: Partial<Record<GearCategory, Gear>>;
+  readonly trainedSpells: Spell[];
+  readonly equippedGear: Partial<{
+    [GearCategory.Deck]: DeckData;
+  }>;
   readonly backpack: Gear[];
   readonly housingItems: Housing[];
 }

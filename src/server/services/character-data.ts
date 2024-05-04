@@ -3,31 +3,22 @@ import { HttpService as HTTP } from "@rbxts/services";
 
 import type { OnPlayerJoin } from "server/hooks";
 import type { LogStart } from "shared/hooks";
-import type { CharacterData } from "shared/data-models/character-data";
+import { USE_CURLY_BRACES_FOR_UUIDS } from "shared/constants";
 import { isValidUUID } from "shared/utility/strings";
 import { School, type PlayableSchool } from "shared/data-models/school";
-import type Deck from "shared/data-models/items/deck";
-import NEW_CHARACTER from "shared/default-structs/new-character";
+import type { CharacterData } from "shared/data-models/character-data";
+import { NEW_CHARACTER, DEFAULT_HEALTHS } from "shared/default-structs/new-character";
 
-import type SpellHelper from "shared/helpers/spell";
 import type { DatabaseService } from "./third-party/database";
-
-const USE_CURLY_BRACES_FOR_UUIDS = true;
-const DEFAULT_HEALTHS: Record<PlayableSchool, number> = {
-  Fire: 415,
-  Frost: 500,
-  Storm: 400,
-  Myth: 425,
-  Life: 460,
-  Death: 450,
-  Balance: 480
-};
+import type { CharacterService } from "./character";
+import type CharacterHelper from "shared/helpers/character";
 
 @Service()
-export class CharactersService implements OnPlayerJoin, LogStart {
+export class CharacterDataService implements OnPlayerJoin, LogStart {
   public constructor(
     private readonly db: DatabaseService,
-    private readonly spellHelper: SpellHelper
+    private readonly character: CharacterService,
+    private readonly characterHelper: CharacterHelper
   ) { }
 
   // *TEMP
@@ -38,17 +29,20 @@ export class CharactersService implements OnPlayerJoin, LogStart {
     this.create(player, "Runic", School.Myth);
   }
 
-  public create(player: Player, name: string, school: PlayableSchool): void {
+  public getCurrent(player: Player): CharacterData {
+    return this.db.get(player, `characters/${this.character.getCurrentIndex()}`);
+  }
+
+  public create(player: Player, name: string, school: PlayableSchool): CharacterData {
     const characters = this.getAll(player);
     const id = HTTP.GenerateGUID(USE_CURLY_BRACES_FOR_UUIDS);
     const character = { id, name, school, ...NEW_CHARACTER };
-    const characterDeck = this.getEquippedDeck(character);
+    this.characterHelper.trainFirstSpell(character);
     character.stats.health = DEFAULT_HEALTHS[school];
-    characterDeck?.addSpell(this.spellHelper.getFirstSpell(school));
-    character.equippedGear.Deck = characterDeck;
     characters.push(character);
 
     this.update(player, characters);
+    return character;
   }
 
   public delete(player: Player, characterID: string): boolean {
@@ -60,10 +54,6 @@ export class CharactersService implements OnPlayerJoin, LogStart {
     characters.remove(characters.indexOf(character));
     this.update(player, characters);
     return true;
-  }
-
-  public getEquippedDeck(character: CharacterData): Maybe<Deck> {
-    return <Maybe<Deck>>character.equippedGear.Deck;
   }
 
   private update(player: Player, newCharacters: CharacterData[]): void {

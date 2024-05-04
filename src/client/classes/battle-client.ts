@@ -1,3 +1,5 @@
+import type { Deck } from "shared/data-models/items/deck";
+
 import type { BattleCamera } from "client/components/cameras/battle";
 import type { BattleController } from "client/controllers/battle";
 import type { CameraController } from "client/controllers/camera";
@@ -10,6 +12,7 @@ export default class BattleClient {
   public constructor(
     private readonly battle: BattleController,
     camera: CameraController,
+    public readonly deck: Maybe<Deck>,
     circle: ReplicatedFirst["Assets"]["Battle"]["BattleCircle"],
     opponent: boolean
   ) {
@@ -22,10 +25,12 @@ export default class BattleClient {
     battleCamera.setTarget(CFrame.lookAt(position, circle.Root.Position));
     battleCamera.setTargetFOV(CAMERA_FOV);
     camera.set("Battle");
-    task.delay(0.5, () => this.battle.deckUIToggled.Fire(true));
+
+    this.battle.entered.Fire();
+    task.delay(1, () => battle.turnStarted.Fire());
   }
 
   public conclude(): void {
-    this.battle.deckUIToggled.Fire(false);
+    this.battle.left.Fire();
   }
 }

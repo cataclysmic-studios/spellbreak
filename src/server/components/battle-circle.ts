@@ -12,6 +12,7 @@ import BattleLogic from "server/classes/battle-logic";
 
 import { Enemy } from "./enemy";
 import type { BattleTriangle } from "./battle-triangle";
+import type { CharacterDataService } from "server/services/character-data";
 
 type Combatant = Player | Enemy;
 
@@ -27,7 +28,8 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
   private readonly animations;
 
   public constructor(
-    private readonly components: Components
+    private readonly components: Components,
+    private readonly characterData: CharacterDataService
   ) {
     super();
     this.instance.SetAttribute("ID", this.id);
@@ -195,7 +197,11 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
         .Completed.Once(() => {
           character.PrimaryPart!.Anchored = true;
           if (combatantIsNPC) return;
-          task.delay(0.5, () => Events.battle.createClient(combatant, this.id, this.opponents.includes(combatant)));
+          task.delay(0.5, () => Events.battle.createClient(
+            combatant, this.id,
+            this.characterData.getCurrent(combatant),
+            this.opponents.includes(combatant)
+          ));
         });
 
       resolve();

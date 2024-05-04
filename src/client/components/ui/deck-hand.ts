@@ -4,11 +4,12 @@ import { Component, type Components } from "@flamework/components";
 import type { LogStart } from "shared/hooks";
 import type { Spell } from "shared/structs/spell";
 import { Player, PlayerGui } from "shared/utility/client";
+import { Range } from "shared/utility/range";
 import DestroyableComponent from "shared/base-components/destroyable";
-import Range from "shared/utility/range";
 
 import type { CardButton } from "./card-button";
 import type { BattleController } from "client/controllers/battle";
+import { randomElement, randomIndex } from "shared/utility/array";
 
 type CardFrame = (ImageLabel | ImageButton) & {
   UIScale: UIScale;
@@ -25,6 +26,9 @@ const MAX_CARDS_IN_HAND = 7;
 export class DeckHand extends DestroyableComponent<{}, Frame & { UIListLayout: UIListLayout }> implements OnStart, LogStart {
   private readonly mouse = Player.GetMouse();
   private readonly screen = this.instance.FindFirstAncestorOfClass("ScreenGui")!;
+  private cardsRemaining: Spell[] = [];
+  private treasureCardsRemaining: Spell[] = [];
+  private cardsInHand = 0;
 
   public constructor(
     private readonly components: Components,
@@ -34,25 +38,63 @@ export class DeckHand extends DestroyableComponent<{}, Frame & { UIListLayout: U
   public onStart(): void {
     this.janitor.LinkToInstance(this.instance, true);
     this.janitor.Add(this.mouse.Move.Connect(() => this.updateCardHoverStatus()));
-    this.janitor.Add(this.battle.deckUIToggled.Connect(on => this.screen.Enabled = on));
+    this.janitor.Add(this.battle.turnStarted.Connect(() => {
+      this.draw();
+      this.screen.Enabled = true;
+    }));
+    this.janitor.Add(this.battle.entered.Connect(() => {
+      const battleClient = this.battle.getClient();
+      if (battleClient === undefined) return;
+      this.cardsRemaining = battleClient.deck?.spells ?? [];
+      this.treasureCardsRemaining = battleClient.deck?.sideboardSpells ?? [];
+    }));
   }
 
-  public addCard({ name, cardImage }: Spell): CardButton {
-    const cardButton = new Instance("ImageButton", this.instance);
-    cardButton.Name = name;
-    cardButton.Image = cardImage;
-    cardButton.AutoButtonColor = false;
-    cardButton.BackgroundTransparency = 1;
-    cardButton.AnchorPoint = new Vector2(1, 1);
-    cardButton.Size = UDim2.fromScale(1, 1);
+  public draw(): void {
+    const battleClient = this.battle.getClient();
+    if (battleClient === undefined) return;
+    this.drawFrom(this.cardsRemaining);
+  }
 
-    const scale = new Instance("UIScale", cardButton);
-    scale.Scale = 1;
+  public drawFromSideboard(): void {
+    const battleClient = this.battle.getClient();
+    if (battleClient === undefined) return;
+    this.drawFrom(this.treasureCardsRemaining);
+  }
 
-    const ratioConstraint = new Instance("UIAspectRatioConstraint", cardButton);
-    ratioConstraint.AspectRatio = 0.652;
+  private drawFrom(cards: Spell[]): void {
+    const cardsToDraw = MAX_CARDS_IN_HAND - this.cardsInHand;
+    if (cardsToDraw === 0) return;
 
-    return this.components.addComponent<CardButton>(cardButton);
+    for (let i = 0; i < cardsToDraw; i++) {
+      const cardIndex = randomIndex(cards);
+      if (cardIndex === -1) break;
+      this.addCard(cards[cardIndex], cards === this.treasureCardsRemaining);
+      cards.remove(cardIndex);
+    }
+  }
+
+  private addCard({ name, cardImage, school }: Spell, treasure = false): void {
+    task.spawn(() => {
+      const cardButton = new Instance("ImageButton", this.instance);
+      cardButton.Name = name;
+      cardButton.Image = cardImage;
+      cardButton.AutoButtonColor = false;
+      cardButton.BackgroundTransparency = 1;
+      cardButton.AnchorPoint = new Vector2(1, 1);
+      cardButton.Size = UDim2.fromScale(1, 1);
+
+      const scale = new Instance("UIScale", cardButton);
+      scale.Scale = 1;
+
+      const ratioConstraint = new Instance("UIAspectRatioConstraint", cardButton);
+      ratioConstraint.AspectRatio = 0.652;
+
+      cardButton.SetAttribute("CardButton_Name", name);
+      cardButton.SetAttribute("CardButton_School", school);
+      cardButton.SetAttribute("CardButton_TreasureCard", treasure);
+      this.components.addComponent<CardButton>(cardButton);
+    });
   }
 
   private updateCardHoverStatus(): void {

@@ -1,15 +1,31 @@
-import { Controller } from "@flamework/core";
+import { Controller, OnInit } from "@flamework/core";
 import type { Components } from "@flamework/components";
 
+import { Events } from "client/network";
 import { Player } from "shared/utility/client";
 
 import type { Movement } from "client/components/movement";
 
 @Controller()
-export class CharacterController {
+export class CharacterController implements OnInit {
+  private currentIndex = 0;
+
   public constructor(
     private readonly components: Components
   ) { }
+
+  public onInit(): void {
+    Events.character.playAs.connect(index => this.playAs(index));
+  }
+
+  public playAs(index: number): void {
+    this.currentIndex = index;
+    Events.character.playAs(index);
+  }
+
+  public getCurrentIndex(): number {
+    return this.currentIndex;
+  }
 
   public get(): Maybe<CharacterModel> {
     return <Maybe<CharacterModel>>Player.Character;

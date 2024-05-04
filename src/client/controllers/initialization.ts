@@ -16,11 +16,6 @@ export class InitializationController implements OnStart, OnCharacterAdd {
   public onStart(): void {
     task.delay(3, () => StarterGui.SetCore("ResetButtonCallback", false));
     Events.data.initialize();
-    Events.general.addTag.connect((instancePath, tag) => {
-      const instance = instancePath.split(".").reduce<Instance>((instance, instanceName) => instance.WaitForChild(instanceName), game);
-      instance.AddTag(tag);
-    });
-
     this.camera.set("Follow"); // set to preferred camera
   }
 

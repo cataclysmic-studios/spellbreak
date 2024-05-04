@@ -24,4 +24,4 @@ namespace Spells {
   export const Shadow = ShadowSpells;
 }
 
-export default Spells;
+export = Spells;

@@ -1,8 +1,18 @@
-import { School } from "../data-models/school";
+import { type PlayableSchool, School } from "../data-models/school";
 import type { CharacterData } from "../data-models/character-data";
 import StarterDeck from "./items/gear/decks/starter-deck";
 
-const NEW_CHARACTER: Omit<CharacterData, "id" | "name" | "school"> = {
+export const DEFAULT_HEALTHS: Record<PlayableSchool, number> = {
+  Fire: 415,
+  Frost: 500,
+  Storm: 400,
+  Myth: 425,
+  Life: 460,
+  Death: 450,
+  Balance: 480
+};
+
+export const NEW_CHARACTER: Omit<CharacterData, "id" | "name" | "school"> = {
   xp: 0,
   level: 0,
   gold: 0,
@@ -127,6 +137,7 @@ const NEW_CHARACTER: Omit<CharacterData, "id" | "name" | "school"> = {
       [School.Shadow]: 0
     }
   },
+  trainedSpells: [],
   equippedGear: {
     Deck: StarterDeck
   },
@@ -135,5 +146,3 @@ const NEW_CHARACTER: Omit<CharacterData, "id" | "name" | "school"> = {
   ],
   housingItems: []
 };
-
-export default NEW_CHARACTER;

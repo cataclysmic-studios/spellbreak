@@ -1,4 +1,4 @@
-import Deck from "shared/data-models/items/deck";
+import { Deck } from "shared/data-models/items/deck";
 
 const StarterDeck = new Deck(
   "Starter Deck",

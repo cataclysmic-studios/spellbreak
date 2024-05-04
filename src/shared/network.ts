@@ -1,8 +1,8 @@
 import { Networking } from "@flamework/networking";
 import type { DataValue } from "./data-models/generic";
+import type { CharacterData } from "./data-models/character-data";
 import type { GitHubInfo } from "./structs/github";
 import type { GamepassInfo } from "./structs/roblox-api";
-import type BattleCameraState from "./structs/battle-camera-state";
 
 interface ServerEvents {
   battle: {
@@ -14,22 +14,20 @@ interface ServerEvents {
     increment(directory: string, amount?: number): void;
   };
   character: {
+    playAs(index: number): void;
     toggleDefaultMovement(on: boolean): void;
   };
 }
 
 interface ClientEvents {
-  general: {
-    addTag(instancePath: string, tag: string): void;
-  };
   battle: {
-    createClient(battleCircleID: string, opponent: boolean): void;
-    setCameraState(battleCircleID: string, state: BattleCameraState): void;
+    createClient(battleCircleID: string, characterData: unknown, opponent: boolean): void;
   };
   data: {
     updated(directory: string, value: DataValue): void;
   };
   character: {
+    playAs(index: number): void;
     toggleCustomMovement(on: boolean): void;
   };
 }

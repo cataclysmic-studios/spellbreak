@@ -14,7 +14,7 @@ export default class CharacterHelper {
 
   public trainFirstSpell(character: CharacterData): void {
     const spell = this.spellHelper.getFirstSpell(character.school);
-    character.trainedSpells.push(spell);
+    character.trainedSpells.push(this.spellHelper.createSpellReference(spell));
 
     const characterDeck = this.getEquippedDeck(character);
     characterDeck?.addSpell(spell);
@@ -30,6 +30,6 @@ export default class CharacterHelper {
   public isValidDeck(deck: Deck, trainedSpells: Spell[]): boolean {
     return deck.spells.size() <= deck.maxSpells
       && deck.sideboardSpells.size() <= deck.maxSideboardSpells
-      && removeDuplicates(deck.spells).every(spell => trainedSpells.includes(spell));
+      && removeDuplicates(deck.spells).every(spell => trainedSpells.map(spell => this.spellHelper.createSpellReference(spell)).includes(spell));
   }
 }

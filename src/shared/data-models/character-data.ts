@@ -20,7 +20,7 @@ export interface CharacterData {
   readonly trainingPoints: number;
 
   readonly stats: CharacterStats;
-  readonly trainedSpells: Spell[];
+  readonly trainedSpells: string[];
   readonly equippedGear: Partial<{
     [GearCategory.Deck]: DeckData;
   }>;

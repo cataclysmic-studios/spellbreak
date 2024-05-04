@@ -5,11 +5,12 @@ import type { LogStart } from "shared/hooks";
 import type { Spell } from "shared/structs/spell";
 import { Player, PlayerGui } from "shared/utility/client";
 import { Range } from "shared/utility/range";
+import { randomIndex } from "shared/utility/array";
 import DestroyableComponent from "shared/base-components/destroyable";
 
+import type SpellHelper from "shared/helpers/spell";
 import type { CardButton } from "./card-button";
 import type { BattleController } from "client/controllers/battle";
-import { randomElement, randomIndex } from "shared/utility/array";
 
 type CardFrame = (ImageLabel | ImageButton) & {
   UIScale: UIScale;
@@ -26,13 +27,14 @@ const MAX_CARDS_IN_HAND = 7;
 export class DeckHand extends DestroyableComponent<{}, Frame & { UIListLayout: UIListLayout }> implements OnStart, LogStart {
   private readonly mouse = Player.GetMouse();
   private readonly screen = this.instance.FindFirstAncestorOfClass("ScreenGui")!;
-  private cardsRemaining: Spell[] = [];
-  private treasureCardsRemaining: Spell[] = [];
+  private cardsRemaining: string[] = [];
+  private treasureCardsRemaining: string[] = [];
   private cardsInHand = 0;
 
   public constructor(
     private readonly components: Components,
-    private readonly battle: BattleController
+    private readonly battle: BattleController,
+    private readonly spellHelper: SpellHelper
   ) { super(); }
 
   public onStart(): void {
@@ -62,14 +64,16 @@ export class DeckHand extends DestroyableComponent<{}, Frame & { UIListLayout: U
     this.drawFrom(this.treasureCardsRemaining);
   }
 
-  private drawFrom(cards: Spell[]): void {
+  private drawFrom(cards: string[]): void {
     const cardsToDraw = MAX_CARDS_IN_HAND - this.cardsInHand;
     if (cardsToDraw === 0) return;
 
     for (let i = 0; i < cardsToDraw; i++) {
       const cardIndex = randomIndex(cards);
       if (cardIndex === -1) break;
-      this.addCard(cards[cardIndex], cards === this.treasureCardsRemaining);
+
+      const spell = this.spellHelper.mustGetSpellFromReference(cards[cardIndex]);
+      this.addCard(spell, cards === this.treasureCardsRemaining);
       cards.remove(cardIndex);
     }
   }

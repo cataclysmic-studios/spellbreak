@@ -124,7 +124,7 @@ export class ControlPanelController implements OnStart {
     if (jumpCooldown.numberChanged())
       movement.attributes.Movement_JumpCooldown = jumpCooldown.state.number.get();
 
-    const jumpForce = Iris.SliderNum(["Jump Force", 0.25, 0, 30], { number: Iris.State(movement.getJumpForce()) });
+    const jumpForce = Iris.SliderNum(["Jump Force", 1, 0, 100], { number: Iris.State(movement.getJumpForce()) });
     if (jumpForce.numberChanged())
       movement.attributes.Movement_JumpForce = jumpForce.state.number.get();
 
@@ -132,13 +132,23 @@ export class ControlPanelController implements OnStart {
     if (gravitationalConstant.numberChanged())
       movement.attributes.Movement_GravitationalConstant = gravitationalConstant.state.number.get();
 
-    const isRotational = Iris.Checkbox(["Is Rotational?"], { isChecked: Iris.State(movement.isRotational()) });
-    if (isRotational.checked())
+    const restrictive = Iris.Checkbox(["Restrictive?"], { isChecked: Iris.State(movement.isRestrictive()) });
+    if (restrictive.checked())
+      movement.attributes.Movement_Restrictive = true;
+    if (restrictive.unchecked())
+      movement.attributes.Movement_Restrictive = false;
+
+    const maxEdgeHeight = Iris.SliderNum(["Restrictive Max Edge Height", 0.01, 0, 5], { number: Iris.State(movement.getRestrictiveMaxEdgeHeight()) });
+    if (maxEdgeHeight.numberChanged())
+      movement.attributes.Movement_RestrictiveMaxEdgeHeight = maxEdgeHeight.state.number.get();
+
+    const rotational = Iris.Checkbox(["Rotational?"], { isChecked: Iris.State(movement.isRotational()) });
+    if (rotational.checked())
       movement.attributes.Movement_Rotational = true;
-    if (isRotational.unchecked())
+    if (rotational.unchecked())
       movement.attributes.Movement_Rotational = false;
 
-    const rotationSpeed = Iris.SliderNum(["RotationSpeed", 0.05, 0.05, 30], { number: Iris.State(movement.getRotationSpeed()) });
+    const rotationSpeed = Iris.SliderNum(["Rotation Speed", 0.01, 0, 5], { number: Iris.State(movement.getRotationSpeed()) });
     if (rotationSpeed.numberChanged())
       movement.attributes.Movement_RotationSpeed = rotationSpeed.state.number.get();
 

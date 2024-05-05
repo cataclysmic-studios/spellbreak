@@ -10,7 +10,7 @@ import { Assets } from "shared/utility/instances";
 import { Player, PlayerGui } from "shared/utility/client";
 import { isEven } from "shared/utility/numbers";
 import { flatten } from "shared/utility/array";
-import { Range } from "shared/utility/range";
+import { Range } from "shared/classes/range";
 import type CharacterStats from "shared/data-models/character-stats";
 import type BattleClient from "client/classes/battle-client";
 import Spells from "shared/default-structs/spells";

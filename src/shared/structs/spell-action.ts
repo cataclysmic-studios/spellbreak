@@ -1,4 +1,4 @@
-import type { RangeData } from "shared/utility/range";
+import type { RangeData } from "shared/classes/range";
 
 export type SpellActionValueType =
   | number

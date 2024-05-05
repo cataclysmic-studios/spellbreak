@@ -1,7 +1,7 @@
 import { School } from "shared/data-models/school";
 import { SpellType } from "shared/structs/spell";
 import { SpellActionType } from "shared/structs/spell-action";
-import { RangeData } from "shared/utility/range";
+import { RangeData } from "shared/classes/range";
 import SpellsList from "./list";
 
 const LifeSpells: SpellsList = {

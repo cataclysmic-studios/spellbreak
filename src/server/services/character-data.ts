@@ -63,6 +63,7 @@ export class CharacterDataService implements OnInit, OnPlayerJoin, LogStart {
     const deckIndex = character.backpack.push(this.itemHelper.createReference(StarterDeck)) - 1;
     this.equipItem(character, GearCategory.Deck, deckIndex);
     character.stats.health = DEFAULT_HEALTHS[school];
+    character.stats.maxHealth = DEFAULT_HEALTHS[school];
     this.characterHelper.trainFirstSpell(character);
     characters.push(character);
 

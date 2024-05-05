@@ -111,26 +111,27 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
     this.deselectAll();
   }
 
-  public canCast(): boolean {
+  public async canCast(): Promise<boolean> {
     const battleClient = this.getBattleClient();
-    const pipCost = this.getPipCost();
+    const pipCost = await this.getPipCost();
+    const totalPips = await this.getTotalPips();
+    const shadowPips = await this.getShadowPips();
     return battleClient.characterData.stats.mana >= pipCost
-      && battleClient.getTotalPips() >= pipCost
-      && battleClient.getShadowPips() >= this.getShadowPipCost()
+      && totalPips >= pipCost
+      && shadowPips >= this.getShadowPipCost();
   }
 
-  private castAssociatedSpell(target?: Model): void {
-    const battleClient = this.getBattleClient();
+  private async castAssociatedSpell(target?: Model): Promise<void> {
     if (!this.canCast()) return;
 
     this.destroy();
     const { shadowPips } = this.associatedSpell.cost;
-    const pipsToUse = this.getPipCost();
+    const pipsToUse = await this.getPipCost();
     if (isEven(pipsToUse))
-      battleClient.usePowerPips(pipsToUse / 2);
+      Events.battle.usePowerPips(pipsToUse / 2);
     else {
-      battleClient.usePowerPips(floor(pipsToUse / 2));
-      battleClient.usePips(pipsToUse % 2);
+      Events.battle.usePowerPips(floor(pipsToUse / 2));
+      Events.battle.usePips(pipsToUse % 2);
     }
 
     this.characterStats.mana -= pipsToUse + shadowPips;
@@ -150,6 +151,7 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
   }
 
   private select(): void {
+    if (this.selected) return;
     if (!this.canCast()) return;
     const battleClient = this.getBattleClient();
     const targetsTeam = this.spellHelper.targetsTeam(this.associatedSpell);
@@ -199,10 +201,18 @@ export class CardButton extends DestroyableComponent<Attributes, ImageButton> im
     return battleClient;
   }
 
-  private getPipCost(): number {
+  private async getPipCost(): Promise<number> {
     const spellCost = this.associatedSpell.cost;
-    const battleClient = this.getBattleClient();
-    return spellCost.pips === "X" ? battleClient.getTotalPips() : spellCost.pips;
+    const allPips = await this.getTotalPips();
+    return spellCost.pips === "X" ? allPips : spellCost.pips;
+  }
+
+  private async getShadowPips(): Promise<number> {
+    return await Functions.battle.getShadowPips();
+  }
+
+  private async getTotalPips(): Promise<number> {
+    return await Functions.battle.getTotalPips();
   }
 
   private getShadowPipCost(): number {

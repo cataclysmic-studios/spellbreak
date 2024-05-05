@@ -2,12 +2,12 @@ import { Networking } from "@flamework/networking";
 import type { DataValue } from "./data-models/generic";
 import type { GitHubInfo } from "./structs/github";
 import type { GamepassInfo } from "./structs/roblox-api";
-import type CharacterStats from "./data-models/character-stats";
-import { CharacterData } from "./data-models/character-data";
 
 interface ServerEvents {
   battle: {
-
+    usePips(amount: number): void;
+    usePowerPips(amount: number): void;
+    useShadowPips(amount: number): void;
   };
   data: {
     initialize(): void;
@@ -23,6 +23,7 @@ interface ServerEvents {
 
 interface ClientEvents {
   battle: {
+    turnChanged(): void;
     createClient(battleCircleID: string, team: Model[], opponents: Model[], characterData: unknown): void;
   };
   data: {
@@ -41,6 +42,10 @@ interface ClientEvents {
 }
 
 interface ServerFunctions {
+  battle: {
+    getTotalPips(): number;
+    getShadowPips(): number;
+  };
   character: {
     getStats(): unknown;
   };

@@ -121,6 +121,7 @@ export class Movement extends InputInfluenced<Attributes, Model> implements OnSt
 
   public onPhysics(dt: number): void {
     if (this.instance === undefined) return;
+    if (!this.canMove) return;
 
     const directionVector = this.getVectorFromDirections(this.moveDirections);
     this.touchingGround = this.isTouchingGround();

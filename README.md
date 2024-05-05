@@ -3,6 +3,9 @@
 A Roblox game heavily inspired by Wizard101. An MMORPG with turn-based combat using your deck of spells (cards).
 
 ## To-do
+- Fix
+  - Race condition causing card button to be greyscale due to thinking the player has no pips
+  - Walking down slopes (movement system detects it as an edge)
 - Battle system
   - Turns/rounds
   - Pass/flee

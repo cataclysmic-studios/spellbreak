@@ -15,7 +15,6 @@ import type CharacterHelper from "shared/helpers/character";
 export class BattleController implements OnInit {
   public readonly entered = new Signal<() => void>;
   public readonly left = new Signal<() => void>;
-  public readonly turnStarted = new Signal<() => void>;
   private client?: BattleClient;
 
   public constructor(

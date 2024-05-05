@@ -11,6 +11,7 @@ import DestroyableComponent from "shared/base-components/destroyable";
 import type SpellHelper from "shared/helpers/spell";
 import type { CardButton } from "./card-button";
 import type { BattleController } from "client/controllers/battle";
+import { Events } from "client/network";
 
 type CardFrame = (ImageLabel | ImageButton) & {
   UIScale: UIScale;
@@ -40,7 +41,7 @@ export class DeckHand extends DestroyableComponent<{}, Frame & { UIListLayout: U
   public onStart(): void {
     this.janitor.LinkToInstance(this.instance, true);
     this.janitor.Add(this.mouse.Move.Connect(() => this.updateCardHoverStatus()));
-    this.janitor.Add(this.battle.turnStarted.Connect(() => {
+    this.janitor.Add(Events.battle.turnChanged.connect(() => {
       this.draw();
       this.screen.Enabled = true;
     }));
@@ -79,7 +80,7 @@ export class DeckHand extends DestroyableComponent<{}, Frame & { UIListLayout: U
   }
 
   private addCard({ name, cardImage, greyscaleCardImage, school }: Spell, treasure = false): void {
-    task.spawn(() => {
+    task.spawn(async () => {
       const cardButton = new Instance("ImageButton", this.instance);
       cardButton.SetAttribute("CardButton_Name", name);
       cardButton.SetAttribute("CardButton_School", school);
@@ -87,7 +88,7 @@ export class DeckHand extends DestroyableComponent<{}, Frame & { UIListLayout: U
 
       const card = this.components.addComponent<CardButton>(cardButton);
       cardButton.Name = name;
-      cardButton.Image = card.canCast() ? cardImage : greyscaleCardImage;
+      cardButton.Image = await card.canCast() ? cardImage : greyscaleCardImage;
       cardButton.AutoButtonColor = false;
       cardButton.BackgroundTransparency = 1;
       cardButton.AnchorPoint = new Vector2(1, 1);
@@ -112,6 +113,7 @@ export class DeckHand extends DestroyableComponent<{}, Frame & { UIListLayout: U
     if (!(frameDimensionsX.numberIsWithin(X) && frameDimensionsY.numberIsWithin(Y))) {
       for (const card of this.getCards())
         task.spawn(() => card.UIScale.Scale = 1);
+
       return;
     }
 
@@ -122,7 +124,8 @@ export class DeckHand extends DestroyableComponent<{}, Frame & { UIListLayout: U
         const cardDistanceFromMouseVector = new Vector2(X, Y).sub(cardPosition.add(new Vector2(cardSize.X / 2, 0)));
         const cardDistanceFromMouse = (cardDistanceFromMouseVector.sub(new Vector2(0, cardDistanceFromMouseVector.Y))).Magnitude;
         const scaleIncrement = math.clamp(1 - (cardDistanceFromMouse / (this.screen.AbsoluteSize.Magnitude - frameSize.Magnitude) * 2), 0, 1);
-        card.UIScale.Scale = 1 + this.modifyScaleIncrement(scaleIncrement);
+        const scale = <UIScale>card.WaitForChild("UIScale");
+        scale.Scale = 1 + this.modifyScaleIncrement(scaleIncrement);
       });
   }
 

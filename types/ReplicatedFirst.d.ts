@@ -10,6 +10,10 @@ interface ReplicatedFirst extends Instance {
       };
     };
     Battle: Folder & {
+      PipPositions: PipPositionsModel;
+      Pip: Part;
+      PowerPip: Part;
+      ShadowPip: Part;
       Selection: Model;
       PlayerBattleSigil: MeshPart;
       BattleTriangle: Part & {

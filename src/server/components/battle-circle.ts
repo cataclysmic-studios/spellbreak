@@ -13,12 +13,14 @@ import DestroyableComponent from "shared/base-components/destroyable";
 import { Enemy } from "./enemy";
 import type { BattleTriangle } from "./battle-triangle";
 import type { CharacterDataService } from "server/services/character-data";
+import Signal from "@rbxts/signal";
 
-type Combatant = Player | Enemy;
+export type Combatant = Player | Enemy;
 
 @Component({ tag: "BattleCircle" })
 export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Assets"]["Battle"]["BattleCircle"]> implements OnStart {
   public readonly id = HTTP.GenerateGUID();
+  public readonly combatantEntered = new Signal<(combatant: Combatant) => void>;
   public readonly battleLogic: BattleLogic;
   public readonly battleTriangle: BattleTriangle;
   public readonly team: Player[] = [];
@@ -29,7 +31,7 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
 
   public constructor(
     private readonly components: Components,
-    private readonly characterData: CharacterDataService
+    public readonly characterData: CharacterDataService
   ) {
     super();
     this.instance.SetAttribute("ID", this.id);
@@ -53,6 +55,8 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
   }
 
   public onStart(): void {
+    this.janitor.Add(this.instance);
+
     const conn = this.animations.OnAdd.KeyframeReached.Connect(kf => {
       if (kf !== "Final") return;
       this.battleBegan();
@@ -60,7 +64,6 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
     });
     this.playAnimation("OnAdd");
 
-    this.janitor.Add(this.instance);
     this.janitor.Add(this.instance.Main.Touched.Connect(hit => {
       const modelThatTouched = hit.FindFirstAncestorOfClass("Model");
       if (!modelThatTouched?.FindFirstChildOfClass("Humanoid")) return;
@@ -92,6 +95,10 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
     this.pullInCombatant(opponent);
   }
 
+  public getAllCombatants(): Combatant[] {
+    return [...this.team, ...this.opponents];
+  }
+
   public destroy(): void {
     for (const combatant of this.team)
       this.toggleMovement(combatant, true);
@@ -105,11 +112,12 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
     this.fadeOut().Completed.Once(() => this.janitor.Destroy());
   }
 
-  private battleBegan() {
+  private battleBegan(): void {
     this.animations.OnAdd.AdjustSpeed(0);
     this.playAnimation("Idle");
     this.battleTriangle.instance.Parent = this.instance;
     this.battleLogic.updateTriangle(false);
+    task.delay(1.5, () => this.battleLogic.startTurn());
   }
 
   private getClosestPosition(rootPosition: Vector3): Vector3 {
@@ -167,6 +175,9 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
   private async pullInCombatant(combatant: Combatant): Promise<void> {
     return new Promise<void>(resolve => {
       const combatantIsNPC = combatant instanceof Enemy;
+      if (!combatantIsNPC)
+        this.toggleMovement(combatant, false);
+
       const character = combatantIsNPC ? combatant.instance : combatant.Character!;
       const humanoid = character.FindFirstChildOfClass("Humanoid")!;
       const runAnim = <Maybe<Animation>>character.FindFirstChild("Animate")?.FindFirstChild("run")?.FindFirstChild("RunAnim");
@@ -175,9 +186,6 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
         runTrack = humanoid.LoadAnimation(runAnim)
         runTrack.Play();
       }
-
-      if (!combatantIsNPC)
-        this.toggleMovement(combatant, false);
 
       const combatantCollection = this.opponents.includes(combatant) ? this.opponents : this.team;
       const positionParts = this.instance[this.opponents.includes(combatant) ? "OpponentPositions" : "TeamPositions"];
@@ -196,7 +204,9 @@ export class BattleCircle extends DestroyableComponent<{}, ReplicatedFirst["Asse
       tween(character.PrimaryPart!, tweenInfo.SetTime(0.3), { Orientation: positionPart.Orientation })
         .Completed.Once(() => {
           character.PrimaryPart!.Anchored = true;
+          this.combatantEntered.Fire(combatant);
           if (combatantIsNPC) return;
+
           task.delay(0.5, () => Events.battle.createClient(
             combatant, this.id,
             this.team.map(player => player.Character!),

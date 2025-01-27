@@ -24,7 +24,6 @@
     "@rbxts/flamework-binary-serializer": "^0.6.0",
     "@rbxts/flamework-meta-utils": "^1.0.1",
     "@rbxts/instance-utility": "^1.0.3",
-    "@rbxts/matter": "^0.8.5",
     "@rbxts/object-utils": "^1.0.4",
     "@rbxts/services": "^1.5.5"
   }

@@ -1,7 +1,7 @@
 interface ReplicatedStorage extends Instance {
   assets: Folder & {
     characters: Folder & {
-      roslyn: Model;
+      roslyn: CharacterModel;
     };
   }
 }

@@ -14,7 +14,8 @@
     "@rbxts/compiler-types": "^3.0.0-types.0",
     "@rbxts/types": "^1.0.813",
     "roblox-ts": "^3.0.0",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "rbxts-transformer-flamework": "^1.2.3"
   },
   "dependencies": {
     "@flamework/core": "^1.2.3",
@@ -22,7 +23,6 @@
     "@rbxts/flamework-binary-serializer": "^0.6.0",
     "@rbxts/flamework-meta-utils": "^1.0.1",
     "@rbxts/object-utils": "^1.0.4",
-    "@rbxts/services": "^1.5.5",
-    "rbxts-transformer-flamework": "^1.2.3"
+    "@rbxts/services": "^1.5.5"
   }
 }

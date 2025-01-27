@@ -4,7 +4,10 @@
 	"identifiers": {
 		"spellbreak-rewrite:dist/shared/structs/messages/emitter@MessageEmitter": "shared/structs/messages/emitter@MessageEmitter",
 		"spellbreak-rewrite:dist/shared/network@GlobalEvents": "shared/network@GlobalEvents",
-		"spellbreak-rewrite:dist/server/main.server@Server": "server/main.server@Server"
+		"spellbreak-rewrite:dist/server/main.server@Server": "server/main.server@Server",
+		"spellbreak-rewrite:dist/shared/system-manager@SystemManager": "shared/system-manager@SystemManager",
+		"spellbreak-rewrite:dist/client/components@Character": "client/components@Character",
+		"spellbreak-rewrite:dist/shared/entity-factory@EntityFactory": "shared/entity-factory@EntityFactory"
 	},
 	"metadata": {}
 }

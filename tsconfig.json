@@ -30,6 +30,9 @@
 				"transform": "rbxts-transformer-flamework",
 				"obfuscation": false
 			},
+			{
+				"transform": "rbxts-transform-debug"
+			}
 		]
 	}
 }

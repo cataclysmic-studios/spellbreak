@@ -1,0 +1,9 @@
+{
+	"version": 1,
+	"flameworkVersion": "1.2.3",
+	"identifiers": {
+		"spellbreak-rewrite:dist/shared/structs/messages/emitter@MessageEmitter": "shared/structs/messages/emitter@MessageEmitter",
+		"spellbreak-rewrite:dist/shared/network@GlobalEvents": "shared/network@GlobalEvents"
+	},
+	"metadata": {}
+}

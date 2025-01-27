@@ -1,3 +1,7 @@
-import { makeHello } from "shared/module";
+import { MessageEmitter } from "shared/structs/messages/emitter";
+import { MessageKind } from "shared/structs/messages/kind";
 
-print(makeHello("main.server.ts"));
+MessageEmitter.initialize();
+MessageEmitter.onServerMessage(MessageKind.TEST, (player, data) => {
+  print(player, "sent", data, "via TEST message");
+});

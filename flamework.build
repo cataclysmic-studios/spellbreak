@@ -13,7 +13,13 @@
 		"spellbreak-rewrite:dist/server/hooks/players@OnPlayerLeave": "server/hooks/players@OnPlayerLeave",
 		"spellbreak-rewrite:dist/client/classes/character@Character": "client/classes/character@Character",
 		"spellbreak-rewrite:dist/client/controllers/character@CharacterController": "client/controllers/character@CharacterController",
-		"spellbreak-rewrite:dist/server/services/character@CharacterService": "server/services/character@CharacterService"
+		"spellbreak-rewrite:dist/server/services/character@CharacterService": "server/services/character@CharacterService",
+		"spellbreak-rewrite:dist/client/classes/camera-manager@CameraManager": "client/classes/camera-manager@CameraManager",
+		"spellbreak-rewrite:dist/client/camera-poses/base@BaseCameraPose": "client/camera-poses/base@BaseCameraPose",
+		"spellbreak-rewrite:dist/client/controllers/character-manager@CharacterController": "client/controllers/character-manager@CharacterController",
+		"spellbreak-rewrite:dist/client/classes/character-manager@CharacterController": "client/classes/character-manager@CharacterController",
+		"spellbreak-rewrite:dist/client/camera-poses/character@CharacterCameraPose": "client/camera-poses/character@CharacterCameraPose",
+		"spellbreak-rewrite:dist/client/controllers/camera@CameraController": "client/controllers/camera@CameraController"
 	},
 	"metadata": {
 		"globs": {

@@ -7,7 +7,10 @@
 		"spellbreak-rewrite:dist/server/main.server@Server": "server/main.server@Server",
 		"spellbreak-rewrite:dist/shared/system-manager@SystemManager": "shared/system-manager@SystemManager",
 		"spellbreak-rewrite:dist/client/components@Character": "client/components@Character",
-		"spellbreak-rewrite:dist/shared/entity-factory@EntityFactory": "shared/entity-factory@EntityFactory"
+		"spellbreak-rewrite:dist/shared/entity-factory@EntityFactory": "shared/entity-factory@EntityFactory",
+		"spellbreak-rewrite:dist/server/hooks/players@PlayersHook": "server/hooks/players@PlayersHook",
+		"spellbreak-rewrite:dist/server/hooks/players@OnPlayerJoin": "server/hooks/players@OnPlayerJoin",
+		"spellbreak-rewrite:dist/server/hooks/players@OnPlayerLeave": "server/hooks/players@OnPlayerLeave"
 	},
 	"metadata": {}
 }

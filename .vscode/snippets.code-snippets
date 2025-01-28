@@ -1,0 +1,56 @@
+{
+	"Flamework Controller": {
+		"prefix": [
+			"controller",
+			"flameworkcontroller"
+		],
+		"description": "Create a Flamework controller",
+		"body": [
+			"import { Controller, type OnInit } from \"@flamework/core\";",
+			"",
+			"@Controller()",
+			"export class ${TM_FILENAME_BASE/(.*)/${1:/pascalcase}/g}Controller implements OnInit {",
+			"\tpublic onInit(): void {",
+			"\t\t$2",
+			"\t}",
+			"}",
+		]
+	},
+	"Flamework Service": {
+		"prefix": [
+			"service",
+			"flameworkservice"
+		],
+		"description": "Create a Flamework service",
+		"body": [
+			"import { Service, type OnInit } from \"@flamework/core\";",
+			"",
+			"@Service()",
+			"export class ${TM_FILENAME_BASE/(.*)/${1:/pascalcase}/g}Service implements OnInit {",
+			"\tpublic onInit(): void {",
+			"\t\t$2",
+			"\t}",
+			"}",
+		]
+	},
+	"rUnit Test": {
+		"prefix": [
+			"test",
+			"runit",
+			"runit-test"
+		],
+		"description": "Create an rUnit test",
+		"body": [
+			"import { Fact, Assert } from \"@rbxts/runit\";",
+			"",
+			"class ${TM_FILENAME_BASE/(.*)/${0:/pascalcase}/g} {",
+			"\t@Fact()",
+			"\tpublic ${1:testCase}(): void {",
+			"\t\tAssert.equal(${2:expected}, ${3:actual});",
+			"\t}",
+			"}",
+			"",
+			"export = ${TM_FILENAME_BASE/(.*)/${0:/pascalcase}/g};"
+		]
+	}
+}

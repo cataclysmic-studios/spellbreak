@@ -1,20 +1,24 @@
-import { Service, } from "@flamework/core";
+import { Service } from "@flamework/core";
+import { Workspace as World } from "@rbxts/services";
 
 import type { OnPlayerJoin } from "server/hooks/players";
 import { assets } from "shared/constants";
 
 @Service()
 export class CharacterService implements OnPlayerJoin {
-  private currentCharacter = assets.characters.roslyn;
-
   public onPlayerJoin(player: Player): void {
-    player.CanLoadCharacterAppearance = false;
+    this.load(player, "roslyn", new CFrame(0, 5, 0));
+  }
 
-    const trashCharacterPivot = player.Character?.GetPivot() ?? new CFrame;
-    player.Character = this.currentCharacter.Clone();
+  public load(player: Player, characterName: ExtractKeys<typeof assets.characters, CharacterModel>, location: CFrame): void {
+    const character = assets.characters[characterName].Clone(); // completely temporary
+    player.CanLoadCharacterAppearance = false;
     player.LoadCharacter();
-    player.Character.PivotTo(trashCharacterPivot)
-    player.Character.WaitForChild("Health").Destroy();
-    player.Character.WaitForChild("Animate").Destroy();
+    task.wait();
+
+    character.Name = player.Name;
+    character.Parent = World;
+    character.PivotTo(location);
+    player.Character = character;
   }
 }

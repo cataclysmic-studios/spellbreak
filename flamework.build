@@ -10,7 +10,15 @@
 		"spellbreak-rewrite:dist/shared/entity-factory@EntityFactory": "shared/entity-factory@EntityFactory",
 		"spellbreak-rewrite:dist/server/hooks/players@PlayersHook": "server/hooks/players@PlayersHook",
 		"spellbreak-rewrite:dist/server/hooks/players@OnPlayerJoin": "server/hooks/players@OnPlayerJoin",
-		"spellbreak-rewrite:dist/server/hooks/players@OnPlayerLeave": "server/hooks/players@OnPlayerLeave"
+		"spellbreak-rewrite:dist/server/hooks/players@OnPlayerLeave": "server/hooks/players@OnPlayerLeave",
+		"spellbreak-rewrite:dist/client/classes/character@Character": "client/classes/character@Character",
+		"spellbreak-rewrite:dist/client/controllers/character@CharacterController": "client/controllers/character@CharacterController",
+		"spellbreak-rewrite:dist/server/services/character@CharacterService": "server/services/character@CharacterService"
 	},
-	"metadata": {}
+	"metadata": {
+		"globs": {
+			"paths": {},
+			"origins": {}
+		}
+	}
 }

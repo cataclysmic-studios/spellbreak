@@ -1,5 +1,6 @@
 interface CharacterModel extends Model {
-  Humanoid: Humanoid & {
+  Collider: Part;
+  AnimationController: AnimationController & {
     Animator: Animator;
   };
 }

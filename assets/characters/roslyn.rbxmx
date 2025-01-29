@@ -2,7 +2,7 @@
 	<Meta name="ExplicitAutoJoints">true</Meta>
 	<External>null</External>
 	<External>nil</External>
-	<Item class="Model" referent="RBX37AB85EBC7DE460B8A4023559AC5A83A">
+	<Item class="Model" referent="RBXBAA4326EC03F4DB3ACA18D96D0F275E3">
 		<Properties>
 			<BinaryString name="AttributesSerialize"></BinaryString>
 			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -31,7 +31,7 @@
 			<token name="ModelStreamingMode">0</token>
 			<string name="Name">roslyn</string>
 			<bool name="NeedsPivotMigration">false</bool>
-			<Ref name="PrimaryPart">null</Ref>
+			<Ref name="PrimaryPart">RBXA2A847766007493A94152B8F0D8DEF2F</Ref>
 			<float name="ScaleFactor">1</float>
 			<int64 name="SourceAssetId">-1</int64>
 			<BinaryString name="Tags"></BinaryString>
@@ -52,7 +52,7 @@
 				</CFrame>
 			</OptionalCoordinateFrame>
 		</Properties>
-		<Item class="Folder" referent="RBX250E42C453364146A2829FA2BBECB4F0">
+		<Item class="Folder" referent="RBX2C785ECDAAC3492B92F108208D368198">
 			<Properties>
 				<BinaryString name="AttributesSerialize"></BinaryString>
 				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -61,7 +61,7 @@
 				<int64 name="SourceAssetId">-1</int64>
 				<BinaryString name="Tags"></BinaryString>
 			</Properties>
-			<Item class="CFrameValue" referent="RBX14CD8FEF90C148C09410AE960121F018">
+			<Item class="CFrameValue" referent="RBX7123FF8404894D9284D5659D012D546C">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -85,7 +85,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXCBE107BF199B4F9EB7AD4B13C2CCDFEC">
+			<Item class="CFrameValue" referent="RBXA39BE72FB87349EFB77ADBE31EF4608F">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -109,7 +109,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXC4A9B42D889740B5BD29F37D39F3B300">
+			<Item class="CFrameValue" referent="RBX913FD1D0B30746B4940A4948649CEDEE">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -133,7 +133,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX39F1AB328F1849C7A14D6C90F8D745BF">
+			<Item class="CFrameValue" referent="RBX9B8B288CA2EF48F99E9977D2147AF4B7">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -157,7 +157,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX6750CB74CA254AA0BEC9E3D00529FC18">
+			<Item class="CFrameValue" referent="RBXAAD6E0396DFC4D5DB6932358CE59829B">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -181,7 +181,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXE09A23D7228841DA91B6392C4600ACAE">
+			<Item class="CFrameValue" referent="RBX6C9DF279A990454DAECDD21DCF09C6E6">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -205,7 +205,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX62FED85F14094C03A45046B7CE4A2859">
+			<Item class="CFrameValue" referent="RBX484D46AB482D486E8387E90F12ADE1F1">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -229,7 +229,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX10FF43EB97DD4811A8C618A792082001">
+			<Item class="CFrameValue" referent="RBX3B928F2CC38F43ADA6C162E6F47FB791">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -253,7 +253,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX3BD815B1D6C843368B2CE35780787DB9">
+			<Item class="CFrameValue" referent="RBX7F6D23E8F5CF4A3D8AE042885A7D4983">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -277,7 +277,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX279410EA546340C4AF8F63893CAE43BE">
+			<Item class="CFrameValue" referent="RBX38CB7853142C4C49AD83B5C420DBF056">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -301,7 +301,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX5487A1F8A1CA43A0A661CED3638207A6">
+			<Item class="CFrameValue" referent="RBX1D7E2D01947D4931B28664D37BC65EFD">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -325,7 +325,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX752C5665945F47DCB116873EA536399C">
+			<Item class="CFrameValue" referent="RBXAD270C6ED12244388F1D3A0C858698C7">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -349,7 +349,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX88623D1C70A541C2A0B9A4D3BE38E719">
+			<Item class="CFrameValue" referent="RBX31F9BF63DFE8438DB9435DEFA5D11F4E">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -373,7 +373,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXE7BF0277200C40328CC757378B318597">
+			<Item class="CFrameValue" referent="RBX4DAD61CCEF9F46C0A6CB719D16B60A6D">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -397,7 +397,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXFB4742BD96EE48D2934E293CB25202AE">
+			<Item class="CFrameValue" referent="RBX4D9158E7D9B34C11B36289D052609D3F">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -421,7 +421,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXE3DB78229DF049048E3C5F98D79ABFB2">
+			<Item class="CFrameValue" referent="RBX87D891633C8A47D4982948DE98AF33E5">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -445,7 +445,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX868F7BBA1D574ED6BE7E551B915B0C9C">
+			<Item class="CFrameValue" referent="RBX8AE0E0F82C92495EA6669F44B02E64A4">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -469,7 +469,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX8450402888D64748BAB635C6A3B13D71">
+			<Item class="CFrameValue" referent="RBX9ECD4015A2D24E9AAA38F98CBBB9E579">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -493,7 +493,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX920B96E841764733A87002A9EC7B1DB2">
+			<Item class="CFrameValue" referent="RBX080323AA6C6D4796BAF288358E889939">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -517,7 +517,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXE20ABF8002A8439BB2895120522CBC9F">
+			<Item class="CFrameValue" referent="RBXBA85C5AFF22C44748FA034488CA3929A">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -541,7 +541,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXACB64EA68D64434AAF05354D1DA53D40">
+			<Item class="CFrameValue" referent="RBX9853986BB42C45A1AA33D9B2F3259C2A">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -565,7 +565,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX0814B1DBC4484EF19C885297D5FEDA76">
+			<Item class="CFrameValue" referent="RBX4D31026CBD4A487AA7096B3793D25263">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -589,7 +589,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX79C9477CB73A4F9EBC28A45B42341051">
+			<Item class="CFrameValue" referent="RBX52196BE9815441F09CD148D9C27A648D">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -613,7 +613,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX15670D11AAFD440EA5BC1CABD80B4CD0">
+			<Item class="CFrameValue" referent="RBXAAD4CAE825904452AEB41831A3500D02">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -637,7 +637,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX6C176B5E286847A9B29EF5D82DFC3CD0">
+			<Item class="CFrameValue" referent="RBX6712B6E419DE479781DCDE8A011B2DFA">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -661,7 +661,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX2D5E6522C6BA470CBF342523E7FDBE5B">
+			<Item class="CFrameValue" referent="RBX77FB0598B05A4A6BB6DFEAC0B3B0FBCE">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -685,7 +685,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX339BE228942547B8A23A82EF0906EDBF">
+			<Item class="CFrameValue" referent="RBX5EFE3760DD3B49359A32D5B93A8D84A3">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -709,7 +709,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX68C694C9AA79491290F059380E268A9A">
+			<Item class="CFrameValue" referent="RBX2F5B74FFD71F46B7860F040BD9225317">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -733,7 +733,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXB58725AE150244BE9096D601255CB238">
+			<Item class="CFrameValue" referent="RBX6C6689108DFE49B89BD1D5E10615966D">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -757,7 +757,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXE7744669FFE44B67ADD9E51F64809C4C">
+			<Item class="CFrameValue" referent="RBXE1B0739FEC704E609B17C55AE3E6F58B">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -781,7 +781,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXFC3E77989E954A54B8A7DA4F5F85B491">
+			<Item class="CFrameValue" referent="RBX336BEDCA38DE4EAFB11CEB4A0944C6C6">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -805,7 +805,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXE8BC995E77064F42A922F2FEBE57AEE4">
+			<Item class="CFrameValue" referent="RBXE642D43EE156450AABB5DBBF61F290CC">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -829,7 +829,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX8A447EC07F49429FA18FFC1E27186C21">
+			<Item class="CFrameValue" referent="RBX83443A06E3774E7394DFDA8AC2723BD8">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -853,7 +853,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX34C3E7B2A3B14BAF9932618F72EC372B">
+			<Item class="CFrameValue" referent="RBX8E703ABD56F240FE8F54CAC6DDD4A0B7">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -877,7 +877,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXEA262943BAB54E2EA255C4BCAEE2630C">
+			<Item class="CFrameValue" referent="RBXE5151193371841CA91D4DAB31DCCC9CE">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -901,7 +901,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXA81B101B3E044157A174A356B0456EEB">
+			<Item class="CFrameValue" referent="RBX102C2146366B4BA1A416ED6B5058C13F">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -925,7 +925,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX44F32AADE59145479FBB18DF484F6BAD">
+			<Item class="CFrameValue" referent="RBXDE4F98E629A64A9183600043C0E36526">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -949,7 +949,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX55A822A973F3467F9E86598D854D40EA">
+			<Item class="CFrameValue" referent="RBX92FBCB06F33D467882C927255DA0DD7E">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -973,7 +973,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX27628302BAF04B97948F79A51CD23F8A">
+			<Item class="CFrameValue" referent="RBXDD527E762C3345D68AB0428185FA7563">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -997,7 +997,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX7E96D0BDC5DA42D3BBDE838FF059442B">
+			<Item class="CFrameValue" referent="RBX14AC4CEECD2C47FCA203BFB2C269EE48">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1021,7 +1021,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX8838FB58E91A4B3C92EEDD41C2273057">
+			<Item class="CFrameValue" referent="RBXC3D0C735A63344548D6F22F2BA92595F">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1045,7 +1045,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX9640CE5C4E1A434997BA76A565DB8AB6">
+			<Item class="CFrameValue" referent="RBX25D83DA5E67740E9983A6FFC20B470AB">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1069,7 +1069,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX6A6AC5238B8241719D55C839446D5D17">
+			<Item class="CFrameValue" referent="RBXC2EB25A6C6A04C3DBFCBAD07555C3C48">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1093,7 +1093,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXC8FB8A04A68B49E6A7122A19DF9B09A8">
+			<Item class="CFrameValue" referent="RBXBBDD121ABB9648D39229956C6DB1D4F9">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1117,7 +1117,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX3BF81CC25D7748CDB3AF6619A78FAA86">
+			<Item class="CFrameValue" referent="RBX9CBBE7E4BFA04921B8A8BB9D9AC51DA9">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1141,7 +1141,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX99882C0520EF4C23A2E00C4965D4B6FD">
+			<Item class="CFrameValue" referent="RBXF7563F46364A45C0AE3B1E0D1FC2E6D1">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1165,7 +1165,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX65B74083AF544DD8AF55C590AB557524">
+			<Item class="CFrameValue" referent="RBXBDF7F6A264114E458F261CC03083B441">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1189,7 +1189,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX586BCADD7ECF4205867F9F3885E2D414">
+			<Item class="CFrameValue" referent="RBX244548BA4A53496D8D900142B951D476">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1213,7 +1213,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXD57950070E374D58B97610907861795A">
+			<Item class="CFrameValue" referent="RBXF9D34C516FAB422EB72CB29C1187F046">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1237,7 +1237,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX3B30D8B768E1450FB5EAB05EC3306C52">
+			<Item class="CFrameValue" referent="RBXCD03003E4819406D8079EBDEA29FEDFC">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1261,7 +1261,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX50ADCDDD015B471EAADF4EF63957AB5C">
+			<Item class="CFrameValue" referent="RBX744971FDAFEC47B2B46F66DF9ADE428D">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1285,7 +1285,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX3061400B78E748FB82501C4D4E332198">
+			<Item class="CFrameValue" referent="RBX390A044CA4844515AF81CD243F6B130A">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1309,7 +1309,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX0765777FA0884A44958143ACCE642F60">
+			<Item class="CFrameValue" referent="RBX90466CECE79445308635AD348A9F8FD2">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1333,7 +1333,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX9F368174CB6E42F8A9A670FD7FC2AAF9">
+			<Item class="CFrameValue" referent="RBX6EFB31C7F66C4F0DAD8B12058137169C">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1357,7 +1357,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXDFB82E22A6DD4ED5B5A02A54AC83ACF0">
+			<Item class="CFrameValue" referent="RBX1EDA9F3161AF4ED49CED130BCB4D64B9">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1381,7 +1381,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXD865EF498ED8495EA6B5D6D3150B1454">
+			<Item class="CFrameValue" referent="RBX078F90E2C87A48F98CFC3B7171BDD703">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1405,7 +1405,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX551951C18825434F92CB4D15452BB83F">
+			<Item class="CFrameValue" referent="RBXFE74DCD997724361B9D3BAC0344D3809">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1429,7 +1429,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXEB8A3A9AB56B472795B3A1A182C4903C">
+			<Item class="CFrameValue" referent="RBX4F8DC52B1FEC444190C706970DC1BF3D">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1453,7 +1453,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX1A8148B5AEB144B79B509713ECD981AF">
+			<Item class="CFrameValue" referent="RBXBF43CFDB937E4BB49B446F57A8B30C58">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1477,7 +1477,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXA2CBF83D153946AB90FB66659AD23821">
+			<Item class="CFrameValue" referent="RBX7C46EEB30D6A4074B27809CA43DA2770">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1501,7 +1501,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX633E17EA532A4B4387A2C199536D6C2C">
+			<Item class="CFrameValue" referent="RBXC28E00C411DF4B04BA78404694614455">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1525,7 +1525,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX63A5CCD36AAE400E90CB295C7A6D17D7">
+			<Item class="CFrameValue" referent="RBX9A478172DFC04BDCA62CED837FCC8023">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1549,7 +1549,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX48B7535524B746DAB31B3CE27DC7C126">
+			<Item class="CFrameValue" referent="RBX39107F06A13F4016BB9B1C4F583303EA">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1573,7 +1573,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXFC632EE21B7C465C87334C2E21C731BF">
+			<Item class="CFrameValue" referent="RBXD8DB0B9033174E628C33D5D8CB2675E6">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1597,7 +1597,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX631530A173BB4568A9DF50E997701CDF">
+			<Item class="CFrameValue" referent="RBXB563B3A2BC8348F0877B7AAD3FAACEE7">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1621,7 +1621,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX182710CCA3284C3CA4BF6682134CBD3F">
+			<Item class="CFrameValue" referent="RBXE4F348C05C52404EAA18100E63FA4033">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1645,7 +1645,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXA0E52E375209494FBFB6ADC0ECBC90EB">
+			<Item class="CFrameValue" referent="RBXA91BD83910DC45BDB602B43183069939">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1669,7 +1669,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX22D6762D573A4931B3C1E0000131FC77">
+			<Item class="CFrameValue" referent="RBXCFDA6D57247549608818BC1C951BDD69">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1693,7 +1693,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXCD6389A163BC4987A31495B1F76A3723">
+			<Item class="CFrameValue" referent="RBX23A10962EA5343DE9CCD25965BF82050">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1717,7 +1717,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXA16E63535FEF44F9951171D390533476">
+			<Item class="CFrameValue" referent="RBX5AC9D170B20C4F06ABAB856BCC72003C">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1741,7 +1741,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX16C25F59DC504ED4BE1F1104E752ED48">
+			<Item class="CFrameValue" referent="RBXB5B5F038D3754B8EB14A9A4587EB3C7B">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1765,7 +1765,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX09196C893A3F4C8AA72DE9920EF18C3C">
+			<Item class="CFrameValue" referent="RBX8631B617D5174DD9815C1AF03C329650">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1789,7 +1789,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXB7341440116B4A1D88ADBD640E280B04">
+			<Item class="CFrameValue" referent="RBX6ADEDEF43C014157B6D681725F0B5C31">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1813,7 +1813,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXE57E97ABCB4D433C96D596CFB2890882">
+			<Item class="CFrameValue" referent="RBXFC912291C30F42B4921F521B6DDF8F42">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1837,7 +1837,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXBB2DB33102D64F7EA60BCDE166839CF6">
+			<Item class="CFrameValue" referent="RBX9094938B29FE4F91B452DAE8927F9329">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1861,7 +1861,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX521F948677CB496C976093DE00DC3188">
+			<Item class="CFrameValue" referent="RBX2EE8314689B0442AB9E306228D3F39C9">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1885,7 +1885,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX7AC90CF5A73849EE9D57A8685C59F07E">
+			<Item class="CFrameValue" referent="RBXEEDAE8E3904A40E688CDD86A9829CAF3">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1909,7 +1909,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX9E3A1266AF0948469DAA963C6D63D21B">
+			<Item class="CFrameValue" referent="RBX6C3CFA46EC7748298955689F4A8F28FA">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1933,7 +1933,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX80710F1778BC4365A5CEC3984AB36E06">
+			<Item class="CFrameValue" referent="RBX386637FDE7094F1DA02AAEB3B5D9EF22">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1957,7 +1957,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXFE001D1000C549BBBDF573A7BFF61AE6">
+			<Item class="CFrameValue" referent="RBXCE4A6220579443F9A0CCCA2B7DF48B8D">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -1981,7 +1981,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXC088E1EBA21746D089CD98DF3171CCA1">
+			<Item class="CFrameValue" referent="RBX6D87F79BE14D4456A336E37410CBD8A3">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2005,7 +2005,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX1B8EBF56259648F4B5145AD823B208F6">
+			<Item class="CFrameValue" referent="RBX1DDFAB1FBBAA4DF7BAD1CA804706D89B">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2029,7 +2029,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXB36895261F5A4622808CBB856599406B">
+			<Item class="CFrameValue" referent="RBX02E74E2A9DC3441EBD3CBC9DF5F50F8A">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2053,7 +2053,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX2F4FFE0C3F604E94B572223385D1F276">
+			<Item class="CFrameValue" referent="RBX155374DD7E504313A4A95E91162A18D6">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2077,7 +2077,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXC1AEC0ADA10945D39556CA9565F2691B">
+			<Item class="CFrameValue" referent="RBXDB438EAF5DC248338767B34D13BC9855">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2101,7 +2101,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXD25058E4BE6B4C9486A6A921D8C5ABFE">
+			<Item class="CFrameValue" referent="RBXFD58FC0BC1D24AC68094B5A493828891">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2125,7 +2125,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX9A1F4E7FC0B6485EABFF283A0B18FD4C">
+			<Item class="CFrameValue" referent="RBX40B7D8DABAFF4E6C8F8B0387912CFDBF">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2149,7 +2149,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX2620DFCD1DF149E6B49F4E5C67616F4A">
+			<Item class="CFrameValue" referent="RBX28AE9BBA217B44EE9F2D0D7D44E5BEC8">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2173,7 +2173,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX28F145AC2E29426D93F92E9008C6E134">
+			<Item class="CFrameValue" referent="RBX655F767F8D6445C3BFF559E52A13677E">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2197,7 +2197,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX7169502199254438AE37F980D9ECD7CF">
+			<Item class="CFrameValue" referent="RBX20B4BFAE982043419A803D40ACB46499">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2221,7 +2221,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX92E7120D87C64102A9EE9D080B993B2F">
+			<Item class="CFrameValue" referent="RBXFD02F3C0DFD94C47998E00AD005696A2">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2245,7 +2245,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXD77E7A9D1E1D4C88AB1F874AFACDDB9D">
+			<Item class="CFrameValue" referent="RBXE550080D7B7048B09CD801438BA60F1E">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2269,7 +2269,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX3A3E53EBE1264FF7BFD438291E528CD2">
+			<Item class="CFrameValue" referent="RBXE21636212C87461B8D49D63742386AA6">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2293,7 +2293,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXD0805AED94704B818191EFFAB3203A37">
+			<Item class="CFrameValue" referent="RBXE40EBA2CE0D24D809F3D51EFC5D1F34C">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2317,7 +2317,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX97E5277CCF654814812AAB81A3C8BA78">
+			<Item class="CFrameValue" referent="RBXB50949A9BCF74D8FA2B8695330D4F655">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2341,7 +2341,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX66D0F60259EE45648A415243B62BA33C">
+			<Item class="CFrameValue" referent="RBX769017FF62804246AF8160D3BA4140EB">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2365,7 +2365,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXC2BF99355D1344E7B25D1D195C10BF66">
+			<Item class="CFrameValue" referent="RBX87FE9C26C6954BA7A933E2EF4CC00F7C">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2389,7 +2389,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX52855208ED9146CEB2B91E4B490B0E90">
+			<Item class="CFrameValue" referent="RBX263CDB611FB44AF2B52E027CFC8B6E93">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2413,7 +2413,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX470F7DFA5F9043D0A2FFFEA3C0196E2E">
+			<Item class="CFrameValue" referent="RBX58A3FE68AE8F4B06B3E6FF46F97FF062">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2437,7 +2437,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXDCBC1C0DB1014E6EA077E384E71EBA7F">
+			<Item class="CFrameValue" referent="RBXD3E493517E754D1BBC101806C7AE8A45">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2461,7 +2461,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXA9CB078AC08049CB96526880BDAEFCDE">
+			<Item class="CFrameValue" referent="RBX2ADFBCEDC15942819C119746031B6A78">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2485,7 +2485,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX413BB370F3EC48E3A859B3F389DE2EAB">
+			<Item class="CFrameValue" referent="RBXE9DC312744FC4F1182923BA20DC458B8">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2509,7 +2509,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX75007D6AB4AD4CD3BA0379916448A717">
+			<Item class="CFrameValue" referent="RBXD6A109C8F02E4DEFBA7CCE35AD588A23">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2533,7 +2533,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX2407D2483E2942E8B56897C07777F6F8">
+			<Item class="CFrameValue" referent="RBX59669A7C5A0B46939CBB563F18B0B037">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2557,7 +2557,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX59C88DB8E07149EDB2BE3DADC886472D">
+			<Item class="CFrameValue" referent="RBXFE8435A0C2644BD0A83B7900C317661E">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2581,7 +2581,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX9110B3877F5849A081CFE551B6D28487">
+			<Item class="CFrameValue" referent="RBX170DA32605D349BE8F2B95A0FDD55451">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2605,7 +2605,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX0B1E676C9CF740E79430E8CB2377FFFE">
+			<Item class="CFrameValue" referent="RBXB11BAE85DBBA49359F36ABEC097C993A">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2629,7 +2629,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXADA99CB6B0B748B3B00A5433CF371498">
+			<Item class="CFrameValue" referent="RBXB5B51EF20B5D4A4E931976FC7D76BDFD">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2653,7 +2653,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX2601EC2730BE4D1E88D559DA018E1EF8">
+			<Item class="CFrameValue" referent="RBX9B6629A250F94C77AD8491521B1914A9">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2677,7 +2677,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXBB94A523E3E943E28DC175862654B051">
+			<Item class="CFrameValue" referent="RBX6D3760AB84D547B2B70C7292737BDC20">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2701,7 +2701,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXCB482240D5094C4E93A4C6CC439FA4A8">
+			<Item class="CFrameValue" referent="RBX870E32D032514D848BCF203396C765FF">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2725,7 +2725,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXD898D8EF03ED422483C795D13FC4B009">
+			<Item class="CFrameValue" referent="RBX02A0043D7C8F46E1867D6F85EB5B982C">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2749,7 +2749,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX3CFF518D4E504B1894B23909E8FA7624">
+			<Item class="CFrameValue" referent="RBX50D51B2A723746628B5EC885046C75A5">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2773,7 +2773,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXD03A7B471363400C88B14278CFD8DB25">
+			<Item class="CFrameValue" referent="RBXFE386D6559254F7BB5EED752427DA8F3">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2797,7 +2797,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX0867098080C14DCBB2A1D32AA2BA08C8">
+			<Item class="CFrameValue" referent="RBX2DED9ED47C8644979C55702EEDB1CF80">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2821,7 +2821,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX0B96EA44578B43DE9D51C0476945D63C">
+			<Item class="CFrameValue" referent="RBXA52C50D0BB664DBD82FB07C5D69A8FA9">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2845,7 +2845,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXC6A7F093A2D24FC3A51CB0341468C9BD">
+			<Item class="CFrameValue" referent="RBX5CE76EDCAA6B43DBAB0E8FEBEE25F532">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2869,7 +2869,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX3D925ECF926C44269C265397CAD2C9D9">
+			<Item class="CFrameValue" referent="RBX281F89B0EF7D494EB3D0529579B894A4">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2893,7 +2893,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX0F9148972CBF40A0B8CD8514BA244ED3">
+			<Item class="CFrameValue" referent="RBX5165B035927544FD9D50797A67484F04">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2917,7 +2917,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXEA6D9E16BD8D4974A403DE4426F185C7">
+			<Item class="CFrameValue" referent="RBX33E6AFF93DE4489195B0A23A9780F3DE">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2941,7 +2941,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX03AED86D97C74B069AD628137B626062">
+			<Item class="CFrameValue" referent="RBXFFF327AED5384515B9E15654EBBFF20B">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2965,7 +2965,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXAEED7ED71BDA4950A7D60AE3DC2BC07D">
+			<Item class="CFrameValue" referent="RBX82899AB392014A69B0F565152743E7AE">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -2989,7 +2989,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXDAE3E75AE73041E7BA5219E2C1988BC0">
+			<Item class="CFrameValue" referent="RBXB67A91EC0EAE4EA28E0231B44F2B695F">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -3013,7 +3013,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX586B3974CE4E420C828B25CD93AF3443">
+			<Item class="CFrameValue" referent="RBX3E9F861E8A55470EA8C0B198BD956394">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -3037,7 +3037,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXED9E1B57980A42DBB51DAAB9821AE768">
+			<Item class="CFrameValue" referent="RBX6AF0C0D489314596BD03AC4B5C81D8E1">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -3061,7 +3061,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXF4A705433D7644ECBA6842E27F04B7EC">
+			<Item class="CFrameValue" referent="RBXB9207A11C78A4EE79EF33CE199244D63">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -3085,7 +3085,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX716869015BA142DF832040208A59232B">
+			<Item class="CFrameValue" referent="RBX7E6BE15320054CD695F1AFACC9029081">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -3109,7 +3109,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXAC236AFF11C54C0AA3F80E5007AD9D3F">
+			<Item class="CFrameValue" referent="RBX1964B525A1D1414998F9CAFBF975975C">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -3133,7 +3133,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX6F0CD414E5DC4CCA9AF9AAAD24FA48E0">
+			<Item class="CFrameValue" referent="RBX33E2DE46104B4490832FA50A719AAAAC">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -3157,7 +3157,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX60855ED39FD84A87A59C02FF24571E40">
+			<Item class="CFrameValue" referent="RBXE5E543F91DA240D3A90A111491950A50">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -3181,7 +3181,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXD713732AB5E242F68461EE0CA565E209">
+			<Item class="CFrameValue" referent="RBX4FDCEA2A5ACC4906B99C48B4777E6B9C">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -3205,7 +3205,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX0490040C87CA459290CCC9D384389B09">
+			<Item class="CFrameValue" referent="RBX81A1891B3351411BBA13F202D52C3F52">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -3229,7 +3229,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX5318E5F72A634BF39AC9F0D8C73DB4DD">
+			<Item class="CFrameValue" referent="RBXCC11D3F64E4B438B9109502E81B42EB2">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -3253,7 +3253,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXEA096A860F1A4031846635BAC882F14E">
+			<Item class="CFrameValue" referent="RBX811988CDFE8146D18921ECF0D857D79A">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -3277,7 +3277,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXF0036646C0C0445C8ED5606AF26BFD48">
+			<Item class="CFrameValue" referent="RBXF8D59C0642ED4A48B18633CEAA3B0899">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -3301,7 +3301,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX61B3C0F0569A452EA7BB34E09E563ADD">
+			<Item class="CFrameValue" referent="RBXCB9DC2B03AC9477399CDC3B173A237A9">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -3325,7 +3325,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX04CDF5C434194272B7A428BF58410647">
+			<Item class="CFrameValue" referent="RBX033C5C0B100746E795E461D691964450">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -3349,7 +3349,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBX43853965E9A9445E9DE398914F8EDE54">
+			<Item class="CFrameValue" referent="RBX4378608B71D14828A6BBF378D9185C73">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -3373,7 +3373,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXA350ECAAB00848E785C7DC7CD7627F63">
+			<Item class="CFrameValue" referent="RBX501C46BBA2C1406AAA108903B0655D7A">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -3397,7 +3397,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXAB058FBFC39D415896B993B22E752376">
+			<Item class="CFrameValue" referent="RBX301DEE38D00C43D6AA7EDA506B4A383C">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -3421,7 +3421,7 @@
 					</CoordinateFrame>
 				</Properties>
 			</Item>
-			<Item class="CFrameValue" referent="RBXED103EC5CE5D4BF4BA3C40B682A63A9E">
+			<Item class="CFrameValue" referent="RBX97EC8B128B594AC3A5B6F7A41E0B8F56">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -3446,7 +3446,7 @@
 				</Properties>
 			</Item>
 		</Item>
-		<Item class="MeshPart" referent="RBX625D920EF5B5483EB5F76CA1156E2A89">
+		<Item class="MeshPart" referent="RBX04B1AC70085C48EA99430B8DEB7ACF8D">
 			<Properties>
 				<SharedString name="AeroMeshData">yuZpQdnvvUBOTYh1jqZ2cA==</SharedString>
 				<bool name="Anchored">false</bool>
@@ -3579,7 +3579,7 @@
 					<Z>3.30441141</Z>
 				</Vector3>
 			</Properties>
-			<Item class="Bone" referent="RBXF4025F2A580243B6951BFCA412CF357D">
+			<Item class="Bone" referent="RBXCF951C532DB343DBABBCA98E9BE9037B">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<CoordinateFrame name="CFrame">
@@ -3603,7 +3603,7 @@
 					<BinaryString name="Tags"></BinaryString>
 					<bool name="Visible">false</bool>
 				</Properties>
-				<Item class="Bone" referent="RBX1AF6FCF36C2A40A782044F694D34BBAA">
+				<Item class="Bone" referent="RBX1D6DA837F7BE4F91A7CC742AE9E349BC">
 					<Properties>
 						<BinaryString name="AttributesSerialize"></BinaryString>
 						<CoordinateFrame name="CFrame">
@@ -3627,7 +3627,7 @@
 						<BinaryString name="Tags"></BinaryString>
 						<bool name="Visible">false</bool>
 					</Properties>
-					<Item class="Bone" referent="RBXBBF12A5669CD4E9BBD7D714F47FB54DC">
+					<Item class="Bone" referent="RBX23C073F4F0854301AFD3EC8D93582E2B">
 						<Properties>
 							<BinaryString name="AttributesSerialize"></BinaryString>
 							<CoordinateFrame name="CFrame">
@@ -3651,7 +3651,7 @@
 							<BinaryString name="Tags"></BinaryString>
 							<bool name="Visible">false</bool>
 						</Properties>
-						<Item class="Bone" referent="RBX4F3DF83AD8B54245AF2AC51D0F7B30FC">
+						<Item class="Bone" referent="RBX0D0F53D397194C06993BC04B8A2DB1B5">
 							<Properties>
 								<BinaryString name="AttributesSerialize"></BinaryString>
 								<CoordinateFrame name="CFrame">
@@ -3675,7 +3675,7 @@
 								<BinaryString name="Tags"></BinaryString>
 								<bool name="Visible">false</bool>
 							</Properties>
-							<Item class="Bone" referent="RBX2EBD718A8B0A48E483896833FBDC8EC6">
+							<Item class="Bone" referent="RBXA96835DC0F094B1EBCCADFD818191A80">
 								<Properties>
 									<BinaryString name="AttributesSerialize"></BinaryString>
 									<CoordinateFrame name="CFrame">
@@ -3702,7 +3702,7 @@
 							</Item>
 						</Item>
 					</Item>
-					<Item class="Bone" referent="RBXFF85B9046C594DCEBBFB6936C2C901A8">
+					<Item class="Bone" referent="RBX333E4D330F364B3BA9EA6A9485893F34">
 						<Properties>
 							<BinaryString name="AttributesSerialize"></BinaryString>
 							<CoordinateFrame name="CFrame">
@@ -3726,7 +3726,7 @@
 							<BinaryString name="Tags"></BinaryString>
 							<bool name="Visible">false</bool>
 						</Properties>
-						<Item class="Bone" referent="RBX41652580F23B40D7B21D565706BE35D5">
+						<Item class="Bone" referent="RBXA626B61277B9435E91E76E7FA75619B9">
 							<Properties>
 								<BinaryString name="AttributesSerialize"></BinaryString>
 								<CoordinateFrame name="CFrame">
@@ -3750,7 +3750,7 @@
 								<BinaryString name="Tags"></BinaryString>
 								<bool name="Visible">false</bool>
 							</Properties>
-							<Item class="Bone" referent="RBXE69835CC344C4D8885C2A79C593D1B1A">
+							<Item class="Bone" referent="RBX2051CBCD7BEE419EACD824E39A958789">
 								<Properties>
 									<BinaryString name="AttributesSerialize"></BinaryString>
 									<CoordinateFrame name="CFrame">
@@ -3774,7 +3774,7 @@
 									<BinaryString name="Tags"></BinaryString>
 									<bool name="Visible">false</bool>
 								</Properties>
-								<Item class="Bone" referent="RBXCDF3D2B2FB5D42A69D8AABF6BFE31039">
+								<Item class="Bone" referent="RBX6DB436D278FF4CF2A56D36A74DB583C5">
 									<Properties>
 										<BinaryString name="AttributesSerialize"></BinaryString>
 										<CoordinateFrame name="CFrame">
@@ -3798,7 +3798,7 @@
 										<BinaryString name="Tags"></BinaryString>
 										<bool name="Visible">false</bool>
 									</Properties>
-									<Item class="Bone" referent="RBX48FD7DE008B74140A7AE9EBB1A3321D1">
+									<Item class="Bone" referent="RBXF9FB4D17E6E44D8B8BD938C1E5CE86C9">
 										<Properties>
 											<BinaryString name="AttributesSerialize"></BinaryString>
 											<CoordinateFrame name="CFrame">
@@ -3822,7 +3822,7 @@
 											<BinaryString name="Tags"></BinaryString>
 											<bool name="Visible">false</bool>
 										</Properties>
-										<Item class="Bone" referent="RBX38B229AFAA5D4326BBA2A690845FB69A">
+										<Item class="Bone" referent="RBX2490C5CC0EAD41AF9A963AD316CD9C45">
 											<Properties>
 												<BinaryString name="AttributesSerialize"></BinaryString>
 												<CoordinateFrame name="CFrame">
@@ -3848,7 +3848,7 @@
 											</Properties>
 										</Item>
 									</Item>
-									<Item class="Bone" referent="RBXB9A4C5F156894B33B51C75D25492B444">
+									<Item class="Bone" referent="RBX0157C903EB4D42B2A4FED67F347DB888">
 										<Properties>
 											<BinaryString name="AttributesSerialize"></BinaryString>
 											<CoordinateFrame name="CFrame">
@@ -3872,7 +3872,7 @@
 											<BinaryString name="Tags"></BinaryString>
 											<bool name="Visible">false</bool>
 										</Properties>
-										<Item class="Bone" referent="RBX13D76CDD6741418DB8055EA8E03A4053">
+										<Item class="Bone" referent="RBX94579737B6E14ABCB2C4D4839C0D0832">
 											<Properties>
 												<BinaryString name="AttributesSerialize"></BinaryString>
 												<CoordinateFrame name="CFrame">
@@ -3898,7 +3898,7 @@
 											</Properties>
 										</Item>
 									</Item>
-									<Item class="Bone" referent="RBX451273612B48439CB3AC972B927BF469">
+									<Item class="Bone" referent="RBXFDC8D1BDE10C4791B413A3631C5BAFB1">
 										<Properties>
 											<BinaryString name="AttributesSerialize"></BinaryString>
 											<CoordinateFrame name="CFrame">
@@ -3922,7 +3922,7 @@
 											<BinaryString name="Tags"></BinaryString>
 											<bool name="Visible">false</bool>
 										</Properties>
-										<Item class="Bone" referent="RBXDB9C89C6D84943D09547A7265237D327">
+										<Item class="Bone" referent="RBXC80C2E6D7176473DB0A673F1F9657F19">
 											<Properties>
 												<BinaryString name="AttributesSerialize"></BinaryString>
 												<CoordinateFrame name="CFrame">
@@ -3952,7 +3952,7 @@
 							</Item>
 						</Item>
 					</Item>
-					<Item class="Bone" referent="RBX3C9783398F5E4798BA5130FD5C84412F">
+					<Item class="Bone" referent="RBXE5208AAB22BD4D01A835E07AA6DE42A9">
 						<Properties>
 							<BinaryString name="AttributesSerialize"></BinaryString>
 							<CoordinateFrame name="CFrame">
@@ -3976,7 +3976,7 @@
 							<BinaryString name="Tags"></BinaryString>
 							<bool name="Visible">false</bool>
 						</Properties>
-						<Item class="Bone" referent="RBX24ED7F556AFE4EF88E136120CC62C666">
+						<Item class="Bone" referent="RBX26AD2F2AEF4D4FB5A450702A537BBA31">
 							<Properties>
 								<BinaryString name="AttributesSerialize"></BinaryString>
 								<CoordinateFrame name="CFrame">
@@ -4002,7 +4002,7 @@
 							</Properties>
 						</Item>
 					</Item>
-					<Item class="Bone" referent="RBXA887557944E5468F9EB1D2528E91D81A">
+					<Item class="Bone" referent="RBX81E09BF661FC411D81B67B41E61EEDC4">
 						<Properties>
 							<BinaryString name="AttributesSerialize"></BinaryString>
 							<CoordinateFrame name="CFrame">
@@ -4026,7 +4026,7 @@
 							<BinaryString name="Tags"></BinaryString>
 							<bool name="Visible">false</bool>
 						</Properties>
-						<Item class="Bone" referent="RBXC557C666E57B4BA395D5B70FC2DDDA2F">
+						<Item class="Bone" referent="RBX1C852AF66FAA40849C50075B2AEF4896">
 							<Properties>
 								<BinaryString name="AttributesSerialize"></BinaryString>
 								<CoordinateFrame name="CFrame">
@@ -4050,7 +4050,7 @@
 								<BinaryString name="Tags"></BinaryString>
 								<bool name="Visible">false</bool>
 							</Properties>
-							<Item class="Bone" referent="RBX371520A2ED0447389EBC85F7DFA60047">
+							<Item class="Bone" referent="RBX003E7DE9FCC240488D6BF2291467EEFB">
 								<Properties>
 									<BinaryString name="AttributesSerialize"></BinaryString>
 									<CoordinateFrame name="CFrame">
@@ -4074,7 +4074,7 @@
 									<BinaryString name="Tags"></BinaryString>
 									<bool name="Visible">false</bool>
 								</Properties>
-								<Item class="Bone" referent="RBX1B7529E5AEA348DDAC0232BC35CA93B6">
+								<Item class="Bone" referent="RBXFABD88082EE249128B6298AB6213F6A3">
 									<Properties>
 										<BinaryString name="AttributesSerialize"></BinaryString>
 										<CoordinateFrame name="CFrame">
@@ -4098,7 +4098,7 @@
 										<BinaryString name="Tags"></BinaryString>
 										<bool name="Visible">false</bool>
 									</Properties>
-									<Item class="Bone" referent="RBX25CE0BABFCBA4EC4B2F38CA77BB31E08">
+									<Item class="Bone" referent="RBX0197C22F54794969AB4366964336C081">
 										<Properties>
 											<BinaryString name="AttributesSerialize"></BinaryString>
 											<CoordinateFrame name="CFrame">
@@ -4122,7 +4122,7 @@
 											<BinaryString name="Tags"></BinaryString>
 											<bool name="Visible">false</bool>
 										</Properties>
-										<Item class="Bone" referent="RBX521A82653A8B405E973B5015AF318C28">
+										<Item class="Bone" referent="RBX6603F1D296AA4685863114D41603D616">
 											<Properties>
 												<BinaryString name="AttributesSerialize"></BinaryString>
 												<CoordinateFrame name="CFrame">
@@ -4148,7 +4148,7 @@
 											</Properties>
 										</Item>
 									</Item>
-									<Item class="Bone" referent="RBX4DA05B0B025C44119E422E1B9591BA00">
+									<Item class="Bone" referent="RBX3CFC613ABFCA43EF9266F58EC0A7B849">
 										<Properties>
 											<BinaryString name="AttributesSerialize"></BinaryString>
 											<CoordinateFrame name="CFrame">
@@ -4172,7 +4172,7 @@
 											<BinaryString name="Tags"></BinaryString>
 											<bool name="Visible">false</bool>
 										</Properties>
-										<Item class="Bone" referent="RBX02E4284456D74958865540195A8C3A51">
+										<Item class="Bone" referent="RBX37DB9F6073424C9EA37FE82D84F07942">
 											<Properties>
 												<BinaryString name="AttributesSerialize"></BinaryString>
 												<CoordinateFrame name="CFrame">
@@ -4198,7 +4198,7 @@
 											</Properties>
 										</Item>
 									</Item>
-									<Item class="Bone" referent="RBX455FE8E6DEFC49D187045A97B8C8A21C">
+									<Item class="Bone" referent="RBXC50E769089BB4A698907F911D759B377">
 										<Properties>
 											<BinaryString name="AttributesSerialize"></BinaryString>
 											<CoordinateFrame name="CFrame">
@@ -4222,7 +4222,7 @@
 											<BinaryString name="Tags"></BinaryString>
 											<bool name="Visible">false</bool>
 										</Properties>
-										<Item class="Bone" referent="RBX95FCEFC0C03C4EB39BD77AD01128D28B">
+										<Item class="Bone" referent="RBX08A1BFA5595B4BC9ABDE78BE658C56B8">
 											<Properties>
 												<BinaryString name="AttributesSerialize"></BinaryString>
 												<CoordinateFrame name="CFrame">
@@ -4253,7 +4253,7 @@
 						</Item>
 					</Item>
 				</Item>
-				<Item class="Bone" referent="RBXB5EB10644A4A41DAA80CB94E619062E1">
+				<Item class="Bone" referent="RBX1FE995789C574D96A0115D0B2AF60941">
 					<Properties>
 						<BinaryString name="AttributesSerialize"></BinaryString>
 						<CoordinateFrame name="CFrame">
@@ -4277,7 +4277,7 @@
 						<BinaryString name="Tags"></BinaryString>
 						<bool name="Visible">false</bool>
 					</Properties>
-					<Item class="Bone" referent="RBX26D40E9A1C6C426686C4200C9BE1D1C1">
+					<Item class="Bone" referent="RBX81E6464656134867A6523688B5767705">
 						<Properties>
 							<BinaryString name="AttributesSerialize"></BinaryString>
 							<CoordinateFrame name="CFrame">
@@ -4301,7 +4301,7 @@
 							<BinaryString name="Tags"></BinaryString>
 							<bool name="Visible">false</bool>
 						</Properties>
-						<Item class="Bone" referent="RBXBF3AC144AF9F4B5A8EB8799508167FC3">
+						<Item class="Bone" referent="RBXAA7C21CE2B9B4F85824FC6D40090BC41">
 							<Properties>
 								<BinaryString name="AttributesSerialize"></BinaryString>
 								<CoordinateFrame name="CFrame">
@@ -4328,7 +4328,7 @@
 						</Item>
 					</Item>
 				</Item>
-				<Item class="Bone" referent="RBXD87E1DB5960E4107B4AB66558AD26178">
+				<Item class="Bone" referent="RBX76A2D23C7769433F9C334798EB88AD91">
 					<Properties>
 						<BinaryString name="AttributesSerialize"></BinaryString>
 						<CoordinateFrame name="CFrame">
@@ -4352,7 +4352,7 @@
 						<BinaryString name="Tags"></BinaryString>
 						<bool name="Visible">false</bool>
 					</Properties>
-					<Item class="Bone" referent="RBX67350BBAACFF424898AC1022120A4F18">
+					<Item class="Bone" referent="RBX5A9437B8ECF840C7A042BBD5A8CCE1B5">
 						<Properties>
 							<BinaryString name="AttributesSerialize"></BinaryString>
 							<CoordinateFrame name="CFrame">
@@ -4376,7 +4376,7 @@
 							<BinaryString name="Tags"></BinaryString>
 							<bool name="Visible">false</bool>
 						</Properties>
-						<Item class="Bone" referent="RBX474FF37030214CC98A891201A175C3A0">
+						<Item class="Bone" referent="RBXDBF89FDB156F46D9BB78169C75E6B3BE">
 							<Properties>
 								<BinaryString name="AttributesSerialize"></BinaryString>
 								<CoordinateFrame name="CFrame">
@@ -4405,7 +4405,7 @@
 				</Item>
 			</Item>
 		</Item>
-		<Item class="AnimationController" referent="RBXC4FA9A7354F0433DACDAE90893AD1495">
+		<Item class="AnimationController" referent="RBX3B039177B2894ACCBFA44974EFE368E0">
 			<Properties>
 				<BinaryString name="AttributesSerialize"></BinaryString>
 				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -4414,7 +4414,7 @@
 				<int64 name="SourceAssetId">-1</int64>
 				<BinaryString name="Tags"></BinaryString>
 			</Properties>
-			<Item class="Animator" referent="RBX0ACF840CC673461983236D9B454FB627">
+			<Item class="Animator" referent="RBX6133860D24A24786A994B03C236D6A36">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -4426,7 +4426,7 @@
 				</Properties>
 			</Item>
 		</Item>
-		<Item class="Part" referent="RBX8E57D5ECBA1A4C3D991FD1DDA39B1813">
+		<Item class="Part" referent="RBXA2A847766007493A94152B8F0D8DEF2F">
 			<Properties>
 				<bool name="Anchored">false</bool>
 				<BinaryString name="AttributesSerialize"></BinaryString>
@@ -4462,7 +4462,12 @@
 				<int name="CollisionGroupId">0</int>
 				<Color3uint8 name="Color3uint8">4288914085</Color3uint8>
 				<PhysicalProperties name="CustomPhysicalProperties">
-					<CustomPhysics>false</CustomPhysics>
+					<CustomPhysics>true</CustomPhysics>
+					<Density>0.5</Density>
+					<Friction>2</Friction>
+					<Elasticity>0</Elasticity>
+					<FrictionWeight>100</FrictionWeight>
+					<ElasticityWeight>1</ElasticityWeight>
 				</PhysicalProperties>
 				<bool name="DefinesCapabilities">false</bool>
 				<bool name="EnableFluidForces">true</bool>
@@ -4524,7 +4529,7 @@
 					<Z>2.5</Z>
 				</Vector3>
 			</Properties>
-			<Item class="Weld" referent="RBXBA73532A36C743049F0494D1AD210EF2">
+			<Item class="Weld" referent="RBX9244D9A71C50487880DBAB749FF12DFA">
 				<Properties>
 					<BinaryString name="AttributesSerialize"></BinaryString>
 					<CoordinateFrame name="C0">
@@ -4559,8 +4564,8 @@
 					<bool name="DefinesCapabilities">false</bool>
 					<bool name="Enabled">true</bool>
 					<string name="Name">LP_Roslyn</string>
-					<Ref name="Part0">RBX8E57D5ECBA1A4C3D991FD1DDA39B1813</Ref>
-					<Ref name="Part1">RBX625D920EF5B5483EB5F76CA1156E2A89</Ref>
+					<Ref name="Part0">RBXA2A847766007493A94152B8F0D8DEF2F</Ref>
+					<Ref name="Part1">RBX04B1AC70085C48EA99430B8DEB7ACF8D</Ref>
 					<int64 name="SourceAssetId">-1</int64>
 					<BinaryString name="Tags"></BinaryString>
 				</Properties>

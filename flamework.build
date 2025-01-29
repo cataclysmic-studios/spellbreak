@@ -19,7 +19,10 @@
 		"spellbreak-rewrite:dist/client/controllers/character-manager@CharacterController": "client/controllers/character-manager@CharacterController",
 		"spellbreak-rewrite:dist/client/classes/character-manager@CharacterController": "client/classes/character-manager@CharacterController",
 		"spellbreak-rewrite:dist/client/camera-poses/character@CharacterCameraPose": "client/camera-poses/character@CharacterCameraPose",
-		"spellbreak-rewrite:dist/client/controllers/camera@CameraController": "client/controllers/camera@CameraController"
+		"spellbreak-rewrite:dist/client/controllers/camera@CameraController": "client/controllers/camera@CameraController",
+		"spellbreak-rewrite:dist/client/controllers/movement@MovementController": "client/controllers/movement@MovementController",
+		"spellbreak-rewrite:dist/client/decorators@OnInput": "client/decorators@OnInput",
+		"spellbreak-rewrite:dist/client/decorators@OnInputRelease": "client/decorators@OnInputRelease"
 	},
 	"metadata": {
 		"globs": {

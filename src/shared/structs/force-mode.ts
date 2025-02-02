@@ -1,4 +1,5 @@
 export const enum ForceMode {
   Impulse,
-  Velocity
+  Force,
+  VelocityChange
 }

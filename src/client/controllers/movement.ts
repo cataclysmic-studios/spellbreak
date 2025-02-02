@@ -3,6 +3,7 @@ import { Lazy } from "@rbxts/lazy";
 import { InputManager, StandardActionBuilder } from "@rbxts/mechanism";
 
 import { character } from "client/constants";
+import { ForceMode } from "shared/structs/force-mode";
 
 // TODO: controller binds
 const forwardAction = new StandardActionBuilder("W", "Up");
@@ -43,7 +44,7 @@ export class MovementController implements OnStart, OnPhysics {
     const velocity = character.getCFrame().LookVector.mul(positionalInput * this.walkSpeed);
     if (velocity.Magnitude === 0 && turnInput === 0) return;
 
-    character.setLinearVelocity(velocity);
+    character.setVelocity(velocity);
     this.turnAngle += turnInput * (this.turnSpeed / 10);
   }
 

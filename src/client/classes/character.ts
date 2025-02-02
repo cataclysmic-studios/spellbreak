@@ -1,12 +1,14 @@
 import { ForceMode } from "shared/structs/force-mode";
 
-export class Character<Model extends CharacterModel = CharacterModel> {
+export class Character<TModel extends CharacterModel = CharacterModel> {
+  public readonly collider: TModel["Collider"];
   public readonly attachment: Attachment;
 
   public constructor(
-    public readonly model: Model
+    private readonly model: TModel
   ) {
-    this.attachment = new Instance("Attachment", model.Collider);
+    this.collider = model.WaitForChild("Collider");
+    this.attachment = new Instance("Attachment", this.collider);
     this.attachment.Orientation = new Vector3(90, 0, 0);
   }
 
@@ -15,7 +17,7 @@ export class Character<Model extends CharacterModel = CharacterModel> {
   }
 
   public getCFrame(): CFrame {
-    return this.model.Collider.CFrame;
+    return this.collider.CFrame;
   }
 
   public setCFrame(cframe: CFrame): void {

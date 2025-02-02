@@ -2,3 +2,4 @@
 /dist
 /include
 *.tsbuildinfo
+*.build

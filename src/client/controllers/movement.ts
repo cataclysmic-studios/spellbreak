@@ -21,7 +21,7 @@ export class MovementController implements OnStart, OnPhysics {
   private readonly walkSpeed = 16;
   private readonly turnSpeed = 5.5;
   private readonly alignOrientation = new Lazy(() => {
-    const alignOrientation = new Instance("AlignOrientation", character.model.Collider);
+    const alignOrientation = new Instance("AlignOrientation", character.collider);
     alignOrientation.RigidityEnabled = true;
     alignOrientation.ReactionTorqueEnabled = true;
     alignOrientation.Mode = Enum.OrientationAlignmentMode.OneAttachment;
@@ -31,7 +31,6 @@ export class MovementController implements OnStart, OnPhysics {
   }).getValue();
 
   private turnAngle = 0;
-
   public onStart(): void {
     this.updateOrientationAlignment();
   }

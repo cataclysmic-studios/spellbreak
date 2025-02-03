@@ -5,6 +5,7 @@ import { AnchorPoints, Positions } from "../utility/positioning";
 import { Images } from "../utility/images";
 
 interface ParchmentBannerProps {
+  readonly name?: Derivable<string>;
   readonly text: Derivable<string>;
   readonly textSize: Derivable<number>;
   readonly textColor: Derivable<Color3>;
@@ -14,11 +15,12 @@ interface ParchmentBannerProps {
   readonly zIndex?: Derivable<number>;
 }
 
-export function ParchmentBanner({ text, textSize, textColor, size, position, anchorPoint, zIndex }: ParchmentBannerProps) {
+export function ParchmentBanner({ name, text, textSize, textColor, size, position, anchorPoint, zIndex }: ParchmentBannerProps) {
   const px = usePx();
 
   return (
     <imagelabel
+      Name={name}
       BackgroundTransparency={1}
       Image={Images.ParchmentBanner}
       AnchorPoint={anchorPoint}

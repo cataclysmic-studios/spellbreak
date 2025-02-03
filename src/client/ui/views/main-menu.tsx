@@ -11,18 +11,15 @@ import { Palette } from "../palette";
 
 export function MainMenu() {
   const px = usePx();
-  const verticalPadding = new UDim(0, px(15));
   const mainButtonSize = new UDim2(0, px(210), 1, 0);
   const otherButtonSize = new UDim2(0, px(125), 0.75, 0);
 
   return (
     <OnlyInPlace placeID={PlaceID.MainMenu}>
       {() => <>
-        <uipadding
-          PaddingTop={verticalPadding}
-          PaddingBottom={verticalPadding}
-        />
-        <ParchmentBanner
+        <uiaspectratioconstraint AspectRatio={16 / 9} />
+        <uipadding PaddingBottom={new UDim(0, px(15))} />
+        <ParchmentBanner name="NameBanner"
           anchorPoint={AnchorPoints.topCenter}
           position={Positions.topCenter}
           size={UDim2.fromOffset(px(800), px(80))}
@@ -31,9 +28,9 @@ export function MainMenu() {
           text="Wolf BearWielder"
           zIndex={1}
         />
-        <ParchmentBanner
+        <ParchmentBanner name="DescriptionBanner"
           anchorPoint={AnchorPoints.topCenter}
-          position={Positions.topCenter.add(UDim2.fromScale(0, 0.0625))}
+          position={Positions.topCenter.add(UDim2.fromOffset(0, px(48)))}
           size={UDim2.fromOffset(px(700), px(80))}
           textSize={px(21)}
           textColor={Palette.blue}

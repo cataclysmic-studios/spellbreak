@@ -43,6 +43,7 @@ export function WizButton({ text, size, active }: WizButtonProps) {
         print(read(text) + " button clicked!");
       }}
     >
+      <GoldStroke thickness={px(2)} transparency={transparencyIncrement} />
       <frame
         AnchorPoint={AnchorPoints.center}
         Position={Positions.center}
@@ -67,7 +68,6 @@ export function WizButton({ text, size, active }: WizButtonProps) {
           PaddingBottom={verticalTextPadding}
         />
       </textlabel>
-      <GoldStroke thickness={px(2)} transparency={transparencyIncrement} />
     </imagebutton>
   );
 }

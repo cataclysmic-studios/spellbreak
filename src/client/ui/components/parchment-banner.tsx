@@ -32,7 +32,7 @@ export function ParchmentBanner({ name, text, textSize, textColor, size, positio
     >
       <WizText
         text={text}
-        position={Positions.center.sub(UDim2.fromScale(0, 0.07))}
+        position={Positions.center.sub(UDim2.fromScale(0, 0.23))}
         textSize={textSize}
         textColor={textColor}
       >

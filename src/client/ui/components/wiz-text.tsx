@@ -17,7 +17,7 @@ export interface WizTextProps {
 export function WizText({ text, textSize, textColor, transparency, size, position, anchorPoint, children }: WizTextProps) {
   return (
     <textlabel
-      AnchorPoint={read(anchorPoint ?? AnchorPoints.center)}
+      AnchorPoint={anchorPoint ?? AnchorPoints.center}
       Position={read(position ?? Positions.center).add(UDim2.fromScale(0, 0.08))}
       Text={read(text).upper()}
       BackgroundTransparency={1}

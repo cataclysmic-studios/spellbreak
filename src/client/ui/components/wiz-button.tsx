@@ -5,6 +5,7 @@ import { Palette } from "../palette";
 import { AnchorPoints, Positions } from "../utility/positioning";
 import { Images } from "../utility/images";
 
+import { Container } from "../utility/components/container";
 import { GoldStroke } from "./gold-stroke";
 import { WizText } from "./wiz-text";
 
@@ -46,14 +47,9 @@ export function WizButton({ text, size, active }: WizButtonProps) {
       }}
     >
       <GoldStroke thickness={px(2)} transparency={transparencyIncrement} />
-      <frame
-        AnchorPoint={AnchorPoints.center}
-        Position={Positions.center}
-        BackgroundTransparency={1}
-        Size={UDim2.fromScale(1, 1).sub(UDim2.fromOffset(px.even(5.5), px.even(5.5)))}
-      >
+      <Container size={UDim2.fromScale(1, 1).sub(UDim2.fromOffset(px.even(5.5), px.even(5.5)))}>
         <GoldStroke thickness={px(1)} transparency={transparencyIncrement} />
-      </frame>
+      </Container>
       <WizText
         text={text}
         size={UDim2.fromScale(1, 1)}

@@ -1,13 +1,14 @@
 import Vide from "@rbxts/vide";
 
 import { usePx } from "../hooks/use-px";
+import { Palette } from "../palette";
 import { AnchorPoints, Positions } from "../utility/positioning";
 import { PlaceID } from "shared/structs/place-id";
 
-import { OnlyInPlace } from "../components/only-in-place";
+import { Container } from "../utility/components/container";
+import { OnlyInPlace } from "../utility/components/only-in-place";
 import { WizButton } from "../components/wiz-button";
 import { ParchmentBanner } from "../components/parchment-banner";
-import { Palette } from "../palette";
 
 export function MainMenu() {
   const px = usePx();
@@ -41,12 +42,10 @@ export function MainMenu() {
             text="Level 170 (Supreme Necromancer)\nHope Springs"
             zIndex={0}
           />
-          <frame
-            Name="Buttons"
-            BackgroundTransparency={1}
-            AnchorPoint={AnchorPoints.bottomCenter}
-            Position={Positions.bottomCenter}
-            Size={UDim2.fromOffset(px(800), px(45))}
+          <Container name="Buttons"
+            anchorPoint={AnchorPoints.bottomCenter}
+            position={Positions.bottomCenter}
+            size={UDim2.fromOffset(px(800), px(45))}
           >
             <uilistlayout
               FillDirection={Enum.FillDirection.Horizontal}
@@ -59,7 +58,7 @@ export function MainMenu() {
             <WizButton text="Play" size={mainButtonSize} />
             <WizButton text="Delete" size={otherButtonSize} />
             <WizButton text="New" size={otherButtonSize} active={false} />
-          </frame>
+          </Container>
         </>}
     </OnlyInPlace>
   );

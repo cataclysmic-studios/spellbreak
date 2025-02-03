@@ -38,10 +38,7 @@ export function ParchmentBanner({ name, text, textSize, textColor, size, positio
         TextSize={textSize}
         TextColor3={textColor}
       >
-        <uistroke
-          Thickness={px(1.4)}
-          Transparency={0.4}
-        />
+        <uistroke Thickness={px.scale(1.4)} Transparency={0.4} />
       </textlabel>
     </imagelabel>
   );

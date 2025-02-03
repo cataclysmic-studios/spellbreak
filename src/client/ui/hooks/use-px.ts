@@ -24,7 +24,7 @@ interface ScaleFunction {
   ceil: (pixels: number) => number;
 }
 
-const BASE_RESOLUTION = new Vector2(1280, 832);
+const BASE_RESOLUTION = new Vector2(1440, 1080);
 const MIN_SCALE = 0.75;
 const DOMINANT_AXIS = 0.5;
 
@@ -36,7 +36,7 @@ function calculateScale(viewport: Vector2) {
   const height = math.log(viewport.Y / BASE_RESOLUTION.Y, 2);
   const centered = width + (height - width) * DOMINANT_AXIS;
 
-  return math.max(2 ** centered, MIN_SCALE);
+  return math.max(2 ** centered, MIN_SCALE) * State.uiScale();
 }
 
 export function usePx(): ScaleFunction {
@@ -52,10 +52,10 @@ export function usePx(): ScaleFunction {
 
   return usePrevious(() => {
     const api = {
-      even: (value: number) => math.round(value * scale() * 0.5 * State.uiScale()) * 2,
-      scale: (value: number) => value * scale() * State.uiScale(),
-      floor: (value: number) => math.floor(value * scale() * State.uiScale()),
-      ceil: (value: number) => math.ceil(value * scale() * State.uiScale()),
+      even: (value: number) => math.round(value * scale() * 0.5) * 2,
+      scale: (value: number) => value * scale(),
+      floor: (value: number) => math.floor(value * scale()),
+      ceil: (value: number) => math.ceil(value * scale()),
     };
 
     setmetatable(api, {

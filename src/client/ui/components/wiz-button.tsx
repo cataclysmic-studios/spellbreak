@@ -48,7 +48,7 @@ export function WizButton({ text, size, active }: WizButtonProps) {
         AnchorPoint={AnchorPoints.center}
         Position={Positions.center}
         BackgroundTransparency={1}
-        Size={UDim2.fromScale(1, 1).sub(UDim2.fromOffset(px(6), px(6)))}
+        Size={UDim2.fromScale(1, 1).sub(UDim2.fromOffset(px.even(5.5), px.even(5.5)))}
       >
         <GoldStroke thickness={px(1)} transparency={transparencyIncrement} />
       </frame>

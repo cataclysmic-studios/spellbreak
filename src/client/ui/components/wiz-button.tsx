@@ -4,7 +4,9 @@ import { usePx } from "../hooks/use-px";
 import { Palette } from "../palette";
 import { AnchorPoints, Positions } from "../utility/positioning";
 import { Images } from "../utility/images";
+
 import { GoldStroke } from "./gold-stroke";
+import { WizText } from "./wiz-text";
 
 interface WizButtonProps {
   readonly text: Derivable<string>;
@@ -52,22 +54,17 @@ export function WizButton({ text, size, active }: WizButtonProps) {
       >
         <GoldStroke thickness={px(1)} transparency={transparencyIncrement} />
       </frame>
-      <textlabel
-        AnchorPoint={AnchorPoints.center}
-        Position={Positions.center.add(UDim2.fromScale(0, 0.08))}
-        Text={read(text).upper()}
-        BackgroundTransparency={1}
-        Size={UDim2.fromScale(1, 1)}
-        Font={Enum.Font.LuckiestGuy}
-        TextSize={px(24)}
-        TextColor3={Palette.yellow}
-        TextTransparency={transparencyIncrement}
+      <WizText
+        text={text}
+        size={UDim2.fromScale(1, 1)}
+        transparency={transparencyIncrement}
+        textSize={px(24)}
       >
         <uipadding
           PaddingTop={verticalTextPadding}
           PaddingBottom={verticalTextPadding}
         />
-      </textlabel>
+      </WizText>
     </imagebutton>
   );
 }

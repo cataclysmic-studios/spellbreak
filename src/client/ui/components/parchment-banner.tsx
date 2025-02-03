@@ -1,8 +1,10 @@
-import Vide, { Derivable, read } from "@rbxts/vide";
+import Vide, { Derivable } from "@rbxts/vide";
 
 import { usePx } from "../hooks/use-px";
-import { AnchorPoints, Positions } from "../utility/positioning";
+import { Positions } from "../utility/positioning";
 import { Images } from "../utility/images";
+
+import { WizText } from "./wiz-text";
 
 interface ParchmentBannerProps {
   readonly name?: Derivable<string>;
@@ -28,18 +30,14 @@ export function ParchmentBanner({ name, text, textSize, textColor, size, positio
       Size={size}
       ZIndex={zIndex}
     >
-      <textlabel
-        AnchorPoint={AnchorPoints.center}
-        Position={Positions.center.sub(UDim2.fromScale(0, 0.15))}
-        Text={read(text).upper()}
-        BackgroundTransparency={1}
-        Size={UDim2.fromScale(1, 1)}
-        Font={Enum.Font.LuckiestGuy}
-        TextSize={textSize}
-        TextColor3={textColor}
+      <WizText
+        text={text}
+        position={Positions.center.sub(UDim2.fromScale(0, 0.07))}
+        textSize={textSize}
+        textColor={textColor}
       >
         <uistroke Thickness={px.scale(1.4)} Transparency={0.4} />
-      </textlabel>
+      </WizText>
     </imagelabel>
   );
 }

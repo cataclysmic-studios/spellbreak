@@ -8,7 +8,6 @@ import { OnlyInPlace } from "../components/only-in-place";
 import { WizButton } from "../components/wiz-button";
 import { ParchmentBanner } from "../components/parchment-banner";
 import { Palette } from "../palette";
-import { State } from "../state";
 
 export function MainMenu() {
   const px = usePx();
@@ -30,7 +29,7 @@ export function MainMenu() {
             size={UDim2.fromOffset(px(800), px(80))}
             textSize={px(32)}
             textColor={Palette.blue}
-            text="Wolf BearWielder"
+            text="Roslyn ShadowWraith"
             zIndex={1}
           />
           <ParchmentBanner name="DescriptionBanner"
@@ -39,7 +38,7 @@ export function MainMenu() {
             size={UDim2.fromOffset(px(700), px(80))}
             textSize={px(21)}
             textColor={Palette.blue}
-            text="Level 125 (Champion Pyromancer)\nWizard City Library"
+            text="Level 170 (Supreme Necromancer)\nHope Springs"
             zIndex={0}
           />
           <frame

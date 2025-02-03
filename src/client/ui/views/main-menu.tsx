@@ -6,6 +6,8 @@ import { PlaceID } from "shared/structs/place-id";
 
 import { OnlyInPlace } from "../components/main-menu-only";
 import { WizButton } from "../components/wiz-button";
+import { ParchmentBanner } from "../components/parchment-banner";
+import { Palette } from "../palette";
 
 export function MainMenu() {
   const px = usePx();
@@ -19,6 +21,24 @@ export function MainMenu() {
         <uipadding
           PaddingTop={verticalPadding}
           PaddingBottom={verticalPadding}
+        />
+        <ParchmentBanner
+          anchorPoint={AnchorPoints.topCenter}
+          position={Positions.topCenter}
+          size={UDim2.fromOffset(px(800), px(80))}
+          textSize={px(32)}
+          textColor={Palette.blue}
+          text="Wolf BearWielder"
+          zIndex={1}
+        />
+        <ParchmentBanner
+          anchorPoint={AnchorPoints.topCenter}
+          position={Positions.topCenter.add(UDim2.fromScale(0, 0.0625))}
+          size={UDim2.fromOffset(px(700), px(80))}
+          textSize={px(21)}
+          textColor={Palette.blue}
+          text="Level 125 (Champion Pyromancer)\nWizard City Library"
+          zIndex={0}
         />
         <frame
           Name="Buttons"

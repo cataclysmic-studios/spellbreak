@@ -36,11 +36,11 @@ export function WizButton({ text, size, active }: WizButtonProps) {
       MouseLeave={() => backgroundColor(defaultBackgroundColor)}
       MouseEnter={() => {
         if (!isActive()) return;
-        backgroundColor(Palette.deepRed)
+        backgroundColor(Palette.deepRed);
       }}
       Activated={() => {
         if (!isActive()) return;
-        print(read(text) + " button clicked!")
+        print(read(text) + " button clicked!");
       }}
     >
       <frame

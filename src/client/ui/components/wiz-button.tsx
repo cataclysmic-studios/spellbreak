@@ -16,7 +16,7 @@ interface WizButtonProps {
 }
 
 export function WizButton({ text, size, active }: WizButtonProps) {
-  const defaultBackgroundColor = Palette.darkRed;
+  const defaultBackgroundColor = Palette.deepRed;
   const backgroundColor = source(defaultBackgroundColor);
   const px = usePx();
 
@@ -39,7 +39,7 @@ export function WizButton({ text, size, active }: WizButtonProps) {
       MouseLeave={() => backgroundColor(defaultBackgroundColor)}
       MouseEnter={() => {
         if (!isActive()) return;
-        backgroundColor(Palette.deepRed);
+        backgroundColor(Palette.red);
       }}
       Activated={() => {
         if (!isActive()) return;

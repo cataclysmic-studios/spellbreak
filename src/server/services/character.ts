@@ -1,4 +1,5 @@
 import { Service } from "@flamework/core";
+import { getDescendantsOfType } from "@rbxts/instance-utility";
 import { Workspace as World } from "@rbxts/services";
 
 import type { OnPlayerJoin } from "server/hooks/players";
@@ -11,7 +12,7 @@ export class CharacterService implements OnPlayerJoin {
   }
 
   public load(player: Player, characterName: ExtractKeys<typeof assets.characters, CharacterModel>, location: CFrame): void {
-    const character = assets.characters[characterName].Clone(); // completely temporary
+    const character = assets.characters[characterName].Clone(); // 100% temporary
     player.CanLoadCharacterAppearance = false;
     player.LoadCharacter();
     task.wait();
@@ -20,5 +21,8 @@ export class CharacterService implements OnPlayerJoin {
     character.Parent = World;
     character.PivotTo(location);
     player.Character = character;
+
+    for (const part of getDescendantsOfType(character, "BasePart"))
+      part.CollisionGroup = "Character";
   }
 }

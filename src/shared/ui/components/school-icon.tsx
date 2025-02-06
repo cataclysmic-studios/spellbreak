@@ -26,6 +26,7 @@ const offsets: Record<School, Vector2> = {
 };
 
 export function SchoolIcon({ anchorPoint, position, school, size, layoutOrder }: SchoolIconProps) {
+
   return (
     <imagelabel
       Name="SchoolIcon"
@@ -33,7 +34,7 @@ export function SchoolIcon({ anchorPoint, position, school, size, layoutOrder }:
       AnchorPoint={anchorPoint}
       Position={position}
       Size={size ?? UDim2.fromScale(1, 1)}
-      Image={Images.LargeSchoolIconsSpritesheet}
+      Image={Images.LargeIconSpritesheet}
       ImageRectSize={new Vector2(52, 52)}
       ImageRectOffset={offsets[read(school)]}
       LayoutOrder={layoutOrder}

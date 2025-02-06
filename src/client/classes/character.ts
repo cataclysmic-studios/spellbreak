@@ -1,13 +1,11 @@
-import { ForceMode } from "shared/structs/force-mode";
-
 export class Character<TModel extends CharacterModel = CharacterModel> {
-  public readonly collider: TModel["Collider"];
+  public readonly collider: TModel["collider"];
   public readonly attachment: Attachment;
 
   public constructor(
     private readonly model: TModel
   ) {
-    this.collider = model.WaitForChild("Collider");
+    this.collider = model.WaitForChild("collider");
     this.attachment = new Instance("Attachment", this.collider);
     this.attachment.Orientation = new Vector3(90, 0, 0);
   }

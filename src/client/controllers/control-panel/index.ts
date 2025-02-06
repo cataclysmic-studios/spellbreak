@@ -4,15 +4,15 @@ import { processDependency } from "@rbxts/flamework-meta-utils";
 import Iris from "@rbxts/iris";
 
 import { OnInput } from "client/decorators";
-import { createMappingDecorator } from "shared/utility";
-import type { ControlPanelDropdownRenderer } from "shared/structs/control-panel";
+import { createMappingDecorator } from "shared/meta";
+import type { ControlPanelInterfaceRenderer } from "shared/structs/control-panel";
 
-const [renderableMeta, ControlPanelRenderable] = createMappingDecorator<ControlPanelDropdownRenderer, never[], [dropdownName: string, order?: number]>();
+const [renderableMeta, ControlPanelRenderable] = createMappingDecorator<ControlPanelInterfaceRenderer, never[], [interfaceName: string, order?: number]>();
 export { ControlPanelRenderable };
 
 interface Renderable {
-  readonly renderer: ControlPanelDropdownRenderer;
-  readonly dropdownName: string;
+  readonly renderer: ControlPanelInterfaceRenderer;
+  readonly interfaceName: string;
   readonly order?: number;
 }
 
@@ -23,8 +23,8 @@ export class ControlPanelController implements OnStart {
   private readonly renderables: Renderable[] = [];
 
   public onStart(): void {
-    for (const [_, [ctor, [dropdownName, order]]] of renderableMeta)
-      processDependency(ctor, renderable => this.renderables.push({ renderer: renderable, dropdownName, order }));
+    for (const [_, [ctor, [interfaceName, order]]] of renderableMeta)
+      processDependency(ctor, renderer => this.renderables.push({ renderer, interfaceName, order }));
 
     this.renderables.sort((a, b) => (a.order ?? math.huge + 1) < (b.order ?? math.huge + 1));
 
@@ -45,8 +45,8 @@ export class ControlPanelController implements OnStart {
       isOpened: this.windowOpened
     });
     for (const renderable of this.renderables) {
-      Iris.Tree([renderable.dropdownName]);
-      renderable.renderer.renderControlPanelDropdown();
+      Iris.Tree([renderable.interfaceName]);
+      renderable.renderer.renderControlPanelInterface();
       Iris.End();
     }
     Iris.End();

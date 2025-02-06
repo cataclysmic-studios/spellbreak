@@ -1,9 +1,10 @@
-import Vide, { type Derivable, derive, type Node, read, source } from "@rbxts/vide";
+import Vide, { type Derivable, effect, type Node, read, source } from "@rbxts/vide";
+import { RunService, TextService } from "@rbxts/services";
+import { useEventListener } from "@rbxts/pretty-vide-utils";
 
+import { usePx } from "../hooks/use-px";
 import { Palette } from "../palette";
 import { AnchorPoints, Positions } from "../utility/positioning";
-import { usePx } from "../hooks/use-px";
-import { TextService } from "@rbxts/services";
 
 const fondamento = new Font("rbxasset://fonts/families/Fondamento.json", Enum.FontWeight.Heavy, Enum.FontStyle.Normal);
 
@@ -11,13 +12,13 @@ interface NametagProps {
   readonly name: Derivable<string>;
   readonly description: Derivable<string>;
   readonly color?: Derivable<Color3>;
+  readonly containerSize: Derivable<Vector2>;
   readonly children?: Node;
 }
 
-export function Nametag({ name, description, color, children }: NametagProps) {
-  const descriptionAbsoluteSize = source(new Vector2);
-  const bottomFrameAbsoluteSize = source(new Vector2);
+export function Nametag({ name, description, containerSize, color, children }: NametagProps) {
   const descriptionText = () => read(description).upper();
+  const frameSize = UDim2.fromScale(1, 0.45);
   const px = usePx();
 
   return <>
@@ -35,8 +36,7 @@ export function Nametag({ name, description, color, children }: NametagProps) {
       AnchorPoint={AnchorPoints.bottomCenter}
       Position={Positions.bottomCenter}
       BackgroundTransparency={1}
-      Size={UDim2.fromScale(1, 0.45)}
-      AbsoluteSizeChanged={bottomFrameAbsoluteSize}
+      Size={frameSize}
     >
       <uilistlayout
         FillDirection={Enum.FillDirection.Horizontal}
@@ -55,17 +55,16 @@ export function Nametag({ name, description, color, children }: NametagProps) {
         TextColor3={color ?? Palette.white}
         TextScaled={true}
         Size={() => {
-          const params = new Instance("GetTextBoundsParams");
-          params.Font = fondamento;
-          params.Size = descriptionAbsoluteSize().Y;
-          params.Width = bottomFrameAbsoluteSize().X;
-          params.Text = descriptionText();
+          const descriptionTextSize = read(containerSize)
+            .mul(new Vector2(1, frameSize.Y.Scale)).Y;
+          const frameAbsoluteSize = read(containerSize)
+            .mul(new Vector2(frameSize.X.Scale, frameSize.Y.Scale))
+            .add(new Vector2(frameSize.X.Offset, frameSize.Y.Offset));
 
-          const bounds = TextService.GetTextBoundsAsync(params);
-          return new UDim2(0, px(bounds.X), 1, 0)
+          const bounds = TextService.GetTextSize(descriptionText(), descriptionTextSize, "Fondamento", frameAbsoluteSize);
+          return new UDim2(0, px(bounds.X + 1), 1, 0);
         }}
-        AbsoluteSizeChanged={descriptionAbsoluteSize}
       />
     </frame>
-  </>
+  </>;
 }

@@ -6,7 +6,8 @@ import type { EnemyDescriptor } from "shared/structs/enemy/descriptor";
 export = {
   name: "Dark Wizard",
   health: 80,
-  school: School.Death,
+  schools: [School.Death],
+  rank: 1,
   kind: EnemyKind.Regular,
   class: EnemyClass.Undead,
   stunnable: true,

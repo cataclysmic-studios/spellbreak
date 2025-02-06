@@ -1,26 +1,24 @@
 import Vide, { type Derivable, For, read } from "@rbxts/vide";
 import { startsWith } from "@rbxts/string-utils";
 
-import { School } from "shared/structs/school";
-import { EnemyKind } from "shared/structs/enemy/kind";
 import { nametagColors } from "shared/constants";
+import type { EnemyDescriptor } from "shared/structs/enemy/descriptor";
 
-import { Nametag } from "../components/nametag";
-import { SchoolIcon } from "../components/school-icon";
+import { Nametag } from "./nametag";
+import { SchoolIcon } from "./school-icon";
 
 interface EnemyNametagProps {
-  readonly name: Derivable<string>;
-  readonly rank: Derivable<number>;
-  readonly kind: Derivable<EnemyKind>;
-  readonly schools: School[];
+  readonly descriptor: Pick<EnemyDescriptor, "name" | "rank" | "kind" | "schools">;
+  readonly containerSize: Derivable<Vector2>;
 }
 
-export function EnemyNametag({ name, rank, kind, schools }: EnemyNametagProps) {
+export function EnemyNametag({ descriptor: { name, rank, kind, schools }, containerSize }: EnemyNametagProps) {
   return (
     <Nametag
       name={name}
       description={`Rank ${rank}${startsWith(read(kind), "Regular") ? "" : " " + read(kind).upper()}`}
       color={nametagColors.enemy[read(kind)]}
+      containerSize={containerSize}
     >
       <For each={() => schools}>
         {(school, index) => <SchoolIcon school={school} layoutOrder={-schools.size() + read(index)} />}

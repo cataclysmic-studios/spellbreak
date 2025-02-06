@@ -5,7 +5,8 @@ import { EnemyKind } from "./kind";
 export interface EnemyDescriptor {
   readonly name: string;
   readonly health: number;
-  readonly school: School;
+  readonly schools: School[];
+  readonly rank: number;
   readonly kind: EnemyKind;
   readonly class: EnemyClass;
   readonly stunnable: boolean;

@@ -2,7 +2,7 @@ import Vide from "@rbxts/vide";
 
 import { player } from "client/constants";
 
-import { MainMenu } from "./views/main-menu";
+import { MainMenu } from "../shared/ui/views/main-menu";
 
 Vide.mount(() =>
 (

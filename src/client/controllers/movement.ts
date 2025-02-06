@@ -1,9 +1,8 @@
-import { Controller, OnStart, type OnPhysics } from "@flamework/core";
-import { Lazy } from "@rbxts/lazy";
+import { Controller, type OnStart, type OnPhysics } from "@flamework/core";
 import { InputManager, StandardActionBuilder } from "@rbxts/mechanism";
+import { Lazy } from "@rbxts/lazy";
 
 import { character } from "client/constants";
-import { ForceMode } from "shared/structs/force-mode";
 
 // TODO: controller binds
 const forwardAction = new StandardActionBuilder("W", "Up");
@@ -32,6 +31,7 @@ export class MovementController implements OnStart, OnPhysics {
   }).getValue();
 
   private turnAngle = 0;
+
   public onStart(): void {
     this.updateOrientationAlignment();
   }

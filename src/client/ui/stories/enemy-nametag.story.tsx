@@ -18,7 +18,7 @@ export = hoarcekat(() =>
     <EnemyNametag
       name="Octavius Rex"
       rank={1}
-      kind={EnemyKind.Regular}
+      kind={EnemyKind.Regular2}
       schools={[School.Fire, School.Balance]}
     />
   </Container>

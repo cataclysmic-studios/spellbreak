@@ -1,17 +1,17 @@
-import Vide, { read, type Derivable, type Node } from "@rbxts/vide";
+import Vide, { read, source, type Derivable, type Node } from "@rbxts/vide";
 
 import { AnchorPoints, Positions } from "../utility/positioning";
 import { Palette } from "../palette";
 
 export interface WizTextProps {
-  text: Derivable<string>;
-  textSize: Derivable<number>;
-  textColor?: Derivable<Color3>;
-  transparency?: Derivable<number>;
-  size?: Derivable<UDim2>;
-  position?: Derivable<UDim2>;
-  anchorPoint?: Derivable<Vector2>;
-  children?: Node;
+  readonly text: Derivable<string>;
+  readonly textSize: Derivable<number>;
+  readonly textColor?: Derivable<Color3>;
+  readonly transparency?: Derivable<number>;
+  readonly size?: Derivable<UDim2>;
+  readonly position?: Derivable<UDim2>;
+  readonly anchorPoint?: Derivable<Vector2>;
+  readonly children?: Node;
 }
 
 export function WizText({ text, textSize, textColor, transparency, size, position, anchorPoint, children }: WizTextProps) {

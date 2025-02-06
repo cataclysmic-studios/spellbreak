@@ -3,11 +3,11 @@ import Vide, { type Derivable, type Node } from "@rbxts/vide";
 import { AnchorPoints, Positions } from "../positioning";
 
 interface ContainerProps {
-  name?: Derivable<string>;
-  size?: Derivable<UDim2>;
-  position?: Derivable<UDim2>;
-  anchorPoint?: Derivable<Vector2>;
-  children?: Node;
+  readonly name?: Derivable<string>;
+  readonly size?: Derivable<UDim2>;
+  readonly position?: Derivable<UDim2>;
+  readonly anchorPoint?: Derivable<Vector2>;
+  readonly children?: Node;
 }
 
 /**

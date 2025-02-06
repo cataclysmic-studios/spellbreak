@@ -4,15 +4,15 @@ interface ReplicatedStorage extends Instance {
       battle: Folder & {
         circle: Folder & {
           idle: Animation;
-          fighterAdded: Animation;
-          fighterRemoved: Animation;
+          combatantAdded: Animation;
+          combatantRemoved: Animation;
         };
       }
     };
     battle: Folder & {
       circle: BattleCircleModel;
       selectionTarget: Model;
-      fighterSigil: MeshPart;
+      combatantSigil: MeshPart;
       pip: Part;
       powerPip: Part;
       shadowPip: Part;

@@ -10,6 +10,10 @@ interface BattleCircleModel extends Model, WithAnimationController {
   teamPositions: BattleCirclePositions;
 }
 
+interface EnemyModel extends Model {
+  collider: Part;
+}
+
 interface CharacterModel extends Model, WithAnimationController {
   collider: Part;
 }

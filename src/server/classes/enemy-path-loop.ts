@@ -11,6 +11,7 @@ export class EnemyPathLoop {
   private readonly maxEnemies: number;
   private readonly spawnInterval: number;
   private lastSpawn = 0;
+  private lastSpawnNode?: BasePart;
 
   public constructor(folder: Folder) {
     this.nodes = getChildrenOfType(folder, "BasePart");
@@ -45,10 +46,14 @@ export class EnemyPathLoop {
 
   public spawn(enemy: Enemy): void {
     const spawnNode = this.getRandomNode();
-    enemy.teleport(spawnNode);
+    print(spawnNode.Name, this.lastSpawnNode?.Name)
+    if (spawnNode.Name === this.lastSpawnNode?.Name)
+      return this.spawn(enemy);
 
+    enemy.teleport(spawnNode);
     this.enemies.push(enemy);
     this.lastSpawn = os.clock();
+    this.lastSpawnNode = spawnNode;
   }
 
   private getRandomNode(): BasePart {

@@ -1,4 +1,5 @@
 import { Players, Workspace as World } from "@rbxts/services";
+import type { BaseID } from "@rbxts/id";
 import Vide from "@rbxts/vide";
 
 import { assets } from "shared/constants";
@@ -10,7 +11,7 @@ import { EnemyNametag } from "shared/ui/components/enemy-nametag";
 import { Dependency } from "@flamework/core";
 import { DuelService } from "server/services/duel";
 
-export class Enemy extends Destroyable {
+export class Enemy extends Destroyable implements BaseID<number> {
   public static cumulativeID = 0;
 
   public readonly duel = Dependency<DuelService>();

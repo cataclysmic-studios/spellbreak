@@ -2,10 +2,8 @@ import { Service } from "@flamework/core";
 import { getChildrenOfType } from "@rbxts/instance-utility";
 import { Workspace as World } from "@rbxts/services";
 
-import { DuelCircle } from "server/classes/duel-circle";
+import { DuelCircle, type Combatant } from "server/classes/duel-circle";
 import type { Enemy } from "server/classes/enemy";
-
-type Combatant = Player | Enemy;
 
 @Service()
 export class DuelService {

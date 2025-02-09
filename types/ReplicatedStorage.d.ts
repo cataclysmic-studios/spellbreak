@@ -1,7 +1,7 @@
 interface ReplicatedStorage extends Instance {
   assets: Folder & {
     animations: Folder & {
-      battle: Folder & {
+      duel: Folder & {
         circle: Folder & {
           idle: Animation;
           combatantAdded: Animation;
@@ -9,8 +9,8 @@ interface ReplicatedStorage extends Instance {
         };
       }
     };
-    battle: Folder & {
-      circle: BattleCircleModel;
+    duel: Folder & {
+      circle: DuelCircleModel;
       selectionTarget: Model;
       combatantSigil: MeshPart;
       pip: Part;

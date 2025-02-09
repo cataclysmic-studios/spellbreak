@@ -5,7 +5,8 @@ import { getEnemyDescriptor } from "shared/utility";
 import Log from "shared/log";
 
 export class EnemyPathLoop {
-  private readonly enemies: Enemy[] = [];
+  public readonly enemies: Enemy[] = [];
+
   private readonly enemyNames: string[] = [];
   private readonly nodes: BasePart[];
   private readonly maxEnemies: number;
@@ -46,7 +47,6 @@ export class EnemyPathLoop {
 
   public spawn(enemy: Enemy): void {
     const spawnNode = this.getRandomNode();
-    print(spawnNode.Name, this.lastSpawnNode?.Name)
     if (spawnNode.Name === this.lastSpawnNode?.Name)
       return this.spawn(enemy);
 

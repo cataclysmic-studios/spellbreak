@@ -7,8 +7,14 @@ import type { EnemyDescriptor } from "shared/structs/enemy/descriptor";
 
 import { NametagContainer } from "shared/ui/components/nametag-container";
 import { EnemyNametag } from "shared/ui/components/enemy-nametag";
+import { Dependency } from "@flamework/core";
+import { DuelService } from "server/services/duel";
 
 export class Enemy extends Destroyable {
+  public static cumulativeID = 0;
+
+  public readonly duel = Dependency<DuelService>();
+  public readonly id = Enemy.cumulativeID++;
   public readonly model: EnemyModel;
 
   public constructor(
@@ -32,7 +38,8 @@ export class Enemy extends Destroyable {
       if (playerWhoTouched === undefined) return;
       conn.Disconnect();
 
-      // TODO: enter battle
+      if (this.duel.comabatantsInDuels.has(playerWhoTouched) || this.duel.comabatantsInDuels.has(this)) return;
+      this.duel.startPvE(playerWhoTouched, this);
     });
   }
 

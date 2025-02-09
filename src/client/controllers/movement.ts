@@ -3,6 +3,8 @@ import { InputManager, StandardActionBuilder } from "@rbxts/mechanism";
 import { Lazy } from "@rbxts/lazy";
 
 import { character } from "client/constants";
+import { MessageEmitter } from "shared/structs/message/emitter";
+import { Message } from "shared/structs/message";
 
 // TODO: controller binds
 const forwardAction = new StandardActionBuilder("W", "Up");
@@ -30,15 +32,18 @@ export class MovementController implements OnStart, OnPhysics {
     return alignOrientation;
   }).getValue();
 
+  private enabled = true;
   private turnAngle = 0;
 
   public onStart(): void {
     this.updateOrientationAlignment();
+    MessageEmitter.onClientMessage(Message.TOGGLE_MOVEMENT, on => this.enabled = on);
   }
 
   public onPhysics(): void {
     this.updateOrientationAlignment();
 
+    if (!this.enabled) return;
     const positionalInput = this.getPositionalInput();
     const turnInput = this.getTurnInput();
     const velocity = character.getCFrame().LookVector.mul(positionalInput * this.walkSpeed);

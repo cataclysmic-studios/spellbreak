@@ -1,14 +1,16 @@
-interface BattleCirclePositions extends Folder {
+interface DuelCirclePositions extends Folder {
   "1": Part;
   "2": Part;
   "3": Part;
   "4": Part;
 }
 
-interface BattleCircleModel extends Model, WithAnimationController {
-  opponentPositions: BattleCirclePositions;
-  teamPositions: BattleCirclePositions;
+interface DuelCircleModel extends Model, WithAnimationController {
+  opponentPositions: DuelCirclePositions;
+  teamPositions: DuelCirclePositions;
 }
+
+type CombatantModel = CharacterModel | EnemyModel;
 
 interface EnemyModel extends Model {
   collider: Part;

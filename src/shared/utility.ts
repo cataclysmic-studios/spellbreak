@@ -1,5 +1,5 @@
-import { ReplicatedStorage } from "@rbxts/services";
-import { getDescendantsOfType } from "@rbxts/instance-utility";
+import { ReplicatedStorage, RunService } from "@rbxts/services";
+import { getDescendantsOfType, tween } from "@rbxts/instance-utility";
 
 import type { EnemyDescriptor } from "./structs/enemy/descriptor";
 

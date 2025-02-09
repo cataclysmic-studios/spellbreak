@@ -4,9 +4,9 @@ import { callMethodOnDependency } from "@rbxts/flamework-meta-utils";
 import { InputManager, type AxisAction } from "@rbxts/mechanism";
 
 import { flameworkIgnited } from "shared/constants";
-import { MessageEmitter } from "shared/structs/messages/emitter";
-import type { MessageData } from "shared/structs/messages/data";
-import type { MessageKind } from "shared/structs/messages/kind";
+import { MessageEmitter } from "shared/structs/message/emitter";
+import type { MessageData } from "shared/structs/message/data";
+import type { Message } from "shared/structs/message";
 import Log from "shared/log";
 
 export const inputManager = new InputManager;
@@ -61,7 +61,7 @@ export const OnInputRelease = Modding.createDecorator<[actionID: string | number
 );
 
 /** @metadata reflect identifier flamework:parameters */
-export function OnMessage<Kind extends MessageKind>(message: Kind) {
+export function OnMessage<Kind extends Message>(message: Kind) {
   return (ctor: object, propertyKey: string, descriptor: TypedPropertyDescriptor<(this: unknown, data: MessageData[Kind]) => void>) => {
     MessageEmitter.onClientMessage(message, data => callMethodOnDependency(ctor, descriptor, data));
   };

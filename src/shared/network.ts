@@ -1,7 +1,7 @@
 import { Networking } from "@flamework/networking";
-import { MessageKind } from "./structs/messages/kind";
+import { Message } from "./structs/message";
 
-type MessageEvent = (kind: MessageKind, packet: SerializedPacket) => void;
+type MessageEvent = (kind: Message, packet: SerializedPacket) => void;
 type UnreliableMessageEvent = Networking.Unreliable<MessageEvent>;
 
 interface ServerEvents {

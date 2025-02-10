@@ -3,7 +3,7 @@ import { InputManager, StandardActionBuilder } from "@rbxts/mechanism";
 import { Lazy } from "@rbxts/lazy";
 
 import { character } from "client/constants";
-import { MessageEmitter } from "shared/structs/message/emitter";
+import { OnMessage } from "client/decorators";
 import { Message } from "shared/structs/message";
 
 // TODO: controller binds
@@ -37,7 +37,6 @@ export class MovementController implements OnStart, OnPhysics {
 
   public onStart(): void {
     this.updateOrientationAlignment();
-    MessageEmitter.onClientMessage(Message.TOGGLE_MOVEMENT, on => this.enabled = on);
   }
 
   public onPhysics(): void {
@@ -51,6 +50,11 @@ export class MovementController implements OnStart, OnPhysics {
 
     character.setVelocity(velocity);
     this.turnAngle += turnInput * (this.turnSpeed / 10);
+  }
+
+  @OnMessage(Message.TOGGLE_MOVEMENT)
+  public toggleMovement(on: boolean): void {
+    this.enabled = on;
   }
 
   /**

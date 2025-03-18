@@ -1,5 +1,4 @@
-import { Flamework, Modding } from "@flamework/core";
-import { createBinarySerializer, Serializer, SerializerMetadata } from "@rbxts/flamework-binary-serializer";
+import { Flamework } from "@flamework/core";
 
 import { flameworkIgnited } from "shared/constants";
 

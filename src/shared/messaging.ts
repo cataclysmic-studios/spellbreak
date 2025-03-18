@@ -1,13 +1,12 @@
 import type { DataType } from "@rbxts/flamework-binary-serializer";
 import { MessageEmitter } from "@rbxts/tether";
 
-export const messageEmitter = MessageEmitter.create<MessageData>();
-messageEmitter.initialize();
+export const messaging = MessageEmitter.create<MessageData>();
 
 export const enum Message {
-  TOGGLE_MOVEMENT
+  ToggleMovement
 }
 
 export interface MessageData {
-  [Message.TOGGLE_MOVEMENT]: boolean;
+  [Message.ToggleMovement]: boolean;
 }

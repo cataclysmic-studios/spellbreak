@@ -50,7 +50,7 @@ export class MovementController implements OnPhysics {
     this.turnAngle += turnInput * (this.turnSpeed / 10);
   }
 
-  @OnMessage(Message.TOGGLE_MOVEMENT)
+  @OnMessage(Message.ToggleMovement)
   public toggleMovement(on: boolean): void {
     Log.info("Movement toggled " + (on ? "on" : "off"));
     this.enabled = on;

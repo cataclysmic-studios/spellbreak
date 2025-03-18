@@ -1,10 +1,10 @@
 import { callMethodOnDependencies } from "@rbxts/flamework-meta-utils";
 
-import { Message, MessageData, messageEmitter } from "shared/messaging";
+import { Message, MessageData, messaging } from "shared/messaging";
 
 /** @metadata reflect identifier flamework:parameters */
 export function OnMessage<Kind extends Message>(message: Kind) {
   return (ctor: object, propertyKey: string, descriptor: TypedPropertyDescriptor<(this: unknown, player: Player, data: MessageData[Kind]) => void>) => {
-    messageEmitter.onServerMessage(message, (player, data) => callMethodOnDependencies(ctor, descriptor, player, data));
+    messaging.onServerMessage(message, (player, data) => callMethodOnDependencies(ctor, descriptor, player, data));
   };
 }

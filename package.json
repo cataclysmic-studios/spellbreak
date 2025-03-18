@@ -14,7 +14,7 @@
     "@rbxts/compiler-types": "^3.0.0-types.0",
     "@rbxts/types": "^1.0.813",
     "rbxts-transform-debug": "github:roblox-aurora/rbxts-transform-debug",
-    "rbxts-transformer-flamework": "^1.2.3",
+    "rbxts-transformer-flamework": "^1.2.4",
     "roblox-ts": "^3.0.0",
     "typescript": "^5.5.3"
   },
@@ -37,7 +37,7 @@
     "@rbxts/pretty-vide-utils": "^0.0.4",
     "@rbxts/services": "^1.5.5",
     "@rbxts/string-utils": "^1.0.3",
-    "@rbxts/tether": "^1.0.34",
+    "@rbxts/tether": "1.0.5",
     "@rbxts/vide": "^0.5.4"
   }
 }

@@ -3,7 +3,7 @@ import { BaseStandardAction } from "@rbxts/mechanism/out/standard-action";
 import { callMethodOnDependencies, resolveDependencies } from "@rbxts/flamework-meta-utils";
 import { InputManager, type AxisAction } from "@rbxts/mechanism";
 
-import { Message, MessageData, messageEmitter } from "shared/messaging";
+import { Message, MessageData, messaging } from "shared/messaging";
 import { flameworkIgnited } from "shared/constants";
 import Log from "shared/log";
 import { Constructor } from "@flamework/core/out/utility";
@@ -62,6 +62,6 @@ export const OnInputRelease = Modding.createDecorator<[actionID: string | number
 /** @metadata reflect identifier flamework:parameters */
 export function OnMessage<Kind extends Message>(message: Kind) {
   return (ctor: object, propertyKey: string, descriptor: TypedPropertyDescriptor<(this: unknown, data: MessageData[Kind]) => void>) => {
-    messageEmitter.onClientMessage(message, data => callMethodOnDependencies(ctor, descriptor, data));
+    messaging.onClientMessage(message, data => callMethodOnDependencies(ctor, descriptor, data));
   };
 }

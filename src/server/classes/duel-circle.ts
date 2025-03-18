@@ -3,7 +3,7 @@ import { TweenInfoBuilder } from "@rbxts/builders";
 import { tween } from "@rbxts/instance-utility";
 import type { BaseID } from "@rbxts/id";
 
-import { Message, messageEmitter } from "shared/messaging";
+import { Message, messaging } from "shared/messaging";
 import { assets } from "shared/constants";
 import Log from "shared/log";
 
@@ -84,7 +84,7 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
       ? this.opponentPositions
       : this.teamPositions;
 
-    messageEmitter.emitClient(player, Message.TOGGLE_MOVEMENT, false);
+    messaging.emitClient(player, Message.ToggleMovement, false);
     this.pullInCombatant(player.Character!, positions, position);
   }
 
@@ -105,7 +105,7 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
 
     const players = this.combatants.filter((combatant): combatant is Player => typeOf(combatant) === "Instance" && (combatant as Instance).IsA("Player"));
     for (const player of players)
-      messageEmitter.emitClient(player, Message.TOGGLE_MOVEMENT, true);
+      messaging.emitClient(player, Message.ToggleMovement, true);
 
     this.animations.idle.Stop();
     this.animations.onRemove.Play(0);

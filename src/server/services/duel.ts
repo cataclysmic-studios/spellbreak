@@ -25,7 +25,7 @@ export class DuelService {
     const duelCircle = new DuelCircle<false>(circleLocation);
     this.circles.push(duelCircle);
 
-    // TODO: remove combatants from this.inDuel when duel is completed
+    // TODO: remove combatants from this.comabatantsInDuels when duel is completed
     this.comabatantsInDuels.add(player);
     this.comabatantsInDuels.add(enemy);
     duelCircle.addPlayer(player);

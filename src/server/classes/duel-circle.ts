@@ -3,8 +3,7 @@ import { TweenInfoBuilder } from "@rbxts/builders";
 import { tween } from "@rbxts/instance-utility";
 import type { BaseID } from "@rbxts/id";
 
-import { MessageEmitter } from "shared/structs/message/emitter";
-import { Message } from "shared/structs/message";
+import { Message, messageEmitter } from "shared/messaging";
 import { assets } from "shared/constants";
 import Log from "shared/log";
 
@@ -72,7 +71,6 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     this.teamPositions = this.model.teamPositions;
   }
 
-
   /**
    * Adds a player to the duel circle, positioning them in either the team or opponent
    * positions depending on whether they are part of the enemy team.
@@ -81,12 +79,12 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
    * in the opponent positions. Only applicable if the duel circle is for PvP.
    */
   public addPlayer(player: Player, position = DuelCirclePosition.First, enemyTeam?: PvP extends true ? boolean : undefined): void {
+    this.combatants.push(player);
     const positions = enemyTeam
       ? this.opponentPositions
       : this.teamPositions;
 
-    this.combatants.push(player);
-    MessageEmitter.emitClient(player, Message.TOGGLE_MOVEMENT, false);
+    messageEmitter.emitClient(player, Message.TOGGLE_MOVEMENT, false);
     this.pullInCombatant(player.Character!, positions, position);
   }
 
@@ -107,7 +105,7 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
 
     const players = this.combatants.filter((combatant): combatant is Player => typeOf(combatant) === "Instance" && (combatant as Instance).IsA("Player"));
     for (const player of players)
-      MessageEmitter.emitClient(player, Message.TOGGLE_MOVEMENT, true);
+      messageEmitter.emitClient(player, Message.TOGGLE_MOVEMENT, true);
 
     this.animations.idle.Stop();
     this.animations.onRemove.Play(0);

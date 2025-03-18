@@ -8,8 +8,8 @@ import type { Enemy } from "server/classes/enemy";
 
 @Service()
 export class EnemyService implements OnTick {
-  private readonly pathLoops = getChildrenOfType(World.WaitForChild("EnemyPathLoops"), "Folder")
-    .map(folder => new EnemyPathLoop(folder));
+  private readonly pathLoops = getChildrenOfType(World.WaitForChild("EnemyPathLoops"), "Model")
+    .map(model => new EnemyPathLoop(model));
 
   public onTick(dt: number): void {
     for (const pathLoop of this.pathLoops) {

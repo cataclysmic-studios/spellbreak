@@ -1,13 +1,12 @@
 import { Modding } from "@flamework/core";
 import { BaseStandardAction } from "@rbxts/mechanism/out/standard-action";
-import { callMethodOnDependency } from "@rbxts/flamework-meta-utils";
+import { callMethodOnDependencies, resolveDependencies } from "@rbxts/flamework-meta-utils";
 import { InputManager, type AxisAction } from "@rbxts/mechanism";
 
+import { Message, MessageData, messageEmitter } from "shared/messaging";
 import { flameworkIgnited } from "shared/constants";
-import { MessageEmitter } from "shared/structs/message/emitter";
-import type { MessageData } from "shared/structs/message/data";
-import type { Message } from "shared/structs/message";
 import Log from "shared/log";
+import { Constructor } from "@flamework/core/out/utility";
 
 export const inputManager = new InputManager;
 
@@ -30,7 +29,7 @@ export const OnAxisInput = Modding.createDecorator<[binding: AxisAction]>(
     flameworkIgnited.Once(() => {
       inputManager.bind(axis);
       axis.updated.Connect(() => {
-        const object = <Record<string, Callback>>Modding.resolveSingleton(descriptor.constructor!);
+        const [object] = resolveDependencies(descriptor.constructor! as Constructor<Record<string, Callback>>);
         void task.spawn(object[descriptor.property], object, axis);
       });
     });
@@ -63,6 +62,6 @@ export const OnInputRelease = Modding.createDecorator<[actionID: string | number
 /** @metadata reflect identifier flamework:parameters */
 export function OnMessage<Kind extends Message>(message: Kind) {
   return (ctor: object, propertyKey: string, descriptor: TypedPropertyDescriptor<(this: unknown, data: MessageData[Kind]) => void>) => {
-    MessageEmitter.onClientMessage(message, data => callMethodOnDependency(ctor, descriptor, data));
+    messageEmitter.onClientMessage(message, data => callMethodOnDependencies(ctor, descriptor, data));
   };
 }

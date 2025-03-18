@@ -20,13 +20,12 @@
   },
   "dependencies": {
     "@flamework/core": "^1.2.3",
-    "@flamework/networking": "^1.2.3",
     "@rbxts/array-utils": "^1.0.1",
     "@rbxts/builders": "^1.0.2",
     "@rbxts/charm": "^0.9.0",
     "@rbxts/ez-log": "^1.0.1",
     "@rbxts/flamework-binary-serializer": "^0.6.0",
-    "@rbxts/flamework-meta-utils": "^1.0.1",
+    "@rbxts/flamework-meta-utils": "^1.0.3",
     "@rbxts/id": "^1.0.0",
     "@rbxts/instance-utility": "^1.0.3",
     "@rbxts/iris": "^2.3.1-ts.1",
@@ -38,6 +37,7 @@
     "@rbxts/pretty-vide-utils": "^0.0.4",
     "@rbxts/services": "^1.5.5",
     "@rbxts/string-utils": "^1.0.3",
+    "@rbxts/tether": "^1.0.34",
     "@rbxts/vide": "^0.5.4"
   }
 }

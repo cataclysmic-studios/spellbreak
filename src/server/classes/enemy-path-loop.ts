@@ -1,8 +1,14 @@
 import { getChildrenOfType } from "@rbxts/instance-utility";
+import Object from "@rbxts/object-utils";
 
 import { Enemy } from "./enemy";
 import { getEnemyDescriptor } from "shared/utility";
 import Log from "shared/log";
+
+interface BoundingBox {
+  readonly center: Vector2;
+  readonly radius: Vector2;
+}
 
 export class EnemyPathLoop {
   public readonly enemies: Enemy[] = [];
@@ -14,25 +20,29 @@ export class EnemyPathLoop {
   private lastSpawn = 0;
   private lastSpawnNode?: BasePart;
 
-  public constructor(folder: Folder) {
-    this.nodes = getChildrenOfType(folder, "BasePart");
-    this.maxEnemies = folder.GetAttribute("MaxEnemies") ?? 6;
-    this.spawnInterval = folder.GetAttribute("SpawnInterval") ?? 1.5;
+  public constructor(model: Model) {
+    this.nodes = getChildrenOfType(model, "BasePart");
+    this.maxEnemies = model.GetAttribute("MaxEnemies") ?? 6;
+    this.spawnInterval = model.GetAttribute("SpawnInterval") ?? 1.5;
 
-    for (const tag of folder.GetTags()) {
+    for (const tag of model.GetTags()) {
       const [enemyName] = tag.match("Spawns%[(.-)%]");
       if (enemyName === undefined) continue;
 
       this.enemyNames.push(enemyName as string);
     }
+
+    if (this.enemyNames.size() === 0)
+      Log.warn(`EnemyPathLoop @ ${model.GetFullName()} does not spawn any enemies.`);
   }
 
   public update(dt: number): void {
-    // TODO: move enemies
+
   }
 
   public canSpawn(): boolean {
-    return this.enemies.size() < this.maxEnemies &&
+    return this.enemyNames.size() > 0 &&
+      this.enemies.size() < this.maxEnemies &&
       os.clock() - this.lastSpawn >= this.spawnInterval;
   }
 

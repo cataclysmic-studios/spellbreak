@@ -1,10 +1,11 @@
-import { Controller, type OnStart, type OnPhysics } from "@flamework/core";
+import { Controller, type OnPhysics } from "@flamework/core";
 import { InputManager, StandardActionBuilder } from "@rbxts/mechanism";
 import { Lazy } from "@rbxts/lazy";
 
-import { character } from "client/constants";
+import { Message } from "shared/messaging";
 import { OnMessage } from "client/decorators";
-import { Message } from "shared/structs/message";
+import { character } from "client/constants";
+import Log from "shared/log";
 
 // TODO: controller binds
 const forwardAction = new StandardActionBuilder("W", "Up");
@@ -19,9 +20,10 @@ inputManager
   .bind(rightAction);
 
 @Controller()
-export class MovementController implements OnStart, OnPhysics {
-  private readonly walkSpeed = 16;
-  private readonly turnSpeed = 5.5;
+export class MovementController implements OnPhysics {
+  public walkSpeed = 16;
+  public turnSpeed = 5.5;
+
   private readonly alignOrientation = new Lazy(() => {
     const alignOrientation = new Instance("AlignOrientation", character.collider);
     alignOrientation.RigidityEnabled = true;
@@ -34,10 +36,6 @@ export class MovementController implements OnStart, OnPhysics {
 
   private enabled = true;
   private turnAngle = 0;
-
-  public onStart(): void {
-    this.updateOrientationAlignment();
-  }
 
   public onPhysics(): void {
     this.updateOrientationAlignment();
@@ -54,16 +52,16 @@ export class MovementController implements OnStart, OnPhysics {
 
   @OnMessage(Message.TOGGLE_MOVEMENT)
   public toggleMovement(on: boolean): void {
+    Log.info("Movement toggled " + (on ? "on" : "off"));
     this.enabled = on;
   }
 
   /**
    * Updates the orientation alignment such that the character is
-   * always vertically aligned and can nevr tip over or roll
+   * always vertically aligned and can never tip over or roll
    */
   private updateOrientationAlignment(): void {
     if (this.alignOrientation === undefined) return;
-
     this.alignOrientation.CFrame = CFrame.Angles(math.rad(90), 0, math.rad(this.turnAngle));
   }
 

@@ -1,9 +1,8 @@
-import { Flamework } from "@flamework/core";
+import { Flamework, Modding } from "@flamework/core";
+import { createBinarySerializer, Serializer, SerializerMetadata } from "@rbxts/flamework-binary-serializer";
+
 import { flameworkIgnited } from "shared/constants";
 
-import { MessageEmitter } from "shared/structs/message/emitter";
-
-MessageEmitter.initialize();
 Flamework.addPaths("src/server/hooks");
 Flamework.addPaths("src/server/services");
 Flamework.ignite();

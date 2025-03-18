@@ -1,6 +1,6 @@
 import { Controller, type OnStart } from "@flamework/core";
 import { StandardActionBuilder } from "@rbxts/mechanism";
-import { processDependency } from "@rbxts/flamework-meta-utils";
+import { processDependencies } from "@rbxts/flamework-meta-utils";
 import Iris from "@rbxts/iris";
 
 import { OnInput } from "client/decorators";
@@ -24,7 +24,7 @@ export class ControlPanelController implements OnStart {
 
   public onStart(): void {
     for (const [_, [ctor, [interfaceName, order]]] of renderableMeta)
-      processDependency(ctor, renderer => this.renderables.push({ renderer, interfaceName, order }));
+      processDependencies(ctor, renderer => this.renderables.push({ renderer, interfaceName, order }));
 
     this.renderables.sort((a, b) => (a.order ?? math.huge + 1) < (b.order ?? math.huge + 1));
 

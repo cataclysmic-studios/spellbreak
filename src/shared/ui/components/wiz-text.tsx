@@ -1,6 +1,6 @@
 import Vide, { read, type Derivable, type Node } from "@rbxts/vide";
 
-import { AnchorPoints, Positions } from "../utility/positioning";
+import { anchorPoints, positions } from "../utility/positioning";
 import { Palette } from "../palette";
 
 export interface WizTextProps {
@@ -17,8 +17,8 @@ export interface WizTextProps {
 export function WizText({ text, textSize, textColor, transparency, size, position, anchorPoint, children }: WizTextProps): Vide.Node {
   return (
     <textlabel
-      AnchorPoint={anchorPoint ?? AnchorPoints.center}
-      Position={read(position ?? Positions.center).add(UDim2.fromScale(0, 0.08))}
+      AnchorPoint={anchorPoint ?? anchorPoints.center}
+      Position={read(position ?? positions.center).add(UDim2.fromScale(0, 0.08))}
       Text={read(text).upper()}
       BackgroundTransparency={1}
       Size={size ?? UDim2.fromScale(1, 1)}

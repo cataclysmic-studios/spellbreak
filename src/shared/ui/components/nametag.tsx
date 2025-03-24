@@ -4,7 +4,7 @@ import { useEventListener } from "@rbxts/pretty-vide-utils";
 
 import { usePx } from "../hooks/use-px";
 import { Palette } from "../palette";
-import { AnchorPoints, Positions } from "../utility/positioning";
+import { anchorPoints, positions } from "../utility/positioning";
 
 const fondamento = new Font("rbxasset://fonts/families/Fondamento.json", Enum.FontWeight.Heavy, Enum.FontStyle.Normal);
 
@@ -33,8 +33,8 @@ export function Nametag({ name, description, containerSize, color, children }: N
     />
     <frame
       Name="Bottom"
-      AnchorPoint={AnchorPoints.bottomCenter}
-      Position={Positions.bottomCenter}
+      AnchorPoint={anchorPoints.bottomCenter}
+      Position={positions.bottomCenter}
       BackgroundTransparency={1}
       Size={frameSize}
     >

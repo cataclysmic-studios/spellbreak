@@ -1,6 +1,6 @@
 import Vide, { read, type Derivable, type Node } from "@rbxts/vide";
 
-import { AnchorPoints, Positions } from "../positioning";
+import { anchorPoints, positions } from "../positioning";
 
 interface ContainerProps {
   readonly name?: Derivable<string>;
@@ -18,8 +18,8 @@ export function Container({ name, size, position, anchorPoint, children }: Conta
   return (
     <frame
       Name={read(name) ?? "ContainerFrame"}
-      Position={position ?? Positions.center}
-      AnchorPoint={anchorPoint ?? AnchorPoints.center}
+      Position={position ?? positions.center}
+      AnchorPoint={anchorPoint ?? anchorPoints.center}
       BackgroundTransparency={1}
       Size={size ?? UDim2.fromScale(1, 1)}
     >

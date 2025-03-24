@@ -1,18 +1,18 @@
 import Vide from "@rbxts/vide";
 
-import { AnchorPoints, Positions } from "../utility/positioning";
-import { hoarcekat } from "../utility/hoarcekat";
-import "../dev";
+import { anchorPoints, positions } from "../../utility/positioning";
+import { hoarcekat } from "../../utility/hoarcekat";
+import "../../dev";
 
-import { Container } from "../utility/components/container";
-import { Nametag } from "../components/nametag";
+import { Container } from "../../utility/components/container";
+import { Nametag } from "../../components/nametag";
 import { nametagColors } from "shared/constants";
 
 const containerSize = new Vector2(480, 80);
 export = hoarcekat(() =>
   <Container
-    anchorPoint={AnchorPoints.center}
-    position={Positions.center}
+    anchorPoint={anchorPoints.center}
+    position={positions.center}
     size={UDim2.fromOffset(containerSize.X, containerSize.Y)}
   >
     <Nametag

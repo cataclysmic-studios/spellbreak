@@ -2,18 +2,18 @@ import Vide from "@rbxts/vide";
 
 import { School } from "shared/structs/school";
 import { EnemyKind } from "shared/structs/enemy/kind";
-import { AnchorPoints, Positions } from "../utility/positioning";
-import { hoarcekat } from "../utility/hoarcekat";
-import "../dev";
+import { anchorPoints, positions } from "../../utility/positioning";
+import { hoarcekat } from "../../utility/hoarcekat";
+import "../../dev";
 
-import { Container } from "../utility/components/container";
-import { EnemyNametag } from "../components/enemy-nametag";
+import { Container } from "../../utility/components/container";
+import { EnemyNametag } from "../../components/enemy-nametag";
 
 const containerSize = new Vector2(480, 80);
 export = hoarcekat(() =>
   <Container
-    anchorPoint={AnchorPoints.center}
-    position={Positions.center}
+    anchorPoint={anchorPoints.center}
+    position={positions.center}
     size={UDim2.fromOffset(containerSize.X, containerSize.Y)}
   >
     <EnemyNametag

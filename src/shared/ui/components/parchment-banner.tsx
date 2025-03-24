@@ -1,7 +1,7 @@
 import Vide, { Derivable, read } from "@rbxts/vide";
 
 import { usePx } from "../hooks/use-px";
-import { Positions } from "../utility/positioning";
+import { positions } from "../utility/positioning";
 import { Images } from "../utility/images";
 
 import { WizText } from "./wiz-text";
@@ -33,7 +33,7 @@ export function ParchmentBanner({ name, text, textSize, textColor, size, positio
     >
       <WizText
         text={text}
-        position={Positions.center.sub(UDim2.fromScale(0, 0.23))}
+        position={positions.center.sub(UDim2.fromScale(0, 0.23))}
         textSize={textSize}
         textColor={read(textColor) ?? Palette.black}
       >

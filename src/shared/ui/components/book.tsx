@@ -2,7 +2,7 @@ import Vide, { Show, type Source, type Derivable, source, read } from "@rbxts/vi
 import { $nameof } from "rbxts-transform-debug";
 
 import { usePx } from "../hooks/use-px";
-import { AnchorPoints, Positions } from "../utility/positioning";
+import { anchorPoints, positions } from "../utility/positioning";
 
 import { Container } from "../utility/components/container";
 import { Images } from "../utility/images";
@@ -53,20 +53,20 @@ export function Book({ page, isOpen, onlyOptions }: BookProps): Vide.Node {
   return <Show when={isOpen}>
     {() => (
       <Container name={$nameof(Book)}
-        anchorPoint={AnchorPoints.center}
-        position={Positions.center}
+        anchorPoint={anchorPoints.center}
+        position={positions.center}
         size={UDim2.fromOffset(px(800), px(600))}
       >
         <imagelabel Name="LeatherBinding"
-          AnchorPoint={AnchorPoints.center}
-          Position={Positions.center}
+          AnchorPoint={anchorPoints.center}
+          Position={positions.center}
           Size={UDim2.fromScale(1, 1)}
           BackgroundTransparency={1}
           Image={Images.BookBinding}
         >
           <Container name="SideButtons"
-            anchorPoint={AnchorPoints.rightCenter}
-            position={Positions.rightCenter.add(UDim2.fromScale(0.04, 0))}
+            anchorPoint={anchorPoints.rightCenter}
+            position={positions.rightCenter.add(UDim2.fromScale(0.04, 0))}
             size={UDim2.fromScale(0.1, 1)}
           >
             <uilistlayout
@@ -87,8 +87,8 @@ export function Book({ page, isOpen, onlyOptions }: BookProps): Vide.Node {
             <BookSideButton icon={Images.ExitButton} iconSize={80} activated={() => isOpen(false)} />
           </Container>
           <imagelabel
-            AnchorPoint={AnchorPoints.center}
-            Position={Positions.center}
+            AnchorPoint={anchorPoints.center}
+            Position={positions.center}
             Size={UDim2.fromScale(0.9, 0.92)}
           >
             <CurrentPage />

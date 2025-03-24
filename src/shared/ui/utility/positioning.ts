@@ -1,6 +1,6 @@
 import Object from "@rbxts/object-utils";
 
-export const AnchorPoints = {
+export const anchorPoints = {
   topLeft: new Vector2(0, 0),
   topRight: new Vector2(1, 0),
   topCenter: new Vector2(0.5, 0),
@@ -12,5 +12,5 @@ export const AnchorPoints = {
   center: new Vector2(0.5, 0.5)
 };
 
-export const Positions = Object.fromEntries(Object.entries(AnchorPoints)
+export const positions = Object.fromEntries(Object.entries(anchorPoints)
   .map(([name, vector]) => [name, UDim2.fromScale(vector.X, vector.Y)]));

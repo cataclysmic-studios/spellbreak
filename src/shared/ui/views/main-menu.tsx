@@ -2,7 +2,7 @@ import Vide, { source } from "@rbxts/vide";
 
 import { usePx } from "../hooks/use-px";
 import { Palette } from "../palette";
-import { AnchorPoints, Positions } from "../utility/positioning";
+import { anchorPoints, positions } from "../utility/positioning";
 
 import { Container } from "../utility/components/container";
 import { WizButton } from "../components/wiz-button";
@@ -22,8 +22,8 @@ export function MainMenu(): Vide.Node {
       PaddingBottom={new UDim(0, px(20))}
     />
     <ParchmentBanner name="NameBanner"
-      anchorPoint={AnchorPoints.topCenter}
-      position={Positions.topCenter}
+      anchorPoint={anchorPoints.topCenter}
+      position={positions.topCenter}
       size={UDim2.fromOffset(px(800), px(80))}
       textSize={px(32)}
       textColor={Palette.blue}
@@ -31,8 +31,8 @@ export function MainMenu(): Vide.Node {
       zIndex={1}
     />
     <ParchmentBanner name="DescriptionBanner"
-      anchorPoint={AnchorPoints.topCenter}
-      position={Positions.topCenter.add(UDim2.fromOffset(0, px(48)))}
+      anchorPoint={anchorPoints.topCenter}
+      position={positions.topCenter.add(UDim2.fromOffset(0, px(48)))}
       size={UDim2.fromOffset(px(700), px(80))}
       textSize={px(21)}
       textColor={Palette.blue}
@@ -41,8 +41,8 @@ export function MainMenu(): Vide.Node {
     />
     <Book isOpen={bookIsOpen} onlyOptions={true} />
     <Container name="Buttons"
-      anchorPoint={AnchorPoints.bottomCenter}
-      position={Positions.bottomCenter}
+      anchorPoint={anchorPoints.bottomCenter}
+      position={positions.bottomCenter}
       size={UDim2.fromOffset(px(800), px(45))}
     >
       <uilistlayout

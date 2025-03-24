@@ -2,7 +2,7 @@ import Vide, { Derivable, read, source } from "@rbxts/vide";
 
 import { usePx } from "../hooks/use-px";
 import { Palette } from "../palette";
-import { AnchorPoints, Positions } from "../utility/positioning";
+import { anchorPoints, positions } from "../utility/positioning";
 import { Images } from "../utility/images";
 
 import { Container } from "../utility/components/container";
@@ -29,8 +29,8 @@ export function WizButton({ text, size, active, activated }: WizButtonProps): Vi
     <imagebutton
       Name={read(text) + "Button"}
       Image={Images.Vignette}
-      AnchorPoint={AnchorPoints.center}
-      Position={Positions.center}
+      AnchorPoint={anchorPoints.center}
+      Position={positions.center}
       BackgroundColor3={backgroundColor}
       BackgroundTransparency={transparencyIncrement}
       ImageTransparency={0.3 + transparencyIncrement()}

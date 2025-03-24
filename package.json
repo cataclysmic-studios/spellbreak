@@ -12,8 +12,8 @@
   "description": "",
   "devDependencies": {
     "@rbxts/compiler-types": "^3.0.0-types.0",
-    "@rbxts/types": "^1.0.813",
     "@rbxts/flamework-binary-serializer": "^0.6.0",
+    "@rbxts/types": "^1.0.813",
     "rbxts-transform-debug": "github:roblox-aurora/rbxts-transform-debug",
     "rbxts-transformer-flamework": "^1.2.4",
     "roblox-ts": "^3.0.0",

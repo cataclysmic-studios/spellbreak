@@ -12,7 +12,7 @@ export interface OnPlayerLeave {
 }
 
 @Service({ loadOrder: -1 })
-export class PlayersHook implements OnStart {
+export class PlayersHooks implements OnStart {
   public onStart(): void {
     const joinListeners = new Set<OnPlayerJoin>;
     const leaveListeners = new Set<OnPlayerLeave>;

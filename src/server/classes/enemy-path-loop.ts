@@ -2,7 +2,7 @@ import { getChildrenOfType } from "@rbxts/instance-utility";
 import Object from "@rbxts/object-utils";
 
 import { Enemy } from "./enemy";
-import { getEnemyDescriptor } from "shared/utility";
+import { getEnemyDescriptor } from "shared/utilities/enemy";
 import Log from "shared/log";
 
 interface BoundingBox {
@@ -33,7 +33,7 @@ export class EnemyPathLoop {
     }
 
     if (this.enemyNames.size() === 0)
-      Log.warn(`EnemyPathLoop @ ${model.GetFullName()} does not spawn any enemies.`);
+      Log.warn(`EnemyPathLoop @ ${model.GetFullName()} does not contain any enemy spawns.`);
   }
 
   public update(dt: number): void {

@@ -1,6 +1,6 @@
 import { callMethodOnDependencies } from "@rbxts/flamework-meta-utils";
 
-import { Message, MessageData, messaging } from "shared/messaging";
+import { Message, type MessageData, messaging } from "shared/messaging";
 
 /** @metadata reflect identifier flamework:parameters */
 export function OnMessage<Kind extends Message>(message: Kind) {

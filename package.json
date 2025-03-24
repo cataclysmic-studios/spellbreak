@@ -13,18 +13,18 @@
   "devDependencies": {
     "@rbxts/compiler-types": "^3.0.0-types.0",
     "@rbxts/types": "^1.0.813",
+    "@rbxts/flamework-binary-serializer": "^0.6.0",
     "rbxts-transform-debug": "github:roblox-aurora/rbxts-transform-debug",
     "rbxts-transformer-flamework": "^1.2.4",
     "roblox-ts": "^3.0.0",
     "typescript": "^5.5.3"
   },
   "dependencies": {
-    "@flamework/core": "^1.2.3",
-    "@rbxts/array-utils": "^1.0.1",
+    "@flamework/core": "^1.2.4",
+    "@rbxts/array-utils": "^1.0.2",
     "@rbxts/builders": "^1.0.2",
-    "@rbxts/charm": "^0.9.0",
-    "@rbxts/ez-log": "^1.0.1",
-    "@rbxts/flamework-binary-serializer": "^0.6.0",
+    "@rbxts/charm": "^0.10.0",
+    "@rbxts/ez-log": "^1.0.2",
     "@rbxts/flamework-meta-utils": "^1.0.3",
     "@rbxts/id": "^1.0.0",
     "@rbxts/instance-utility": "^1.0.3",
@@ -37,7 +37,7 @@
     "@rbxts/pretty-vide-utils": "^0.0.4",
     "@rbxts/services": "^1.5.5",
     "@rbxts/string-utils": "^1.0.3",
-    "@rbxts/tether": "1.0.5",
-    "@rbxts/vide": "^0.5.4"
+    "@rbxts/tether": "^1.0.8",
+    "@rbxts/vide": "^0.5.7"
   }
 }

@@ -7,7 +7,7 @@ import type { Enemy } from "server/classes/enemy";
 
 @Service()
 export class DuelService {
-  public readonly comabatantsInDuels = new Set<Combatant>;
+  public readonly combatantsInDuels = new Set<Combatant>;
 
   private readonly circles: DuelCircle[] = [];
   private readonly circleLocations = getChildrenOfType(World.WaitForChild("DuelCircleLocations"), "BasePart")
@@ -22,12 +22,12 @@ export class DuelService {
   public startPvE(player: Player, enemy: Enemy): void {
     const playerPosition = player.Character!.GetPivot().Position;
     const circleLocation = this.getNearestCircleLocation(playerPosition);
-    const duelCircle = new DuelCircle<false>(circleLocation);
+    const duelCircle = new DuelCircle<false>(this, circleLocation);
     this.circles.push(duelCircle);
 
     // TODO: remove combatants from this.comabatantsInDuels when duel is completed
-    this.comabatantsInDuels.add(player);
-    this.comabatantsInDuels.add(enemy);
+    this.combatantsInDuels.add(player);
+    this.combatantsInDuels.add(enemy);
     duelCircle.addPlayer(player, DuelCirclePosition.First);
     duelCircle.addEnemy(enemy, DuelCirclePosition.First);
   }

@@ -12,6 +12,7 @@ import Log from "shared/log";
 import { Destroyable } from "shared/classes/destroyable";
 import { Enemy } from "./enemy";
 import type { EnemyService } from "server/services/enemy";
+import { DuelService } from "server/services/duel";
 
 const MAX_COMBATANTS = 8;
 const TURN_INFO = new TweenInfoBuilder()
@@ -73,6 +74,7 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
    * If `true`, players may be placed in opponent positions and enemies can not enter. Defaults to `false`.
    */
   public constructor(
+    private readonly duelService: DuelService,
     location: Vector3,
     private readonly pvp: PvP = false as PvP
   ) {
@@ -116,11 +118,16 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
   public addPlayer(player: Player, position: DuelCirclePosition): void
   public addPlayer(player: Player, position: DuelCirclePosition, enemyTeam?: PvP extends true ? boolean : undefined): void
   public addPlayer(player: Player, position: DuelCirclePosition, enemyTeam?: PvP extends true ? boolean : undefined): void {
-    this.combatants.add(player);
     const positions = enemyTeam
       ? this.opponentPositions
       : this.teamPositions;
+    const occupiedPositions = enemyTeam
+      ? this.occupiedOpponentPositions
+      : this.occupiedTeamPositions;
 
+    this.combatants.add(player);
+    this.duelService.combatantsInDuels.add(player);
+    occupiedPositions.add(position);
     messaging.emitClient(player, Message.ToggleMovement, false);
     this.pullInCombatant(player.Character!, positions, position);
   }
@@ -135,6 +142,8 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
       return Log.fatal("Attempt to add enemy to PvP duel circle", ["duel circle"]);
 
     this.combatants.add(enemy);
+    this.duelService.combatantsInDuels.add(enemy);
+    this.occupiedOpponentPositions.add(position);
     this.pullInCombatant(enemy.model, this.opponentPositions, position);
   }
 

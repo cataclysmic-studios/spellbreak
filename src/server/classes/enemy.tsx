@@ -61,7 +61,7 @@ export class Enemy extends Destroyable implements BaseID<number> {
   }
 
   public isInDuel(): boolean {
-    return this.duel.comabatantsInDuels.has(this);
+    return this.duel.combatantsInDuels.has(this);
   }
 
   private registerTouch(): void {
@@ -70,7 +70,7 @@ export class Enemy extends Destroyable implements BaseID<number> {
       if (playerWhoTouched === undefined) return;
       conn.Disconnect();
 
-      if (this.duel.comabatantsInDuels.has(playerWhoTouched) || this.duel.comabatantsInDuels.has(this)) return;
+      if (this.duel.combatantsInDuels.has(playerWhoTouched) || this.duel.combatantsInDuels.has(this)) return;
       this.duel.startPvE(playerWhoTouched, this);
     });
   }

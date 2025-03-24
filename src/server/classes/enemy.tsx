@@ -28,6 +28,9 @@ export class Enemy extends Destroyable implements BaseID<number> {
     super();
     this.model = this.janitor.Add(assets.enemies.WaitForChild<EnemyModel>(descriptor.name).Clone());
     this.root = this.model.PrimaryPart!;
+
+    this.model.AddTag("Enemy");
+    this.model.SetAttribute("ID", this.id);
     this.createNametag();
     this.registerTouch();
   }

@@ -22,7 +22,7 @@ export function BookSideButton({ icon, iconSize, active, layoutOrder, activated 
     <imagelabel Name={$nameof(BookSideButton)}
       AnchorPoint={anchorPoints.leftCenter}
       BackgroundTransparency={1}
-      Size={UDim2.fromOffset(84, 58)}
+      Size={UDim2.fromOffset(px(80), px(54))}
       Image={Images.RedRibbon}
       LayoutOrder={layoutOrder}
     >
@@ -34,6 +34,7 @@ export function BookSideButton({ icon, iconSize, active, layoutOrder, activated 
         spritestripImage={icon}
         tileSize={() => read(iconSize) ?? 32}
         size={UDim2.fromScale(0.75, 0.75)}
+        active={isActive}
         activated={activated}
       />
     </imagelabel>

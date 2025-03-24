@@ -2,7 +2,7 @@ import { Service } from "@flamework/core";
 import { getChildrenOfType } from "@rbxts/instance-utility";
 import { Workspace as World } from "@rbxts/services";
 
-import { DuelCircle, type Combatant } from "server/classes/duel-circle";
+import { DuelCircle, DuelCirclePosition, type Combatant } from "server/classes/duel-circle";
 import type { Enemy } from "server/classes/enemy";
 
 @Service()
@@ -28,8 +28,8 @@ export class DuelService {
     // TODO: remove combatants from this.comabatantsInDuels when duel is completed
     this.comabatantsInDuels.add(player);
     this.comabatantsInDuels.add(enemy);
-    duelCircle.addPlayer(player);
-    duelCircle.addEnemy(enemy);
+    duelCircle.addPlayer(player, DuelCirclePosition.First);
+    duelCircle.addEnemy(enemy, DuelCirclePosition.First);
   }
 
   private getNearestCircleLocation(position: Vector3): Vector3 {

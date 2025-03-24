@@ -8,6 +8,7 @@ interface DuelCirclePositions extends Folder {
 interface DuelCircleModel extends Model, WithAnimationController {
   opponentPositions: DuelCirclePositions;
   teamPositions: DuelCirclePositions;
+  hitbox: MeshPart;
   Glow: MeshPart & {
     texture: Decal;
   };
@@ -17,7 +18,7 @@ interface DuelCircleModel extends Model, WithAnimationController {
   Vortex: MeshPart & {
     texture: Decal;
   };
-  root: Part;
+  Root: Part;
 }
 
 type CombatantModel = CharacterModel | EnemyModel;

@@ -1,6 +1,8 @@
-import { Workspace as World } from "@rbxts/services";
+import { Dependency } from "@flamework/core";
+import { Players, Workspace as World } from "@rbxts/services";
 import { TweenInfoBuilder } from "@rbxts/builders";
 import { tween } from "@rbxts/instance-utility";
+import { atom } from "@rbxts/charm";
 import type { BaseID } from "@rbxts/id";
 
 import { Message, messaging } from "shared/messaging";
@@ -8,15 +10,29 @@ import { assets } from "shared/constants";
 import Log from "shared/log";
 
 import { Destroyable } from "shared/classes/destroyable";
-import type { Enemy } from "./enemy";
+import { Enemy } from "./enemy";
+import type { EnemyService } from "server/services/enemy";
 
-const TURN_TWEEN_INFO = new TweenInfoBuilder()
+const MAX_COMBATANTS = 8;
+const TURN_INFO = new TweenInfoBuilder()
   .SetTime(0.5)
   .SetEasingStyle(Enum.EasingStyle.Linear)
   .Build();
-const PULL_IN_TWEEN_INFO = new TweenInfoBuilder()
+const PULL_IN_INFO = new TweenInfoBuilder()
   .SetTime(1.5)
   .SetEasingStyle(Enum.EasingStyle.Linear)
+  .Build();
+const FADE_IN_INFO = new TweenInfoBuilder()
+  .SetTime(0.4)
+  .Build();
+const FADE_OUT_INFO = new TweenInfoBuilder()
+  .SetTime(1)
+  .SetEasingStyle(Enum.EasingStyle.Cubic)
+  .SetEasingDirection(Enum.EasingDirection.In)
+  .Build();
+const GLOW_INFO = new TweenInfoBuilder()
+  .SetTime(0.5)
+  .SetReverses(true)
   .Build();
 
 export type Combatant = Player | Enemy;
@@ -28,14 +44,24 @@ export const enum DuelCirclePosition {
   Fourth
 }
 
+export const enum DuelPhase {
+  Starting,
+  Planning,
+  Combat,
+  Ending
+}
+
 export class DuelCircle<PvP extends boolean = boolean> extends Destroyable implements BaseID<number> {
   public static cumulativeID = 0;
 
   public readonly id = DuelCircle.cumulativeID++;
+  public readonly currentPhase = atom(DuelPhase.Starting);
   public readonly opponentPositions: DuelCirclePositions;
   public readonly teamPositions: DuelCirclePositions;
 
-  private readonly combatants: Combatant[] = [];
+  private readonly occupiedOpponentPositions = new Set<DuelCirclePosition>;
+  private readonly occupiedTeamPositions = new Set<DuelCirclePosition>;
+  private readonly combatants = new Set<Combatant>;
   private readonly model: DuelCircleModel;
   private readonly animations;
 
@@ -55,6 +81,15 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     this.model = this.janitor.Add(assets.duel.circle.Clone());
     this.model.PivotTo(new CFrame(location));
     this.model.Parent = World.DuelCircles;
+
+    if (!pvp) {
+      this.janitor.Add(this.model.hitbox.Touched.Connect(hit => {
+        const character = hit.FindFirstAncestorOfClass("Model");
+        if (character === undefined) return;
+        if (this.combatants.size() === MAX_COMBATANTS) return;
+        this.onTouched(character);
+      }));
+    }
 
     const animations = assets.animations.duel.circle;
     const animator = this.model.AnimationController.Animator;
@@ -78,8 +113,10 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
    * @param enemyTeam Optional boolean indicating if the player should be positioned
    * in the opponent positions. Only applicable if the duel circle is for PvP.
    */
-  public addPlayer(player: Player, position = DuelCirclePosition.First, enemyTeam?: PvP extends true ? boolean : undefined): void {
-    this.combatants.push(player);
+  public addPlayer(player: Player, position: DuelCirclePosition): void
+  public addPlayer(player: Player, position: DuelCirclePosition, enemyTeam?: PvP extends true ? boolean : undefined): void
+  public addPlayer(player: Player, position: DuelCirclePosition, enemyTeam?: PvP extends true ? boolean : undefined): void {
+    this.combatants.add(player);
     const positions = enemyTeam
       ? this.opponentPositions
       : this.teamPositions;
@@ -90,20 +127,21 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
 
   /**
    * Adds an enemy to the duel circle, positioning it in the enemy's position.
-   * Does nothing if the duel circle is for PvP.
+   * Throws if the duel circle is for PvP.
    * @param enemy The enemy to add
    */
-  public addEnemy(enemy: Enemy, position = DuelCirclePosition.First): void {
-    if (this.pvp) return;
+  public addEnemy(enemy: Enemy, position: DuelCirclePosition): void {
+    if (this.pvp)
+      return Log.fatal("Attempt to add enemy to PvP duel circle", ["duel circle"]);
 
-    this.combatants.push(enemy);
+    this.combatants.add(enemy);
     this.pullInCombatant(enemy.model, this.opponentPositions, position);
   }
 
   public override destroy(): void {
     if (this.destroyed) return;
 
-    const players = this.combatants.filter((combatant): combatant is Player => typeOf(combatant) === "Instance" && (combatant as Instance).IsA("Player"));
+    const players = this.getPlayerCombatants();
     for (const player of players)
       messaging.emitClient(player, Message.ToggleMovement, true);
 
@@ -112,10 +150,53 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     this.fadeOut().Completed.Once(() => this.janitor.Destroy());
   }
 
+  private onTouched(character: Model): void {
+    const isEnemy = character.HasTag("Enemy");
+    if (character.FindFirstChildOfClass("Humanoid") === undefined && !isEnemy) return;
+    if (isEnemy) {
+      const enemies = Dependency<EnemyService>();
+      const openPosition = this.getOpenOpponentPosition();
+      if (openPosition === undefined) return;
+
+      const id = character.GetAttribute<number>("ID")!;
+      const enemy = enemies.findEnemyByID(id);
+      if (enemy === undefined)
+        return Log.warn(`Failed find enemy with ID ${id} while attempting to attract into duel circle`, ["duel circle"]);
+
+      this.addEnemy(enemy, openPosition);
+    } else {
+      const player = Players.GetPlayerFromCharacter(character)!;
+      const openPosition = this.getOpenTeamPosition();
+      if (openPosition === undefined) return;
+      this.addPlayer(player, openPosition);
+    }
+  }
+
+  private getOpenOpponentPosition(): Maybe<DuelCirclePosition> {
+    const size = this.occupiedOpponentPositions.size();
+    if (size > DuelCirclePosition.Fourth) return;
+    return size;
+  }
+
+  private getOpenTeamPosition(): Maybe<DuelCirclePosition> {
+    const size = this.occupiedTeamPositions.size();
+    if (size > DuelCirclePosition.Fourth) return;
+    return size;
+  }
+
+  private getPlayerCombatants(): Player[] {
+    return [...this.combatants].filter((combatant): combatant is Player => typeIs(combatant, "Instance") && combatant.IsA("Player"));
+  }
+
+  private getEnemyCombatants(): Enemy[] {
+    return [...this.combatants].filter(combatant => combatant instanceof Enemy);
+  }
+
   private began(): void {
     Log.info("Duel began")
     this.animations.onAdd.AdjustSpeed(0);
     this.animations.idle.Play(0);
+    this.currentPhase(DuelPhase.Planning);
   }
 
   private pullInCombatant(combatantModel: Model, positions: DuelCirclePositions, position: DuelCirclePosition): void {
@@ -127,10 +208,10 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     this.janitor.Add(() => root.Anchored = false);
 
     const [x, y, z] = new CFrame(root.Position, positionPart.Position).ToOrientation();
-    tween(root, TURN_TWEEN_INFO, { Orientation: new Vector3(x, y, z) })
-    tween(root, PULL_IN_TWEEN_INFO, {
+    tween(root, TURN_INFO, { Orientation: new Vector3(x, y, z) })
+    tween(root, PULL_IN_INFO, {
       Position: positionPart.Position.add(new Vector3(0, height / 2, 0))
-    }).Completed.Once(() => tween(root, TURN_TWEEN_INFO, { Orientation: positionPart.Orientation }));
+    }).Completed.Once(() => tween(root, TURN_INFO, { Orientation: positionPart.Orientation }));
   }
 
   private playCreationAnimation(): void {
@@ -149,27 +230,13 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     this.model.Vortex.texture.Transparency = 1;
     this.model.Glow.texture.Transparency = 1;
 
-    const fadeInfo = new TweenInfoBuilder()
-      .SetTime(0.4)
-      .Build();
-    const glowInfo = new TweenInfoBuilder()
-      .SetTime(0.5)
-      .SetReverses(true)
-      .Build();
-
-    tween(this.model.Main.texture, fadeInfo, { Transparency: 0 });
-    tween(this.model.Vortex.texture, fadeInfo, { Transparency: 0 });
-    tween(this.model.Glow.texture, glowInfo, { Transparency: 0.3 });
+    tween(this.model.Main.texture, FADE_IN_INFO, { Transparency: 0 });
+    tween(this.model.Vortex.texture, FADE_IN_INFO, { Transparency: 0 });
+    tween(this.model.Glow.texture, GLOW_INFO, { Transparency: 0.3 });
   }
 
   private fadeOut(): Tween {
-    const fadeInfo = new TweenInfoBuilder()
-      .SetTime(1)
-      .SetEasingStyle(Enum.EasingStyle.Cubic)
-      .SetEasingDirection(Enum.EasingDirection.In)
-      .Build();
-
-    tween(this.model.Main.texture, fadeInfo, { Transparency: 1 });
-    return tween(this.model.Vortex.texture, fadeInfo, { Transparency: 1 });
+    tween(this.model.Main.texture, FADE_OUT_INFO, { Transparency: 1 });
+    return tween(this.model.Vortex.texture, FADE_OUT_INFO, { Transparency: 1 });
   }
 }

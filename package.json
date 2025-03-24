@@ -21,7 +21,6 @@
   },
   "dependencies": {
     "@flamework/core": "^1.2.4",
-    "@rbxts/array-utils": "^1.0.2",
     "@rbxts/builders": "^1.0.2",
     "@rbxts/charm": "^0.10.0",
     "@rbxts/ez-log": "^1.0.2",

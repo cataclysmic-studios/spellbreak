@@ -1,7 +1,6 @@
 import { Service, type OnTick } from "@flamework/core";
 import { Workspace as World } from "@rbxts/services";
 import { getChildrenOfType } from "@rbxts/instance-utility";
-import { flatten } from "@rbxts/array-utils";
 
 import { EnemyPathLoop } from "server/classes/enemy-path-loop";
 import type { Enemy } from "server/classes/enemy";
@@ -22,7 +21,16 @@ export class EnemyService implements OnTick {
   }
 
   public findEnemyByID(id: number): Maybe<Enemy> {
-    return flatten(this.pathLoops.map(pathLoop => pathLoop.enemies))
-      .find(enemy => enemy.id === id);
+    let enemy: Maybe<Enemy>;
+    for (const pathLoop of this.pathLoops) {
+      enemy = this.findEnemyInPathLoopByID(pathLoop, id);
+      if (enemy !== undefined) break;
+    }
+
+    return enemy;
+  }
+
+  public findEnemyInPathLoopByID(pathLoop: EnemyPathLoop, id: number): Maybe<Enemy> {
+    return pathLoop.enemies.find(enemy => enemy.id === id);
   }
 }

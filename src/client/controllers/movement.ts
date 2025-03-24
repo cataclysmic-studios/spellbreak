@@ -7,6 +7,8 @@ import { OnMessage } from "client/decorators";
 import { character } from "client/constants";
 import Log from "shared/log";
 
+const NO_Y = new Vector3(1, 0, 1);
+
 // TODO: controller binds
 const forwardAction = new StandardActionBuilder("W", "Up");
 const backwardAction = new StandardActionBuilder("S", "Down");
@@ -21,8 +23,8 @@ inputManager
 
 @Controller()
 export class MovementController implements OnPhysics {
-  public walkSpeed = 16;
-  public turnSpeed = 5.5;
+  public walkSpeed = 18;
+  public turnSpeed = 6;
 
   private readonly alignOrientation = new Lazy(() => {
     const alignOrientation = new Instance("AlignOrientation", character.collider);
@@ -37,17 +39,18 @@ export class MovementController implements OnPhysics {
   private enabled = true;
   private turnAngle = 0;
 
-  public onPhysics(): void {
+  public onPhysics(dt: number): void {
     this.updateOrientationAlignment();
 
     if (!this.enabled) return;
     const positionalInput = this.getPositionalInput();
     const turnInput = this.getTurnInput();
-    const velocity = character.getCFrame().LookVector.mul(positionalInput * this.walkSpeed);
-    if (velocity.Magnitude === 0 && turnInput === 0) return;
+    const velocity = character.getCFrame().LookVector
+      .mul(positionalInput * this.walkSpeed)
+      .mul(NO_Y)
 
     character.setVelocity(velocity);
-    this.turnAngle += turnInput * (this.turnSpeed / 10);
+    this.turnAngle += turnInput * (this.turnSpeed / 3) * 60 * dt;
   }
 
   @OnMessage(Message.ToggleMovement)

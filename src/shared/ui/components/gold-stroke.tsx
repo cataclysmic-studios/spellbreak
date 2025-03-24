@@ -7,7 +7,7 @@ interface GoldStrokeProps {
   readonly transparency: Derivable<number>;
 }
 
-export function GoldStroke({ thickness, transparency }: GoldStrokeProps) {
+export function GoldStroke({ thickness, transparency }: GoldStrokeProps): Vide.Node {
   return (
     <uistroke
       Color={Palette.white}

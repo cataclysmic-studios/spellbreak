@@ -1,4 +1,4 @@
-import Vide, { read, source, type Derivable, type Node } from "@rbxts/vide";
+import Vide, { read, type Derivable, type Node } from "@rbxts/vide";
 
 import { AnchorPoints, Positions } from "../utility/positioning";
 import { Palette } from "../palette";
@@ -14,7 +14,7 @@ export interface WizTextProps {
   readonly children?: Node;
 }
 
-export function WizText({ text, textSize, textColor, transparency, size, position, anchorPoint, children }: WizTextProps) {
+export function WizText({ text, textSize, textColor, transparency, size, position, anchorPoint, children }: WizTextProps): Vide.Node {
   return (
     <textlabel
       AnchorPoint={anchorPoint ?? AnchorPoints.center}

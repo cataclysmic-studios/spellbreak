@@ -5,7 +5,7 @@ interface NametagContainerProps {
   readonly offset?: Derivable<Vector3>;
 }
 
-export function NametagContainer({ adornee, offset, children }: PropsWithChildren<NametagContainerProps>) {
+export function NametagContainer({ adornee, offset, children }: PropsWithChildren<NametagContainerProps>): Vide.Node {
   return (
     <billboardgui
       Name="NametagContainer"

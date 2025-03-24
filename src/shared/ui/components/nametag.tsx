@@ -16,7 +16,7 @@ interface NametagProps {
   readonly children?: Node;
 }
 
-export function Nametag({ name, description, containerSize, color, children }: NametagProps) {
+export function Nametag({ name, description, containerSize, color, children }: NametagProps): Vide.Node {
   const descriptionText = () => read(description).upper();
   const frameSize = UDim2.fromScale(1, 0.45);
   const px = usePx();

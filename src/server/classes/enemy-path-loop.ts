@@ -1,14 +1,8 @@
 import { getChildrenOfType } from "@rbxts/instance-utility";
-import Object from "@rbxts/object-utils";
 
 import { Enemy } from "./enemy";
-import { getEnemyDescriptor } from "shared/utilities/enemy";
+import { getEnemyDescriptor } from "shared/utility/enemy";
 import Log from "shared/log";
-
-interface BoundingBox {
-  readonly center: Vector2;
-  readonly radius: Vector2;
-}
 
 export class EnemyPathLoop {
   public readonly enemies: Enemy[] = [];

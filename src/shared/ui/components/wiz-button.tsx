@@ -13,9 +13,10 @@ interface WizButtonProps {
   readonly text: Derivable<string>;
   readonly size: Derivable<UDim2>;
   readonly active?: Derivable<boolean>;
+  readonly activated?: () => void;
 }
 
-export function WizButton({ text, size, active }: WizButtonProps) {
+export function WizButton({ text, size, active, activated }: WizButtonProps): Vide.Node {
   const defaultBackgroundColor = Palette.deepRed;
   const backgroundColor = source(defaultBackgroundColor);
   const px = usePx();
@@ -43,7 +44,7 @@ export function WizButton({ text, size, active }: WizButtonProps) {
       }}
       Activated={() => {
         if (!isActive()) return;
-        print(read(text) + " button clicked!");
+        activated?.();
       }}
     >
       <GoldStroke thickness={px(2)} transparency={transparencyIncrement} />

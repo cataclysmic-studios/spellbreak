@@ -1,4 +1,4 @@
-import Vide, { type Derivable, type Node } from "@rbxts/vide";
+import Vide, { read, type Derivable, type Node } from "@rbxts/vide";
 
 import { AnchorPoints, Positions } from "../positioning";
 
@@ -14,10 +14,10 @@ interface ContainerProps {
  * A component that represents an invisible frame.
  * The container can house children components and provides an offset to center the content.
  */
-export function Container({ name, size, position, anchorPoint, children }: ContainerProps) {
+export function Container({ name, size, position, anchorPoint, children }: ContainerProps): Vide.Node {
   return (
     <frame
-      Name={name}
+      Name={read(name) ?? "ContainerFrame"}
       Position={position ?? Positions.center}
       AnchorPoint={anchorPoint ?? AnchorPoints.center}
       BackgroundTransparency={1}

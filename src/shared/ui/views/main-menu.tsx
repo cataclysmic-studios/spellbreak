@@ -1,4 +1,4 @@
-import Vide from "@rbxts/vide";
+import Vide, { source } from "@rbxts/vide";
 
 import { usePx } from "../hooks/use-px";
 import { Palette } from "../palette";
@@ -7,13 +7,15 @@ import { AnchorPoints, Positions } from "../utility/positioning";
 import { Container } from "../utility/components/container";
 import { WizButton } from "../components/wiz-button";
 import { ParchmentBanner } from "../components/parchment-banner";
+import { Book, BookPage } from "../components/book";
 
-export function MainMenu() {
+export function MainMenu(): Vide.Node {
+  const bookIsOpen = source(false);
   const px = usePx();
   const mainButtonSize = new UDim2(0, px(210), 1, 0);
   const otherButtonSize = new UDim2(0, px(125), 0.75, 0);
 
-  return <>
+  return <Container>
     <uiaspectratioconstraint AspectRatio={4 / 3} />
     <uipadding
       PaddingTop={new UDim(0, px(15))}
@@ -37,6 +39,7 @@ export function MainMenu() {
       text="Level 170 (Supreme Necromancer)\nHope Springs"
       zIndex={0}
     />
+    <Book isOpen={bookIsOpen} onlyOptions={true} />
     <Container name="Buttons"
       anchorPoint={AnchorPoints.bottomCenter}
       position={Positions.bottomCenter}
@@ -49,10 +52,10 @@ export function MainMenu() {
         Padding={new UDim(0, px(15))}
       />
       <WizButton text="Exit" size={otherButtonSize} />
-      <WizButton text="Options" size={otherButtonSize} />
+      <WizButton text="Options" size={otherButtonSize} activated={() => bookIsOpen(!bookIsOpen())} />
       <WizButton text="Play" size={mainButtonSize} />
       <WizButton text="Delete" size={otherButtonSize} />
       <WizButton text="New" size={otherButtonSize} active={false} />
     </Container>
-  </>;
+  </Container>;
 }

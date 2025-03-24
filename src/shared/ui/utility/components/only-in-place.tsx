@@ -6,7 +6,7 @@ interface OnlyInPlaceProps {
   readonly children: () => Node | void;
 }
 
-export function OnlyInPlace({ placeID, children }: OnlyInPlaceProps) {
+export function OnlyInPlace({ placeID, children }: OnlyInPlaceProps): Vide.Node {
   return (
     <Show when={() => game.PlaceId === placeID}>
       {children}

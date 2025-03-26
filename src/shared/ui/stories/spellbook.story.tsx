@@ -1,6 +1,6 @@
 import Vide, { source } from "@rbxts/vide";
-import { Book } from "../components/book";
+import { Spellbook } from "../components/spellbook";
 import { hoarcekat } from "../utility/hoarcekat";
 import "../dev";
 
-export = hoarcekat(() => <Book isOpen={source(true)} />);
+export = hoarcekat(() => <Spellbook isOpen={source(true)} />);

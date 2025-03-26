@@ -69,12 +69,11 @@ export function DeckHand({ hand }: DeckHandProps): Vide.Node {
       SortOrder={Enum.SortOrder.LayoutOrder}
     />
     <BaseCardButton image={Images.CardInfoBG} layoutOrder={-1}>
-      <WizText
+      <WizText text="Cards\n64 of 64"
         position={positions.center}
         font={Enum.Font.Cartoon}
         size={UDim2.fromScale(1, 0.5)}
         textSize={px(16)}
-        text={"Cards\n64 of 64"}
       />
     </BaseCardButton>
     <For each={hand}>

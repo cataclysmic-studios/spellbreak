@@ -26,8 +26,7 @@ export function WizButton({ text, size, active, activated }: WizButtonProps): Vi
   const transparencyIncrement = () => isActive() ? 0 : 0.5;
 
   return (
-    <imagebutton
-      Name={read(text) + "Button"}
+    <imagebutton Name={read(text) + "Button"}
       Image={Images.Vignette}
       AnchorPoint={anchorPoints.center}
       Position={positions.center}

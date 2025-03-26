@@ -14,8 +14,7 @@ interface EnemyNametagProps {
 
 export function EnemyNametag({ descriptor: { name, rank, kind, schools }, containerSize }: EnemyNametagProps): Vide.Node {
   return (
-    <Nametag
-      name={name}
+    <Nametag name={name}
       description={`Rank ${rank}${startsWith(read(kind), "Regular") ? "" : " " + read(kind).upper()}`}
       color={nametagColors.enemy[read(kind)]}
       containerSize={containerSize}

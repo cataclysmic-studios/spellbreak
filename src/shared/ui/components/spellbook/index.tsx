@@ -1,19 +1,19 @@
 import Vide, { Show, type Source, type Derivable, source, read } from "@rbxts/vide";
 import { $nameof } from "rbxts-transform-debug";
 
-import { usePx } from "../hooks/use-px";
-import { anchorPoints, positions } from "../utility/positioning";
+import { usePx } from "../../hooks/use-px";
+import { anchorPoints, positions } from "../../utility/positioning";
+import { Images } from "../../utility/images";
 
-import { Container } from "../utility/components/container";
-import { Images } from "../utility/images";
-import { CharacterPage } from "./book-pages/character-page";
-import { BackpackPage } from "./book-pages/backpack-page";
-import { PetsPage } from "./book-pages/pets-page";
-import { DeckPage } from "./book-pages/deck-page";
-import { QuestsPage } from "./book-pages/quests-page";
-import { MapPage } from "./book-pages/map-page";
-import { CraftingPage } from "./book-pages/crafting-page";
-import { OptionsPage } from "./book-pages/options-page";
+import { Container } from "../../utility/components/container";
+import { CharacterPage } from "./pages/character-page";
+import { BackpackPage } from "./pages/backpack-page";
+import { PetsPage } from "./pages/pets-page";
+import { DeckPage } from "./pages/deck-page";
+import { QuestsPage } from "./pages/quests-page";
+import { MapPage } from "./pages/map-page";
+import { CraftingPage } from "./pages/crafting-page";
+import { OptionsPage } from "./pages/options-page";
 import { BookSideButton } from "./book-side-button";
 
 export const enum BookPage {
@@ -44,7 +44,7 @@ interface BookProps {
   readonly isOpen: Source<boolean>;
 }
 
-export function Book({ page, isOpen, onlyOptions }: BookProps): Vide.Node {
+export function Spellbook({ page, isOpen, onlyOptions }: BookProps): Vide.Node {
   const selectedPage = source(read(page) ?? BookPage.Options);
   const px = usePx();
   const onlyEnableOptions = onlyOptions ?? false;
@@ -52,7 +52,7 @@ export function Book({ page, isOpen, onlyOptions }: BookProps): Vide.Node {
   const CurrentPage = bookPages[selectedPage()];
   return <Show when={isOpen}>
     {() => (
-      <Container name={$nameof(Book)}
+      <Container name={$nameof(Spellbook)}
         anchorPoint={anchorPoints.center}
         position={positions.center}
         size={UDim2.fromOffset(px(800), px(600))}

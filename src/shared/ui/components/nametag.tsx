@@ -22,8 +22,7 @@ export function Nametag({ name, description, containerSize, color, children }: N
   const px = usePx();
 
   return <>
-    <textlabel
-      Name="Title"
+    <textlabel Name="Title"
       BackgroundTransparency={1}
       FontFace={fondamento}
       Size={UDim2.fromScale(1, 0.55)}
@@ -31,8 +30,7 @@ export function Nametag({ name, description, containerSize, color, children }: N
       TextColor3={color ?? Palette.white}
       TextScaled={true}
     />
-    <frame
-      Name="Bottom"
+    <frame Name="Bottom"
       AnchorPoint={anchorPoints.bottomCenter}
       Position={positions.bottomCenter}
       BackgroundTransparency={1}
@@ -46,8 +44,7 @@ export function Nametag({ name, description, containerSize, color, children }: N
         VerticalAlignment={Enum.VerticalAlignment.Center}
       />
       {children}
-      <textlabel
-        Name="Description"
+      <textlabel Name="Description"
         LayoutOrder={1}
         BackgroundTransparency={1}
         FontFace={fondamento}

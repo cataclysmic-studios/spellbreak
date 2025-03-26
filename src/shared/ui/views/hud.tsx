@@ -3,8 +3,8 @@ import Vide, { source } from "@rbxts/vide";
 import { usePx } from "../hooks/use-px";
 
 import { Container } from "../utility/components/container";
-import { Book, BookPage } from "../components/book";
-import { BookButton } from "../components/book-button";
+import { Spellbook, BookPage } from "../components/spellbook";
+import { BookButton } from "../components/spellbook/book-button";
 
 export function HUD(): Vide.Node {
   const bookIsOpen = source(false);
@@ -19,7 +19,7 @@ export function HUD(): Vide.Node {
       PaddingRight={new UDim(0, px(10))}
     />
     <BookButton isOpen={bookIsOpen} />
-    <Book
+    <Spellbook
       page={BookPage.Options}
       isOpen={bookIsOpen}
     />

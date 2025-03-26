@@ -1,9 +1,9 @@
 import Vide, { type Source, source, spring } from "@rbxts/vide";
 
-import { usePx } from "../hooks/use-px";
-import { anchorPoints, positions } from "../utility/positioning";
-import { Images } from "../utility/images";
-import { SpritestripButton } from "./spritestrip-button";
+import { usePx } from "../../hooks/use-px";
+import { anchorPoints, positions } from "../../utility/positioning";
+import { Images } from "../../utility/images";
+import { SpritestripButton } from "../spritestrip-button";
 
 interface BookButtonProps {
   readonly isOpen: Source<boolean>;

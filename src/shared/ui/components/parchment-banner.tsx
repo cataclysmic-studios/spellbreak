@@ -22,8 +22,7 @@ export function ParchmentBanner({ name, text, textSize, textColor, size, positio
   const px = usePx();
 
   return (
-    <imagelabel
-      Name={name}
+    <imagelabel Name={name}
       BackgroundTransparency={1}
       Image={Images.ParchmentBanner}
       AnchorPoint={anchorPoint}

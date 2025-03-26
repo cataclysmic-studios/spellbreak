@@ -7,7 +7,7 @@ import { anchorPoints, positions } from "../utility/positioning";
 import { Container } from "../utility/components/container";
 import { WizButton } from "../components/wiz-button";
 import { ParchmentBanner } from "../components/parchment-banner";
-import { Book, } from "../components/book";
+import { Spellbook, } from "../components/spellbook";
 
 export function MainMenu(): Vide.Node {
   const bookIsOpen = source(false);
@@ -39,7 +39,7 @@ export function MainMenu(): Vide.Node {
       text="Level 170 (Supreme Necromancer)\nHope Springs"
       zIndex={0}
     />
-    <Book isOpen={bookIsOpen} onlyOptions={true} />
+    <Spellbook isOpen={bookIsOpen} onlyOptions={true} />
     <Container name="Buttons"
       anchorPoint={anchorPoints.bottomCenter}
       position={positions.bottomCenter}

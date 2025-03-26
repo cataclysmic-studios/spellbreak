@@ -7,8 +7,7 @@ interface NametagContainerProps {
 
 export function NametagContainer({ adornee, offset, children }: PropsWithChildren<NametagContainerProps>): Vide.Node {
   return (
-    <billboardgui
-      Name="NametagContainer"
+    <billboardgui Name="NametagContainer"
       Active={true}
       Adornee={adornee}
       ClipsDescendants={true}

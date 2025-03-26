@@ -1,6 +1,8 @@
 import Vide, { type Derivable, read } from "@rbxts/vide";
+import { $nameof } from "rbxts-transform-debug";
 
 import { School } from "shared/structs/school";
+
 import { LargeSpritesheetIcon } from "./large-spritsheet-icon";
 
 interface SchoolIconProps {
@@ -27,7 +29,7 @@ const offsets: Record<School, Vector2> = {
 
 export function SchoolIcon({ anchorPoint, position, school, size, layoutOrder }: SchoolIconProps): Vide.Node {
   return (
-    <LargeSpritesheetIcon name="SchoolIcon"
+    <LargeSpritesheetIcon name={$nameof(SchoolIcon)}
       anchorPoint={anchorPoint}
       position={position}
       size={size ?? UDim2.fromScale(1, 1)}

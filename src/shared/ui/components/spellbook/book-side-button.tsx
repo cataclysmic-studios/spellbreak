@@ -1,10 +1,10 @@
 import Vide, { type Derivable, read } from "@rbxts/vide";
 import { $nameof } from "rbxts-transform-debug";
 
-import { usePx } from "../hooks/use-px";
-import { Images } from "../utility/images";
-import { anchorPoints, positions } from "../utility/positioning";
-import { SpritestripButton } from "./spritestrip-button";
+import { usePx } from "../../hooks/use-px";
+import { Images } from "../../utility/images";
+import { anchorPoints, positions } from "../../utility/positioning";
+import { SpritestripButton } from "../spritestrip-button";
 
 interface BookSideButtonProps {
   readonly icon: Derivable<string>;

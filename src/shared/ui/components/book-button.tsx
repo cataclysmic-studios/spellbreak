@@ -12,7 +12,7 @@ interface BookButtonProps {
 const buttonSize = 128;
 export function BookButton({ isOpen }: BookButtonProps): Vide.Node {
   const hovered = source(false);
-  const springOffset = spring(() => hovered() ? 10 : 0, 0.1, 1);
+  const springOffset = spring(() => hovered() ? 12 : 0, 0.15, 1);
   const px = usePx();
 
   return (

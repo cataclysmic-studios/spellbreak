@@ -2,17 +2,19 @@ import { Dependency } from "@flamework/core";
 import { Players, Workspace as World } from "@rbxts/services";
 import { TweenInfoBuilder } from "@rbxts/builders";
 import { tween } from "@rbxts/instance-utility";
-import { atom } from "@rbxts/charm";
+import { atom, subscribe } from "@rbxts/charm";
 import type { BaseID } from "@rbxts/id";
 
 import { Message, messaging } from "shared/messaging";
 import { assets } from "shared/constants";
+import { Enemy } from "./enemy";
+import { DuelCirclePosition, DuelPhase } from "shared/structs/duel";
+import { CameraPoseKind } from "shared/structs/camera";
+import { Destroyable } from "shared/classes/destroyable";
 import Log from "shared/log";
 
-import { Destroyable } from "shared/classes/destroyable";
-import { Enemy } from "./enemy";
 import type { EnemyService } from "server/services/enemy";
-import { DuelService } from "server/services/duel";
+import type { DuelService } from "server/services/duel";
 
 const MAX_COMBATANTS = 8;
 const TURN_INFO = new TweenInfoBuilder()
@@ -38,25 +40,11 @@ const GLOW_INFO = new TweenInfoBuilder()
 
 export type Combatant = Player | Enemy;
 
-export const enum DuelCirclePosition {
-  First,
-  Second,
-  Third,
-  Fourth
-}
-
-export const enum DuelPhase {
-  Starting,
-  Planning,
-  Combat,
-  Ending
-}
-
 export class DuelCircle<PvP extends boolean = boolean> extends Destroyable implements BaseID<number> {
   public static cumulativeID = 0;
 
   public readonly id = DuelCircle.cumulativeID++;
-  public readonly currentPhase = atom(DuelPhase.Starting);
+  public readonly currentPhase = atom(DuelPhase.Start);
   public readonly opponentPositions: DuelCirclePositions;
   public readonly teamPositions: DuelCirclePositions;
 
@@ -83,6 +71,17 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     this.model = this.janitor.Add(assets.duel.circle.Clone());
     this.model.PivotTo(new CFrame(location));
     this.model.Parent = World.DuelCircles;
+    this.model.SetAttribute("ID", this.id);
+
+    this.janitor.Add(() => DuelCircle.cumulativeID--);
+    this.janitor.Add(subscribe(this.currentPhase, (phase, oldPhase) => {
+      Log.info("Duel phase changed: " + DuelPhase[oldPhase] + " -> " + DuelPhase[phase]);
+      messaging.emitClient(this.getPlayerCombatants(), Message.DuelPhaseChanged, {
+        id: this.id,
+        phase
+      });
+    }));
+    this.currentPhase(DuelPhase.Start);
 
     if (!pvp) {
       this.janitor.Add(this.model.hitbox.Touched.Connect(hit => {
@@ -118,6 +117,7 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
   public addPlayer(player: Player, position: DuelCirclePosition): void
   public addPlayer(player: Player, position: DuelCirclePosition, enemyTeam?: PvP extends true ? boolean : undefined): void
   public addPlayer(player: Player, position: DuelCirclePosition, enemyTeam?: PvP extends true ? boolean : undefined): void {
+    if (this.combatants.has(player)) return;
     const positions = enemyTeam
       ? this.opponentPositions
       : this.teamPositions;
@@ -128,8 +128,18 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     this.combatants.add(player);
     this.duelService.combatantsInDuels.add(player);
     occupiedPositions.add(position);
+
     messaging.emitClient(player, Message.ToggleMovement, false);
-    this.pullInCombatant(player.Character!, positions, position);
+    messaging.emitClient(player, Message.DuelInitializeClient, {
+      id: this.id,
+      onOpposingTeam: this.occupiedOpponentPositions.has(position)
+    });
+    this.pullInCombatant(player.Character!, positions, position, () =>
+      messaging.emitClient(player, Message.TransitionCameraPose, {
+        poseKind: CameraPoseKind.BattleAerial,
+        duration: 0.5
+      })
+    );
   }
 
   /**
@@ -139,8 +149,9 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
    */
   public addEnemy(enemy: Enemy, position: DuelCirclePosition): void {
     if (this.pvp)
-      return Log.fatal("Attempt to add enemy to PvP duel circle", ["duel circle"]);
+      return Log.fatal("Attempt to add enemy to a PvP duel circle", ["duel circle"]);
 
+    if (this.combatants.has(enemy)) return;
     this.combatants.add(enemy);
     this.duelService.combatantsInDuels.add(enemy);
     this.occupiedOpponentPositions.add(position);
@@ -201,14 +212,14 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     return [...this.combatants].filter(combatant => combatant instanceof Enemy);
   }
 
-  private began(): void {
-    Log.info("Duel began")
+  private start(): void {
+    Log.info("Duel started")
     this.animations.onAdd.AdjustSpeed(0);
     this.animations.idle.Play(0);
     this.currentPhase(DuelPhase.Planning);
   }
 
-  private pullInCombatant(combatantModel: Model, positions: DuelCirclePositions, position: DuelCirclePosition): void {
+  private pullInCombatant(combatantModel: Model, positions: DuelCirclePositions, position: DuelCirclePosition, onCompleted?: () => void): void {
     const positionPart = positions[tostring(position + 1) as ExtractKeys<DuelCirclePositions, Part>];
     const height = combatantModel.GetBoundingBox()[1].Y;
     const root = combatantModel.PrimaryPart!;
@@ -220,14 +231,17 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     tween(root, TURN_INFO, { Orientation: new Vector3(x, y, z) })
     tween(root, PULL_IN_INFO, {
       Position: positionPart.Position.add(new Vector3(0, height / 2, 0))
-    }).Completed.Once(() => tween(root, TURN_INFO, { Orientation: positionPart.Orientation }));
+    }).Completed.Once(() =>
+      tween(root, TURN_INFO, { Orientation: positionPart.Orientation })
+        .Completed.Once(() => onCompleted?.())
+    );
   }
 
   private playCreationAnimation(): void {
     this.fadeIn();
     const conn = this.animations.onAdd.KeyframeReached.Connect(kf => {
       if (kf !== "Final") return;
-      this.began();
+      this.start();
       conn.Disconnect();
     });
 

@@ -11,7 +11,7 @@ import { EnemyNametag } from "shared/ui/components/enemy-nametag";
 import { Dependency } from "@flamework/core";
 import { DuelService } from "server/services/duel";
 
-const SPEED = 5; // studs per second
+const SPEED = 3; // studs per second
 
 export class Enemy extends Destroyable implements BaseID<number> {
   public static cumulativeID = 0;
@@ -50,7 +50,7 @@ export class Enemy extends Destroyable implements BaseID<number> {
         return this.moveConnection!.Disconnect();
       }
 
-      this.root.CFrame = this.root.CFrame.add(direction.mul(SPEED * dt));
+      this.root.CFrame = this.root.CFrame.add(direction.mul(SPEED / dt));
     });
   }
 

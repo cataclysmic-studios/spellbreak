@@ -1,18 +1,10 @@
 import { Workspace as World } from "@rbxts/services";
 
 import { BaseCameraPose } from "client/camera-poses/base";
-import { CharacterCameraPose } from "client/camera-poses/character";
-
-export const enum CameraPoseType {
-  Character,
-  Battle,
-  SpellCast,
-  SpellAnimation
-}
 
 export class CameraManager {
   private readonly camera = World.CurrentCamera!;
-  private pose?: BaseCameraPose = new CharacterCameraPose(this);
+  private pose?: BaseCameraPose;
 
   public constructor() {
     this.camera.CameraType = Enum.CameraType.Scriptable;
@@ -27,6 +19,10 @@ export class CameraManager {
   public transitionPose(newPose: BaseCameraPose, duration: number): void {
     this.pose = undefined;
     newPose.transitionInto(duration, () => this.pose = newPose);
+  }
+
+  public setPose(newPose: BaseCameraPose): void {
+    this.pose = newPose;
   }
 
   public setCFrame(cframe: CFrame): void {

@@ -36,7 +36,7 @@
     "@rbxts/pretty-vide-utils": "^0.0.4",
     "@rbxts/services": "^1.5.5",
     "@rbxts/string-utils": "^1.0.3",
-    "@rbxts/tether": "^1.0.8",
+    "@rbxts/tether": "^1.1.4",
     "@rbxts/vide": "^0.5.7"
   }
 }

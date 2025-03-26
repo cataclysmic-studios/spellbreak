@@ -59,7 +59,7 @@ export const OnInputRelease = Modding.createDecorator<[actionID: string | number
   })
 );
 
-/** @metadata reflect identifier flamework:parameters */
+/** @metadata reflect identifier*/
 export function OnMessage<Kind extends Message>(message: Kind) {
   return (ctor: object, propertyKey: string, descriptor: TypedPropertyDescriptor<(this: unknown, data: MessageData[Kind]) => void>) => {
     messaging.onClientMessage(message, data => callMethodOnDependencies(ctor, descriptor, data));

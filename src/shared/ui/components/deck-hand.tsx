@@ -51,7 +51,7 @@ export function DeckHand({ hand }: DeckHandProps): Vide.Node {
       const cardSize = card.AbsoluteSize;
       const cardDistanceFromMouseVector = new Vector2(X, Y).sub(cardPosition.add(new Vector2(cardSize.X / 2, 0)));
       const cardDistanceFromMouse = (cardDistanceFromMouseVector.sub(new Vector2(0, cardDistanceFromMouseVector.Y))).Magnitude;
-      const scaleIncrement = math.clamp(1 - (cardDistanceFromMouse / (screen.AbsoluteSize.Magnitude - size.Magnitude) * 2), 0, 1);
+      const scaleIncrement = math.clamp(1 - (cardDistanceFromMouse / (screen.AbsoluteSize.Magnitude - size.Magnitude) * 3), 0, 1);
       card.CardScale.Scale = 1 + (scaleIncrement ** 3 * 0.75);
     }
   });

@@ -212,6 +212,7 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     Log.info("Duel started")
     this.animations.onAdd.AdjustSpeed(0);
     this.animations.idle.Play(0);
+    task.wait(1);
     this.currentPhase(DuelPhase.Planning);
   }
 

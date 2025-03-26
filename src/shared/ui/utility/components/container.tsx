@@ -7,6 +7,9 @@ interface ContainerProps {
   readonly size?: Derivable<UDim2>;
   readonly position?: Derivable<UDim2>;
   readonly anchorPoint?: Derivable<Vector2>;
+  readonly layoutOrder?: Derivable<number>;
+  readonly transparency?: Derivable<number>;
+  readonly clipsDescendants?: Derivable<boolean>;
   readonly children?: Node;
 }
 
@@ -14,14 +17,16 @@ interface ContainerProps {
  * A component that represents an invisible frame.
  * The container can house children components and provides an offset to center the content.
  */
-export function Container({ name, size, position, anchorPoint, children }: ContainerProps): Vide.Node {
+export function Container({ name, size, position, anchorPoint, layoutOrder, transparency, clipsDescendants, children }: ContainerProps): Vide.Node {
   return (
     <frame
       Name={read(name) ?? "ContainerFrame"}
       Position={position ?? positions.center}
       AnchorPoint={anchorPoint ?? anchorPoints.center}
-      BackgroundTransparency={1}
-      Size={size ?? UDim2.fromScale(1, 1)}
+      BackgroundTransparency={() => read(transparency) ?? 1}
+      Size={() => read(size) ?? UDim2.fromScale(1, 1)}
+      ClipsDescendants={clipsDescendants}
+      LayoutOrder={layoutOrder}
     >
       {children}
     </frame>

@@ -1,46 +1,54 @@
-import Vide, { Show, source } from "@rbxts/vide";
+import Vide, { type Source, Show, For, source } from "@rbxts/vide";
 import { Players } from "@rbxts/services";
 
 import { usePx } from "../hooks/use-px";
 import { Images } from "../utility/images";
+import { anchorPoints, positions } from "../utility/positioning";
+import type { SpellCard } from "shared/structs/spell-card";
 
 import { Container } from "../utility/components/container";
 import { CardButton } from "../components/card-button";
-import { anchorPoints, positions } from "../utility/positioning";
+import { BaseCardButton } from "../components/base-card-button";
+import { WizText } from "../components/wiz-text";
 
 const MAX_CARDS_IN_HAND = 7;
 
 const mouse = Players.LocalPlayer.GetMouse();
 
-/** View for choosing cards, passing, drawing cards, etc. */
-export function BattlePlanning(): Vide.Node {
+interface BattlePlanningProps {
+  readonly hand: Source<SpellCard[]>;
+}
+
+/** View for passing, choosing cards, drawing cards, etc. */
+export function BattlePlanning({ hand }: BattlePlanningProps): Vide.Node {
   const choiceMade = source(false);
   const px = usePx();
 
   return <Container name="BattlePlanning" size={UDim2.fromOffset(px(800), px(200))}>
-    <Container name="Hand" size={UDim2.fromOffset(px(800), px(100))}>
-      <uilistlayout
-        Padding={new UDim(0, px(4))}
-        FillDirection={Enum.FillDirection.Horizontal}
-        HorizontalAlignment={Enum.HorizontalAlignment.Center}
-        VerticalAlignment={Enum.VerticalAlignment.Center}
-        SortOrder={Enum.SortOrder.LayoutOrder}
-      />
-      <CardButton name="Info" image={Images.CardInfoBG} layoutOrder={-1}>
-        <textlabel
-          AnchorPoint={anchorPoints.center}
-          Position={positions.center}
-          BackgroundTransparency={1}
-          Font={Enum.Font.Cartoon}
-          Size={UDim2.fromScale(1, 0.5)}
-          TextColor3={Color3.fromRGB(255, 255, 0)}
-          TextSize={px(16)}
-          Text={"Cards\n64 of 64"}
-        />
-      </CardButton>
-    </Container>
     <Show when={() => !choiceMade()}>
-      {() => { }}
+      {() => (
+        <Container name="Hand" size={UDim2.fromOffset(px(800), px(100))}>
+          <uilistlayout
+            Padding={new UDim(0, px(5))}
+            FillDirection={Enum.FillDirection.Horizontal}
+            HorizontalAlignment={Enum.HorizontalAlignment.Center}
+            VerticalAlignment={Enum.VerticalAlignment.Center}
+            SortOrder={Enum.SortOrder.LayoutOrder}
+          />
+          <BaseCardButton image={Images.CardInfoBG} layoutOrder={-1}>
+            <WizText
+              position={positions.center}
+              font={Enum.Font.Cartoon}
+              size={UDim2.fromScale(1, 0.5)}
+              textSize={px(16)}
+              text={"Cards\n64 of 64"}
+            />
+          </BaseCardButton>
+          <For each={hand}>
+            {(card, index) => <CardButton spellCard={card} layoutOrder={index} />}
+          </For>
+        </Container>
+      )}
     </Show>
   </Container>;
 }

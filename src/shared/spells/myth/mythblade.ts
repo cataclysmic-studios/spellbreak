@@ -6,14 +6,8 @@ export = {
   name: "Mythblade",
   type: SpellType.Charm,
   school: School.Myth,
-  cardImage: {
-    colored: "",
-    grayscale: ""
-  },
-  treasureCardImage: {
-    colored: "",
-    grayscale: ""
-  },
+  cardArtSpritesheetNumber: 1,
+  cardImageOffset: new Vector2(2, 3),
   hasTarget: true,
   accuracy: 100,
   cost: { pips: 0 },

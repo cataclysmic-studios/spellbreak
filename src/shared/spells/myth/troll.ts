@@ -3,17 +3,11 @@ import { SpellActionType } from "shared/structs/spell-actions";
 import { type Spell, SpellType } from "shared/structs/spell";
 
 export = {
-  name: "Goblin",
+  name: "Troll",
   type: SpellType.Damage,
   school: School.Myth,
-  cardImage: {
-    colored: "rbxassetid://16807903671",
-    grayscale: "rbxassetid://17387736137"
-  },
-  treasureCardImage: {
-    colored: "",
-    grayscale: ""
-  },
+  cardArtSpritesheetNumber: 1,
+  cardImageOffset: new Vector2(1, 2),
   hasTarget: true,
   accuracy: 85,
   cost: { pips: 1 },

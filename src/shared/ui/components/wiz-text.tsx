@@ -5,29 +5,41 @@ import { Palette } from "../palette";
 
 export interface WizTextProps {
   readonly text: Derivable<string>;
-  readonly textSize: Derivable<number>;
+  readonly textSize?: Derivable<number>;
   readonly textColor?: Derivable<Color3>;
+  readonly textScaled?: Derivable<boolean>;
   readonly transparency?: Derivable<number>;
+  readonly backgroundTransparency?: Derivable<number>;
   readonly size?: Derivable<UDim2>;
   readonly position?: Derivable<UDim2>;
   readonly anchorPoint?: Derivable<Vector2>;
+  readonly font?: Derivable<Enum.Font>;
+  readonly alignX?: Derivable<Enum.TextXAlignment>;
+  readonly alignY?: Derivable<Enum.TextYAlignment>;
   readonly children?: Node;
 }
 
-export function WizText({ text, textSize, textColor, transparency, size, position, anchorPoint, children }: WizTextProps): Vide.Node {
+const DEFAULT_FONT = Enum.Font.LuckiestGuy;
+
+export function WizText({ text, textSize, textColor, textScaled, transparency, backgroundTransparency, size, position, anchorPoint, font, alignX, alignY, children }: WizTextProps): Vide.Node {
+  const isDefaultFont = () => read(font) === undefined || read(font) === DEFAULT_FONT;
+  const getPosition = () => read(position) ?? positions.center;
   return (
     <textlabel
-      AnchorPoint={anchorPoint ?? anchorPoints.center}
-      Position={read(position ?? positions.center).add(UDim2.fromScale(0, 0.08))}
-      Text={read(text).upper()}
-      BackgroundTransparency={1}
-      Size={size ?? UDim2.fromScale(1, 1)}
-      Font={Enum.Font.LuckiestGuy}
+      AnchorPoint={() => read(anchorPoint) ?? anchorPoints.center}
+      Position={() => isDefaultFont() ? getPosition().add(UDim2.fromScale(0, 0.08)) : getPosition()}
+      Text={() => isDefaultFont() ? read(text).upper() : read(text)}
       TextSize={textSize}
-      TextColor3={textColor ?? Palette.yellow}
+      TextScaled={textScaled}
+      TextColor3={() => read(textColor) ?? Palette.yellow}
+      TextXAlignment={alignX}
+      TextYAlignment={alignY}
+      BackgroundTransparency={() => read(backgroundTransparency) ?? 1}
+      Size={() => read(size) ?? UDim2.fromScale(1, 1)}
+      Font={() => read(font) ?? Enum.Font.LuckiestGuy}
       TextTransparency={transparency}
     >
       {children}
-    </textlabel>
+    </textlabel >
   );
 }

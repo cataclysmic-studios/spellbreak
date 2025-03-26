@@ -10,9 +10,10 @@ interface LargeSpritesheetIconProps {
   readonly position?: Derivable<UDim2>;
   readonly size?: Derivable<UDim2>;
   readonly layoutOrder?: Derivable<number>;
+  readonly pageTwo?: Derivable<boolean>;
 }
 
-export function LargeSpritesheetIcon({ name, anchorPoint, position, offset, size, layoutOrder }: LargeSpritesheetIconProps): Vide.Node {
+export function LargeSpritesheetIcon({ name, anchorPoint, position, offset, size, layoutOrder, pageTwo }: LargeSpritesheetIconProps): Vide.Node {
   return (
     <SpritesheetIcon name={name}
       anchorPoint={anchorPoint}
@@ -20,7 +21,7 @@ export function LargeSpritesheetIcon({ name, anchorPoint, position, offset, size
       offset={offset}
       size={size ?? UDim2.fromScale(1, 1)}
       iconSize={52}
-      spritesheetImage={Images.LargeIconSpritesheet}
+      spritesheetImage={pageTwo ? Images.LargeIconSpritesheet2 : Images.LargeIconSpritesheet}
       layoutOrder={layoutOrder}
     >
       <uiaspectratioconstraint />

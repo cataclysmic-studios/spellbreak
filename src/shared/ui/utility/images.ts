@@ -9,6 +9,10 @@ export const enum Images {
   // spritesheets
   LargeIconSpritesheet = "rbxassetid://16821859312",
   LargeIconSpritesheet2 = "rbxassetid://114537181138499",
+  CardArtSpritsheetColor = "",
+  CardArtSpritsheetColor2 = "",
+  CardArtSpritsheetBW = "",
+  CardArtSpritsheetBW2 = "",
 
   // buttons
   SpellbookButton = "rbxassetid://101729984023869",
@@ -21,4 +25,23 @@ export const enum Images {
   CraftingButton = "rbxassetid://125673038077458",
   OptionsButton = "rbxassetid://130775053254795",
   ExitButton = "rbxassetid://84638639671372",
+
+  // card designs
+  FireCard = "rbxassetid://97523274760958",
+  IceCard = "rbxassetid://84099647110981",
+  StormCard = "rbxassetid://88379212218094",
+  LifeCard = "rbxassetid://101134100066744",
+  DeathCard = "rbxassetid://72723804220284",
+  MythCard = "rbxassetid://115481298708687",
+  BalanceCard = "rbxassetid://97014241139957",
+  StellarCard = "rbxassetid://122497493236688",
+  LunarCard = "rbxassetid://125470479987755",
+  SolarCard = "rbxassetid://95611570535764",
+  ShadowCard = "rbxassetid://104397561513873",
+  SchoolCardBW = "rbxassetid://108423428591678",
+  TreasureCard = "rbxassetid://81720140056355",
+  TreasureCardBW = "rbxassetid://98251373890945",
+  ItemCard = "rbxassetid://115349437779766",
+  ItemCardBW = "rbxassetid://79434633936418",
+  CardSelectionBorder = "rbxassetid://87667962604394"
 }

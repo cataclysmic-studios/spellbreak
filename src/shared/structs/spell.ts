@@ -8,10 +8,13 @@ interface SpellCost {
 
 export const enum SpellType {
   Damage,
-  DamageAll,
+  AOE,
   Drain,
-  Healing,
+  Heal,
   Charm,
+  Curse,
+  Trap,
+  Jinx,
   Ward,
   Aura,
   Global,
@@ -21,16 +24,11 @@ export const enum SpellType {
   Mutate
 }
 
-export interface CardImage {
-  readonly colored: string;
-  readonly grayscale: string;
-}
-
 export interface Spell<T extends SpellType = SpellType> {
   readonly type: T;
   readonly hasTarget: boolean;
-  readonly cardImage: CardImage;
-  readonly treasureCardImage: CardImage;
+  readonly cardArtSpritesheetNumber: number;
+  readonly cardImageOffset: Vector2;
   readonly name: string;
   readonly school: School;
   readonly accuracy: number;

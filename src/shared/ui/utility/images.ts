@@ -4,6 +4,7 @@ export const enum Images {
   ParchmentBanner = "rbxassetid://6099008610",
   BookBinding = "rbxassetid://92180308011222",
   RedRibbon = "rbxassetid://83791914432890",
+  CardInfoBG = "rbxassetid://13711786825",
 
   // spritesheets
   LargeIconSpritesheet = "rbxassetid://16821859312",

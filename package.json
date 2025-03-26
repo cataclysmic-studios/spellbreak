@@ -34,6 +34,7 @@
     "@rbxts/mechanism": "^1.1.0",
     "@rbxts/object-utils": "^1.0.4",
     "@rbxts/pretty-vide-utils": "^0.0.4",
+    "@rbxts/range": "^1.0.2",
     "@rbxts/services": "^1.5.5",
     "@rbxts/string-utils": "^1.0.3",
     "@rbxts/tether": "^1.1.4",

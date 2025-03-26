@@ -7,7 +7,7 @@ import { anchorPoints, positions } from "../utility/positioning";
 import { Container } from "../utility/components/container";
 import { WizButton } from "../components/wiz-button";
 import { ParchmentBanner } from "../components/parchment-banner";
-import { Book, BookPage } from "../components/book";
+import { Book, } from "../components/book";
 
 export function MainMenu(): Vide.Node {
   const bookIsOpen = source(false);

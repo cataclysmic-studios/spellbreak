@@ -22,7 +22,6 @@ export function HUD(): Vide.Node {
     <Book
       page={BookPage.Options}
       isOpen={bookIsOpen}
-      onlyOptions={true}
     />
   </Container>;
 }

@@ -7,10 +7,13 @@ import "../dev";
 import Troll from "shared/spells/myth/troll";
 import { CardKind, SpellCard } from "shared/structs/spell-card";
 
-const cards: SpellCard[] = [
+const testCards: SpellCard[] = [
   {
+    cardKind: CardKind.Normal,
+    spell: Troll
+  }, {
     cardKind: CardKind.Normal,
     spell: Troll
   }
 ];
-export = hoarcekat(() => <BattlePlanning hand={() => cards} />);
+export = hoarcekat(() => <BattlePlanning hand={() => testCards} />);

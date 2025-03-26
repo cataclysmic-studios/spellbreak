@@ -74,13 +74,9 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     this.model.SetAttribute("ID", this.id);
 
     this.janitor.Add(() => DuelCircle.cumulativeID--);
-    this.janitor.Add(subscribe(this.currentPhase, (phase, oldPhase) => {
-      Log.info("Duel phase changed: " + DuelPhase[oldPhase] + " -> " + DuelPhase[phase]);
-      messaging.emitClient(this.getPlayerCombatants(), Message.DuelPhaseChanged, {
-        id: this.id,
-        phase
-      });
-    }));
+    this.janitor.Add(subscribe(this.currentPhase, (phase, oldPhase) =>
+      messaging.emitClient(this.getPlayerCombatants(), Message.DuelPhaseChanged, phase)
+    ));
     this.currentPhase(DuelPhase.Start);
 
     if (!pvp) {

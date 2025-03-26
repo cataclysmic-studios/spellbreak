@@ -1,21 +1,20 @@
-import Vide, { type Source, type Derivable, type PropsWithChildren, source, read } from "@rbxts/vide";
+import Vide, { type Source, type Derivable, type PropsWithChildren, source, effect } from "@rbxts/vide";
 import { Players } from "@rbxts/services";
-import { useEventListener } from "@rbxts/pretty-vide-utils";
 
 import { usePx } from "../hooks/use-px";
 import { Images } from "../utility/images";
 import { Palette } from "../palette";
 import { anchorPoints, positions } from "../utility/positioning";
-import { cardArtSpritesheets, cardAspectRatio, grayscaleCardImages, schoolCardImages } from "shared/constants";
+import { cardAspectRatio } from "shared/constants";
 import { CardKind, type SpellCard } from "shared/structs/spell-card";
+import { SpellType } from "shared/structs/spell";
 
 import { BaseCardButton } from "./base-card-button";
 import { Container } from "../utility/components/container";
 import { SpritesheetIcon } from "./spritesheet-icon";
 import { WizText } from "./wiz-text";
 import { SchoolIcon } from "./school-icon";
-import { SpellType } from "shared/structs/spell";
-import { LargeSpritesheetIcon } from "./large-spritsheet-icon";
+import { School } from "shared/structs/school";
 
 interface CardButtonProps {
   readonly spellCard: SpellCard;
@@ -42,7 +41,44 @@ const SPELL_TYPE_IMAGES: Record<SpellType, string> = {
   [SpellType.Mutate]: "rbxassetid://86695891024037"
 };
 
+const CARD_ART_SPRITESHEETS: { colored: string; grayscale: string; }[] = [
+  {
+    colored: "rbxassetid://89063483535157",
+    grayscale: "rbxassetid://131276102206825"
+  }, {
+    colored: "rbxassetid://72199822054271",
+    grayscale: "rbxassetid://119954144892949"
+  }
+];
+
+const GRAYSCALE_CARD_IMAGES: Record<CardKind, string> = {
+  [CardKind.Normal]: Images.SchoolCardBW,
+  [CardKind.Treasure]: Images.TreasureCardBW,
+  [CardKind.Item]: Images.ItemCardBW
+}
+
+const SCHOOL_CARD_IMAGES: Record<School, string> = {
+  [School.Fire]: Images.FireCard,
+  [School.Ice]: Images.IceCard,
+  [School.Storm]: Images.StormCard,
+  [School.Life]: Images.LifeCard,
+  [School.Death]: Images.DeathCard,
+  [School.Myth]: Images.MythCard,
+  [School.Balance]: Images.BalanceCard,
+  [School.Stellar]: Images.StellarCard,
+  [School.Lunar]: Images.LunarCard,
+  [School.Solar]: Images.SolarCard,
+  [School.Shadow]: Images.ShadowCard
+};
+
 const mouse = Players.LocalPlayer.GetMouse();
+const deselectFunctions: (() => void)[] = [];
+const deselectAll = () => deselectFunctions.forEach(fn => fn());
+mouse.Button1Down.Connect(deselectAll);
+
+export interface CardButtonFrame extends Frame {
+  CardScale: UIScale;
+}
 
 export function CardButton({ spellCard, layoutOrder, grayscale, children }: PropsWithChildren<CardButtonProps>): Vide.Node {
   const baseZIndex = source(0);
@@ -51,95 +87,96 @@ export function CardButton({ spellCard, layoutOrder, grayscale, children }: Prop
   const belowCardZIndex = () => baseZIndex() - 1;
   const isGrayscale = () => grayscale?.() ?? false;
   const cardFrameImage = () => isGrayscale()
-    ? grayscaleCardImages[spellCard.cardKind]
+    ? GRAYSCALE_CARD_IMAGES[spellCard.cardKind]
     : spellCard.cardKind === CardKind.Normal
-      ? schoolCardImages[spellCard.spell.school]
+      ? SCHOOL_CARD_IMAGES[spellCard.spell.school]
       : spellCard.cardKind === CardKind.Treasure
         ? Images.TreasureCard
         : Images.ItemCard;
 
   const cardImage = () => {
-    const art = cardArtSpritesheets[spellCard.spell.cardArtSpritesheetNumber];
+    const art = CARD_ART_SPRITESHEETS[spellCard.spell.cardArtSpritesheetNumber];
     return isGrayscale() ? art.grayscale : art.colored;
   };
 
+  const deselect = () => selected(false);
   const px = usePx();
 
-  useEventListener(mouse.Button1Down, () => {
-    if (hovered()) return;
-    selected(false);
+  deselectFunctions.push(deselect);
+  effect(() => {
+    if (!isGrayscale()) return;
+    deselect();
   });
 
   return (
     <Container name={spellCard.spell.name + "Card"} clipsDescendants={true}>
       <uiaspectratioconstraint AspectRatio={cardAspectRatio} />
-      <WizText
+      <uiscale Name="CardScale" />
+      <WizText text={spellCard.spell.name}
         anchorPoint={anchorPoints.topCenter}
         position={positions.topCenter.sub(UDim2.fromScale(0, 0.025))}
-        text={spellCard.spell.name}
         textColor={Palette.white}
         textScaled={true}
         size={UDim2.fromScale(1, 0.08)}
       >
         <uistroke Thickness={px.scale(1)} Transparency={0.7} />
       </WizText>
-      <WizText
+      <WizText text={tostring(spellCard.spell.cost.pips)}
         anchorPoint={anchorPoints.center}
         position={positions.topLeft.add(UDim2.fromScale(0.128, 0.13))}
-        text={tostring(spellCard.spell.cost.pips)}
         textScaled={true}
         size={UDim2.fromScale(0.15, 0.15)}
       >
         <uiaspectratioconstraint />
         <uistroke Thickness={px.scale(1)} Transparency={0.3} />
       </WizText>
-
-      <WizText
+      <WizText text={spellCard.spell.accuracy + "%"}
         backgroundTransparency={1}
         anchorPoint={anchorPoints.center}
         position={positions.bottomLeft.add(UDim2.fromScale(0.128, -0.43))}
         font={Enum.Font.Cartoon}
-        text={spellCard.spell.accuracy + "%"}
         textScaled={true}
         size={UDim2.fromScale(0.225, 0.1)}
       >
         <uistroke Thickness={px.scale(1)} Transparency={0.3} />
       </WizText>
-      <SchoolIcon
+      <SchoolIcon school={spellCard.spell.school}
         anchorPoint={anchorPoints.center}
         position={positions.topRight.add(UDim2.fromScale(-0.125, 0.195))}
-        school={spellCard.spell.school}
         size={UDim2.fromScale(0.18, 0.18)}
       />
-      <imagelabel
+      <imagelabel Name="SpellType"
+        Image={SPELL_TYPE_IMAGES[spellCard.spell.type]}
         AnchorPoint={anchorPoints.center}
-        Position={positions.bottomRight.add(UDim2.fromScale(-0.129, -0.433))}
+        Position={positions.bottomRight.add(UDim2.fromScale(-0.129, -0.429))}
         BackgroundTransparency={1}
         Size={UDim2.fromScale(0.18, 0.18)}
-        Image={SPELL_TYPE_IMAGES[spellCard.spell.type]}
       >
         <uiaspectratioconstraint />
       </imagelabel>
       {/** TODO: implement actual description */}
-      <WizText
+      <WizText text="my long ass spell description"
         backgroundTransparency={1}
         anchorPoint={anchorPoints.center}
         position={positions.bottomCenter.sub(UDim2.fromScale(0, 0.2))}
         font={Enum.Font.Cartoon}
-        text={"my long ass spell description"}
         textColor={Palette.black}
         textScaled={true}
         alignX={Enum.TextXAlignment.Left}
         alignY={Enum.TextYAlignment.Top}
         size={UDim2.fromScale(0.825, 0.25)}
       />
-      <BaseCardButton
-        image={cardFrameImage}
+      <BaseCardButton image={cardFrameImage}
         layoutOrder={layoutOrder}
         zIndex={baseZIndex}
         hovered={() => hovered(true)}
         unhovered={() => hovered(false)}
-        activated={() => selected(!selected())}
+        activated={() => {
+          if (isGrayscale()) return;
+          if (selected()) return;
+          deselectAll();
+          selected(!selected());
+        }}
       >
         {children}
       </BaseCardButton>

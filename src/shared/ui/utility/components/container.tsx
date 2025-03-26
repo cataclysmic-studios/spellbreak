@@ -1,4 +1,4 @@
-import Vide, { read, type Derivable, type Node } from "@rbxts/vide";
+import Vide, { type Source, type Derivable, read } from "@rbxts/vide";
 
 import { anchorPoints, positions } from "../positioning";
 
@@ -10,23 +10,27 @@ interface ContainerProps {
   readonly layoutOrder?: Derivable<number>;
   readonly transparency?: Derivable<number>;
   readonly clipsDescendants?: Derivable<boolean>;
-  readonly children?: Node;
+  readonly absolutePositionChanged?: Source<Vector2>;
+  readonly absoluteSizeChanged?: Source<Vector2>;
+  readonly children?: Vide.Node;
 }
 
 /**
  * A component that represents an invisible frame.
  * The container can house children components and provides an offset to center the content.
  */
-export function Container({ name, size, position, anchorPoint, layoutOrder, transparency, clipsDescendants, children }: ContainerProps): Vide.Node {
+export function Container({ name, size, position, anchorPoint, layoutOrder, transparency, clipsDescendants, absolutePositionChanged: absolutePosition, absoluteSizeChanged: absoluteSize, children }: ContainerProps): Vide.Node {
   return (
     <frame
-      Name={read(name) ?? "ContainerFrame"}
-      Position={position ?? positions.center}
-      AnchorPoint={anchorPoint ?? anchorPoints.center}
+      Name={() => read(name) ?? "ContainerFrame"}
+      Position={() => read(position) ?? positions.center}
+      AnchorPoint={() => read(anchorPoint) ?? anchorPoints.center}
       BackgroundTransparency={() => read(transparency) ?? 1}
       Size={() => read(size) ?? UDim2.fromScale(1, 1)}
       ClipsDescendants={clipsDescendants}
       LayoutOrder={layoutOrder}
+      AbsolutePositionChanged={absolutePosition}
+      AbsoluteSizeChanged={absoluteSize}
     >
       {children}
     </frame>

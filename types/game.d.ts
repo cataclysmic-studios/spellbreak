@@ -36,3 +36,7 @@ interface WithAnimationController {
     Animator: Animator;
   };
 }
+
+interface Player extends Instance {
+  PlayerGui: PlayerGui;
+}

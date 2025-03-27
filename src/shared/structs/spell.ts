@@ -1,5 +1,8 @@
 import type { School } from "./school";
 import type { SpellAction } from "./spell-actions";
+import type { SpellCardKind } from "./spell-card";
+import type { SpellReference } from "./data/reference/spell";
+import type { ReferenceWithData } from "./data/reference";
 
 interface SpellCost {
   readonly pips: number | "X";
@@ -24,6 +27,12 @@ export const enum SpellType {
   Mutate
 }
 
+export type SpellReferenceData = ReferenceWithData<SpellLinkedData, SpellReference>;
+
+export interface SpellLinkedData {
+  readonly spellCardKind: SpellCardKind;
+}
+
 export interface Spell<T extends SpellType = SpellType> {
   readonly type: T;
   readonly hasTarget: boolean;
@@ -34,4 +43,5 @@ export interface Spell<T extends SpellType = SpellType> {
   readonly accuracy: number;
   readonly cost: SpellCost;
   readonly actions: SpellAction[];
+  readonly reference: SpellReference;
 }

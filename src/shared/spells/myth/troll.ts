@@ -1,11 +1,13 @@
 import { School } from "shared/structs/school";
 import { SpellActionType } from "shared/structs/spell-actions";
+import { SpellReference } from "shared/structs/data/reference/spell";
 import { type Spell, SpellType } from "shared/structs/spell";
 
 export = {
   name: "Troll",
   type: SpellType.Damage,
   school: School.Myth,
+  reference: SpellReference.Myth_Troll,
   cardArtSpritesheetNumber: 1,
   cardImageOffset: new Vector2(1, 2),
   hasTarget: true,

@@ -5,14 +5,14 @@ import { hoarcekat } from "../utility/hoarcekat";
 import "../dev";
 
 import Troll from "shared/spells/myth/troll";
-import { CardKind, SpellCard } from "shared/structs/spell-card";
+import { SpellCardKind, SpellCard } from "shared/structs/spell-card";
 
 const testCards: SpellCard[] = [
   {
-    cardKind: CardKind.Normal,
+    kind: SpellCardKind.Normal,
     spell: Troll
   }, {
-    cardKind: CardKind.Normal,
+    kind: SpellCardKind.Normal,
     spell: Troll
   }
 ];

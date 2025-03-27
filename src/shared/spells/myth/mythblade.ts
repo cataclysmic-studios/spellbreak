@@ -1,11 +1,13 @@
 import { School } from "shared/structs/school";
 import { SpellActionType } from "shared/structs/spell-actions";
+import { SpellReference } from "shared/structs/data/reference/spell";
 import { type Spell, SpellType } from "shared/structs/spell";
 
 export = {
   name: "Mythblade",
   type: SpellType.Charm,
   school: School.Myth,
+  reference: SpellReference.Myth_Mythblade,
   cardArtSpritesheetNumber: 1,
   cardImageOffset: new Vector2(2, 3),
   hasTarget: true,

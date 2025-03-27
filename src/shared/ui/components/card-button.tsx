@@ -6,7 +6,7 @@ import { Images } from "../utility/images";
 import { Palette } from "../palette";
 import { anchorPoints, positions } from "../utility/positioning";
 import { cardAspectRatio } from "shared/constants";
-import { CardKind, type SpellCard } from "shared/structs/spell-card";
+import { SpellCardKind, type SpellCard } from "shared/structs/spell-card";
 import { SpellType } from "shared/structs/spell";
 
 import { BaseCardButton } from "./base-card-button";
@@ -51,10 +51,10 @@ const CARD_ART_SPRITESHEETS: { colored: string; grayscale: string; }[] = [
   }
 ];
 
-const GRAYSCALE_CARD_IMAGES: Record<CardKind, string> = {
-  [CardKind.Normal]: Images.SchoolCardBW,
-  [CardKind.Treasure]: Images.TreasureCardBW,
-  [CardKind.Item]: Images.ItemCardBW
+const GRAYSCALE_CARD_IMAGES: Record<SpellCardKind, string> = {
+  [SpellCardKind.Normal]: Images.SchoolCardBW,
+  [SpellCardKind.Treasure]: Images.TreasureCardBW,
+  [SpellCardKind.Item]: Images.ItemCardBW
 }
 
 const SCHOOL_CARD_IMAGES: Record<School, string> = {
@@ -87,10 +87,10 @@ export function CardButton({ spellCard, layoutOrder, grayscale, children }: Prop
   const belowCardZIndex = () => baseZIndex() - 1;
   const isGrayscale = () => grayscale?.() ?? false;
   const cardFrameImage = () => isGrayscale()
-    ? GRAYSCALE_CARD_IMAGES[spellCard.cardKind]
-    : spellCard.cardKind === CardKind.Normal
+    ? GRAYSCALE_CARD_IMAGES[spellCard.kind]
+    : spellCard.kind === SpellCardKind.Normal
       ? SCHOOL_CARD_IMAGES[spellCard.spell.school]
-      : spellCard.cardKind === CardKind.Treasure
+      : spellCard.kind === SpellCardKind.Treasure
         ? Images.TreasureCard
         : Images.ItemCard;
 

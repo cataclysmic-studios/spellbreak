@@ -1,12 +1,12 @@
 import type { Spell } from "./spell";
 
-export const enum CardKind {
+export const enum SpellCardKind {
   Normal,
   Treasure,
   Item
 }
 
 export interface SpellCard {
-  readonly cardKind: CardKind;
+  readonly kind: SpellCardKind;
   readonly spell: Spell;
 }

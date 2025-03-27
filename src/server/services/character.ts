@@ -11,8 +11,8 @@ export class CharacterService implements OnPlayerJoin {
     this.load(player, "roslyn", new CFrame(0, 5, 0));
   }
 
-  public load(player: Player, characterName: ExtractKeys<typeof assets.characters, CharacterModel>, location: CFrame): void {
-    const character = assets.characters[characterName].Clone(); // 100% temporary
+  public load(player: Player, modelName: ExtractKeys<typeof assets.characters, CharacterModel>, location: CFrame): void {
+    const character = assets.characters[modelName].Clone(); // 100% temporary
     player.CanLoadCharacterAppearance = false;
     player.LoadCharacter();
     task.wait();

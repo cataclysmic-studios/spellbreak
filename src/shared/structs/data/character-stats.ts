@@ -1,4 +1,4 @@
-import { School } from "./school";
+import type { School } from "../school";
 
 interface PerSchoolStats<T> {
   readonly [School.Fire]: T;
@@ -32,20 +32,4 @@ export interface CharacterStats {
   readonly criticalRating: PerSchoolStats<number>;
   readonly criticalBlockRating: PerSchoolStats<number>;
   readonly pierce: PerSchoolStats<number>;
-}
-
-export interface CharacterData {
-  readonly name: string;
-  readonly school: School;
-  readonly level: number;
-  readonly xp: number;
-  readonly gold: number;
-  readonly trainingPoints: number;
-  readonly lastLocation: Vector3;
-  readonly stats: CharacterStats;
-}
-
-export interface PlayerData {
-  readonly crowns: number;
-  readonly characters: CharacterData[];
 }

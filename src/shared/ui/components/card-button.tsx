@@ -138,7 +138,7 @@ export function CardButton({ spellCard, layoutOrder, hand, grayscale, children }
       <uiscale Name="CardScale" />
       <WizText text={spellCard.spell.name}
         anchorPoint={anchorPoints.topCenter}
-        position={positions.topCenter.sub(UDim2.fromScale(0, 0.025))}
+        position={positions.topCenter.add(UDim2.fromScale(0, 0.035))}
         textColor={Palette.white}
         textScaled={true}
         size={UDim2.fromScale(1, 0.08)}
@@ -147,7 +147,7 @@ export function CardButton({ spellCard, layoutOrder, hand, grayscale, children }
       </WizText>
       <WizText text={tostring(spellCard.spell.cost.pips)}
         anchorPoint={anchorPoints.center}
-        position={positions.topLeft.add(UDim2.fromScale(0.128, 0.13))}
+        position={positions.topLeft.add(UDim2.fromScale(0.135, 0.2))}
         textScaled={true}
         size={UDim2.fromScale(0.15, 0.15)}
       >

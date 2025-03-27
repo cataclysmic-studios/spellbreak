@@ -9,7 +9,7 @@ import { Container } from "../utility/components/container";
 import { GoldStroke } from "./gold-stroke";
 import { WizText } from "./wiz-text";
 
-interface WizButtonProps {
+interface WizButton2Props {
   readonly text: Derivable<string>;
   readonly size: Derivable<UDim2>;
   readonly anchorPoint?: Derivable<Vector2>;
@@ -19,7 +19,7 @@ interface WizButtonProps {
   readonly activated?: () => void;
 }
 
-export function WizButton({ text, size, anchorPoint, position, textSize, active, activated }: WizButtonProps): Vide.Node {
+export function WizButton2({ text, size, anchorPoint, position, textSize, active, activated }: WizButton2Props): Vide.Node {
   const hovered = source(false);
   const px = usePx();
 
@@ -29,12 +29,10 @@ export function WizButton({ text, size, anchorPoint, position, textSize, active,
 
   return (
     <imagebutton Name={() => read(text) + "Button"}
-      Image={Images.Vignette}
+      Image={Images.ButtonOrange}
+      ImageColor3={() => isActive() ? Palette.white : Palette.mediumGray}
       AnchorPoint={() => read(anchorPoint) ?? anchorPoints.center}
       Position={() => read(position) ?? positions.center}
-      BackgroundColor3={() => hovered() ? Palette.red : Palette.deepRed}
-      BackgroundTransparency={transparencyIncrement}
-      ImageTransparency={() => 0.3 + transparencyIncrement()}
       Size={size}
       AutoButtonColor={false}
 
@@ -48,15 +46,11 @@ export function WizButton({ text, size, anchorPoint, position, textSize, active,
         activated?.();
       }}
     >
-      <GoldStroke thickness={px(2)} transparency={transparencyIncrement} />
-      <Container size={UDim2.fromScale(1, 1).sub(UDim2.fromOffset(px.even(5.5), px.even(5.5)))}>
-        <GoldStroke thickness={px(1)} transparency={transparencyIncrement} />
-      </Container>
       <WizText text={text}
         size={UDim2.fromScale(1, 1)}
         transparency={transparencyIncrement}
-        textSize={() => read(textSize) ?? px(24)}
-        textColor={() => hovered() ? Palette.white : Palette.yellow}
+        textSize={() => read(textSize) ?? px(22)}
+        textColor={() => hovered() ? Palette.white : isActive() ? Palette.yellow : Palette.mediumGray}
       >
         <uipadding
           PaddingTop={verticalTextPadding}

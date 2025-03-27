@@ -72,7 +72,7 @@ export function DeckHand({ deckState, hand }: DeckHandProps): Vide.Node {
         SortOrder={Enum.SortOrder.LayoutOrder}
       />
       <BaseCardButton image={Images.CardInfoBG} layoutOrder={-1}>
-        <WizText text={() => `Cards\n${deckState.getCardsLeft() + hand().size()} of ${deckState.totalCards}`}
+        <WizText text={() => `Cards\n${deckState.getCardsLeft()} of ${deckState.totalCards}`}
           position={positions.center}
           font={Enum.Font.Cartoon}
           size={UDim2.fromScale(1, 0.5)}

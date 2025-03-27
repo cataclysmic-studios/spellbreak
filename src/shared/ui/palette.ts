@@ -1,5 +1,6 @@
 export const Palette = {
   white: new Color3(1, 1, 1),
+  mediumGray: new Color3(0.5, 0.5, 0.5),
   black: new Color3(0, 0, 0),
   red: Color3.fromRGB(166, 61, 74),
   deepRed: Color3.fromRGB(133, 39, 55),

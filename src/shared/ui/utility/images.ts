@@ -25,6 +25,7 @@ export const enum Images {
   CraftingButton = "rbxassetid://125673038077458",
   OptionsButton = "rbxassetid://130775053254795",
   ExitButton = "rbxassetid://84638639671372",
+  ButtonOrange = "rbxassetid://127532649463801",
 
   // card designs
   FireCard = "rbxassetid://97523274760958",

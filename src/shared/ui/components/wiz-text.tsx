@@ -1,7 +1,8 @@
-import Vide, { read, type Derivable, type Node } from "@rbxts/vide";
+import Vide, { derive, read, type Derivable, type Node } from "@rbxts/vide";
 
 import { anchorPoints, positions } from "../utility/positioning";
 import { Palette } from "../palette";
+import { usePx } from "../hooks/use-px";
 
 export interface WizTextProps {
   readonly text: Derivable<string>;
@@ -20,16 +21,20 @@ export interface WizTextProps {
 }
 
 const DEFAULT_FONT = Enum.Font.LuckiestGuy;
+const DEFAULT_TEXT_SIZE = 14;
 
 export function WizText({ text, textSize, textColor, textScaled, transparency, backgroundTransparency, size, position, anchorPoint, font, alignX, alignY, children }: WizTextProps): Vide.Node {
   const isDefaultFont = () => read(font) === undefined || read(font) === DEFAULT_FONT;
   const getPosition = () => read(position) ?? positions.center;
+  const getTextSize = () => read(textSize) ?? DEFAULT_TEXT_SIZE;
+  const px = usePx();
+
   return (
     <textlabel
       AnchorPoint={() => read(anchorPoint) ?? anchorPoints.center}
-      Position={() => isDefaultFont() ? getPosition().add(UDim2.fromScale(0, 0.08)) : getPosition()}
+      Position={() => isDefaultFont() ? getPosition().add(UDim2.fromOffset(0, getTextSize() / px(5))) : getPosition()}
       Text={() => isDefaultFont() ? read(text).upper() : read(text)}
-      TextSize={textSize}
+      TextSize={getTextSize}
       TextScaled={textScaled}
       TextColor3={() => read(textColor) ?? Palette.yellow}
       TextXAlignment={alignX}

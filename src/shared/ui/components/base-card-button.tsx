@@ -10,10 +10,11 @@ interface BaseCardProps {
   readonly zIndex?: Derivable<number>;
   readonly hovered?: () => void;
   readonly unhovered?: () => void;
-  readonly activated?: () => void;
+  readonly leftClicked?: () => void;
+  readonly rightClicked?: () => void;
 }
 
-export function BaseCardButton({ name, image, layoutOrder, zIndex, hovered, unhovered, activated, children }: PropsWithChildren<BaseCardProps>): Vide.Node {
+export function BaseCardButton({ name, image, layoutOrder, zIndex, hovered, unhovered, leftClicked, rightClicked, children }: PropsWithChildren<BaseCardProps>): Vide.Node {
   return (
     <imagebutton Name={name}
       AnchorPoint={anchorPoints.center}
@@ -27,7 +28,8 @@ export function BaseCardButton({ name, image, layoutOrder, zIndex, hovered, unho
 
       MouseEnter={hovered}
       MouseLeave={unhovered}
-      Activated={activated}
+      MouseButton1Down={leftClicked}
+      MouseButton2Click={rightClicked}
     >
       <uiaspectratioconstraint AspectRatio={cardAspectRatio} />
       {children}

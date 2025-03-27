@@ -13,16 +13,18 @@ import { Container } from "../utility/components/container";
 import { BaseCardButton } from "./base-card-button";
 import { CardButton, type CardButtonFrame } from "./card-button";
 import { WizText } from "./wiz-text";
+import { DeckDuelState } from "shared/classes/deck-duel-state";
+import Log from "shared/log";
 
 interface DeckHandProps {
+  readonly deckState: DeckDuelState;
   readonly hand: Source<SpellCard[]>;
 }
 
 const mouse = Players.LocalPlayer.GetMouse();
-const BOUNDS = new Vector2(800, 100);
 const MAX_CARDS_IN_HAND = 7;
 
-export function DeckHand({ hand }: DeckHandProps): Vide.Node {
+export function DeckHand({ deckState, hand }: DeckHandProps): Vide.Node {
   const absolutePosition = source(Vector2.zero);
   const absoluteSize = source(Vector2.zero);
   const cardFrames: CardButtonFrame[] = [];
@@ -56,34 +58,38 @@ export function DeckHand({ hand }: DeckHandProps): Vide.Node {
     }
   });
 
-  return <Container name={$nameof(DeckHand)}
-    size={UDim2.fromOffset(px(800), px(100))}
-    absolutePositionChanged={absolutePosition}
-    absoluteSizeChanged={absoluteSize}
-  >
-    <uilistlayout
-      Padding={new UDim(0, px(5))}
-      FillDirection={Enum.FillDirection.Horizontal}
-      HorizontalAlignment={Enum.HorizontalAlignment.Center}
-      VerticalAlignment={Enum.VerticalAlignment.Center}
-      SortOrder={Enum.SortOrder.LayoutOrder}
-    />
-    <BaseCardButton image={Images.CardInfoBG} layoutOrder={-1}>
-      <WizText text="Cards\n64 of 64"
-        position={positions.center}
-        font={Enum.Font.Cartoon}
-        size={UDim2.fromScale(1, 0.5)}
-        textSize={px(16)}
+  return (
+    <Container name={$nameof(DeckHand)}
+      size={UDim2.fromOffset(px(800), px(100))}
+      absolutePositionChanged={absolutePosition}
+      absoluteSizeChanged={absoluteSize}
+    >
+      <uilistlayout
+        Padding={new UDim(0, px(5))}
+        FillDirection={Enum.FillDirection.Horizontal}
+        HorizontalAlignment={Enum.HorizontalAlignment.Center}
+        VerticalAlignment={Enum.VerticalAlignment.Center}
+        SortOrder={Enum.SortOrder.LayoutOrder}
       />
-    </BaseCardButton>
-    <For each={hand}>
-      {(card, index) => {
-        if (index() >= MAX_CARDS_IN_HAND) return;
-        const cardFrame = <CardButton spellCard={card} layoutOrder={index} />;
-        cardFrames.push(cardFrame as CardButtonFrame);
+      <BaseCardButton image={Images.CardInfoBG} layoutOrder={-1}>
+        <WizText text={() => `Cards\n${deckState.getCardsLeft() + hand().size()} of ${deckState.totalCards}`}
+          position={positions.center}
+          font={Enum.Font.Cartoon}
+          size={UDim2.fromScale(1, 0.5)}
+          textSize={px(16)}
+        />
+      </BaseCardButton>
+      <For each={hand}>
+        {(card, index) => {
+          if (index() >= MAX_CARDS_IN_HAND)
+            return Log.warn(`Not adding card button - hand has to many cards (${index() + 1}, maximum ${MAX_CARDS_IN_HAND})`);
 
-        return cardFrame;
-      }}
-    </For>
-  </Container>;
+          const cardFrame = <CardButton hand={hand} spellCard={card} layoutOrder={index} />;
+          cardFrames.push(cardFrame as CardButtonFrame);
+
+          return cardFrame;
+        }}
+      </For>
+    </Container>
+  );
 }

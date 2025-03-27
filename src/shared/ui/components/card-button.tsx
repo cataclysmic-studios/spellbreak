@@ -19,6 +19,7 @@ import { School } from "shared/structs/school";
 interface CardButtonProps {
   readonly spellCard: SpellCard;
   readonly layoutOrder: Derivable<number>;
+  readonly hand: Source<SpellCard[]>;
   readonly grayscale?: Source<boolean>;
 }
 
@@ -48,6 +49,18 @@ const CARD_ART_SPRITESHEETS: { colored: string; grayscale: string; }[] = [
   }, {
     colored: "rbxassetid://72199822054271",
     grayscale: "rbxassetid://119954144892949"
+  }, {
+    colored: "rbxassetid://91690438885961",
+    grayscale: "rbxassetid://98063103618595"
+  }, {
+    colored: "rbxassetid://94488975783253",
+    grayscale: "rbxassetid://85031341614899"
+  }, {
+    colored: "rbxassetid://102232008786766",
+    grayscale: "rbxassetid://75341543912308"
+  }, {
+    colored: "rbxassetid://78641261208589",
+    grayscale: "rbxassetid://103461797304495"
   }
 ];
 
@@ -80,7 +93,7 @@ export interface CardButtonFrame extends Frame {
   CardScale: UIScale;
 }
 
-export function CardButton({ spellCard, layoutOrder, grayscale, children }: PropsWithChildren<CardButtonProps>): Vide.Node {
+export function CardButton({ spellCard, layoutOrder, hand, grayscale, children }: PropsWithChildren<CardButtonProps>): Vide.Node {
   const baseZIndex = source(0);
   const selected = source(false);
   const hovered = source(false);
@@ -95,19 +108,30 @@ export function CardButton({ spellCard, layoutOrder, grayscale, children }: Prop
         : Images.ItemCard;
 
   const cardImage = () => {
-    const art = CARD_ART_SPRITESHEETS[spellCard.spell.cardArtSpritesheetNumber];
+    const art = CARD_ART_SPRITESHEETS[spellCard.spell.cardArtSpritesheetNumber - 1];
     return isGrayscale() ? art.grayscale : art.colored;
   };
 
-  const deselect = () => selected(false);
-  const px = usePx();
+  const deselectCard = () => selected(false);
+  const selectCard = () => {
+    if (isGrayscale()) return;
+    if (selected()) return;
+    deselectAll();
+    selected(!selected());
+  };
+  const discard = () => {
+    const currentHand = hand();
+    currentHand.remove(currentHand.indexOf(spellCard));
+    hand(currentHand);
+  };
 
-  deselectFunctions.push(deselect);
+  deselectFunctions.push(deselectCard);
   effect(() => {
     if (!isGrayscale()) return;
-    deselect();
+    deselectCard();
   });
 
+  const px = usePx();
   return (
     <Container name={spellCard.spell.name + "Card"} clipsDescendants={true}>
       <uiaspectratioconstraint AspectRatio={cardAspectRatio} />
@@ -171,12 +195,8 @@ export function CardButton({ spellCard, layoutOrder, grayscale, children }: Prop
         zIndex={baseZIndex}
         hovered={() => hovered(true)}
         unhovered={() => hovered(false)}
-        activated={() => {
-          if (isGrayscale()) return;
-          if (selected()) return;
-          deselectAll();
-          selected(!selected());
-        }}
+        leftClicked={selectCard}
+        rightClicked={discard}
       >
         {children}
       </BaseCardButton>
@@ -191,13 +211,12 @@ export function CardButton({ spellCard, layoutOrder, grayscale, children }: Prop
       >
         <uiaspectratioconstraint />
       </SpritesheetIcon>
-      <imagelabel Name="SelectionBorder"
-        BackgroundTransparency={1}
-        Size={UDim2.fromScale(1, 1)}
-        Image={Images.CardSelectionBorder}
-        Visible={selected}
-        ZIndex={belowCardZIndex}
+      <uistroke
+        Color={Palette.white}
+        Thickness={px.scale(1.2)}
+        Transparency={() => selected() ? 0.3 : 1}
       />
+      <uicorner CornerRadius={new UDim(0, px(2))} />
     </Container >
   );
 }

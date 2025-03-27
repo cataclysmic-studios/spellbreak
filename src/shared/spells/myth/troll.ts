@@ -8,7 +8,7 @@ export = {
   type: SpellType.Damage,
   school: School.Myth,
   reference: SpellReference.Myth_Troll,
-  cardArtSpritesheetNumber: 1,
+  cardArtSpritesheetNumber: 2,
   cardImageOffset: new Vector2(1, 2),
   hasTarget: true,
   accuracy: 85,

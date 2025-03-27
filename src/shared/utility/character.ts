@@ -54,7 +54,7 @@ export function newCharacterData(name: string, school: PlayableSchool): Characte
                 reference: SpellReference.Myth_Troll,
                 data: { spellCardKind: SpellCardKind.Normal }
               }, {
-                reference: SpellReference.Myth_Troll,
+                reference: SpellReference.Myth_Mythblade,
                 data: { spellCardKind: SpellCardKind.Normal }
               }
             ],

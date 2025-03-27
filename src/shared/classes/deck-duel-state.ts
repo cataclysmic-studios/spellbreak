@@ -14,12 +14,19 @@ function shuffle<T extends defined>(array: T[]): T[] {
 }
 
 export class DeckDuelState {
-  public readonly spells: SpellCard[];
-  public readonly sideboardSpells: SpellCard[];
+  public readonly totalCards;
+
+  private readonly spells: SpellCard[];
+  private readonly sideboardSpells: SpellCard[];
 
   public constructor({ spellReferences, sideboardSpellReferences }: DeckLinkedData) {
     this.spells = shuffle(spellReferences.map(getSpellCardFromReferenceData));
     this.sideboardSpells = shuffle(sideboardSpellReferences.map(getSpellCardFromReferenceData));
+    this.totalCards = this.spells.size();
+  }
+
+  public getCardsLeft(): number {
+    return this.spells.size();
   }
 
   public draw(amount: number): SpellCard[] {

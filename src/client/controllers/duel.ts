@@ -6,7 +6,7 @@ import type { BaseID } from "@rbxts/id";
 import { OnMessage } from "client/decorators";
 import { Message, type MessageData } from "shared/messaging";
 import { DuelPhase } from "shared/structs/duel";
-import { DeckDuelState } from "client/classes/deck-duel-state";
+import { DeckDuelState } from "shared/classes/deck-duel-state";
 import type { SpellCard } from "shared/structs/spell-card";
 import type { DeckLinkedData } from "shared/structs/data/items/gear/deck";
 import Log from "shared/log";
@@ -64,7 +64,7 @@ export class DuelController {
     switch (phase) {
       case DuelPhase.Start: break;
       case DuelPhase.Planning:
-        this.ui.enableBattlePlanning(this.hand);
+        this.ui.enableBattlePlanning(this.current.deckState, this.hand);
         break;
       case DuelPhase.Combat:
         this.ui.disableBattlePlanning();

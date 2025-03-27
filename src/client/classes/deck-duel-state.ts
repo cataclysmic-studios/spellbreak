@@ -23,12 +23,14 @@ export class DeckDuelState {
   }
 
   public draw(amount: number): SpellCard[] {
-    if (this.spells.size() === 0)
+    if (!this.hasMoreSpells())
       return [];
 
     const drawnSpells: SpellCard[] = [];
-    for (const _ of $range(1, amount))
+    for (const _ of $range(1, amount)) {
+      if (!this.hasMoreSpells()) continue;
       drawnSpells.push(this.spells.pop()!);
+    }
 
     return drawnSpells;
   }
@@ -39,5 +41,9 @@ export class DeckDuelState {
 
   public canDrawSideboard(): boolean {
     return this.sideboardSpells.size() > 0;
+  }
+
+  private hasMoreSpells() {
+    return this.spells.size() > 0;
   }
 }

@@ -38,6 +38,7 @@ export class DuelController {
   /** @hidden */
   @OnMessage(Message.DuelInitializeClient)
   public initializeClient({ id, onOpposingTeam }: MessageData[Message.DuelInitializeClient]): void {
+    Log.info("Initialized duel on client");
     const model = this.getCircleModelByID(id);
     if (model === undefined)
       return Log.warn(`Failed to initialize duel on client - could not find duel circle model with ID ${id}`, ["duel controller"]);

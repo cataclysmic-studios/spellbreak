@@ -4,6 +4,7 @@ import { Workspace as World } from "@rbxts/services";
 
 import type { OnPlayerJoin } from "server/hooks/players";
 import { assets } from "shared/constants";
+import Log from "shared/log";
 
 @Service()
 export class CharacterService implements OnPlayerJoin {
@@ -12,6 +13,7 @@ export class CharacterService implements OnPlayerJoin {
   }
 
   public load(player: Player, modelName: ExtractKeys<typeof assets.characters, CharacterModel>, location: CFrame): void {
+    Log.info(`Loaded '${modelName}' character model`);
     const character = assets.characters[modelName].Clone(); // 100% temporary
     player.CanLoadCharacterAppearance = false;
     player.LoadCharacter();

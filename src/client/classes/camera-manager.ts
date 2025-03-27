@@ -32,4 +32,12 @@ export class CameraManager {
   public getCFrame(): CFrame {
     return this.camera.CFrame;
   }
+
+  public setFOV(fov: number): void {
+    this.camera.FieldOfView = fov;
+  }
+
+  public getFOV(): number {
+    return this.camera.FieldOfView;
+  }
 }

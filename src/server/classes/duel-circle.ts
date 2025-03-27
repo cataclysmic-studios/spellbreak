@@ -133,7 +133,7 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     this.pullInCombatant(player.Character!, positions, position, () =>
       messaging.emitClient(player, Message.TransitionCameraPose, {
         poseKind: CameraPoseKind.BattleAerial,
-        duration: 0.5
+        duration: 0.4
       })
     );
   }

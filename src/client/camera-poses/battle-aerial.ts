@@ -1,4 +1,3 @@
-import { Dependency } from "@flamework/core";
 import { RunService } from "@rbxts/services";
 import { $nameof } from "rbxts-transform-debug";
 
@@ -7,10 +6,12 @@ import { BaseCameraPose } from "./base";
 import Log from "shared/log";
 
 import type { CameraController } from "client/controllers/camera";
-import { ClientDuelInfo, DuelController } from "client/controllers/duel";
+import { DuelController } from "client/controllers/duel";
 
-const CAMERA_HEIGHT = 20;
-const CAMERA_DISTANCE_FROM_DUEL = 40;
+const CAMERA_HEIGHT = 18;
+const CAMERA_DISTANCE_FROM_DUEL = 33;
+
+const lerp = (a: number, b: number, t: number) => a + t * (b - a);
 
 export class BattleAerialPose extends BaseCameraPose {
   public readonly kind = CameraPoseKind.BattleAerial;

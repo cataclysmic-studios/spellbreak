@@ -5,14 +5,11 @@ export const enum Images {
   BookBinding = "rbxassetid://92180308011222",
   RedRibbon = "rbxassetid://83791914432890",
   CardInfoBG = "rbxassetid://13711786825",
+  WaitingForOthersBG = "rbxassetid://98612224033956",
 
   // spritesheets
   LargeIconSpritesheet = "rbxassetid://16821859312",
   LargeIconSpritesheet2 = "rbxassetid://114537181138499",
-  CardArtSpritsheetColor = "",
-  CardArtSpritsheetColor2 = "",
-  CardArtSpritsheetBW = "",
-  CardArtSpritsheetBW2 = "",
 
   // buttons
   SpellbookButton = "rbxassetid://101729984023869",

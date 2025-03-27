@@ -62,6 +62,7 @@ export function DeckHand({ deckState, hand, hasCardSelected }: DeckHandProps): V
   return (
     <Container name={$nameof(DeckHand)}
       size={UDim2.fromOffset(px(800), px(100))}
+      position={positions.center}
       absolutePositionChanged={absolutePosition}
       absoluteSizeChanged={absoluteSize}
     >

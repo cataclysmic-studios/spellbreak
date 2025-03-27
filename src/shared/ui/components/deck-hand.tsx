@@ -1,7 +1,7 @@
 import Vide, { type Source, For, source } from "@rbxts/vide";
-import { Players, RunService } from "@rbxts/services";
+import { Players } from "@rbxts/services";
 import { Range } from "@rbxts/range";
-import { useEventListener } from "@rbxts/pretty-vide-utils";
+import { useEventListener, useMouse } from "@rbxts/pretty-vide-utils";
 import { $nameof } from "rbxts-transform-debug";
 
 import { usePx } from "../hooks/use-px";
@@ -19,19 +19,20 @@ import Log from "shared/log";
 interface DeckHandProps {
   readonly deckState: DeckDuelState;
   readonly hand: Source<SpellCard[]>;
+  readonly hasCardSelected: Source<boolean>;
 }
 
 const mouse = Players.LocalPlayer.GetMouse();
 const MAX_CARDS_IN_HAND = 7;
 
-export function DeckHand({ deckState, hand }: DeckHandProps): Vide.Node {
+export function DeckHand({ deckState, hand, hasCardSelected }: DeckHandProps): Vide.Node {
   const absolutePosition = source(Vector2.zero);
   const absoluteSize = source(Vector2.zero);
   const cardFrames: CardButtonFrame[] = [];
   const px = usePx();
 
   let screen: ScreenGui;
-  useEventListener(RunService.RenderStepped, () => {
+  useEventListener(mouse.Move, () => {
     const { X, Y } = mouse;
     const position = absolutePosition();
     const size = absoluteSize();
@@ -56,7 +57,7 @@ export function DeckHand({ deckState, hand }: DeckHandProps): Vide.Node {
       const scaleIncrement = math.clamp(1 - (cardDistanceFromMouse / (screen.AbsoluteSize.Magnitude - size.Magnitude) * 3), 0, 1);
       card.CardScale.Scale = 1 + (scaleIncrement ** 3 * 0.75);
     }
-  });
+  })
 
   return (
     <Container name={$nameof(DeckHand)}
@@ -84,7 +85,7 @@ export function DeckHand({ deckState, hand }: DeckHandProps): Vide.Node {
           if (index() >= MAX_CARDS_IN_HAND)
             return Log.warn(`Not adding card button - hand has to many cards (${index() + 1}, maximum ${MAX_CARDS_IN_HAND})`);
 
-          const cardFrame = <CardButton hand={hand} spellCard={card} layoutOrder={index} />;
+          const cardFrame = <CardButton hand={hand} spellCard={card} layoutOrder={index} hasCardSelected={hasCardSelected} />;
           cardFrames.push(cardFrame as CardButtonFrame);
 
           return cardFrame;

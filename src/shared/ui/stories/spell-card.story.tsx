@@ -1,4 +1,4 @@
-import Vide from "@rbxts/vide";
+import Vide, { source } from "@rbxts/vide";
 
 import { CardButton } from "../components/card-button";
 import { hoarcekat } from "../utility/hoarcekat";
@@ -20,6 +20,7 @@ export = hoarcekat(() => (
       hand={() => [card]}
       spellCard={card}
       layoutOrder={0}
+      hasCardSelected={source(false)}
     />
   </Container>
 ));

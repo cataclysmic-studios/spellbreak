@@ -15,12 +15,14 @@ import { SpritesheetIcon } from "./spritesheet-icon";
 import { WizText } from "./wiz-text";
 import { SchoolIcon } from "./school-icon";
 import { School } from "shared/structs/school";
+import { useEventListener } from "@rbxts/pretty-vide-utils";
 
 interface CardButtonProps {
   readonly spellCard: SpellCard;
   readonly layoutOrder: Derivable<number>;
   readonly hand: Source<SpellCard[]>;
   readonly grayscale?: Source<boolean>;
+  readonly hasCardSelected: Source<boolean>;
 }
 
 const SPELL_ART_SIZE = 64;
@@ -86,14 +88,12 @@ const SCHOOL_CARD_IMAGES: Record<School, string> = {
 
 const mouse = Players.LocalPlayer.GetMouse();
 const deselectFunctions: (() => void)[] = [];
-const deselectAll = () => deselectFunctions.forEach(fn => fn());
-mouse.Button1Down.Connect(deselectAll);
 
 export interface CardButtonFrame extends Frame {
   CardScale: UIScale;
 }
 
-export function CardButton({ spellCard, layoutOrder, hand, grayscale, children }: PropsWithChildren<CardButtonProps>): Vide.Node {
+export function CardButton({ spellCard, layoutOrder, hand, grayscale, hasCardSelected, children }: PropsWithChildren<CardButtonProps>): Vide.Node {
   const baseZIndex = source(0);
   const selected = source(false);
   const hovered = source(false);
@@ -111,21 +111,27 @@ export function CardButton({ spellCard, layoutOrder, hand, grayscale, children }
     const art = CARD_ART_SPRITESHEETS[spellCard.spell.cardArtSpritesheetNumber - 1];
     return isGrayscale() ? art.grayscale : art.colored;
   };
+  const deselectAll = () => {
+    deselectFunctions.forEach(fn => fn());
+    hasCardSelected(false);
+  };
 
   const deselectCard = () => selected(false);
   const selectCard = () => {
     if (isGrayscale()) return;
-    if (selected()) return;
     deselectAll();
-    selected(!selected());
+    selected(true);
+    hasCardSelected(true);
   };
   const discard = () => {
+    deselectAll();
     const currentHand = hand();
     currentHand.remove(currentHand.indexOf(spellCard));
     hand(currentHand);
   };
 
   deselectFunctions.push(deselectCard);
+  useEventListener(mouse.Button1Down, deselectAll);
   effect(() => {
     if (!isGrayscale()) return;
     deselectCard();

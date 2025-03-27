@@ -18,6 +18,7 @@ interface DuelPlanningProps {
 /** View for passing, choosing cards, drawing cards, etc. */
 export function DuelPlanning({ deckState, hand }: DuelPlanningProps): Vide.Node {
   const choosing = source(true);
+  const hasCardSelected = source(false);
   const px = usePx();
 
   const buttonSize = UDim2.fromOffset(px(100), px(35));
@@ -26,11 +27,12 @@ export function DuelPlanning({ deckState, hand }: DuelPlanningProps): Vide.Node 
       <Show when={choosing}>
         {() => (
           <>
-            <DeckHand deckState={deckState} hand={hand} />
+            <DeckHand deckState={deckState} hand={hand} hasCardSelected={hasCardSelected} />
             <WizButton2 text="Pass"
               size={buttonSize}
               position={UDim2.fromScale(0.25, 1)}
               activated={() => choosing(false)}
+              active={() => !hasCardSelected()}
             />
             <WizButton2 text="Draw"
               size={buttonSize}

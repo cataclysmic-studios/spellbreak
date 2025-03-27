@@ -16,13 +16,17 @@ import { WizText } from "./wiz-text";
 import { SchoolIcon } from "./school-icon";
 import { School } from "shared/structs/school";
 import { useEventListener } from "@rbxts/pretty-vide-utils";
+import { DeckDuelState } from "shared/classes/deck-duel-state";
 
+// this is getting ridiculous
 interface CardButtonProps {
   readonly spellCard: SpellCard;
   readonly layoutOrder: Derivable<number>;
+  readonly deckState: DeckDuelState,
   readonly hand: Source<SpellCard[]>;
   readonly grayscale?: Source<boolean>;
-  readonly hasCardSelected: Source<boolean>;
+  readonly selectedCard: Source<Maybe<SpellCard>>;
+  readonly choosing: Source<boolean>;
 }
 
 const SPELL_ART_SIZE = 64;
@@ -93,7 +97,7 @@ export interface CardButtonFrame extends Frame {
   CardScale: UIScale;
 }
 
-export function CardButton({ spellCard, layoutOrder, hand, grayscale, hasCardSelected, children }: PropsWithChildren<CardButtonProps>): Vide.Node {
+export function CardButton({ spellCard, layoutOrder, deckState, hand, grayscale, selectedCard, choosing, children }: PropsWithChildren<CardButtonProps>): Vide.Node {
   const baseZIndex = source(0);
   const selected = source(false);
   const hovered = source(false);
@@ -113,15 +117,14 @@ export function CardButton({ spellCard, layoutOrder, hand, grayscale, hasCardSel
   };
   const deselectAll = () => {
     deselectFunctions.forEach(fn => fn());
-    hasCardSelected(false);
+    selectedCard(undefined);
   };
 
   const deselectCard = () => selected(false);
   const selectCard = () => {
-    if (isGrayscale()) return;
     deselectAll();
     selected(true);
-    hasCardSelected(true);
+    selectedCard(spellCard);
   };
   const discard = () => {
     deselectAll();
@@ -201,7 +204,15 @@ export function CardButton({ spellCard, layoutOrder, hand, grayscale, hasCardSel
         zIndex={baseZIndex}
         hovered={() => hovered(true)}
         unhovered={() => hovered(false)}
-        leftClicked={selectCard}
+        leftClicked={() => {
+          if (isGrayscale()) return;
+          if (spellCard.spell.cost.pips === "X") {
+            deselectAll();
+            choosing(false);
+            deckState.chooseCard(spellCard);
+          } else
+            selectCard();
+        }}
         rightClicked={discard}
       >
         {children}

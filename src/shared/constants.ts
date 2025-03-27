@@ -12,6 +12,7 @@ export const defaultData: PlayerData = {
 };
 
 export const cardAspectRatio = 0.68;
+export const maxCardsInHand = 7;
 
 export const nametagColors = {
   player: Color3.fromRGB(4, 154, 240),

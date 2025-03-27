@@ -1,39 +1,36 @@
 import Vide, { type Source, For, source } from "@rbxts/vide";
-import { Players } from "@rbxts/services";
 import { Range } from "@rbxts/range";
-import { useEventListener, useMouse } from "@rbxts/pretty-vide-utils";
+import { useMouse } from "@rbxts/pretty-vide-utils";
 import { $nameof } from "rbxts-transform-debug";
 
 import { usePx } from "../hooks/use-px";
 import { Images } from "../utility/images";
 import { positions } from "../utility/positioning";
+import { DeckDuelState } from "shared/classes/deck-duel-state";
+import { maxCardsInHand } from "shared/constants";
 import type { SpellCard } from "shared/structs/spell-card";
+import Log from "shared/log";
 
 import { Container } from "../utility/components/container";
 import { BaseCardButton } from "./base-card-button";
 import { CardButton, type CardButtonFrame } from "./card-button";
 import { WizText } from "./wiz-text";
-import { DeckDuelState } from "shared/classes/deck-duel-state";
-import Log from "shared/log";
 
 interface DeckHandProps {
   readonly deckState: DeckDuelState;
   readonly hand: Source<SpellCard[]>;
-  readonly hasCardSelected: Source<boolean>;
+  readonly selectedCard: Source<Maybe<SpellCard>>;
+  readonly choosing: Source<boolean>;
 }
 
-const mouse = Players.LocalPlayer.GetMouse();
-const MAX_CARDS_IN_HAND = 7;
-
-export function DeckHand({ deckState, hand, hasCardSelected }: DeckHandProps): Vide.Node {
+export function DeckHand({ deckState, hand, selectedCard, choosing }: DeckHandProps): Vide.Node {
   const absolutePosition = source(Vector2.zero);
   const absoluteSize = source(Vector2.zero);
   const cardFrames: CardButtonFrame[] = [];
   const px = usePx();
 
   let screen: ScreenGui;
-  useEventListener(mouse.Move, () => {
-    const { X, Y } = mouse;
+  useMouse(({ X, Y }) => {
     const position = absolutePosition();
     const size = absoluteSize();
     const dimensionsX = new Range(position.X, position.X + size.X);
@@ -83,10 +80,10 @@ export function DeckHand({ deckState, hand, hasCardSelected }: DeckHandProps): V
       </BaseCardButton>
       <For each={hand}>
         {(card, index) => {
-          if (index() >= MAX_CARDS_IN_HAND)
-            return Log.warn(`Not adding card button - hand has to many cards (${index() + 1}, maximum ${MAX_CARDS_IN_HAND})`);
+          if (index() >= maxCardsInHand)
+            return Log.warn(`Not adding card button for spell '${card.spell.name}' - hand has to many cards (${index() + 1}, maximum ${maxCardsInHand})`);
 
-          const cardFrame = <CardButton hand={hand} spellCard={card} layoutOrder={index} hasCardSelected={hasCardSelected} />;
+          const cardFrame = <CardButton spellCard={card} layoutOrder={index} deckState={deckState} hand={hand} selectedCard={selectedCard} choosing={choosing} />;
           cardFrames.push(cardFrame as CardButtonFrame);
 
           return cardFrame;

@@ -24,15 +24,26 @@ interface DuelPlanningProps {
   readonly hand: Source<SpellCard[]>;
 }
 
+const standardTimerColor1 = Palette.brightYellow;
+const standardTimerColor2 = Palette.deepYellow;
+const redTimerColor1 = Palette.brightRed;
+const redTimerColor2 = Palette.red;
+const redTimerThreshold = 10; // seconds left
+
 /** View for passing, choosing cards, drawing cards, etc. */
 export function DuelPlanning({ deckState, timer, hand }: DuelPlanningProps): Vide.Node {
   const choosing = source(true);
-  const hasCardSelected = source(false);
+  const selectedCard = source<Maybe<SpellCard>>();
   const timerRemaining = source(timer.getTimeLeft());
+  const redTimer = () => timerRemaining() <= redTimerThreshold;
   const px = usePx();
 
   timer.start();
   useEventListener(timer.secondReached, seconds => timerRemaining(seconds));
+  useEventListener(timer.completed, () => {
+    timerRemaining(0);
+    timer.destroy();
+  });
 
   const buttonSize = UDim2.fromOffset(px(100), px(35));
   return (
@@ -41,25 +52,30 @@ export function DuelPlanning({ deckState, timer, hand }: DuelPlanningProps): Vid
         AnchorPoint={anchorPoints.topCenter}
         Position={positions.topCenter}
         BackgroundTransparency={1}
-        Text={() => tostring(timerRemaining())}
+        Text={() => timerRemaining() === 0 ? "" : tostring(timerRemaining())}
         TextColor3={Palette.white}
         TextScaled={true}
         Size={UDim2.fromOffset(px(100), px(100))}
         FontFace={new Font("rbxassetid://12187364648", Enum.FontWeight.Bold)}
       >
         <uiaspectratioconstraint />
-        <uigradient Color={new ColorSequence(Palette.brightYellow, Palette.deepYellow)} />
         <uistroke Thickness={px(2)} Transparency={0.4} />
+        <uigradient
+          Color={() => new ColorSequence(
+            redTimer() ? redTimerColor1 : standardTimerColor1,
+            redTimer() ? redTimerColor2 : standardTimerColor2
+          )}
+        />
       </textlabel>
       <Show when={choosing}>
         {() => (
           <>
-            <DeckHand deckState={deckState} hand={hand} hasCardSelected={hasCardSelected} />
+            <DeckHand deckState={deckState} hand={hand} selectedCard={selectedCard} choosing={choosing} />
             <WizButton2 text="Pass"
               size={buttonSize}
               position={UDim2.fromScale(0.25, 0.85)}
               activated={() => choosing(false)}
-              active={() => !hasCardSelected()}
+              active={() => selectedCard() === undefined}
             />
             <WizButton2 text="Draw"
               size={buttonSize}
@@ -100,7 +116,10 @@ export function DuelPlanning({ deckState, timer, hand }: DuelPlanningProps): Vid
               position={positions.bottomCenter}
               size={new UDim2(0, px(100), 0.5, 0)}
               textSize={px(16)}
-              activated={() => choosing(true)}
+              activated={() => {
+                choosing(true);
+                deckState.removeCardChoice();
+              }}
             />
           </imagelabel>
         )}

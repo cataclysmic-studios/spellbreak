@@ -7,6 +7,7 @@ import { OnMessage } from "client/decorators";
 import { Message, type MessageData } from "shared/messaging";
 import { DuelPhase } from "shared/structs/duel";
 import { DeckDuelState } from "shared/classes/deck-duel-state";
+import { maxCardsInHand } from "shared/constants";
 import type { SpellCard } from "shared/structs/spell-card";
 import type { DeckLinkedData } from "shared/structs/data/items/gear/deck";
 import Log from "shared/log";
@@ -57,7 +58,7 @@ export class DuelController {
     Log.info("Duel phase changed: " + DuelPhase[phase]);
 
     const hand = this.hand();
-    for (const drawnCard of this.current.deckState.draw(7 - hand.size()))
+    for (const drawnCard of this.current.deckState.draw(maxCardsInHand - hand.size()))
       hand.push(drawnCard);
 
     this.hand(hand);
@@ -67,7 +68,16 @@ export class DuelController {
         this.ui.enableDuelPlanning(this.current.deckState, this.hand);
         break;
       case DuelPhase.Combat:
+
         this.ui.disableDuelPlanning();
+        const chosenCard = this.current.deckState.getChosenCard();
+        if (chosenCard !== undefined) {
+          const hand = this.hand();
+          hand.remove(hand.indexOf(chosenCard));
+          this.hand(hand);
+        }
+
+        // TODO: tell server the chosen card
         break;
       case DuelPhase.End:
         this.current = undefined;

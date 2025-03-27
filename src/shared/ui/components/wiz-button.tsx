@@ -32,7 +32,7 @@ export function WizButton({ text, size, anchorPoint, position, textSize, active,
       Image={Images.Vignette}
       AnchorPoint={() => read(anchorPoint) ?? anchorPoints.center}
       Position={() => read(position) ?? positions.center}
-      BackgroundColor3={() => hovered() ? Palette.red : Palette.deepRed}
+      BackgroundColor3={() => hovered() ? Palette.wizRed : Palette.wizDeepRed}
       BackgroundTransparency={transparencyIncrement}
       ImageTransparency={() => 0.3 + transparencyIncrement()}
       Size={size}

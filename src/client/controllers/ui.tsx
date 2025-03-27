@@ -1,4 +1,5 @@
 import { Controller } from "@flamework/core";
+import { Timer } from "@rbxts/timer";
 import Vide, { type Source } from "@rbxts/vide";
 
 import { playerGui } from "client/constants";
@@ -9,17 +10,18 @@ import { DuelPlanning } from "shared/ui/views/duel-planning";
 
 @Controller()
 export class UIController {
-  private battlePlanningDestructor?: () => void;
+  private duelPlanningDestructor?: () => void;
 
-  public enableBattlePlanning(deckState: DeckDuelState, hand: Source<SpellCard[]>): void {
-    this.battlePlanningDestructor = Vide.mount(() => (
-      <screengui Name="BattlePlanningHUD" ScreenInsets={Enum.ScreenInsets.DeviceSafeInsets} >
-        <DuelPlanning deckState={deckState} hand={hand} />
+  public enableDuelPlanning(deckState: DeckDuelState, hand: Source<SpellCard[]>): void {
+    const timer = new Timer(30);
+    this.duelPlanningDestructor = Vide.mount(() => (
+      <screengui Name="DuelPlanningHUD" ScreenInsets={Enum.ScreenInsets.DeviceSafeInsets} >
+        <DuelPlanning deckState={deckState} timer={timer} hand={hand} />
       </screengui>
     ), playerGui);
   }
 
-  public disableBattlePlanning(): void {
-    this.battlePlanningDestructor?.();
+  public disableDuelPlanning(): void {
+    this.duelPlanningDestructor?.();
   }
 }

@@ -64,10 +64,10 @@ export class DuelController {
     switch (phase) {
       case DuelPhase.Start: break;
       case DuelPhase.Planning:
-        this.ui.enableBattlePlanning(this.current.deckState, this.hand);
+        this.ui.enableDuelPlanning(this.current.deckState, this.hand);
         break;
       case DuelPhase.Combat:
-        this.ui.disableBattlePlanning();
+        this.ui.disableDuelPlanning();
         break;
       case DuelPhase.End:
         this.current = undefined;

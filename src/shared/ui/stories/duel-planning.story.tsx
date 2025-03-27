@@ -8,6 +8,7 @@ import { getSpellFromReference } from "shared/utility/spell";
 import { SpellCardKind, SpellCard } from "shared/structs/spell-card";
 import { SpellReference } from "shared/structs/data/reference/spell";
 import { DeckDuelState } from "shared/classes/deck-duel-state";
+import { Timer } from "@rbxts/timer";
 
 const testCards: SpellCard[] = [
   {
@@ -28,4 +29,5 @@ const deckState = new DeckDuelState({
 });
 
 deckState.draw(3);
-export = hoarcekat(() => <DuelPlanning deckState={deckState} hand={() => testCards} />);
+const timer = new Timer(30);
+export = hoarcekat(() => <DuelPlanning deckState={deckState} timer={timer} hand={() => testCards} />);

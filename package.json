@@ -38,6 +38,7 @@
     "@rbxts/services": "^1.5.5",
     "@rbxts/string-utils": "^1.0.3",
     "@rbxts/tether": "^1.1.4",
+    "@rbxts/timer": "^0.0.9",
     "@rbxts/vide": "^0.5.7"
   }
 }

@@ -74,9 +74,9 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     this.model.SetAttribute("ID", this.id);
 
     this.janitor.Add(() => DuelCircle.cumulativeID--);
-    this.janitor.Add(subscribe(this.currentPhase, phase =>
+    this.janitor.Add(subscribe(this.currentPhase, phase => {
       messaging.emitClient(this.getPlayerCombatants(), Message.DuelPhaseChanged, phase)
-    ));
+    }));
     this.currentPhase(DuelPhase.Start);
 
     if (!pvp) {
@@ -238,8 +238,8 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     this.fadeIn();
     const conn = this.animations.onAdd.KeyframeReached.Connect(kf => {
       if (kf !== "Final") return;
-      this.start();
       conn.Disconnect();
+      this.start();
     });
 
     this.animations.onAdd.Play(0);

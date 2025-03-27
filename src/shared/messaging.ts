@@ -27,5 +27,5 @@ export interface MessageData {
   [Message.DuelInitializeClient]: BaseID<DataType.u8> & {
     readonly onOpposingTeam: boolean;
   };
-  [Message.DuelPhaseChanged]: DataType.u8; // duel phase
+  [Message.DuelPhaseChanged]: DataType.u8;
 }

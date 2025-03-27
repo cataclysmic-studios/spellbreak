@@ -1,30 +1,38 @@
 import Vide, { type Source, Show, source } from "@rbxts/vide";
+import type { Timer } from "@rbxts/timer";
 import { $nameof } from "rbxts-transform-debug";
 
 import { usePx } from "../hooks/use-px";
+import { Palette } from "../palette";
+import { Images } from "../utility/images";
+import { anchorPoints, positions } from "../utility/positioning";
 import { DeckDuelState } from "shared/classes/deck-duel-state";
 import type { SpellCard } from "shared/structs/spell-card";
 
+
 import { Container } from "../utility/components/container";
 import { DeckHand } from "../components/deck-hand";
-import { WizButton2 } from "../components/wiz-button2";
-import { Images } from "../utility/images";
-import { anchorPoints, positions } from "../utility/positioning";
 import { WizButton } from "../components/wiz-button";
+import { WizButton2 } from "../components/wiz-button2";
 import { WizText } from "../components/wiz-text";
-import { Palette } from "../palette";
+import { useEventListener } from "@rbxts/pretty-vide-utils";
 
 
 interface DuelPlanningProps {
   readonly deckState: DeckDuelState;
+  readonly timer: Timer;
   readonly hand: Source<SpellCard[]>;
 }
 
 /** View for passing, choosing cards, drawing cards, etc. */
-export function DuelPlanning({ deckState, hand }: DuelPlanningProps): Vide.Node {
+export function DuelPlanning({ deckState, timer, hand }: DuelPlanningProps): Vide.Node {
   const choosing = source(true);
   const hasCardSelected = source(false);
+  const timerRemaining = source(timer.getTimeLeft());
   const px = usePx();
+
+  timer.start();
+  useEventListener(timer.secondReached, seconds => timerRemaining(seconds));
 
   const buttonSize = UDim2.fromOffset(px(100), px(35));
   return (
@@ -33,7 +41,7 @@ export function DuelPlanning({ deckState, hand }: DuelPlanningProps): Vide.Node 
         AnchorPoint={anchorPoints.topCenter}
         Position={positions.topCenter}
         BackgroundTransparency={1}
-        Text="30"
+        Text={() => tostring(timerRemaining())}
         TextColor3={Palette.white}
         TextScaled={true}
         Size={UDim2.fromOffset(px(100), px(100))}

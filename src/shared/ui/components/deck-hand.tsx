@@ -19,6 +19,7 @@ import { WizText } from "./wiz-text";
 
 interface DeckHandProps {
   readonly deckState: ClientDuelDeckState;
+  readonly newTreasureCards: Set<SpellCard>;
   readonly hand: Source<SpellCard[]>;
   readonly selectedCard: Source<Maybe<SpellCard>>;
   readonly choosing: Source<boolean>;
@@ -26,7 +27,7 @@ interface DeckHandProps {
 
 const mouse = Players.LocalPlayer.GetMouse();
 
-export function DeckHand({ deckState, hand, selectedCard, choosing }: DeckHandProps): Vide.Node {
+export function DeckHand({ deckState, newTreasureCards, hand, selectedCard, choosing }: DeckHandProps): Vide.Node {
   const absolutePosition = source(Vector2.zero);
   const absoluteSize = source(Vector2.zero);
   const cardFrames: CardButtonFrame[] = [];
@@ -87,7 +88,16 @@ export function DeckHand({ deckState, hand, selectedCard, choosing }: DeckHandPr
           if (index() >= maxCardsInHand)
             return Log.warn(`Not adding card button for spell '${card.spell.name}' - hand has to many cards (${index() + 1}, maximum ${maxCardsInHand})`);
 
-          const cardFrame = <CardButton spellCard={card} layoutOrder={index} deckState={deckState} hand={hand} selectedCard={selectedCard} choosing={choosing} />;
+          // this gives me cancer
+          const cardFrame = <CardButton
+            layoutOrder={index}
+            spellCard={card}
+            deck={deckState}
+            hand={hand}
+            selectedCard={selectedCard}
+            choosing={choosing}
+            newTreasureCards={newTreasureCards}
+          />;
           cardFrames.push(cardFrame as CardButtonFrame);
 
           return cardFrame;

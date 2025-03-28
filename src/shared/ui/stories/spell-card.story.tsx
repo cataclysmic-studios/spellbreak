@@ -20,10 +20,11 @@ const deckState = new ClientDuelDeckState(-1, { spellReferences: [], sideboardSp
 export = hoarcekat(() => (
   <Container size={UDim2.fromScale(0.4, 0.4)}>
     <CardButton
-      hand={() => [card]}
-      spellCard={card}
       layoutOrder={0}
-      deckState={deckState}
+      spellCard={card}
+      deck={deckState}
+      newTreasureCards={new Set}
+      hand={() => [card]}
       selectedCard={source<Maybe<SpellCard>>()}
       choosing={source(true)}
     />

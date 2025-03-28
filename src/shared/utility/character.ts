@@ -47,6 +47,7 @@ export function newCharacterData(name: string, school: PlayableSchool): Characte
           reference: DeckReference.StarterDeck,
           data: {
             spellReferences: [
+              // temp
               {
                 reference: SpellReference.Myth_Troll,
                 data: { spellCardKind: SpellCardKind.Normal }
@@ -58,7 +59,7 @@ export function newCharacterData(name: string, school: PlayableSchool): Characte
                 data: { spellCardKind: SpellCardKind.Normal }
               }
             ],
-            sideboardSpellReferences: []
+            sideboardSpellReferences: [SpellReference.Myth_Mythblade]
           }
         }
       ]

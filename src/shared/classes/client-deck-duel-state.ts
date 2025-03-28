@@ -1,5 +1,5 @@
-import { getSpellCardFromReferenceData } from "shared/utility/spell";
-import type { SpellCard } from "shared/structs/spell-card";
+import { getSpellCardFromReferenceData, getSpellFromReference } from "shared/utility/spell";
+import { SpellCardKind, type SpellCard } from "shared/structs/spell-card";
 import type { DeckLinkedData } from "shared/structs/data/items/gear/deck";
 import type { ClientDuelInfo, DuelCirclePosition } from "shared/structs/duel";
 import { maxCardsInHand } from "shared/constants";
@@ -28,7 +28,10 @@ export class ClientDuelDeckState {
     { spellReferences, sideboardSpellReferences }: DeckLinkedData
   ) {
     this.spells = shuffle(spellReferences.map(getSpellCardFromReferenceData));
-    this.sideboardSpells = shuffle(sideboardSpellReferences.map(getSpellCardFromReferenceData));
+    this.sideboardSpells = shuffle(sideboardSpellReferences.map(reference => ({
+      kind: SpellCardKind.Treasure,
+      spell: getSpellFromReference(reference)
+    })));
     this.totalCards = this.spells.size();
   }
 

@@ -88,6 +88,7 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
   const selectedCard = source<Maybe<SpellCard>>();
   const timerRemaining = source(timer().getTimeLeft());
   const redTimerText = () => timerRemaining() <= RED_TIMER_THRESHOLD;
+  const newTreasureCards = new Set<SpellCard>; // TODO: clear upon new round
   const px = usePx();
 
   useEventListener(mouse.Button1Up, () => !choosing() ? choosing(true) : undefined);
@@ -140,7 +141,7 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
       <Show when={choosing}>
         {() => (
           <>
-            <DeckHand deckState={deck} hand={hand} selectedCard={selectedCard} choosing={choosing} />
+            <DeckHand deckState={deck} hand={hand} selectedCard={selectedCard} choosing={choosing} newTreasureCards={newTreasureCards} />
             <DuelButton text="Pass"
               size={buttonSize}
               position={UDim2.fromScale(0.25, 0.85)}
@@ -157,8 +158,9 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
               activated={() => {
                 const treasureCard = deck.drawSideboard();
                 const currentHand = hand();
-                currentHand.push(treasureCard);
+                currentHand.unshift(treasureCard);
                 hand(currentHand);
+                newTreasureCards.add(treasureCard);
               }}
             />
             <DuelButton text="Flee"

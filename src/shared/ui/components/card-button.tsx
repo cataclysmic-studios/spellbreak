@@ -23,7 +23,8 @@ import { SchoolIcon } from "./school-icon";
 interface CardButtonProps {
   readonly spellCard: SpellCard;
   readonly layoutOrder: Derivable<number>;
-  readonly deckState: ClientDuelDeckState,
+  readonly deck: ClientDuelDeckState;
+  readonly newTreasureCards: Set<SpellCard>;
   readonly hand: Source<SpellCard[]>;
   readonly grayscale?: Source<boolean>;
   readonly selectedCard: Source<Maybe<SpellCard>>;
@@ -98,7 +99,7 @@ export interface CardButtonFrame extends Frame {
   CardScale: UIScale;
 }
 
-export function CardButton({ spellCard, layoutOrder, deckState: deck, hand, grayscale, selectedCard, choosing, children }: PropsWithChildren<CardButtonProps>): Vide.Node {
+export function CardButton({ spellCard, layoutOrder, deck, newTreasureCards, hand, grayscale, selectedCard, choosing, children }: PropsWithChildren<CardButtonProps>): Vide.Node {
   const baseZIndex = source(0);
   const selected = source(false);
   const hovered = source(false);
@@ -128,6 +129,7 @@ export function CardButton({ spellCard, layoutOrder, deckState: deck, hand, gray
     selectedCard(spellCard);
   };
   const discard = () => {
+    if (newTreasureCards.has(spellCard)) return;
     deselectAll();
     const currentHand = hand();
     currentHand.remove(currentHand.indexOf(spellCard));

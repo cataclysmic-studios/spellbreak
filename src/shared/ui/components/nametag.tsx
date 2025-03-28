@@ -1,19 +1,18 @@
-import Vide, { type Derivable, effect, type Node, read, source } from "@rbxts/vide";
-import { RunService, TextService } from "@rbxts/services";
-import { useEventListener } from "@rbxts/pretty-vide-utils";
+import Vide, { type Derivable, read } from "@rbxts/vide";
+import { TextService } from "@rbxts/services";
 
 import { usePx } from "../hooks/use-px";
 import { Palette } from "../palette";
 import { anchorPoints, positions } from "../utility/positioning";
 
-const fondamento = new Font("rbxasset://fonts/families/Fondamento.json", Enum.FontWeight.Heavy, Enum.FontStyle.Normal);
+const luckiestGuy = new Font("rbxasset://fonts/families/LuckiestGuy.json", Enum.FontWeight.Light, Enum.FontStyle.Normal);
 
 interface NametagProps {
   readonly name: Derivable<string>;
   readonly description: Derivable<string>;
   readonly color?: Derivable<Color3>;
   readonly containerSize: Derivable<Vector2>;
-  readonly children?: Node;
+  readonly children?: Vide.Node;
 }
 
 export function Nametag({ name, description, containerSize, color, children }: NametagProps): Vide.Node {
@@ -21,10 +20,13 @@ export function Nametag({ name, description, containerSize, color, children }: N
   const frameSize = UDim2.fromScale(1, 0.45);
   const px = usePx();
 
+  const bottomTextOffsetScale = 0.25;
   return <>
     <textlabel Name="Title"
+      AnchorPoint={anchorPoints.topCenter}
+      Position={positions.topCenter.add(UDim2.fromScale(0, 0.1))}
       BackgroundTransparency={1}
-      FontFace={fondamento}
+      FontFace={luckiestGuy}
       Size={UDim2.fromScale(1, 0.55)}
       Text={read(name).upper()}
       TextColor3={color ?? Palette.white}
@@ -47,9 +49,10 @@ export function Nametag({ name, description, containerSize, color, children }: N
       <textlabel Name="Description"
         LayoutOrder={1}
         BackgroundTransparency={1}
-        FontFace={fondamento}
+        AnchorPoint={anchorPoints.center}
+        FontFace={luckiestGuy}
         Text={descriptionText}
-        TextColor3={color ?? Palette.white}
+        TextColor3={() => read(color) ?? Palette.white}
         TextScaled={true}
         Size={() => {
           const descriptionTextSize = read(containerSize)
@@ -58,10 +61,12 @@ export function Nametag({ name, description, containerSize, color, children }: N
             .mul(new Vector2(frameSize.X.Scale, frameSize.Y.Scale))
             .add(new Vector2(frameSize.X.Offset, frameSize.Y.Offset));
 
-          const bounds = TextService.GetTextSize(descriptionText(), descriptionTextSize, "Fondamento", frameAbsoluteSize);
-          return new UDim2(0, px(bounds.X + 1), 1, 0);
+          const bounds = TextService.GetTextSize(descriptionText(), descriptionTextSize, "LuckiestGuy", frameAbsoluteSize);
+          return new UDim2(0, px(bounds.X + 1), 1 + bottomTextOffsetScale, 0);
         }}
-      />
-    </frame>
+      >
+        <uipadding PaddingTop={new UDim(bottomTextOffsetScale, 0)} />
+      </textlabel>
+    </frame >
   </>;
 }

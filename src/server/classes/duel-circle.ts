@@ -17,6 +17,7 @@ import Log from "shared/log";
 
 import type { EnemyService } from "server/services/enemy";
 import type { DuelService } from "server/services/duel";
+import { getSpellFromReference } from "shared/utility/spell";
 
 const MAX_COMBATANTS = 8;
 const TURN_INFO = new TweenInfoBuilder()
@@ -45,7 +46,7 @@ export type Combatant = Player | Enemy;
 type Pass = 0;
 
 // TODO: max per-player enemies
-export class DuelCircle<PvP extends boolean = boolean> extends Destroyable implements BaseID<number> {
+export class DuelCircle<PvP extends boolean = false> extends Destroyable implements BaseID<number> {
   public static cumulativeID = 0;
 
   public readonly id = DuelCircle.cumulativeID++;
@@ -118,8 +119,19 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
    */
   public submitPlayerChoice(player: Player, choice: Maybe<DuelChoice>): void {
     this.combatantChoices.set(player, choice ?? 0);
+    Log.info(`${player.Name} submitted choice: ${choice === undefined ? "Pass" : getSpellFromReference(choice.spellReference).name}`);
+
     if (!this.allCombatantsHaveChosen()) return;
     this.toCombatPhase();
+  }
+
+  /**
+   * Revokes a player's choice for the duel.
+   * @param player The player who is revoking their choice.
+   */
+  public revokePlayerChoice(player: Player): void {
+    this.combatantChoices.delete(player);
+    Log.info(`${player.Name} revoked their choice`);
   }
 
   /**
@@ -131,7 +143,7 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
    * @returns A function that removes the player from the duel circle.
    */
   public addPlayer(player: Player, position: DuelCirclePosition): () => void
-  public addPlayer(player: Player, position: DuelCirclePosition, enemyTeam?: PvP extends true ? boolean : undefined): () => void
+  public addPlayer(player: Player, position: DuelCirclePosition, enemyTeam: PvP extends true ? boolean : undefined): () => void
   public addPlayer(player: Player, position: DuelCirclePosition, enemyTeam?: PvP extends true ? boolean : undefined): () => void {
     if (this.combatants.has(player))
       return () => { };

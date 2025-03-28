@@ -2,10 +2,10 @@ import { Controller } from "@flamework/core";
 import { Timer } from "@rbxts/timer";
 import Vide, { mount, cleanup, source } from "@rbxts/vide";
 
-import { playerGui } from "client/constants";
-import { OnMessage } from "client/decorators";
-import { timerLength } from "shared/constants";
 import { Message } from "shared/messaging";
+import { OnMessage } from "client/decorators";
+import { playerGui } from "client/constants";
+import { timerLength } from "shared/constants";
 import type { ClientDuelInfo } from "shared/structs/duel";
 
 import { DuelPlanning } from "shared/ui/views/duel-planning";

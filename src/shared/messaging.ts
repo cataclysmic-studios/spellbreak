@@ -21,6 +21,8 @@ export const enum Message {
   DuelRevokeChoice
 }
 
+type WithDuelID = BaseID<DataType.u8>;
+
 export interface MessageData {
   [Message.ToggleMovement]: boolean;
   [Message.SetCameraPose]: DataType.u8; // pose kind
@@ -30,7 +32,7 @@ export interface MessageData {
   }
 
   // dueling
-  [Message.DuelInitializeClient]: BaseID<DataType.u8> & {
+  [Message.DuelInitializeClient]: WithDuelID & {
     readonly onOpposingTeam: boolean;
     readonly teamCount: DataType.u8;
     readonly opponentCount: DataType.u8;
@@ -39,12 +41,12 @@ export interface MessageData {
   [Message.DuelCombatantAdded]: boolean; // whether combatant is on opposing team
   [Message.DuelCombatantRemoved]: boolean;
   [Message.DuelUpdateTimer]: DataType.u8; // new time left
-  [Message.DuelSubmitChoice]: BaseID<DataType.u8> & {
+  [Message.DuelSubmitChoice]: WithDuelID & {
     readonly choice?: {
       readonly spellReference: SpellReference;
       readonly target?: DataType.u8; // duel circle position
       readonly targetIsOpponent?: boolean;
     };
   };
-  [Message.DuelRevokeChoice]: void;
+  [Message.DuelRevokeChoice]: WithDuelID;
 }

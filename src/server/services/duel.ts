@@ -26,6 +26,16 @@ export class DuelService {
     duel.submitPlayerChoice(player, choice);
   }
 
+  /** @hidden */
+  @OnMessage(Message.DuelRevokeChoice)
+  public choiceRevoked(player: Player, { id }: MessageData[Message.DuelRevokeChoice]): void {
+    const duel = this.circles.find(circle => circle.id === id);
+    if (duel === undefined)
+      return player.Kick("stop it");
+
+    duel.revokePlayerChoice(player);
+  }
+
   /**
    * Starts a PvE duel with the given enemy, placing the player and enemy in a duel circle
    * at the nearest location to the player.
@@ -35,7 +45,7 @@ export class DuelService {
   public startPvE(player: Player, enemy: Enemy): void {
     const playerPosition = player.Character!.GetPivot().Position;
     const circleLocation = this.getNearestCircleLocation(playerPosition);
-    const duel = new DuelCircle<false>(this, circleLocation);
+    const duel = new DuelCircle(this, circleLocation)
     this.circles.push(duel);
 
     duel.addPlayer(player, DuelCirclePosition.First);

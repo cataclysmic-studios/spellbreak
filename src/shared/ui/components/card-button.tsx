@@ -208,7 +208,7 @@ export function CardButton({ spellCard, layoutOrder, deckState: deck, hand, gray
         <uiaspectratioconstraint />
       </imagelabel>
       {/** TODO: implement actual description */}
-      <WizText text="my long ass spell description"
+      <WizText text="ignore this idk how i havent done it yet"
         backgroundTransparency={1}
         anchorPoint={anchorPoints.center}
         position={positions.bottomCenter.sub(UDim2.fromScale(0, 0.2))}

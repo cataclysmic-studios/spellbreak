@@ -1,4 +1,5 @@
-import Vide, { type Source, Show, source } from "@rbxts/vide";
+import Vide, { Show, effect, source } from "@rbxts/vide";
+import { useEventListener, useLifetime } from "@rbxts/pretty-vide-utils";
 import type { Timer } from "@rbxts/timer";
 import { $nameof } from "rbxts-transform-debug";
 
@@ -6,36 +7,83 @@ import { usePx } from "../hooks/use-px";
 import { Palette } from "../palette";
 import { Images } from "../utility/images";
 import { anchorPoints, positions } from "../utility/positioning";
-import { DeckDuelState } from "shared/classes/deck-duel-state";
+import { SpellTargetKind } from "shared/structs/spell";
 import type { SpellCard } from "shared/structs/spell-card";
-
+import type { ClientDuelInfo, DuelCirclePosition } from "shared/structs/duel";
 
 import { Container } from "../utility/components/container";
 import { DeckHand } from "../components/deck-hand";
 import { WizButton } from "../components/wiz-button";
 import { WizButton2 } from "../components/wiz-button2";
 import { WizText } from "../components/wiz-text";
-import { useEventListener } from "@rbxts/pretty-vide-utils";
-
+import { assets } from "shared/constants";
+import { getDescendantsOfType } from "@rbxts/instance-utility";
+import { Workspace as World } from "@rbxts/services";
 
 interface DuelPlanningProps {
-  readonly deckState: DeckDuelState;
+  readonly duelInfo: ClientDuelInfo;
   readonly timer: Timer;
-  readonly hand: Source<SpellCard[]>;
 }
 
-const standardTimerColor1 = Palette.brightYellow;
-const standardTimerColor2 = Palette.deepYellow;
-const redTimerColor1 = Palette.brightRed;
-const redTimerColor2 = Palette.red;
-const redTimerThreshold = 10; // seconds left
+const STANDARD_TIMER_COLOR1 = Palette.brightYellow;
+const STANDARD_TIMER_COLOR2 = Palette.deepYellow;
+const RED_TIMER_COLOR1 = Palette.brightRed;
+const RED_TIMER_COLOR2 = Palette.red;
+const RED_TIMER_THRESHOLD = 10; // seconds left
+
+const SELECTION_AURA_HEIGHT = 7;
+const OPPONENT_SELECTION_COLORS: Color3[] = [
+  Color3.fromRGB(247, 64, 204),
+  Color3.fromRGB(255, 56, 96),
+  Color3.fromRGB(255, 196, 46),
+  Color3.fromRGB(251, 255, 44)
+];
+const TEAM_SELECTION_COLORS: Color3[] = [
+  Color3.fromRGB(154, 255, 21),
+  Color3.fromRGB(10, 255, 182),
+  Color3.fromRGB(82, 186, 255),
+  Color3.fromRGB(137, 108, 255)
+];
+
+const selectionAuras: Model[] = [];
+function createSelectionAura(duelInfo: ClientDuelInfo, targetsTeam: boolean, circlePosition: DuelCirclePosition): void {
+  const selectionColors = targetsTeam
+    ? TEAM_SELECTION_COLORS
+    : OPPONENT_SELECTION_COLORS;
+
+  const aura = assets.duel.selectionTarget.Clone();
+  const positions = duelInfo.onOpposingTeam === targetsTeam
+    ? duelInfo.model.teamPositions
+    : duelInfo.model.opponentPositions;
+
+  const positionPart = positions[tostring(circlePosition + 1) as never] as Part;
+  const pivot = positionPart.GetPivot();
+  const newPivot = pivot
+    .sub(Vector3.yAxis.mul(positionPart.Size.Y / 2))
+    .add(Vector3.yAxis.mul(SELECTION_AURA_HEIGHT / 2))
+    .mul(CFrame.Angles(0, 0, math.rad(90)));
+
+  aura.PivotTo(newPivot);
+  aura.Parent = World.WaitForChild("TargetSelectionStorage");
+  selectionAuras.push(aura);
+
+  const color = selectionColors[circlePosition];
+  for (const decal of getDescendantsOfType(aura, "Decal"))
+    decal.Color3 = color;
+}
+
+function cleanupSelectionAuras(): void {
+  selectionAuras.forEach(aura => aura.Destroy());
+  selectionAuras.clear();
+}
 
 /** View for passing, choosing cards, drawing cards, etc. */
-export function DuelPlanning({ deckState, timer, hand }: DuelPlanningProps): Vide.Node {
+export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node {
+  const { state: { deck, hand, opponentCount, teamCount } } = duelInfo;
   const choosing = source(true);
   const selectedCard = source<Maybe<SpellCard>>();
   const timerRemaining = source(timer.getTimeLeft());
-  const redTimer = () => timerRemaining() <= redTimerThreshold;
+  const redTimer = () => timerRemaining() <= RED_TIMER_THRESHOLD;
   const px = usePx();
 
   timer.start();
@@ -43,6 +91,20 @@ export function DuelPlanning({ deckState, timer, hand }: DuelPlanningProps): Vid
   useEventListener(timer.completed, () => {
     timerRemaining(0);
     timer.destroy();
+  });
+
+  effect(() => {
+    const card = selectedCard();
+    if (card === undefined || !card.spell.hasTarget)
+      return cleanupSelectionAuras();
+
+    if (selectionAuras.size() > 0)
+      cleanupSelectionAuras();
+
+    const targetsTeam = card.spell.targetKind === SpellTargetKind.SingleTeam;
+    const targetCount = targetsTeam ? teamCount : opponentCount;
+    for (const i of $range(1, targetCount))
+      createSelectionAura(duelInfo, !targetsTeam, i - 1);
   });
 
   const buttonSize = UDim2.fromOffset(px(100), px(35));
@@ -62,15 +124,15 @@ export function DuelPlanning({ deckState, timer, hand }: DuelPlanningProps): Vid
         <uistroke Thickness={px(2)} Transparency={0.4} />
         <uigradient
           Color={() => new ColorSequence(
-            redTimer() ? redTimerColor1 : standardTimerColor1,
-            redTimer() ? redTimerColor2 : standardTimerColor2
+            redTimer() ? RED_TIMER_COLOR1 : STANDARD_TIMER_COLOR1,
+            redTimer() ? RED_TIMER_COLOR2 : STANDARD_TIMER_COLOR2
           )}
         />
       </textlabel>
       <Show when={choosing}>
         {() => (
           <>
-            <DeckHand deckState={deckState} hand={hand} selectedCard={selectedCard} choosing={choosing} />
+            <DeckHand deckState={deck} hand={hand} selectedCard={selectedCard} choosing={choosing} />
             <WizButton2 text="Pass"
               size={buttonSize}
               position={UDim2.fromScale(0.25, 0.85)}
@@ -80,7 +142,7 @@ export function DuelPlanning({ deckState, timer, hand }: DuelPlanningProps): Vid
             <WizButton2 text="Draw"
               size={buttonSize}
               position={UDim2.fromScale(0.5, 0.85)}
-              active={() => deckState.canDrawSideboard()}
+              active={() => deck.canDrawSideboard()}
             />
             <WizButton2 text="Flee"
               size={buttonSize}
@@ -118,7 +180,7 @@ export function DuelPlanning({ deckState, timer, hand }: DuelPlanningProps): Vid
               textSize={px(16)}
               activated={() => {
                 choosing(true);
-                deckState.removeCardChoice();
+                deck.removeCardChoice();
               }}
             />
           </imagelabel>

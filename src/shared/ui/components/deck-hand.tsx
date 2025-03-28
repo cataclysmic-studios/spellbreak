@@ -1,6 +1,6 @@
 import Vide, { type Source, For, source } from "@rbxts/vide";
 import { Range } from "@rbxts/range";
-import { useMouse } from "@rbxts/pretty-vide-utils";
+import { useEventListener, useMouse } from "@rbxts/pretty-vide-utils";
 import { $nameof } from "rbxts-transform-debug";
 
 import { usePx } from "../hooks/use-px";
@@ -15,6 +15,7 @@ import { Container } from "../utility/components/container";
 import { BaseCardButton } from "./base-card-button";
 import { CardButton, type CardButtonFrame } from "./card-button";
 import { WizText } from "./wiz-text";
+import { Players } from "@rbxts/services";
 
 interface DeckHandProps {
   readonly deckState: DeckDuelState;
@@ -29,8 +30,10 @@ export function DeckHand({ deckState, hand, selectedCard, choosing }: DeckHandPr
   const cardFrames: CardButtonFrame[] = [];
   const px = usePx();
 
+  const mouse = Players.LocalPlayer.GetMouse();
   let screen: ScreenGui;
-  useMouse(({ X, Y }) => {
+  useEventListener(mouse.Move, () => {
+    const { X, Y } = mouse;
     const position = absolutePosition();
     const size = absoluteSize();
     const dimensionsX = new Range(position.X, position.X + size.X);

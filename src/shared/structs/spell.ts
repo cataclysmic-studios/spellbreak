@@ -9,7 +9,7 @@ interface SpellCost {
   readonly shadowPips?: number;
 }
 
-export const enum SpellType {
+export const enum SpellKind {
   Damage,
   AOE,
   Drain,
@@ -27,15 +27,22 @@ export const enum SpellType {
   Mutate
 }
 
+export const enum SpellTargetKind {
+  SingleTeam,
+  SingleEnemy,
+  MultipleEnemies
+}
+
 export type SpellReferenceData = ReferenceWithData<SpellLinkedData, SpellReference>;
 
 export interface SpellLinkedData {
   readonly spellCardKind: SpellCardKind;
 }
 
-export interface Spell<T extends SpellType = SpellType> {
-  readonly type: T;
+interface BaseSpell {
+  readonly kind: SpellKind;
   readonly hasTarget: boolean;
+  readonly targetKind?: SpellTargetKind;
   readonly cardArtSpritesheetNumber: number;
   readonly cardImageOffset: Vector2;
   readonly name: string;
@@ -45,3 +52,11 @@ export interface Spell<T extends SpellType = SpellType> {
   readonly actions: SpellAction[];
   readonly reference: SpellReference;
 }
+
+export type Spell = BaseSpell & ({
+  readonly hasTarget: true;
+  readonly targetKind: SpellTargetKind;
+} | {
+  readonly hasTarget: false;
+  readonly targetKind?: undefined;
+})

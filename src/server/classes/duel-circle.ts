@@ -54,7 +54,6 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
   private readonly model: DuelCircleModel;
   private readonly animations;
 
-  // TODO: when duel circle is touched pull in more combatants
   /**
    * Creates a new duel circle and animates it.
    * @param location The location of the duel circle.
@@ -77,6 +76,7 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     this.janitor.Add(subscribe(this.currentPhase, phase => {
       messaging.emitClient(this.getPlayerCombatants(), Message.DuelPhaseChanged, phase)
     }));
+    this.janitor.Add(() => this.currentPhase(DuelPhase.End));
     this.currentPhase(DuelPhase.Start);
 
     if (!pvp) {
@@ -109,15 +109,17 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
    * @param player The player to add to the duel circle.
    * @param enemyTeam Optional boolean indicating if the player should be positioned
    * in the opponent positions. Only applicable if the duel circle is for PvP.
+   * @returns A function that removes the player from the duel circle.
    */
-  public addPlayer(player: Player, position: DuelCirclePosition): void
-  public addPlayer(player: Player, position: DuelCirclePosition, enemyTeam?: PvP extends true ? boolean : undefined): void
-  public addPlayer(player: Player, position: DuelCirclePosition, enemyTeam?: PvP extends true ? boolean : undefined): void {
-    if (this.combatants.has(player)) return;
-    const positions = enemyTeam
+  public addPlayer(player: Player, position: DuelCirclePosition): () => void
+  public addPlayer(player: Player, position: DuelCirclePosition, enemyTeam?: PvP extends true ? boolean : undefined): () => void
+  public addPlayer(player: Player, position: DuelCirclePosition, enemyTeam?: PvP extends true ? boolean : undefined): () => void {
+    if (this.combatants.has(player)) return () => { };
+    const isOpponent = enemyTeam ?? false;
+    const positions = isOpponent
       ? this.opponentPositions
       : this.teamPositions;
-    const occupiedPositions = enemyTeam
+    const occupiedPositions = isOpponent
       ? this.occupiedOpponentPositions
       : this.occupiedTeamPositions;
 
@@ -126,9 +128,12 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     occupiedPositions.add(position);
 
     messaging.emitClient(player, Message.ToggleMovement, false);
+    messaging.emitClient(this.getPlayerCombatants(), Message.DuelCombatantAdded, isOpponent);
     messaging.emitClient(player, Message.DuelInitializeClient, {
       id: this.id,
-      onOpposingTeam: this.occupiedOpponentPositions.has(position)
+      onOpposingTeam: this.occupiedOpponentPositions.has(position),
+      opponentCount: this.occupiedOpponentPositions.size(),
+      teamCount: this.occupiedTeamPositions.size()
     });
     this.pullInCombatant(player.Character!, positions, position, () =>
       messaging.emitClient(player, Message.TransitionCameraPose, {
@@ -136,34 +141,49 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
         duration: 0.4
       })
     );
+
+    return this.janitor.Add(() => this.removeCombatant(player, position, isOpponent));
   }
 
   /**
    * Adds an enemy to the duel circle, positioning it in the enemy's position.
    * Throws if the duel circle is for PvP.
    * @param enemy The enemy to add
+   * @returns A function that removes the enemy from the duel circle.
    */
-  public addEnemy(enemy: Enemy, position: DuelCirclePosition): void {
+  public addEnemy(enemy: Enemy, position: DuelCirclePosition): () => void {
     if (this.pvp)
       return Log.fatal("Attempt to add enemy to a PvP duel circle", ["duel circle"]);
 
-    if (this.combatants.has(enemy)) return;
+    if (this.combatants.has(enemy)) return () => { };
     this.combatants.add(enemy);
     this.duelService.combatantsInDuels.add(enemy);
     this.occupiedOpponentPositions.add(position);
     this.pullInCombatant(enemy.model, this.opponentPositions, position);
+    messaging.emitClient(this.getPlayerCombatants(), Message.DuelCombatantAdded, true);
+
+    return this.janitor.Add(() => this.removeCombatant(enemy, position, true));
   }
 
   public override destroy(): void {
     if (this.destroyed) return;
-
-    const players = this.getPlayerCombatants();
-    for (const player of players)
-      messaging.emitClient(player, Message.ToggleMovement, true);
+    messaging.emitClient(this.getPlayerCombatants(), Message.ToggleMovement, true);
 
     this.animations.idle.Stop();
     this.animations.onRemove.Play(0);
     this.fadeOut().Completed.Once(() => this.janitor.Destroy());
+  }
+
+  private removeCombatant(combatant: Combatant, position: DuelCirclePosition, opponent: boolean): void {
+    if (!this.combatants.has(combatant)) return;
+    this.combatants.delete(combatant);
+    this.duelService.combatantsInDuels.delete(combatant);
+    const occupiedPositions = opponent
+      ? this.occupiedOpponentPositions
+      : this.occupiedTeamPositions;
+
+    occupiedPositions.delete(position);
+    messaging.emitClient(this.getPlayerCombatants(), Message.DuelCombatantRemoved, opponent);
   }
 
   private onTouched(character: Model): void {
@@ -214,6 +234,8 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     this.animations.idle.Play(0);
     task.wait(0.5);
     this.currentPhase(DuelPhase.Planning);
+    // TODO: wait for 30s timer, then start combat
+    // TODO: reset timer to 30s when player joins duel
   }
 
   private pullInCombatant(combatantModel: Model, positions: DuelCirclePositions, position: DuelCirclePosition, onCompleted?: () => void): void {

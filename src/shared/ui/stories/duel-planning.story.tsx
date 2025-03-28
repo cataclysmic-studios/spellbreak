@@ -9,6 +9,8 @@ import { SpellCardKind, SpellCard } from "shared/structs/spell-card";
 import { SpellReference } from "shared/structs/data/reference/spell";
 import { DeckDuelState } from "shared/classes/deck-duel-state";
 import { Timer } from "@rbxts/timer";
+import { assets } from "shared/constants";
+import { ClientDuelInfo } from "shared/structs/duel";
 
 const testCards: SpellCard[] = [
   {
@@ -23,11 +25,21 @@ const testCards: SpellCard[] = [
   }
 ];
 
-const deckState = new DeckDuelState({
-  spellReferences: testCards.map(card => ({ reference: card.spell.reference, data: { spellCardKind: card.kind } })),
-  sideboardSpellReferences: []
-});
+const testDuelInfo: ClientDuelInfo = {
+  id: -1,
+  model: assets.duel.circle.Clone(),
+  onOpposingTeam: false,
+  state: {
+    deck: new DeckDuelState({
+      spellReferences: testCards.map(card => ({ reference: card.spell.reference, data: { spellCardKind: card.kind } })),
+      sideboardSpellReferences: []
+    }),
+    hand: () => testCards,
+    opponentCount: 1,
+    teamCount: 1
+  }
+};
 
-deckState.draw(3);
+testDuelInfo.state.deck.draw(3);
 const timer = new Timer(30);
-export = hoarcekat(() => <DuelPlanning deckState={deckState} timer={timer} hand={() => testCards} />);
+export = hoarcekat(() => <DuelPlanning duelInfo={testDuelInfo} timer={timer} />);

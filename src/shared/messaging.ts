@@ -11,6 +11,8 @@ export const enum Message {
   TransitionCameraPose,
   DuelInitializeClient,
   DuelPhaseChanged,
+  DuelCombatantAdded,
+  DuelCombatantRemoved,
 
   // Client -> Server
 }
@@ -26,6 +28,10 @@ export interface MessageData {
   // dueling
   [Message.DuelInitializeClient]: BaseID<DataType.u8> & {
     readonly onOpposingTeam: boolean;
+    readonly teamCount: DataType.u8;
+    readonly opponentCount: DataType.u8;
   };
   [Message.DuelPhaseChanged]: DataType.u8;
+  [Message.DuelCombatantAdded]: boolean; // whether combatant is on opposing team
+  [Message.DuelCombatantRemoved]: boolean;
 }

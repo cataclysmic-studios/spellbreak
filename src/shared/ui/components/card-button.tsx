@@ -1,5 +1,5 @@
 import Vide, { type Source, type Derivable, type PropsWithChildren, source, effect } from "@rbxts/vide";
-import { GuiService, Players, Workspace as World } from "@rbxts/services";
+import { Players, Workspace as World } from "@rbxts/services";
 import { useEventListener } from "@rbxts/pretty-vide-utils";
 
 import { usePx } from "../hooks/use-px";
@@ -10,8 +10,7 @@ import { cardAspectRatio } from "shared/constants";
 import { School } from "shared/structs/school";
 import { SpellCardKind, type SpellCard } from "shared/structs/spell-card";
 import { SpellKind } from "shared/structs/spell";
-import type { DuelCirclePosition } from "shared/structs/duel";
-import type { ClientDuelDeckState } from "shared/classes/client-deck-duel-state";
+import type { ClientDuelInfo, DuelCirclePosition } from "shared/structs/duel";
 
 import { BaseCardButton } from "./base-card-button";
 import { Container } from "../utility/components/container";
@@ -19,16 +18,11 @@ import { SpritesheetIcon } from "./spritesheet-icon";
 import { WizText } from "./wiz-text";
 import { SchoolIcon } from "./school-icon";
 
-// this is getting ridiculous
 interface CardButtonProps {
   readonly spellCard: SpellCard;
   readonly layoutOrder: Derivable<number>;
-  readonly deck: ClientDuelDeckState;
-  readonly newTreasureCards: Set<SpellCard>;
-  readonly hand: Source<SpellCard[]>;
+  readonly duelInfo: ClientDuelInfo;
   readonly grayscale?: Source<boolean>;
-  readonly selectedCard: Source<Maybe<SpellCard>>;
-  readonly choosing: Source<boolean>;
 }
 
 const SPELL_ART_SIZE = 64;
@@ -99,7 +93,10 @@ export interface CardButtonFrame extends Frame {
   CardScale: UIScale;
 }
 
-export function CardButton({ spellCard, layoutOrder, deck, newTreasureCards, hand, grayscale, selectedCard, choosing, children }: PropsWithChildren<CardButtonProps>): Vide.Node {
+export function CardButton({
+  spellCard, layoutOrder, grayscale, children,
+  duelInfo: { state: { deck, hand, selectedCard, choosing } }
+}: PropsWithChildren<CardButtonProps>): Vide.Node {
   const baseZIndex = source(0);
   const selected = source(false);
   const hovered = source(false);
@@ -129,7 +126,7 @@ export function CardButton({ spellCard, layoutOrder, deck, newTreasureCards, han
     selectedCard(spellCard);
   };
   const discard = () => {
-    if (newTreasureCards.has(spellCard)) return;
+    if (deck.newTreasureCards.has(spellCard)) return;
     deselectAll();
     const currentHand = hand();
     currentHand.remove(currentHand.indexOf(spellCard));

@@ -47,16 +47,16 @@ const TEAM_SELECTION_COLORS: Color3[] = [
 
 const mouse = Players.LocalPlayer.GetMouse();
 const selectionAuras: Model[] = [];
-function createSelectionAura(duelInfo: ClientDuelInfo, targetsTeam: boolean, circlePosition: DuelCirclePosition): void {
+function createSelectionAura({ model, onOpposingTeam }: ClientDuelInfo, targetsTeam: boolean, circlePosition: DuelCirclePosition): void {
   const selectionColors = targetsTeam
     ? TEAM_SELECTION_COLORS
     : OPPONENT_SELECTION_COLORS;
 
   const aura = assets.duel.selectionTarget.Clone();
-  const useTeamPositions = duelInfo.onOpposingTeam === targetsTeam;
+  const useTeamPositions = onOpposingTeam === targetsTeam;
   const positions = useTeamPositions
-    ? duelInfo.model.teamPositions
-    : duelInfo.model.opponentPositions;
+    ? model.teamPositions
+    : model.opponentPositions;
 
   const positionPart = positions[tostring(circlePosition + 1) as never] as Part;
   const pivot = positionPart.GetPivot();
@@ -83,14 +83,11 @@ function cleanupSelectionAuras(): void {
 
 /** View for passing, choosing cards, drawing cards, etc. */
 export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node {
-  const { state: { deck, hand, opponentCount, teamCount } } = duelInfo;
-  const choosing = source(true);
-  const selectedCard = source<Maybe<SpellCard>>();
   const timerRemaining = source(timer().getTimeLeft());
   const redTimerText = () => timerRemaining() <= RED_TIMER_THRESHOLD;
-  const newTreasureCards = new Set<SpellCard>; // TODO: clear upon new round
   const px = usePx();
 
+  const { deck, hand, choosing, selectedCard, opponentCount, teamCount } = duelInfo.state;
   useEventListener(mouse.Button1Up, () => !choosing() ? choosing(true) : undefined);
   effect(() => {
     const currentTimer = timer();
@@ -141,7 +138,7 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
       <Show when={choosing}>
         {() => (
           <>
-            <DeckHand deckState={deck} hand={hand} selectedCard={selectedCard} choosing={choosing} newTreasureCards={newTreasureCards} />
+            <DeckHand duelInfo={duelInfo} />
             <DuelButton text="Pass"
               size={buttonSize}
               position={UDim2.fromScale(0.25, 0.85)}
@@ -160,7 +157,6 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
                 const currentHand = hand();
                 currentHand.unshift(treasureCard);
                 hand(currentHand);
-                newTreasureCards.add(treasureCard);
               }}
             />
             <DuelButton text="Flee"

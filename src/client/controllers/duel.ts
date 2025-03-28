@@ -43,6 +43,8 @@ export class DuelController {
       state: {
         deck: new ClientDuelDeckState(id, deckData ?? EMPTY_DECK_DATA),
         hand: source<SpellCard[]>([]),
+        choosing: source(true),
+        selectedCard: source<Maybe<SpellCard>>(),
         teamCount, opponentCount
       }
     };

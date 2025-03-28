@@ -16,18 +16,16 @@ import { Container } from "../utility/components/container";
 import { BaseCardButton } from "./base-card-button";
 import { CardButton, type CardButtonFrame } from "./card-button";
 import { WizText } from "./wiz-text";
+import { ClientDuelInfo } from "shared/structs/duel";
 
 interface DeckHandProps {
-  readonly deckState: ClientDuelDeckState;
-  readonly newTreasureCards: Set<SpellCard>;
-  readonly hand: Source<SpellCard[]>;
-  readonly selectedCard: Source<Maybe<SpellCard>>;
-  readonly choosing: Source<boolean>;
+  readonly duelInfo: ClientDuelInfo;
 }
 
 const mouse = Players.LocalPlayer.GetMouse();
 
-export function DeckHand({ deckState, newTreasureCards, hand, selectedCard, choosing }: DeckHandProps): Vide.Node {
+export function DeckHand({ duelInfo }: DeckHandProps): Vide.Node {
+  const { state: { deck, hand } } = duelInfo
   const absolutePosition = source(Vector2.zero);
   const absoluteSize = source(Vector2.zero);
   const cardFrames: CardButtonFrame[] = [];
@@ -76,7 +74,7 @@ export function DeckHand({ deckState, newTreasureCards, hand, selectedCard, choo
         SortOrder={Enum.SortOrder.LayoutOrder}
       />
       <BaseCardButton image={Images.CardInfoBG} layoutOrder={-1}>
-        <WizText text={() => `Cards\n${deckState.getCardsLeft()} of ${deckState.totalCards}`}
+        <WizText text={() => `Cards\n${deck.getCardsLeft()} of ${deck.totalCards}`}
           position={positions.center}
           font={Enum.Font.Cartoon}
           size={UDim2.fromScale(1, 0.5)}
@@ -92,11 +90,7 @@ export function DeckHand({ deckState, newTreasureCards, hand, selectedCard, choo
           const cardFrame = <CardButton
             layoutOrder={index}
             spellCard={card}
-            deck={deckState}
-            hand={hand}
-            selectedCard={selectedCard}
-            choosing={choosing}
-            newTreasureCards={newTreasureCards}
+            duelInfo={duelInfo}
           />;
           cardFrames.push(cardFrame as CardButtonFrame);
 

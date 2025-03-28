@@ -28,6 +28,8 @@ export interface ClientDuelInfo extends BaseID<number> {
 export interface ClientDuelState {
   readonly deck: ClientDuelDeckState;
   readonly hand: Source<SpellCard[]>;
+  readonly choosing: Source<boolean>;
+  readonly selectedCard: Source<Maybe<SpellCard>>;
   opponentCount: number;
   teamCount: number;
 }

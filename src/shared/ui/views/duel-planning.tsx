@@ -1,5 +1,7 @@
 import Vide, { Show, effect, source } from "@rbxts/vide";
-import { useEventListener, useLifetime } from "@rbxts/pretty-vide-utils";
+import { Players, Workspace as World } from "@rbxts/services";
+import { useEventListener } from "@rbxts/pretty-vide-utils";
+import { getDescendantsOfType } from "@rbxts/instance-utility";
 import type { Timer } from "@rbxts/timer";
 import { $nameof } from "rbxts-transform-debug";
 
@@ -7,18 +9,16 @@ import { usePx } from "../hooks/use-px";
 import { Palette } from "../palette";
 import { Images } from "../utility/images";
 import { anchorPoints, positions } from "../utility/positioning";
+import { assets } from "shared/constants";
 import { SpellTargetKind } from "shared/structs/spell";
 import type { SpellCard } from "shared/structs/spell-card";
-import type { ClientDuelInfo, DuelCirclePosition } from "shared/structs/duel";
+import { ClientDuelInfo, DuelCirclePosition } from "shared/structs/duel";
 
 import { Container } from "../utility/components/container";
 import { DeckHand } from "../components/deck-hand";
 import { WizButton } from "../components/wiz-button";
 import { WizButton2 } from "../components/wiz-button2";
 import { WizText } from "../components/wiz-text";
-import { assets } from "shared/constants";
-import { getDescendantsOfType } from "@rbxts/instance-utility";
-import { Workspace as World } from "@rbxts/services";
 
 interface DuelPlanningProps {
   readonly duelInfo: ClientDuelInfo;
@@ -52,19 +52,22 @@ function createSelectionAura(duelInfo: ClientDuelInfo, targetsTeam: boolean, cir
     : OPPONENT_SELECTION_COLORS;
 
   const aura = assets.duel.selectionTarget.Clone();
-  const positions = duelInfo.onOpposingTeam === targetsTeam
+  const useTeamPositions = duelInfo.onOpposingTeam === targetsTeam;
+  const positions = useTeamPositions
     ? duelInfo.model.teamPositions
     : duelInfo.model.opponentPositions;
 
   const positionPart = positions[tostring(circlePosition + 1) as never] as Part;
   const pivot = positionPart.GetPivot();
   const newPivot = pivot
-    .sub(Vector3.yAxis.mul(positionPart.Size.Y / 2))
+    // .sub(Vector3.yAxis.mul(positionPart.Size.Y / 2))
     .add(Vector3.yAxis.mul(SELECTION_AURA_HEIGHT / 2))
     .mul(CFrame.Angles(0, 0, math.rad(90)));
 
   aura.PivotTo(newPivot);
-  aura.Parent = World.WaitForChild("TargetSelectionStorage");
+  aura.Parent = World.TargetSelectionStorage;
+  aura.SetAttribute("DuelCirclePosition", circlePosition);
+  aura.SetAttribute("OpposingTeam", !useTeamPositions);
   selectionAuras.push(aura);
 
   const color = selectionColors[circlePosition];
@@ -76,6 +79,8 @@ function cleanupSelectionAuras(): void {
   selectionAuras.forEach(aura => aura.Destroy());
   selectionAuras.clear();
 }
+
+const mouse = Players.LocalPlayer.GetMouse();
 
 /** View for passing, choosing cards, drawing cards, etc. */
 export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node {

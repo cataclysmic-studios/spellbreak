@@ -1,7 +1,8 @@
 import Vide, { type Source, For, source } from "@rbxts/vide";
 import { Range } from "@rbxts/range";
-import { useEventListener, useMouse } from "@rbxts/pretty-vide-utils";
+import { useEventListener } from "@rbxts/pretty-vide-utils";
 import { $nameof } from "rbxts-transform-debug";
+import { Players } from "@rbxts/services";
 
 import { usePx } from "../hooks/use-px";
 import { Images } from "../utility/images";
@@ -15,7 +16,6 @@ import { Container } from "../utility/components/container";
 import { BaseCardButton } from "./base-card-button";
 import { CardButton, type CardButtonFrame } from "./card-button";
 import { WizText } from "./wiz-text";
-import { Players } from "@rbxts/services";
 
 interface DeckHandProps {
   readonly deckState: DeckDuelState;
@@ -24,13 +24,14 @@ interface DeckHandProps {
   readonly choosing: Source<boolean>;
 }
 
+const mouse = Players.LocalPlayer.GetMouse();
+
 export function DeckHand({ deckState, hand, selectedCard, choosing }: DeckHandProps): Vide.Node {
   const absolutePosition = source(Vector2.zero);
   const absoluteSize = source(Vector2.zero);
   const cardFrames: CardButtonFrame[] = [];
   const px = usePx();
 
-  const mouse = Players.LocalPlayer.GetMouse();
   let screen: ScreenGui;
   useEventListener(mouse.Move, () => {
     const { X, Y } = mouse;

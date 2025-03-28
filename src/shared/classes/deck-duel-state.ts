@@ -1,6 +1,7 @@
 import { getSpellCardFromReferenceData } from "shared/utility/spell";
-import type { DeckLinkedData } from "shared/structs/data/items/gear/deck";
 import type { SpellCard } from "shared/structs/spell-card";
+import type { DeckLinkedData } from "shared/structs/data/items/gear/deck";
+import type { DuelCirclePosition } from "shared/structs/duel";
 
 const random = new Random;
 function shuffle<T extends defined>(array: T[]): T[] {
@@ -19,6 +20,8 @@ export class DeckDuelState {
   private readonly spells: SpellCard[];
   private readonly sideboardSpells: SpellCard[];
   private chosenCard?: SpellCard;
+  private chosenTarget?: DuelCirclePosition;
+  private chosenTargetIsOpponent?: boolean;
 
   public constructor({ spellReferences, sideboardSpellReferences }: DeckLinkedData) {
     this.spells = shuffle(spellReferences.map(getSpellCardFromReferenceData));
@@ -27,19 +30,34 @@ export class DeckDuelState {
   }
 
   // i know this doesnt really fit here but this is the best place for it at the moment
-  public chooseCard(spellCard: SpellCard): void {
+  public chooseCard(spellCard: SpellCard): void
+  public chooseCard(spellCard: SpellCard, targetPosition: DuelCirclePosition, targetIsOpponent: boolean): void
+  public chooseCard(spellCard: SpellCard, targetPosition?: DuelCirclePosition, targetIsOpponent?: boolean): void {
+    if (this.chosenCard !== undefined) return;
     this.chosenCard = spellCard;
+    this.chosenTarget = targetPosition;
+    this.chosenTargetIsOpponent = targetIsOpponent;
+    print(`Chosen card: ${spellCard.spell.name}`);
+    print(`Chosen target: ${targetPosition}`);
   }
 
   public removeCardChoice(): void {
     this.chosenCard = undefined;
+    this.chosenTarget = undefined;
+    this.chosenTargetIsOpponent = undefined;
   }
 
-  public getChosenCard(): Maybe<SpellCard> {
-    const chosen = this.chosenCard;
-    this.chosenCard = undefined;
+  public getChoice(): Maybe<{ card: SpellCard, target?: DuelCirclePosition, targetIsOpponent?: boolean }> {
+    const card = this.chosenCard;
+    if (card === undefined) return;
 
-    return chosen;
+    const target = this.chosenTarget;
+    const targetIsOpponent = this.chosenTargetIsOpponent;
+    this.chosenCard = undefined;
+    this.chosenTarget = undefined;
+    this.chosenTargetIsOpponent = undefined;
+
+    return { card, target, targetIsOpponent };
   }
 
   public getCardsLeft(): number {

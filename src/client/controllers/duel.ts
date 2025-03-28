@@ -81,10 +81,10 @@ export class DuelController {
         break;
       case DuelPhase.Combat:
         this.ui.disableDuelPlanning();
-        const chosenCard = this.current.state.deck.getChosenCard();
-        if (chosenCard !== undefined) { // remove card from hand
+        const choice = this.current.state.deck.getChoice();
+        if (choice !== undefined) { // remove card from hand
           const hand = this.current.state.hand();
-          hand.remove(hand.indexOf(chosenCard));
+          hand.remove(hand.indexOf(choice.card));
           this.current.state.hand(hand);
         }
 

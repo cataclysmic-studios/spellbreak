@@ -1,22 +1,23 @@
 import Vide, { type Source, type Derivable, type PropsWithChildren, source, effect } from "@rbxts/vide";
-import { Players } from "@rbxts/services";
+import { GuiService, Players, Workspace as World } from "@rbxts/services";
+import { useEventListener } from "@rbxts/pretty-vide-utils";
 
 import { usePx } from "../hooks/use-px";
 import { Images } from "../utility/images";
 import { Palette } from "../palette";
 import { anchorPoints, positions } from "../utility/positioning";
 import { cardAspectRatio } from "shared/constants";
+import { School } from "shared/structs/school";
 import { SpellCardKind, type SpellCard } from "shared/structs/spell-card";
 import { SpellKind } from "shared/structs/spell";
+import type { DuelCirclePosition } from "shared/structs/duel";
+import type { DeckDuelState } from "shared/classes/deck-duel-state";
 
 import { BaseCardButton } from "./base-card-button";
 import { Container } from "../utility/components/container";
 import { SpritesheetIcon } from "./spritesheet-icon";
 import { WizText } from "./wiz-text";
 import { SchoolIcon } from "./school-icon";
-import { School } from "shared/structs/school";
-import { useEventListener } from "@rbxts/pretty-vide-utils";
-import { DeckDuelState } from "shared/classes/deck-duel-state";
 
 // this is getting ridiculous
 interface CardButtonProps {
@@ -97,7 +98,7 @@ export interface CardButtonFrame extends Frame {
   CardScale: UIScale;
 }
 
-export function CardButton({ spellCard, layoutOrder, deckState, hand, grayscale, selectedCard, choosing, children }: PropsWithChildren<CardButtonProps>): Vide.Node {
+export function CardButton({ spellCard, layoutOrder, deckState: deck, hand, grayscale, selectedCard, choosing, children }: PropsWithChildren<CardButtonProps>): Vide.Node {
   const baseZIndex = source(0);
   const selected = source(false);
   const hovered = source(false);
@@ -134,7 +135,26 @@ export function CardButton({ spellCard, layoutOrder, deckState, hand, grayscale,
   };
 
   deselectFunctions.push(deselectCard);
-  useEventListener(mouse.Button1Down, deselectAll);
+  useEventListener(mouse.Button1Up, () => {
+    const card = selectedCard();
+    if (card === undefined) return;
+
+    const unitRay = World.CurrentCamera!.ScreenPointToRay(mouse.X, mouse.Y);
+    const raycastParams = new RaycastParams;
+    raycastParams.FilterType = Enum.RaycastFilterType.Include;
+    raycastParams.FilterDescendantsInstances = [World.TargetSelectionStorage];
+
+    const result = World.Raycast(unitRay.Origin, unitRay.Direction.mul(200), raycastParams);
+    if (result === undefined)
+      return deselectAll();
+
+    const auraModel = result.Instance.FindFirstAncestorOfClass("Model")!;
+    const position = auraModel.GetAttribute<DuelCirclePosition>("DuelCirclePosition")!;
+    const isOpponent = auraModel.GetAttribute<boolean>("OpposingTeam")!;
+    deselectAll();
+    choosing(false);
+    deck.chooseCard(card, position, isOpponent);
+  });
   effect(() => {
     if (!isGrayscale()) return;
     deselectCard();
@@ -211,7 +231,7 @@ export function CardButton({ spellCard, layoutOrder, deckState, hand, grayscale,
 
           deselectAll();
           choosing(false);
-          deckState.chooseCard(spellCard);
+          deck.chooseCard(spellCard);
         }}
         rightClicked={discard}
       >

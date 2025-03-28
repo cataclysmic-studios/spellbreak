@@ -9,7 +9,7 @@ import "../dev";
 import { DuelPlanning } from "../views/duel-planning";
 
 const duelInfo = createMockDuelInfo();
-duelInfo.state.deck.draw(3);
+duelInfo.state.deck.draw(2);
 const timer = new Timer(timerLength);
 timer.start();
 export = hoarcekat(() => <DuelPlanning duelInfo={duelInfo} timer={() => timer} />);

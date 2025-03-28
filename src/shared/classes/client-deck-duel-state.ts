@@ -18,7 +18,6 @@ function shuffle<T extends defined>(array: T[]): T[] {
 
 export class ClientDuelDeckState {
   public readonly totalCards;
-  public readonly newTreasureCards = new Set<SpellCard>; // TODO: clear upon new round
 
   private readonly spells: SpellCard[];
   private readonly sideboardSpells: SpellCard[];
@@ -80,11 +79,14 @@ export class ClientDuelDeckState {
     return drawnSpells;
   }
 
-  public drawSideboard(): SpellCard {
+  public drawSideboard(): SpellCard & { justDrawn: boolean } {
     // TODO: remove treasure card from actual deck data
-    const card = this.sideboardSpells.pop()!;
-    this.newTreasureCards.add(card);
-    return card;
+    // TODO: set justDrawn to false after one round
+    const treasureCard = this.sideboardSpells.pop()!;
+    return {
+      justDrawn: true,
+      ...treasureCard
+    };
   }
 
   public canDrawSideboard(hand: SpellCard[]): boolean {

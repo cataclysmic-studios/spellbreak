@@ -1,6 +1,7 @@
 import { source } from "@rbxts/vide";
 
 import { assets } from "shared/constants";
+import { getSpellCardFromReferenceData } from "shared/utility/spell";
 import { ClientDuelDeckState } from "shared/classes/client-deck-duel-state";
 import { SpellReference } from "shared/structs/data/reference/spell";
 import { SpellCardKind, type SpellCard } from "shared/structs/spell-card";
@@ -15,17 +16,24 @@ export const createMockDuelInfo = () => ({
   onOpposingTeam: false,
   state: {
     deck: new ClientDuelDeckState(Mock.ID, {
-      spellReferences: [{
-        reference: SpellReference.Myth_Mythblade,
-        data: { spellCardKind: SpellCardKind.Normal }
-      }, {
-        reference: SpellReference.Myth_Mythblade,
-        data: { spellCardKind: SpellCardKind.Normal }
-      }],
+      spellReferences: [],
       sideboardSpellReferences: [SpellReference.Myth_Mythblade]
     }),
     choosing: source(true),
-    hand: source<SpellCard[]>([]),
+    hand: source<SpellCard[]>([
+      getSpellCardFromReferenceData({
+        reference: SpellReference.Myth_Mythblade,
+        data: { spellCardKind: SpellCardKind.Normal }
+      }),
+      getSpellCardFromReferenceData({
+        reference: SpellReference.Myth_Mythblade,
+        data: { spellCardKind: SpellCardKind.Normal }
+      }),
+      getSpellCardFromReferenceData({
+        reference: SpellReference.Myth_Troll,
+        data: { spellCardKind: SpellCardKind.Normal }
+      })
+    ]),
     selectedCard: source<Maybe<SpellCard>>(),
     opponentCount: 1,
     teamCount: 1

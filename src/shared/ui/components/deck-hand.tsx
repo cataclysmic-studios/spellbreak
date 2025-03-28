@@ -1,4 +1,4 @@
-import Vide, { type Source, For, source } from "@rbxts/vide";
+import Vide, { type Source, cleanup, effect, For, Index, source, untrack } from "@rbxts/vide";
 import { Range } from "@rbxts/range";
 import { useEventListener } from "@rbxts/pretty-vide-utils";
 import { $nameof } from "rbxts-transform-debug";
@@ -28,10 +28,10 @@ export function DeckHand({ duelInfo }: DeckHandProps): Vide.Node {
   const { state: { deck, hand } } = duelInfo
   const absolutePosition = source(Vector2.zero);
   const absoluteSize = source(Vector2.zero);
-  const cardFrames: CardButtonFrame[] = [];
   const px = usePx();
 
   let screen: ScreenGui;
+  const cardFrames = source<CardButtonFrame[]>([]);
   useEventListener(mouse.Move, () => {
     const { X, Y } = mouse;
     const position = absolutePosition();
@@ -39,13 +39,13 @@ export function DeckHand({ duelInfo }: DeckHandProps): Vide.Node {
     const dimensionsX = new Range(position.X, position.X + size.X);
     const dimensionsY = new Range(position.Y, position.Y + size.Y);
     if (!dimensionsX.isNumberWithin(X) || !dimensionsY.isNumberWithin(Y)) {
-      for (const card of cardFrames)
+      for (const card of cardFrames())
         card.CardScale.Scale = 1;
 
       return;
     }
 
-    for (const card of cardFrames) {
+    for (const card of cardFrames()) {
       if (screen === undefined)
         screen = card.FindFirstAncestorOfClass("ScreenGui")!;
 
@@ -58,6 +58,25 @@ export function DeckHand({ duelInfo }: DeckHandProps): Vide.Node {
       card.CardScale.Scale = 1 + (scaleIncrement ** 3 * 0.75);
     }
   })
+
+  effect(() => {
+    cleanup(() => cardFrames([]));
+    const currentHand = hand();
+    for (const [i, card] of pairs(currentHand)) {
+      if (i >= maxCardsInHand)
+        return Log.warn(`Not adding card button for spell '${card.spell.name}' - hand has too many cards (${currentHand.size()}, maximum ${maxCardsInHand})`);
+
+      const cardFrame = <CardButton
+        layoutOrder={i}
+        spellCard={card}
+        duelInfo={duelInfo} />;
+
+      cleanup(cardFrame as Instance);
+      const frames = untrack(cardFrames);
+      frames.push(cardFrame as CardButtonFrame);
+      untrack(() => cardFrames(frames));
+    }
+  });
 
   return (
     <Container name={$nameof(DeckHand)}
@@ -81,21 +100,8 @@ export function DeckHand({ duelInfo }: DeckHandProps): Vide.Node {
           textSize={px(16)}
         />
       </BaseCardButton>
-      <For each={hand}>
-        {(card, index) => {
-          if (index() >= maxCardsInHand)
-            return Log.warn(`Not adding card button for spell '${card.spell.name}' - hand has to many cards (${index() + 1}, maximum ${maxCardsInHand})`);
-
-          // this gives me cancer
-          const cardFrame = <CardButton
-            layoutOrder={index}
-            spellCard={card}
-            duelInfo={duelInfo}
-          />;
-          cardFrames.push(cardFrame as CardButtonFrame);
-
-          return cardFrame;
-        }}
+      <For each={cardFrames}>
+        {card => card}
       </For>
     </Container>
   );

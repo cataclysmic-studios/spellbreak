@@ -1,4 +1,4 @@
-import Vide, { type Source, type Derivable, type PropsWithChildren, source, effect } from "@rbxts/vide";
+import Vide, { type Source, type Derivable, type PropsWithChildren, source, effect, read } from "@rbxts/vide";
 import { Players, Workspace as World } from "@rbxts/services";
 import { useEventListener } from "@rbxts/pretty-vide-utils";
 
@@ -126,7 +126,7 @@ export function CardButton({
     selectedCard(spellCard);
   };
   const discard = () => {
-    if (deck.newTreasureCards.has(spellCard)) return;
+    if ("justDrawn" in spellCard && spellCard.justDrawn === true) return;
     deselectAll();
     const currentHand = hand();
     currentHand.remove(currentHand.indexOf(spellCard));

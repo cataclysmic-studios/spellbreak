@@ -1,6 +1,6 @@
 import Vide, { type Derivable, type PropsWithChildren } from "@rbxts/vide";
 
-import { anchorPoints, positions } from "../utility/positioning";
+import { anchorPoints, positions } from "../../utility/positioning";
 import { cardAspectRatio } from "shared/constants";
 
 interface BaseCardProps {

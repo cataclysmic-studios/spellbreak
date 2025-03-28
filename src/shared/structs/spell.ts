@@ -39,6 +39,22 @@ export interface SpellLinkedData {
   readonly spellCardKind: SpellCardKind;
 }
 
+export const enum CardDescriptionImageKind {
+  School,
+  SpellKind
+}
+
+export type CardDescriptionPart =
+  | string
+  | {
+    readonly kind: CardDescriptionImageKind.School;
+    readonly value: School;
+  }
+  | {
+    readonly kind: CardDescriptionImageKind.SpellKind;
+    readonly value: SpellKind;
+  };
+
 interface BaseSpell {
   readonly kind: SpellKind;
   readonly hasTarget: boolean;
@@ -46,6 +62,7 @@ interface BaseSpell {
   readonly cardArtSpritesheetNumber: number;
   readonly cardImageOffset: Vector2;
   readonly name: string;
+  readonly description: CardDescriptionPart[];
   readonly school: School;
   readonly accuracy: number;
   readonly cost: SpellCost;

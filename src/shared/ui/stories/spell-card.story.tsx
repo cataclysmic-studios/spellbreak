@@ -8,7 +8,7 @@ import { type SpellCard, SpellCardKind } from "shared/structs/spell-card";
 import "../dev";
 
 import { Container } from "../utility/components/container";
-import { DuelCardButton } from "../components/duel-card-button";
+import { DuelCardButton } from "../components/card/duel-card-button";
 
 const card: SpellCard = {
   kind: SpellCardKind.Item,

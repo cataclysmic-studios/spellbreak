@@ -9,7 +9,7 @@ interface SchoolIconProps {
   readonly school: Derivable<School>;
   readonly anchorPoint?: Derivable<Vector2>;
   readonly position?: Derivable<UDim2>;
-  readonly size?: Derivable<UDim2>;
+  readonly size?: Derivable<UDim>;
   readonly layoutOrder?: Derivable<number>;
 }
 
@@ -28,11 +28,13 @@ const offsets: Record<School, Vector2> = {
 };
 
 export function SchoolIcon({ anchorPoint, position, school, size, layoutOrder }: SchoolIconProps): Vide.Node {
+  const getSize = () => read(size) ?? new UDim(1);
+
   return (
     <LargeSpritesheetIcon name={$nameof(SchoolIcon)}
       anchorPoint={anchorPoint}
       position={position}
-      size={size ?? UDim2.fromScale(1, 1)}
+      size={() => new UDim2(getSize().Scale, getSize().Offset, getSize().Scale, getSize().Offset)}
       offset={offsets[read(school)]}
       layoutOrder={layoutOrder}
     />

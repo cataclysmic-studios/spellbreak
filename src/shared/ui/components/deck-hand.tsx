@@ -1,4 +1,4 @@
-import Vide, { type Source, cleanup, effect, For, Index, source, untrack } from "@rbxts/vide";
+import Vide, { For, source, cleanup, effect, untrack } from "@rbxts/vide";
 import { Range } from "@rbxts/range";
 import { useEventListener } from "@rbxts/pretty-vide-utils";
 import { $nameof } from "rbxts-transform-debug";
@@ -7,14 +7,12 @@ import { Players } from "@rbxts/services";
 import { usePx } from "../hooks/use-px";
 import { Images } from "../utility/images";
 import { positions } from "../utility/positioning";
-import { ClientDuelDeckState } from "shared/classes/client-deck-duel-state";
 import { maxCardsInHand } from "shared/constants";
-import type { SpellCard } from "shared/structs/spell-card";
 import Log from "shared/log";
 
 import { Container } from "../utility/components/container";
-import { CardBackground } from "./card-background";
-import { DuelCardButton, type CardButtonFrame } from "./duel-card-button";
+import { CardBackground } from "./card/card-background";
+import { DuelCardButton, type CardButtonFrame } from "./card/duel-card-button";
 import { WizText } from "./wiz-text";
 import { ClientDuelInfo } from "shared/structs/duel";
 

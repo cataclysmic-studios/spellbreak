@@ -1,18 +1,20 @@
 import Vide, { Derivable, read, source } from "@rbxts/vide";
 
-import { usePx } from "../hooks/use-px";
-import { Palette } from "../palette";
-import { Images } from "../utility/images";
-import { anchorPoints, positions } from "../utility/positioning";
+import { usePx } from "../../hooks/use-px";
+import { Palette } from "../../palette";
+import { Images } from "../../utility/images";
+import { anchorPoints, positions } from "../../utility/positioning";
 import { cardAspectRatio } from "shared/constants";
 import { School } from "shared/structs/school";
-import { SpellKind } from "shared/structs/spell";
 import { SpellCardKind, type SpellCard } from "shared/structs/spell-card";
 
-import { WizText } from "./wiz-text";
-import { SchoolIcon } from "./school-icon";
+import { WizText } from "../wiz-text";
+import { SchoolIcon } from "../school-icon";
+import { SpritesheetIcon } from "../spritesheet-icon";
 import { CardBackground } from "./card-background";
-import { SpritesheetIcon } from "./spritesheet-icon";
+import { CardDescription } from "./card-description";
+import { SpellKindIcon } from "./spell-kind-icon";
+import { Container } from "shared/ui/utility/components/container";
 
 interface BaseCardButtonProps {
   readonly spellCard: SpellCard;
@@ -25,24 +27,6 @@ interface BaseCardButtonProps {
 }
 
 const SPELL_ART_SIZE = 64;
-const SPELL_TYPE_IMAGES: Record<SpellKind, string> = {
-  [SpellKind.Damage]: "rbxassetid://108143298466355",
-  [SpellKind.AOE]: "rbxassetid://118350657741477",
-  [SpellKind.Drain]: "rbxassetid://109389322750574",
-  [SpellKind.Heal]: "rbxassetid://108034974071682",
-  [SpellKind.Charm]: "rbxassetid://93511865864214",
-  [SpellKind.Curse]: "rbxassetid://119491980571867",
-  [SpellKind.Trap]: "rbxassetid://97697467985473",
-  [SpellKind.Jinx]: "rbxassetid://135872189432164",
-  [SpellKind.Ward]: "rbxassetid://91030799412195",
-  [SpellKind.Aura]: "rbxassetid://137432911637486",
-  [SpellKind.Global]: "rbxassetid://137993823959278",
-  [SpellKind.Enchantment]: "rbxassetid://89333027044620",
-  [SpellKind.Manipulation]: "rbxassetid://133882234415702",
-  [SpellKind.Polymorph]: "rbxassetid://109141779555025",
-  [SpellKind.Mutate]: "rbxassetid://86695891024037"
-};
-
 const CARD_ART_SPRITESHEETS: { colored: string; grayscale: string; }[] = [
   {
     colored: "rbxassetid://89063483535157",
@@ -138,30 +122,14 @@ export function BaseCardButton({ spellCard, layoutOrder, grayscale, hovered, unh
     <SchoolIcon school={spellCard.spell.school}
       anchorPoint={anchorPoints.center}
       position={positions.topRight.add(UDim2.fromScale(-0.125, 0.195))}
-      size={UDim2.fromScale(0.18, 0.18)}
+      size={new UDim(0.18)}
     />
-    <imagelabel Name="SpellType"
-      Image={SPELL_TYPE_IMAGES[spellCard.spell.kind]}
-      AnchorPoint={anchorPoints.center}
-      Position={positions.bottomRight.add(UDim2.fromScale(-0.129, -0.429))}
-      BackgroundTransparency={1}
-      Size={UDim2.fromScale(0.18, 0.18)}
-    >
-      <uiaspectratioconstraint />
-    </imagelabel>
-    {/** TODO: implement actual description */}
-    <WizText name="Description"
-      text="ignore this idk how i havent done it yet"
-      backgroundTransparency={1}
-      anchorPoint={anchorPoints.center}
-      position={positions.bottomCenter.sub(UDim2.fromScale(0, 0.2))}
-      font={Enum.Font.Cartoon}
-      textColor={Palette.black}
-      textScaled={true}
-      alignX={Enum.TextXAlignment.Left}
-      alignY={Enum.TextYAlignment.Top}
-      size={UDim2.fromScale(0.825, 0.25)}
+    <SpellKindIcon
+      kind={spellCard.spell.kind}
+      size={new UDim(0.18)}
+      position={positions.bottomRight.add(UDim2.fromScale(-0.129, -0.429))}
     />
+    <CardDescription parts={spellCard.spell.description} />
     <CardBackground name="CardFrame"
       image={cardFrameImage}
       layoutOrder={layoutOrder}

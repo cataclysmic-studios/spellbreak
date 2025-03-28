@@ -5,12 +5,12 @@ export type SpellActionValueType =
   | RangeJSON
   | undefined;
 
-export enum SpellActionType {
+export enum SpellActionKind {
   Heal = "Heal",
   HealAOE = "HealAOE",
 }
 
-export namespace SpellActionType {
+export namespace SpellActionKind {
   export const enum Buff {
     Blade = "Blade",
     Aura = "Aura",
@@ -52,15 +52,15 @@ export namespace SpellActionType {
   }
 }
 
-export type SpellActionTypes =
-  | SpellActionType
-  | SpellActionType.Buff
-  | SpellActionType.Debuff
-  | SpellActionType.Damage
-  | SpellActionType.Manipulation
-  | SpellActionType.Exclusive;
+export type SpellActionKinds =
+  | SpellActionKind
+  | SpellActionKind.Buff
+  | SpellActionKind.Debuff
+  | SpellActionKind.Damage
+  | SpellActionKind.Manipulation
+  | SpellActionKind.Exclusive;
 
-export interface SpellAction<T extends SpellActionTypes = SpellActionTypes> {
-  readonly type: T;
+export interface SpellAction<T extends SpellActionKinds = SpellActionKinds> {
+  readonly kind: T;
   readonly value: SpellActionValueType;
 }

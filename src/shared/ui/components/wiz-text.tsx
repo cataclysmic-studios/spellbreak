@@ -1,4 +1,4 @@
-import Vide, { derive, read, type Derivable, type Node } from "@rbxts/vide";
+import Vide, { type Source, type Derivable, read } from "@rbxts/vide";
 
 import { anchorPoints, positions } from "../utility/positioning";
 import { Palette } from "../palette";
@@ -19,7 +19,8 @@ export interface WizTextProps {
   readonly alignX?: Derivable<Enum.TextXAlignment>;
   readonly alignY?: Derivable<Enum.TextYAlignment>;
   readonly layoutOrder?: Derivable<number>;
-  readonly children?: Node;
+  readonly textBounds?: Source<Vector2>;
+  readonly children?: Vide.Node;
 }
 
 const DEFAULT_FONT = Enum.Font.LuckiestGuy;
@@ -27,7 +28,7 @@ const DEFAULT_TEXT_SIZE = 14;
 
 export function WizText({
   name, text, textSize, textColor, textScaled, transparency, backgroundTransparency,
-  size, position, anchorPoint, font, alignX, alignY, layoutOrder, children
+  size, position, anchorPoint, font, alignX, alignY, layoutOrder, textBounds, children
 }: WizTextProps): Vide.Node {
   const isDefaultFont = () => read(font) === undefined || read(font) === DEFAULT_FONT;
   const getPosition = () => read(position) ?? positions.center;
@@ -49,6 +50,7 @@ export function WizText({
       Font={() => read(font) ?? Enum.Font.LuckiestGuy}
       TextTransparency={transparency}
       LayoutOrder={layoutOrder}
+      TextBoundsChanged={textBounds}
     >
       {children}
     </textlabel >

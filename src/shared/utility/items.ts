@@ -4,15 +4,21 @@ import { getDescendantsOfType } from "@rbxts/instance-utility";
 
 import type { CharacterStats } from "shared/structs/data/character-stats";
 import type { CharacterItem, WithCharacterStats, WithLevelRequirement, WithSchoolRequirement } from "shared/structs/data/items";
-import type { DeckData, DeckLinkedData, DeckReferenceData } from "shared/structs/data/items/gear/deck";
-import type { DeckReference } from "shared/structs/data/reference/gear/deck";
-import type { PetData, PetLinkedData, PetReferenceData } from "shared/structs/data/items/gear/pet";
-import type { PetReference } from "shared/structs/data/reference/gear/pet";
 import type { GearData } from "shared/structs/data/items/gear";
+import type { DeckData, DeckLinkedData, DeckReferenceData } from "shared/structs/data/items/gear/deck";
+import type { PetData, PetLinkedData, PetReferenceData } from "shared/structs/data/items/gear/pet";
 import type { GearReference } from "shared/structs/data/reference/gear";
+import type { DeckReference } from "shared/structs/data/reference/gear/deck";
+import type { PetReference } from "shared/structs/data/reference/gear/pet";
 
+let gearReferenceCache = new Map<GearReference, GearData>();
 export function getGearByReference(reference: GearReference): GearData {
-  return getAllGear().find(data => data.reference === reference)!;
+  if (gearReferenceCache.has(reference))
+    return gearReferenceCache.get(reference)!;
+
+  const gear = getAllGear().find(data => data.reference === reference)!;
+  gearReferenceCache.set(reference, gear);
+  return gear;
 }
 
 let allGearsCache: Maybe<GearData[]>;
@@ -32,8 +38,14 @@ export function getPetByReferenceData({ reference, data }: PetReferenceData): Pe
   };
 }
 
+let petReferenceCache = new Map<PetReference, PetData>();
 export function getPetByReference(reference: PetReference): PetData {
-  return getAllPets().find(data => data.reference === reference)!;
+  if (petReferenceCache.has(reference))
+    return petReferenceCache.get(reference)!;
+
+  const pet = getAllPets().find(data => data.reference === reference)!;
+  petReferenceCache.set(reference, pet);
+  return pet;
 }
 
 let allPetsCache: Maybe<PetData[]>;
@@ -53,8 +65,14 @@ export function getDeckByReferenceData({ reference, data }: DeckReferenceData): 
   };
 }
 
+let deckReferenceCache = new Map<DeckReference, DeckData>();
 export function getDeckByReference(reference: DeckReference): DeckData {
-  return getAllDecks().find(data => data.reference === reference)!;
+  if (deckReferenceCache.has(reference))
+    return deckReferenceCache.get(reference)!;
+
+  const deck = getAllDecks().find(data => data.reference === reference)!;
+  deckReferenceCache.set(reference, deck);
+  return deck;
 }
 
 let allDecksCache: Maybe<DeckData[]>;

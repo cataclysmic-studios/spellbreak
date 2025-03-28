@@ -1,7 +1,6 @@
 import Vide, { type Source, Show, effect, source } from "@rbxts/vide";
-import { Players, Workspace as World } from "@rbxts/services";
+import { Players } from "@rbxts/services";
 import { useEventListener } from "@rbxts/pretty-vide-utils";
-import { getDescendantsOfType } from "@rbxts/instance-utility";
 import type { Timer } from "@rbxts/timer";
 import { $nameof } from "rbxts-transform-debug";
 
@@ -9,10 +8,7 @@ import { usePx } from "../hooks/use-px";
 import { Palette } from "../palette";
 import { Images } from "../utility/images";
 import { anchorPoints, positions } from "../utility/positioning";
-import { assets } from "shared/constants";
-import { SpellTargetKind } from "shared/structs/spell";
-import type { ClientDuelInfo, DuelCirclePosition } from "shared/structs/duel";
-import type { SpellCard } from "shared/structs/spell-card";
+import type { ClientDuelInfo } from "shared/structs/duel";
 
 import { Container } from "../utility/components/container";
 import { DeckHand } from "../components/deck-hand";
@@ -31,55 +27,7 @@ const RED_TIMER_COLOR1 = Palette.brightRed;
 const RED_TIMER_COLOR2 = Palette.red;
 const RED_TIMER_THRESHOLD = 10; // seconds left
 
-const SELECTION_AURA_HEIGHT = 7;
-const OPPONENT_SELECTION_COLORS: Color3[] = [
-  Color3.fromRGB(247, 64, 204),
-  Color3.fromRGB(255, 56, 96),
-  Color3.fromRGB(255, 196, 46),
-  Color3.fromRGB(251, 255, 44)
-];
-const TEAM_SELECTION_COLORS: Color3[] = [
-  Color3.fromRGB(154, 255, 21),
-  Color3.fromRGB(10, 255, 182),
-  Color3.fromRGB(82, 186, 255),
-  Color3.fromRGB(137, 108, 255)
-];
-
 const mouse = Players.LocalPlayer.GetMouse();
-const selectionAuras: Model[] = [];
-function createSelectionAura({ model, onOpposingTeam }: ClientDuelInfo, targetsTeam: boolean, circlePosition: DuelCirclePosition): void {
-  const selectionColors = targetsTeam
-    ? TEAM_SELECTION_COLORS
-    : OPPONENT_SELECTION_COLORS;
-
-  const aura = assets.duel.selectionTarget.Clone();
-  const useTeamPositions = onOpposingTeam === targetsTeam;
-  const positions = useTeamPositions
-    ? model.teamPositions
-    : model.opponentPositions;
-
-  const positionPart = positions[tostring(circlePosition + 1) as never] as Part;
-  const pivot = positionPart.GetPivot();
-  const newPivot = pivot
-    // .sub(Vector3.yAxis.mul(positionPart.Size.Y / 2))
-    .add(Vector3.yAxis.mul(SELECTION_AURA_HEIGHT / 2))
-    .mul(CFrame.Angles(0, 0, math.rad(90)));
-
-  aura.PivotTo(newPivot);
-  aura.Parent = World.TargetSelectionStorage;
-  aura.SetAttribute("DuelCirclePosition", circlePosition);
-  aura.SetAttribute("OpposingTeam", !useTeamPositions);
-  selectionAuras.push(aura);
-
-  const color = selectionColors[circlePosition];
-  for (const decal of getDescendantsOfType(aura, "Decal"))
-    decal.Color3 = color;
-}
-
-function cleanupSelectionAuras(): void {
-  selectionAuras.forEach(aura => aura.Destroy());
-  selectionAuras.clear();
-}
 
 /** View for passing, choosing cards, drawing cards, etc. */
 export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node {
@@ -87,7 +35,7 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
   const redTimerText = () => timerRemaining() <= RED_TIMER_THRESHOLD;
   const px = usePx();
 
-  const { deck, hand, choosing, selectedCard, opponentCount, teamCount } = duelInfo.state;
+  const { deck, hand, choosing, selectedCard } = duelInfo.state;
   useEventListener(mouse.Button1Up, () => !choosing() ? choosing(true) : undefined);
   effect(() => {
     const currentTimer = timer();
@@ -97,20 +45,6 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
       timerRemaining(0);
       currentTimer.destroy();
     });
-  });
-
-  effect(() => {
-    const card = selectedCard();
-    if (card === undefined || !card.spell.hasTarget)
-      return cleanupSelectionAuras();
-
-    if (selectionAuras.size() > 0)
-      cleanupSelectionAuras();
-
-    const targetsTeam = card.spell.targetKind === SpellTargetKind.SingleTeam;
-    const targetCount = targetsTeam ? teamCount : opponentCount;
-    for (const i of $range(1, targetCount))
-      createSelectionAura(duelInfo, !targetsTeam, i - 1);
   });
 
   const buttonSize = UDim2.fromOffset(px(100), px(35));

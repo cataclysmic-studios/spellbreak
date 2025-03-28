@@ -1,6 +1,6 @@
 import { Controller } from "@flamework/core";
 import { Timer } from "@rbxts/timer";
-import Vide, { mount, cleanup, source } from "@rbxts/vide";
+import Vide, { mount, cleanup, source, effect } from "@rbxts/vide";
 
 import { Message } from "shared/messaging";
 import { OnMessage } from "client/decorators";
@@ -25,7 +25,7 @@ export class UIController {
     oldTimer.destroy();
   }
 
-  public enableDuelPlanning(duelInfo: ClientDuelInfo): void {
+  public enableDuelPlanning(duelInfo: ClientDuelInfo, sideEffects: (() => void)[]): void {
     this.currentTimer(new Timer(timerLength));
     this.currentTimer()!.start();
     this.duelPlanningDestructor = mount(() => {
@@ -36,6 +36,9 @@ export class UIController {
       );
 
       cleanup(component as Instance);
+      for (const sideEffect of sideEffects)
+        effect(sideEffect);
+
       return component;
     }, playerGui);
   }

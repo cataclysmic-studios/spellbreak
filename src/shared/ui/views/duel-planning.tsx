@@ -1,6 +1,6 @@
-import Vide, { Show, effect, source } from "@rbxts/vide";
+import Vide, { type Source, Show, effect, source } from "@rbxts/vide";
 import { Players, Workspace as World } from "@rbxts/services";
-import { useEventListener } from "@rbxts/pretty-vide-utils";
+import { useEventListener, useUpdateEffect } from "@rbxts/pretty-vide-utils";
 import { getDescendantsOfType } from "@rbxts/instance-utility";
 import type { Timer } from "@rbxts/timer";
 import { $nameof } from "rbxts-transform-debug";
@@ -22,7 +22,7 @@ import { WizText } from "../components/wiz-text";
 
 interface DuelPlanningProps {
   readonly duelInfo: ClientDuelInfo;
-  readonly timer: Timer;
+  readonly timer: Source<Timer>;
 }
 
 const STANDARD_TIMER_COLOR1 = Palette.brightYellow;
@@ -80,22 +80,23 @@ function cleanupSelectionAuras(): void {
   selectionAuras.clear();
 }
 
-const mouse = Players.LocalPlayer.GetMouse();
-
 /** View for passing, choosing cards, drawing cards, etc. */
 export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node {
   const { state: { deck, hand, opponentCount, teamCount } } = duelInfo;
   const choosing = source(true);
   const selectedCard = source<Maybe<SpellCard>>();
-  const timerRemaining = source(timer.getTimeLeft());
-  const redTimer = () => timerRemaining() <= RED_TIMER_THRESHOLD;
+  const timerRemaining = source(timer().getTimeLeft());
+  const redTimerText = () => timerRemaining() <= RED_TIMER_THRESHOLD;
   const px = usePx();
 
-  timer.start();
-  useEventListener(timer.secondReached, seconds => timerRemaining(seconds));
-  useEventListener(timer.completed, () => {
-    timerRemaining(0);
-    timer.destroy();
+  effect(() => {
+    const currentTimer = timer();
+    timerRemaining(currentTimer.getTimeLeft());
+    useEventListener(currentTimer.secondReached, timerRemaining);
+    useEventListener(currentTimer.completed, () => {
+      timerRemaining(0);
+      currentTimer.destroy();
+    });
   });
 
   effect(() => {
@@ -129,8 +130,8 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
         <uistroke Thickness={px(2)} Transparency={0.4} />
         <uigradient
           Color={() => new ColorSequence(
-            redTimer() ? RED_TIMER_COLOR1 : STANDARD_TIMER_COLOR1,
-            redTimer() ? RED_TIMER_COLOR2 : STANDARD_TIMER_COLOR2
+            redTimerText() ? RED_TIMER_COLOR1 : STANDARD_TIMER_COLOR1,
+            redTimerText() ? RED_TIMER_COLOR2 : STANDARD_TIMER_COLOR2
           )}
         />
       </textlabel>

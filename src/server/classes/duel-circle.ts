@@ -6,7 +6,7 @@ import { atom, subscribe } from "@rbxts/charm";
 import type { BaseID } from "@rbxts/id";
 
 import { Message, messaging } from "shared/messaging";
-import { assets } from "shared/constants";
+import { assets, timerLength } from "shared/constants";
 import { Enemy } from "./enemy";
 import { DuelCirclePosition, DuelPhase } from "shared/structs/duel";
 import { CameraPoseKind } from "shared/structs/camera";
@@ -15,6 +15,7 @@ import Log from "shared/log";
 
 import type { EnemyService } from "server/services/enemy";
 import type { DuelService } from "server/services/duel";
+import { Timer } from "@rbxts/timer";
 
 const MAX_COMBATANTS = 8;
 const TURN_INFO = new TweenInfoBuilder()
@@ -40,6 +41,8 @@ const GLOW_INFO = new TweenInfoBuilder()
 
 export type Combatant = Player | Enemy;
 
+// TODO: max per-player enemies
+// TODO: move onto Combat phase if all players have made a choice
 export class DuelCircle<PvP extends boolean = boolean> extends Destroyable implements BaseID<number> {
   public static cumulativeID = 0;
 
@@ -53,6 +56,7 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
   private readonly combatants = new Set<Combatant>;
   private readonly model: DuelCircleModel;
   private readonly animations;
+  private currentTimer?: Timer;
 
   /**
    * Creates a new duel circle and animates it.
@@ -73,20 +77,20 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     this.model.SetAttribute("ID", this.id);
 
     this.janitor.Add(() => DuelCircle.cumulativeID--);
-    this.janitor.Add(subscribe(this.currentPhase, phase => {
-      messaging.emitClient(this.getPlayerCombatants(), Message.DuelPhaseChanged, phase)
+    this.janitor.Add(subscribe(this.currentPhase, (phase, lastPhase) => {
+      if (phase === lastPhase) return;
+      messaging.emitClient(this.getPlayerCombatants(), Message.DuelPhaseChanged, phase);
     }));
     this.janitor.Add(() => this.currentPhase(DuelPhase.End));
     this.currentPhase(DuelPhase.Start);
 
-    if (!pvp) {
+    if (!pvp)
       this.janitor.Add(this.model.hitbox.Touched.Connect(hit => {
         const character = hit.FindFirstAncestorOfClass("Model");
         if (character === undefined) return;
         if (this.combatants.size() === MAX_COMBATANTS) return;
         this.onTouched(character);
       }));
-    }
 
     const animations = assets.animations.duel.circle;
     const animator = this.model.AnimationController.Animator;
@@ -114,7 +118,9 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
   public addPlayer(player: Player, position: DuelCirclePosition): () => void
   public addPlayer(player: Player, position: DuelCirclePosition, enemyTeam?: PvP extends true ? boolean : undefined): () => void
   public addPlayer(player: Player, position: DuelCirclePosition, enemyTeam?: PvP extends true ? boolean : undefined): () => void {
-    if (this.combatants.has(player)) return () => { };
+    if (this.combatants.has(player))
+      return () => { };
+
     const isOpponent = enemyTeam ?? false;
     const positions = isOpponent
       ? this.opponentPositions
@@ -123,12 +129,12 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
       ? this.occupiedOpponentPositions
       : this.occupiedTeamPositions;
 
-    this.combatants.add(player);
-    this.duelService.combatantsInDuels.add(player);
+    this.currentTimer?.setLength(1);
+    this.currentTimer?.setLength(timerLength);
     occupiedPositions.add(position);
+    this.addCombatant(player, isOpponent);
 
     messaging.emitClient(player, Message.ToggleMovement, false);
-    messaging.emitClient(this.getPlayerCombatants(), Message.DuelCombatantAdded, isOpponent);
     messaging.emitClient(player, Message.DuelInitializeClient, {
       id: this.id,
       onOpposingTeam: this.occupiedOpponentPositions.has(position),
@@ -155,14 +161,21 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     if (this.pvp)
       return Log.fatal("Attempt to add enemy to a PvP duel circle", ["duel circle"]);
 
-    if (this.combatants.has(enemy)) return () => { };
-    this.combatants.add(enemy);
-    this.duelService.combatantsInDuels.add(enemy);
+    if (this.combatants.has(enemy))
+      return () => { };
+
     this.occupiedOpponentPositions.add(position);
+    this.addCombatant(enemy, true);
     this.pullInCombatant(enemy.model, this.opponentPositions, position);
-    messaging.emitClient(this.getPlayerCombatants(), Message.DuelCombatantAdded, true);
 
     return this.janitor.Add(() => this.removeCombatant(enemy, position, true));
+  }
+
+  private addCombatant(combatant: Combatant, isOpponent: boolean): void {
+    if (this.combatants.has(combatant)) return;
+    this.combatants.add(combatant);
+    this.duelService.combatantsInDuels.add(combatant);
+    messaging.emitClient(this.getPlayerCombatants(), Message.DuelCombatantAdded, isOpponent);
   }
 
   public override destroy(): void {
@@ -188,7 +201,6 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
 
   private onTouched(character: Model): void {
     const isEnemy = character.HasTag("Enemy");
-    if (character.FindFirstChildOfClass("Humanoid") === undefined && !isEnemy) return;
     if (isEnemy) {
       const enemies = Dependency<EnemyService>();
       const openPosition = this.getOpenOpponentPosition();
@@ -234,8 +246,18 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     this.animations.idle.Play(0);
     task.wait(0.5);
     this.currentPhase(DuelPhase.Planning);
-    // TODO: wait for 30s timer, then start combat
-    // TODO: reset timer to 30s when player joins duel
+
+    this.currentTimer = this.janitor.Add(new Timer(timerLength), "destroy");
+    this.currentTimer.lengthChanged.Connect(length => {
+      if (this.currentTimer === undefined) return;
+      if (length === 1) return;
+
+      this.currentTimer.stop();
+      this.currentTimer.start();
+      messaging.emitClient(this.getPlayerCombatants(), Message.DuelUpdateTimer, length);
+    });
+    this.currentTimer.completed.Connect(() => this.currentPhase(DuelPhase.Combat));
+    this.currentTimer.start();
   }
 
   private pullInCombatant(combatantModel: Model, positions: DuelCirclePositions, position: DuelCirclePosition, onCompleted?: () => void): void {

@@ -30,6 +30,8 @@ export class DuelService {
     duelCircle.addEnemy(enemy, DuelCirclePosition.First);
   }
 
+  // TODO: startPvP, arena stuff
+
   private getNearestCircleLocation(position: Vector3): Vector3 {
     const distances = this.circleLocations.map(location => position.sub(location).Magnitude);
     return this.circleLocations[distances.indexOf(math.min(...distances))];

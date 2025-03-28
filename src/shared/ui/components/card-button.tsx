@@ -136,6 +136,9 @@ export function CardButton({ spellCard, layoutOrder, deckState: deck, hand, gray
 
   deselectFunctions.push(deselectCard);
   useEventListener(mouse.Button1Up, () => {
+    if (!choosing())
+      choosing(true);
+
     const card = selectedCard();
     if (card === undefined) return;
 

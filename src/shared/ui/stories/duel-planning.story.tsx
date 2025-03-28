@@ -1,3 +1,4 @@
+import { Timer } from "@rbxts/timer";
 import Vide from "@rbxts/vide";
 
 import { DuelPlanning } from "../views/duel-planning";
@@ -5,12 +6,11 @@ import { hoarcekat } from "../utility/hoarcekat";
 import "../dev";
 
 import { getSpellFromReference } from "shared/utility/spell";
+import { assets, timerLength } from "shared/constants";
 import { SpellCardKind, SpellCard } from "shared/structs/spell-card";
 import { SpellReference } from "shared/structs/data/reference/spell";
 import { DeckDuelState } from "shared/classes/deck-duel-state";
-import { Timer } from "@rbxts/timer";
-import { assets } from "shared/constants";
-import { ClientDuelInfo } from "shared/structs/duel";
+import type { ClientDuelInfo } from "shared/structs/duel";
 
 const testCards: SpellCard[] = [
   {
@@ -41,5 +41,6 @@ const testDuelInfo: ClientDuelInfo = {
 };
 
 testDuelInfo.state.deck.draw(3);
-const timer = new Timer(30);
-export = hoarcekat(() => <DuelPlanning duelInfo={testDuelInfo} timer={timer} />);
+const timer = new Timer(timerLength);
+timer.start();
+export = hoarcekat(() => <DuelPlanning duelInfo={testDuelInfo} timer={() => timer} />);

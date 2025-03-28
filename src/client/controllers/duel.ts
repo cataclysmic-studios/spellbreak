@@ -4,7 +4,7 @@ import { source } from "@rbxts/vide";
 import type { BaseID } from "@rbxts/id";
 
 import { OnMessage } from "client/decorators";
-import { Message, type MessageData } from "shared/messaging";
+import { Message, messaging, type MessageData } from "shared/messaging";
 import { DeckDuelState } from "shared/classes/deck-duel-state";
 import { maxCardsInHand } from "shared/constants";
 import { type ClientDuelInfo, DuelPhase } from "shared/structs/duel";
@@ -43,8 +43,7 @@ export class DuelController {
       state: {
         deck: new DeckDuelState(deckData ?? EMPTY_DECK_DATA),
         hand: source<SpellCard[]>([]),
-        teamCount,
-        opponentCount
+        teamCount, opponentCount
       }
     };
   }
@@ -88,7 +87,14 @@ export class DuelController {
           this.current.state.hand(hand);
         }
 
-        // TODO: tell server the chosen card
+        messaging.emitServer(Message.ChooseCard, {
+          id: this.current.id,
+          choice: choice === undefined ? choice : {
+            spellReference: choice.card.spell.reference,
+            target: choice.target,
+            targetIsOpponent: choice.targetIsOpponent
+          }
+        });
         break;
       case DuelPhase.End:
         this.current = undefined;

@@ -11,6 +11,7 @@ export const defaultData: PlayerData = {
   characters: []
 };
 
+export const timerLength = 30;
 export const cardAspectRatio = 0.68;
 export const maxCardsInHand = 7;
 

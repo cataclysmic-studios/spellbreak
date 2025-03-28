@@ -8,7 +8,7 @@ import { type SpellCard, SpellCardKind } from "shared/structs/spell-card";
 import "../dev";
 
 import { Container } from "../utility/components/container";
-import { CardButton } from "../components/card-button";
+import { DuelCardButton } from "../components/duel-card-button";
 
 const card: SpellCard = {
   kind: SpellCardKind.Item,
@@ -17,9 +17,8 @@ const card: SpellCard = {
 
 export = hoarcekat(() => (
   <Container size={UDim2.fromScale(0.4, 0.4)}>
-    <CardButton
+    <DuelCardButton spellCard={card}
       layoutOrder={0}
-      spellCard={card}
       duelInfo={createMockDuelInfo()}
     />
   </Container>

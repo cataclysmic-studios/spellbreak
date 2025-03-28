@@ -5,6 +5,7 @@ import { Palette } from "../palette";
 import { usePx } from "../hooks/use-px";
 
 export interface WizTextProps {
+  readonly name?: Derivable<string>;
   readonly text: Derivable<string>;
   readonly textSize?: Derivable<number>;
   readonly textColor?: Derivable<Color3>;
@@ -23,14 +24,14 @@ export interface WizTextProps {
 const DEFAULT_FONT = Enum.Font.LuckiestGuy;
 const DEFAULT_TEXT_SIZE = 14;
 
-export function WizText({ text, textSize, textColor, textScaled, transparency, backgroundTransparency, size, position, anchorPoint, font, alignX, alignY, children }: WizTextProps): Vide.Node {
+export function WizText({ name, text, textSize, textColor, textScaled, transparency, backgroundTransparency, size, position, anchorPoint, font, alignX, alignY, children }: WizTextProps): Vide.Node {
   const isDefaultFont = () => read(font) === undefined || read(font) === DEFAULT_FONT;
   const getPosition = () => read(position) ?? positions.center;
   const getTextSize = () => read(textSize) ?? DEFAULT_TEXT_SIZE;
   const px = usePx();
 
   return (
-    <textlabel
+    <textlabel Name={name}
       AnchorPoint={() => read(anchorPoint) ?? anchorPoints.center}
       Position={() => isDefaultFont() ? getPosition().add(UDim2.fromOffset(0, getTextSize() / px(5))) : getPosition()}
       Text={() => isDefaultFont() ? read(text).upper() : read(text)}

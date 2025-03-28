@@ -13,8 +13,8 @@ import type { SpellCard } from "shared/structs/spell-card";
 import Log from "shared/log";
 
 import { Container } from "../utility/components/container";
-import { BaseCardButton } from "./base-card-button";
-import { CardButton, type CardButtonFrame } from "./card-button";
+import { CardBackground } from "./card-background";
+import { DuelCardButton, type CardButtonFrame } from "./duel-card-button";
 import { WizText } from "./wiz-text";
 import { ClientDuelInfo } from "shared/structs/duel";
 
@@ -66,10 +66,10 @@ export function DeckHand({ duelInfo }: DeckHandProps): Vide.Node {
       if (i >= maxCardsInHand)
         return Log.warn(`Not adding card button for spell '${card.spell.name}' - hand has too many cards (${currentHand.size()}, maximum ${maxCardsInHand})`);
 
-      const cardFrame = <CardButton
+      const cardFrame = <DuelCardButton spellCard={card}
         layoutOrder={i}
-        spellCard={card}
-        duelInfo={duelInfo} />;
+        duelInfo={duelInfo}
+      />;
 
       cleanup(cardFrame as Instance);
       const frames = untrack(cardFrames);
@@ -92,14 +92,14 @@ export function DeckHand({ duelInfo }: DeckHandProps): Vide.Node {
         VerticalAlignment={Enum.VerticalAlignment.Center}
         SortOrder={Enum.SortOrder.LayoutOrder}
       />
-      <BaseCardButton image={Images.CardInfoBG} layoutOrder={-1}>
+      <CardBackground image={Images.CardInfoBG} layoutOrder={-1}>
         <WizText text={() => `Cards\n${deck.getCardsLeft()} of ${deck.totalCards}`}
           position={positions.center}
           font={Enum.Font.Cartoon}
           size={UDim2.fromScale(1, 0.5)}
           textSize={px(16)}
         />
-      </BaseCardButton>
+      </CardBackground>
       <For each={cardFrames}>
         {card => card}
       </For>

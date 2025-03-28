@@ -84,6 +84,16 @@ export class DuelCircle<PvP extends boolean = false> extends Destroyable impleme
     this.janitor.Add(subscribe(this.currentPhase, (phase, lastPhase) => {
       if (phase === lastPhase) return;
       this.emitToPlayers(Message.DuelPhaseChanged, phase);
+
+      switch (phase) {
+        case DuelPhase.Combat:
+          task.wait(0.1);
+          this.emitToPlayers(Message.TransitionCameraPose, {
+            poseKind: CameraPoseKind.DuelCasting,
+            duration: 0.65
+          });
+          break
+      }
     }));
     this.janitor.Add(() => this.currentPhase(DuelPhase.End));
     this.currentPhase(DuelPhase.Start);
@@ -170,8 +180,8 @@ export class DuelCircle<PvP extends boolean = false> extends Destroyable impleme
     });
     this.pullInCombatant(player.Character!, positions, position, () =>
       messaging.emitClient(player, Message.TransitionCameraPose, {
-        poseKind: CameraPoseKind.BattleAerial,
-        duration: 0.4
+        poseKind: CameraPoseKind.DuelPlanning,
+        duration: 0.45
       })
     );
 

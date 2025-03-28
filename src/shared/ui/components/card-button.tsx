@@ -162,6 +162,11 @@ export function CardButton({
   const px = usePx();
   return (
     <Container name={spellCard.spell.name + "Card"} clipsDescendants={true}>
+      <uistroke
+        Color={Palette.white}
+        Thickness={px(1.8)}
+        Transparency={() => selected() ? 0.1 : 1}
+      />
       <uiaspectratioconstraint AspectRatio={cardAspectRatio} />
       <uiscale Name="CardScale" />
       <WizText text={spellCard.spell.name}
@@ -247,12 +252,6 @@ export function CardButton({
       >
         <uiaspectratioconstraint />
       </SpritesheetIcon>
-      <uistroke
-        Color={Palette.white}
-        Thickness={px.scale(1.2)}
-        Transparency={() => selected() ? 0.3 : 1}
-      />
-      <uicorner CornerRadius={new UDim(0, px(2))} />
     </Container >
   );
 }

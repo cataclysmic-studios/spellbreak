@@ -1,9 +1,10 @@
 import { Controller } from "@flamework/core";
+import Iris from "@rbxts/iris";
 
 import { ControlPanelRenderable } from ".";
-import { ControlPanelInterfaceRenderer } from "shared/structs/control-panel";
+import type { ControlPanelInterfaceRenderer } from "shared/structs/control-panel";
+
 import type { MovementController } from "../movement";
-import Iris from "@rbxts/iris";
 
 @Controller()
 @ControlPanelRenderable("Movement")

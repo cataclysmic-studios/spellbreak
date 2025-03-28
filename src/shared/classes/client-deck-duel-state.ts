@@ -50,7 +50,7 @@ export class ClientDuelDeckState {
   }
 
   public pass(): void {
-    messaging.emitServer(Message.DuelSubmitChoice);
+    messaging.emitServer(Message.DuelSubmitChoice, { id: this.duelID });
   }
 
   public revokeChoice(): void {

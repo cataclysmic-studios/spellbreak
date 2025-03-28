@@ -5,10 +5,11 @@ import { Message, type MessageData } from "shared/messaging";
 import { CameraManager } from "client/classes/camera-manager";
 import { CameraPoseKind } from "shared/structs/camera";
 
-import type { DuelController } from "./duel";
 import { BaseCameraPose } from "client/camera-poses/base";
 import { CharacterCameraPose } from "client/camera-poses/character";
-import { BattleAerialPose } from "client/camera-poses/battle-aerial";
+import { DuelPlanningPose } from "client/camera-poses/duel-planning";
+import { DuelCastingPose } from "client/camera-poses/duel-casting";
+import type { DuelController } from "./duel";
 
 @Controller()
 export class CameraController implements OnRender {
@@ -48,8 +49,10 @@ export class CameraController implements OnRender {
     switch (kind) {
       case CameraPoseKind.Character:
         return this.cachedPoses[kind] = new CharacterCameraPose(this);
-      case CameraPoseKind.BattleAerial:
-        return this.cachedPoses[kind] = new BattleAerialPose(this, this.duel);
+      case CameraPoseKind.DuelPlanning:
+        return this.cachedPoses[kind] = new DuelPlanningPose(this, this.duel);
+      case CameraPoseKind.DuelCasting:
+        return this.cachedPoses[kind] = new DuelCastingPose(this, this.duel);
     }
   }
 }

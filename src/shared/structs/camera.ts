@@ -1,5 +1,6 @@
 
 export const enum CameraPoseKind {
   Character,
-  BattleAerial
+  DuelPlanning,
+  DuelCasting
 }

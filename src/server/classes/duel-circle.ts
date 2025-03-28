@@ -6,7 +6,7 @@ import { tween } from "@rbxts/instance-utility";
 import { atom, subscribe } from "@rbxts/charm";
 import type { BaseID } from "@rbxts/id";
 
-import { Message, messaging } from "shared/messaging";
+import { Message, MessageData, messaging } from "shared/messaging";
 import { assets, timerLength } from "shared/constants";
 import { Enemy } from "./enemy";
 import { DuelChoice, DuelCirclePosition, DuelPhase } from "shared/structs/duel";
@@ -82,7 +82,7 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     this.janitor.Add(() => DuelCircle.cumulativeID--);
     this.janitor.Add(subscribe(this.currentPhase, (phase, lastPhase) => {
       if (phase === lastPhase) return;
-      messaging.emitClient(this.getPlayerCombatants(), Message.DuelPhaseChanged, phase);
+      this.emitToPlayers(Message.DuelPhaseChanged, phase);
     }));
     this.janitor.Add(() => this.currentPhase(DuelPhase.End));
     this.currentPhase(DuelPhase.Start);
@@ -188,7 +188,7 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
 
   public override destroy(): void {
     if (this.destroyed) return;
-    messaging.emitClient(this.getPlayerCombatants(), Message.ToggleMovement, true);
+    this.emitToPlayers(Message.ToggleMovement, true);
 
     this.animations.idle.Stop();
     this.animations.onRemove.Play(0);
@@ -203,7 +203,7 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     if (this.combatants.has(combatant)) return;
     this.combatants.add(combatant);
     this.duelService.combatantsInDuels.add(combatant);
-    messaging.emitClient(this.getPlayerCombatants(), Message.DuelCombatantAdded, isOpponent);
+    this.emitToPlayers(Message.DuelCombatantAdded, isOpponent);
   }
 
   private removeCombatant(combatant: Combatant, position: DuelCirclePosition, opponent: boolean): void {
@@ -215,7 +215,7 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
       : this.occupiedTeamPositions;
 
     occupiedPositions.delete(position);
-    messaging.emitClient(this.getPlayerCombatants(), Message.DuelCombatantRemoved, opponent);
+    this.emitToPlayers(Message.DuelCombatantRemoved, opponent);
   }
 
   private onTouched(character: Model): void {
@@ -274,7 +274,7 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
 
       this.currentTimer.stop();
       this.currentTimer.start();
-      messaging.emitClient(this.getPlayerCombatants(), Message.DuelUpdateTimer, length);
+      this.emitToPlayers(Message.DuelUpdateTimer, length);
     });
     this.currentTimer.completed.Connect(() => this.toCombatPhase());
     this.currentTimer.start();
@@ -342,5 +342,9 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
   private fadeOut(): Tween {
     tween(this.model.Main.texture, FADE_OUT_INFO, { Transparency: 1 });
     return tween(this.model.Vortex.texture, FADE_OUT_INFO, { Transparency: 1 });
+  }
+
+  private emitToPlayers<Kind extends Message>(message: Kind, data?: MessageData[Kind]): void {
+    messaging.emitClient(this.getPlayerCombatants(), message, data);
   }
 }

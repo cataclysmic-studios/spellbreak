@@ -1,6 +1,7 @@
 import { Dependency } from "@flamework/core";
 import { Players, Workspace as World } from "@rbxts/services";
 import { TweenInfoBuilder } from "@rbxts/builders";
+import { Timer } from "@rbxts/timer";
 import { tween } from "@rbxts/instance-utility";
 import { atom, subscribe } from "@rbxts/charm";
 import type { BaseID } from "@rbxts/id";
@@ -8,14 +9,14 @@ import type { BaseID } from "@rbxts/id";
 import { Message, messaging } from "shared/messaging";
 import { assets, timerLength } from "shared/constants";
 import { Enemy } from "./enemy";
-import { DuelCirclePosition, DuelPhase } from "shared/structs/duel";
+import { DuelChoice, DuelCirclePosition, DuelPhase } from "shared/structs/duel";
 import { CameraPoseKind } from "shared/structs/camera";
+import { SpellReference } from "shared/structs/data/reference/spell";
 import { Destroyable } from "shared/classes/destroyable";
 import Log from "shared/log";
 
 import type { EnemyService } from "server/services/enemy";
 import type { DuelService } from "server/services/duel";
-import { Timer } from "@rbxts/timer";
 
 const MAX_COMBATANTS = 8;
 const TURN_INFO = new TweenInfoBuilder()
@@ -41,8 +42,9 @@ const GLOW_INFO = new TweenInfoBuilder()
 
 export type Combatant = Player | Enemy;
 
+type Pass = 0;
+
 // TODO: max per-player enemies
-// TODO: move onto Combat phase if all players have made a choice
 export class DuelCircle<PvP extends boolean = boolean> extends Destroyable implements BaseID<number> {
   public static cumulativeID = 0;
 
@@ -51,10 +53,11 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
   public readonly opponentPositions: DuelCirclePositions;
   public readonly teamPositions: DuelCirclePositions;
 
+  private readonly model: DuelCircleModel;
   private readonly occupiedOpponentPositions = new Set<DuelCirclePosition>;
   private readonly occupiedTeamPositions = new Set<DuelCirclePosition>;
   private readonly combatants = new Set<Combatant>;
-  private readonly model: DuelCircleModel;
+  private readonly combatantChoices = new Map<Combatant, DuelChoice | Pass>;
   private readonly animations;
   private currentTimer?: Timer;
 
@@ -105,6 +108,18 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
 
     this.opponentPositions = this.model.opponentPositions;
     this.teamPositions = this.model.teamPositions;
+  }
+
+  /**
+   * Submits a player's choice for the duel.
+   * If all players have made a choice, transitions the duel circle to the combat phase.
+   * @param player The player who made the choice.
+   * @param choice The choice made, or undefined if they passed.
+   */
+  public submitPlayerChoice(player: Player, choice: Maybe<DuelChoice>): void {
+    this.combatantChoices.set(player, choice ?? 0);
+    if (!this.allCombatantsHaveChosen()) return;
+    this.toCombatPhase();
   }
 
   /**
@@ -171,13 +186,6 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     return this.janitor.Add(() => this.removeCombatant(enemy, position, true));
   }
 
-  private addCombatant(combatant: Combatant, isOpponent: boolean): void {
-    if (this.combatants.has(combatant)) return;
-    this.combatants.add(combatant);
-    this.duelService.combatantsInDuels.add(combatant);
-    messaging.emitClient(this.getPlayerCombatants(), Message.DuelCombatantAdded, isOpponent);
-  }
-
   public override destroy(): void {
     if (this.destroyed) return;
     messaging.emitClient(this.getPlayerCombatants(), Message.ToggleMovement, true);
@@ -185,6 +193,17 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     this.animations.idle.Stop();
     this.animations.onRemove.Play(0);
     this.fadeOut().Completed.Once(() => this.janitor.Destroy());
+  }
+
+  private allCombatantsHaveChosen(): boolean {
+    return this.combatantChoices.size() === this.combatants.size();
+  }
+
+  private addCombatant(combatant: Combatant, isOpponent: boolean): void {
+    if (this.combatants.has(combatant)) return;
+    this.combatants.add(combatant);
+    this.duelService.combatantsInDuels.add(combatant);
+    messaging.emitClient(this.getPlayerCombatants(), Message.DuelCombatantAdded, isOpponent);
   }
 
   private removeCombatant(combatant: Combatant, position: DuelCirclePosition, opponent: boolean): void {
@@ -246,6 +265,7 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
     this.animations.idle.Play(0);
     task.wait(0.5);
     this.currentPhase(DuelPhase.Planning);
+    this.chooseEnemyCards()
 
     this.currentTimer = this.janitor.Add(new Timer(timerLength), "destroy");
     this.currentTimer.lengthChanged.Connect(length => {
@@ -256,8 +276,28 @@ export class DuelCircle<PvP extends boolean = boolean> extends Destroyable imple
       this.currentTimer.start();
       messaging.emitClient(this.getPlayerCombatants(), Message.DuelUpdateTimer, length);
     });
-    this.currentTimer.completed.Connect(() => this.currentPhase(DuelPhase.Combat));
+    this.currentTimer.completed.Connect(() => this.toCombatPhase());
     this.currentTimer.start();
+  }
+
+  private toCombatPhase(): void {
+    this.currentPhase(DuelPhase.Combat);
+    this.currentTimer?.destroy();
+    this.combatantChoices.clear();
+  }
+
+  private chooseEnemyCards(): void {
+    const enemies = this.getEnemyCombatants();
+    // TODO: this
+
+    for (const enemy of enemies) {
+      // temporary; enemy.ai.getChoice() or something w/ some params regarding context of the duel
+      this.combatantChoices.set(enemy, {
+        spellReference: SpellReference.Myth_Mythblade,
+        target: DuelCirclePosition.First,
+        targetIsOpponent: true
+      });
+    }
   }
 
   private pullInCombatant(combatantModel: Model, positions: DuelCirclePositions, position: DuelCirclePosition, onCompleted?: () => void): void {

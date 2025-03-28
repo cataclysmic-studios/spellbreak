@@ -17,7 +17,8 @@ export const enum Message {
   DuelUpdateTimer,
 
   // Client -> Server
-  ChooseCard
+  DuelSubmitChoice,
+  DuelRevokeChoice
 }
 
 export interface MessageData {
@@ -38,12 +39,12 @@ export interface MessageData {
   [Message.DuelCombatantAdded]: boolean; // whether combatant is on opposing team
   [Message.DuelCombatantRemoved]: boolean;
   [Message.DuelUpdateTimer]: DataType.u8; // new time left
-
-  [Message.ChooseCard]: BaseID<DataType.u8> & {
+  [Message.DuelSubmitChoice]: BaseID<DataType.u8> & {
     readonly choice?: {
       readonly spellReference: SpellReference;
       readonly target?: DataType.u8; // duel circle position
       readonly targetIsOpponent?: boolean;
     };
   };
+  [Message.DuelRevokeChoice]: void;
 }

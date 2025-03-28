@@ -1,6 +1,6 @@
 import Vide, { type Source, Show, effect, source } from "@rbxts/vide";
 import { Players, Workspace as World } from "@rbxts/services";
-import { useEventListener, useUpdateEffect } from "@rbxts/pretty-vide-utils";
+import { useEventListener } from "@rbxts/pretty-vide-utils";
 import { getDescendantsOfType } from "@rbxts/instance-utility";
 import type { Timer } from "@rbxts/timer";
 import { $nameof } from "rbxts-transform-debug";
@@ -11,13 +11,13 @@ import { Images } from "../utility/images";
 import { anchorPoints, positions } from "../utility/positioning";
 import { assets } from "shared/constants";
 import { SpellTargetKind } from "shared/structs/spell";
+import type { ClientDuelInfo, DuelCirclePosition } from "shared/structs/duel";
 import type { SpellCard } from "shared/structs/spell-card";
-import { ClientDuelInfo, DuelCirclePosition } from "shared/structs/duel";
 
 import { Container } from "../utility/components/container";
 import { DeckHand } from "../components/deck-hand";
 import { WizButton } from "../components/wiz-button";
-import { WizButton2 } from "../components/wiz-button2";
+import { DuelButton } from "../components/duel-button";
 import { WizText } from "../components/wiz-text";
 
 interface DuelPlanningProps {
@@ -45,6 +45,7 @@ const TEAM_SELECTION_COLORS: Color3[] = [
   Color3.fromRGB(137, 108, 255)
 ];
 
+const mouse = Players.LocalPlayer.GetMouse();
 const selectionAuras: Model[] = [];
 function createSelectionAura(duelInfo: ClientDuelInfo, targetsTeam: boolean, circlePosition: DuelCirclePosition): void {
   const selectionColors = targetsTeam
@@ -89,6 +90,7 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
   const redTimerText = () => timerRemaining() <= RED_TIMER_THRESHOLD;
   const px = usePx();
 
+  useEventListener(mouse.Button1Up, () => !choosing() ? choosing(true) : undefined);
   effect(() => {
     const currentTimer = timer();
     timerRemaining(currentTimer.getTimeLeft());
@@ -139,18 +141,27 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
         {() => (
           <>
             <DeckHand deckState={deck} hand={hand} selectedCard={selectedCard} choosing={choosing} />
-            <WizButton2 text="Pass"
+            <DuelButton text="Pass"
               size={buttonSize}
               position={UDim2.fromScale(0.25, 0.85)}
-              activated={() => choosing(false)}
               active={() => selectedCard() === undefined}
+              activated={() => {
+                choosing(false);
+                deck.pass();
+              }}
             />
-            <WizButton2 text="Draw"
+            <DuelButton text="Draw"
               size={buttonSize}
               position={UDim2.fromScale(0.5, 0.85)}
-              active={() => deck.canDrawSideboard()}
+              active={() => deck.canDrawSideboard(hand())}
+              activated={() => {
+                const treasureCard = deck.drawSideboard();
+                const currentHand = hand();
+                currentHand.push(treasureCard);
+                hand(currentHand);
+              }}
             />
-            <WizButton2 text="Flee"
+            <DuelButton text="Flee"
               size={buttonSize}
               position={UDim2.fromScale(0.75, 0.85)}
             />
@@ -186,7 +197,7 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
               textSize={px(16)}
               activated={() => {
                 choosing(true);
-                deck.removeCardChoice();
+                deck.revokeChoice();
               }}
             />
           </imagelabel>

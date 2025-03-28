@@ -7,7 +7,7 @@ import { Players } from "@rbxts/services";
 import { usePx } from "../hooks/use-px";
 import { Images } from "../utility/images";
 import { positions } from "../utility/positioning";
-import { DeckDuelState } from "shared/classes/deck-duel-state";
+import { ClientDuelDeckState } from "shared/classes/client-deck-duel-state";
 import { maxCardsInHand } from "shared/constants";
 import type { SpellCard } from "shared/structs/spell-card";
 import Log from "shared/log";
@@ -18,7 +18,7 @@ import { CardButton, type CardButtonFrame } from "./card-button";
 import { WizText } from "./wiz-text";
 
 interface DeckHandProps {
-  readonly deckState: DeckDuelState;
+  readonly deckState: ClientDuelDeckState;
   readonly hand: Source<SpellCard[]>;
   readonly selectedCard: Source<Maybe<SpellCard>>;
   readonly choosing: Source<boolean>;

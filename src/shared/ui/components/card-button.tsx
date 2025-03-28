@@ -11,7 +11,7 @@ import { School } from "shared/structs/school";
 import { SpellCardKind, type SpellCard } from "shared/structs/spell-card";
 import { SpellKind } from "shared/structs/spell";
 import type { DuelCirclePosition } from "shared/structs/duel";
-import type { DeckDuelState } from "shared/classes/deck-duel-state";
+import type { ClientDuelDeckState } from "shared/classes/client-deck-duel-state";
 
 import { BaseCardButton } from "./base-card-button";
 import { Container } from "../utility/components/container";
@@ -23,7 +23,7 @@ import { SchoolIcon } from "./school-icon";
 interface CardButtonProps {
   readonly spellCard: SpellCard;
   readonly layoutOrder: Derivable<number>;
-  readonly deckState: DeckDuelState,
+  readonly deckState: ClientDuelDeckState,
   readonly hand: Source<SpellCard[]>;
   readonly grayscale?: Source<boolean>;
   readonly selectedCard: Source<Maybe<SpellCard>>;
@@ -136,9 +136,6 @@ export function CardButton({ spellCard, layoutOrder, deckState: deck, hand, gray
 
   deselectFunctions.push(deselectCard);
   useEventListener(mouse.Button1Up, () => {
-    if (!choosing())
-      choosing(true);
-
     const card = selectedCard();
     if (card === undefined) return;
 

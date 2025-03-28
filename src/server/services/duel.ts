@@ -2,6 +2,8 @@ import { Service } from "@flamework/core";
 import { getChildrenOfType } from "@rbxts/instance-utility";
 import { Workspace as World } from "@rbxts/services";
 
+import { OnMessage } from "server/decorators";
+import { Message, type MessageData } from "shared/messaging";
 import { DuelCircle, type Combatant } from "server/classes/duel-circle";
 import { DuelCirclePosition } from "shared/structs/duel";
 import type { Enemy } from "server/classes/enemy";
@@ -14,6 +16,16 @@ export class DuelService {
   private readonly circleLocations = getChildrenOfType(World.WaitForChild("DuelCircleLocations"), "BasePart")
     .map(part => part.Position);
 
+  /** @hidden */
+  @OnMessage(Message.DuelSubmitChoice)
+  public choiceSubmitted(player: Player, { id, choice }: MessageData[Message.DuelSubmitChoice]): void {
+    const duel = this.circles.find(circle => circle.id === id);
+    if (duel === undefined)
+      return player.Kick("stop it");
+
+    duel.submitPlayerChoice(player, choice);
+  }
+
   /**
    * Starts a PvE duel with the given enemy, placing the player and enemy in a duel circle
    * at the nearest location to the player.
@@ -23,11 +35,11 @@ export class DuelService {
   public startPvE(player: Player, enemy: Enemy): void {
     const playerPosition = player.Character!.GetPivot().Position;
     const circleLocation = this.getNearestCircleLocation(playerPosition);
-    const duelCircle = new DuelCircle<false>(this, circleLocation);
-    this.circles.push(duelCircle);
+    const duel = new DuelCircle<false>(this, circleLocation);
+    this.circles.push(duel);
 
-    duelCircle.addPlayer(player, DuelCirclePosition.First);
-    duelCircle.addEnemy(enemy, DuelCirclePosition.First);
+    duel.addPlayer(player, DuelCirclePosition.First);
+    duel.addEnemy(enemy, DuelCirclePosition.First);
   }
 
   // TODO: startPvP, arena stuff

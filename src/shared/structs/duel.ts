@@ -2,7 +2,8 @@ import type { Source } from "@rbxts/vide";
 import type { BaseID } from "@rbxts/id";
 
 import type { SpellCard } from "./spell-card";
-import type { DeckDuelState } from "shared/classes/deck-duel-state";
+import type { SpellReference } from "./data/reference/spell";
+import type { ClientDuelDeckState } from "shared/classes/client-deck-duel-state";
 
 export enum DuelPhase {
   Start,
@@ -25,8 +26,14 @@ export interface ClientDuelInfo extends BaseID<number> {
 }
 
 export interface ClientDuelState {
-  readonly deck: DeckDuelState;
+  readonly deck: ClientDuelDeckState;
   readonly hand: Source<SpellCard[]>;
   opponentCount: number;
   teamCount: number;
+}
+
+export interface DuelChoice<T extends number = DuelCirclePosition> {
+  readonly spellReference: SpellReference;
+  readonly target?: T;
+  readonly targetIsOpponent?: boolean;
 }

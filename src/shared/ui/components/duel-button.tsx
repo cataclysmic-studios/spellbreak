@@ -19,7 +19,7 @@ interface WizButton2Props {
   readonly activated?: () => void;
 }
 
-export function WizButton2({ text, size, anchorPoint, position, textSize, active, activated }: WizButton2Props): Vide.Node {
+export function DuelButton({ text, size, anchorPoint, position, textSize, active, activated }: WizButton2Props): Vide.Node {
   const hovered = source(false);
   const px = usePx();
 

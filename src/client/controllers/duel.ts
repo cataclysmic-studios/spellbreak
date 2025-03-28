@@ -5,7 +5,7 @@ import type { BaseID } from "@rbxts/id";
 
 import { OnMessage } from "client/decorators";
 import { Message, messaging, type MessageData } from "shared/messaging";
-import { DeckDuelState } from "shared/classes/deck-duel-state";
+import { ClientDuelDeckState } from "shared/classes/client-deck-duel-state";
 import { maxCardsInHand } from "shared/constants";
 import { type ClientDuelInfo, DuelPhase } from "shared/structs/duel";
 import type { SpellCard } from "shared/structs/spell-card";
@@ -41,7 +41,7 @@ export class DuelController {
     this.current = {
       id, onOpposingTeam, model,
       state: {
-        deck: new DeckDuelState(deckData ?? EMPTY_DECK_DATA),
+        deck: new ClientDuelDeckState(id, deckData ?? EMPTY_DECK_DATA),
         hand: source<SpellCard[]>([]),
         teamCount, opponentCount
       }
@@ -80,21 +80,12 @@ export class DuelController {
         break;
       case DuelPhase.Combat:
         this.ui.disableDuelPlanning();
-        const choice = this.current.state.deck.getChoice();
-        if (choice !== undefined) { // remove card from hand
+        const chosenCard = this.current.state.deck.getChosenCard();
+        if (chosenCard !== undefined) { // remove card from hand
           const hand = this.current.state.hand();
-          hand.remove(hand.indexOf(choice.card));
+          hand.remove(hand.indexOf(chosenCard));
           this.current.state.hand(hand);
         }
-
-        messaging.emitServer(Message.ChooseCard, {
-          id: this.current.id,
-          choice: choice === undefined ? choice : {
-            spellReference: choice.card.spell.reference,
-            target: choice.target,
-            targetIsOpponent: choice.targetIsOpponent
-          }
-        });
         break;
       case DuelPhase.End:
         this.current = undefined;

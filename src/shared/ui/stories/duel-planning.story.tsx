@@ -9,7 +9,7 @@ import { getSpellFromReference } from "shared/utility/spell";
 import { assets, timerLength } from "shared/constants";
 import { SpellCardKind, SpellCard } from "shared/structs/spell-card";
 import { SpellReference } from "shared/structs/data/reference/spell";
-import { DeckDuelState } from "shared/classes/deck-duel-state";
+import { ClientDuelDeckState } from "shared/classes/client-deck-duel-state";
 import type { ClientDuelInfo } from "shared/structs/duel";
 
 const testCards: SpellCard[] = [
@@ -25,12 +25,13 @@ const testCards: SpellCard[] = [
   }
 ];
 
+const id = -1;
 const testDuelInfo: ClientDuelInfo = {
-  id: -1,
+  id,
   model: assets.duel.circle.Clone(),
   onOpposingTeam: false,
   state: {
-    deck: new DeckDuelState({
+    deck: new ClientDuelDeckState(id, {
       spellReferences: testCards.map(card => ({ reference: card.spell.reference, data: { spellCardKind: card.kind } })),
       sideboardSpellReferences: []
     }),

@@ -1,7 +1,9 @@
 import { getSpellCardFromReferenceData } from "shared/utility/spell";
 import type { SpellCard } from "shared/structs/spell-card";
 import type { DeckLinkedData } from "shared/structs/data/items/gear/deck";
-import type { DuelCirclePosition } from "shared/structs/duel";
+import type { ClientDuelInfo, DuelCirclePosition } from "shared/structs/duel";
+import { maxCardsInHand } from "shared/constants";
+import { Message, messaging } from "shared/messaging";
 
 const random = new Random;
 function shuffle<T extends defined>(array: T[]): T[] {
@@ -14,16 +16,17 @@ function shuffle<T extends defined>(array: T[]): T[] {
   return shuffled;
 }
 
-export class DeckDuelState {
+export class ClientDuelDeckState {
   public readonly totalCards;
 
   private readonly spells: SpellCard[];
   private readonly sideboardSpells: SpellCard[];
   private chosenCard?: SpellCard;
-  private chosenTarget?: DuelCirclePosition;
-  private chosenTargetIsOpponent?: boolean;
 
-  public constructor({ spellReferences, sideboardSpellReferences }: DeckLinkedData) {
+  public constructor(
+    private readonly duelID: number,
+    { spellReferences, sideboardSpellReferences }: DeckLinkedData
+  ) {
     this.spells = shuffle(spellReferences.map(getSpellCardFromReferenceData));
     this.sideboardSpells = shuffle(sideboardSpellReferences.map(getSpellCardFromReferenceData));
     this.totalCards = this.spells.size();
@@ -31,33 +34,29 @@ export class DeckDuelState {
 
   // i know this doesnt really fit here but this is the best place for it at the moment
   public chooseCard(spellCard: SpellCard): void
-  public chooseCard(spellCard: SpellCard, targetPosition: DuelCirclePosition, targetIsOpponent: boolean): void
-  public chooseCard(spellCard: SpellCard, targetPosition?: DuelCirclePosition, targetIsOpponent?: boolean): void {
-    if (this.chosenCard !== undefined) return;
+  public chooseCard(spellCard: SpellCard, target: DuelCirclePosition, targetIsOpponent: boolean): void
+  public chooseCard(spellCard: SpellCard, target?: DuelCirclePosition, targetIsOpponent?: boolean): void {
     this.chosenCard = spellCard;
-    this.chosenTarget = targetPosition;
-    this.chosenTargetIsOpponent = targetIsOpponent;
-    print(`Chosen card: ${spellCard.spell.name}`);
-    print(`Chosen target: ${targetPosition}`);
+    messaging.emitServer(Message.DuelSubmitChoice, {
+      id: this.duelID,
+      choice: {
+        spellReference: spellCard.spell.reference,
+        target, targetIsOpponent
+      }
+    });
   }
 
-  public removeCardChoice(): void {
-    this.chosenCard = undefined;
-    this.chosenTarget = undefined;
-    this.chosenTargetIsOpponent = undefined;
+  public pass(): void {
+    messaging.emitServer(Message.DuelSubmitChoice);
   }
 
-  public getChoice(): Maybe<{ card: SpellCard, target?: DuelCirclePosition, targetIsOpponent?: boolean }> {
-    const card = this.chosenCard;
-    if (card === undefined) return;
-
-    const target = this.chosenTarget;
-    const targetIsOpponent = this.chosenTargetIsOpponent;
+  public revokeChoice(): void {
     this.chosenCard = undefined;
-    this.chosenTarget = undefined;
-    this.chosenTargetIsOpponent = undefined;
+    messaging.emitServer(Message.DuelRevokeChoice);
+  }
 
-    return { card, target, targetIsOpponent };
+  public getChosenCard(): Maybe<SpellCard> {
+    return this.chosenCard;
   }
 
   public getCardsLeft(): number {
@@ -82,8 +81,8 @@ export class DeckDuelState {
     return this.sideboardSpells.pop()!;
   }
 
-  public canDrawSideboard(): boolean {
-    return this.sideboardSpells.size() > 0;
+  public canDrawSideboard(hand: SpellCard[]): boolean {
+    return hand.size() < maxCardsInHand && this.sideboardSpells.size() > 0;
   }
 
   private hasMoreSpells() {

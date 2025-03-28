@@ -3,7 +3,7 @@ import Vide, { source } from "@rbxts/vide";
 import { hoarcekat } from "../utility/hoarcekat";
 import { getSpellFromReference } from "shared/utility/spell";
 import { SpellReference } from "shared/structs/data/reference/spell";
-import { DeckDuelState } from "shared/classes/deck-duel-state";
+import { ClientDuelDeckState } from "shared/classes/client-deck-duel-state";
 import { type SpellCard, SpellCardKind } from "shared/structs/spell-card";
 import "../dev";
 
@@ -15,7 +15,7 @@ const card: SpellCard = {
   spell: getSpellFromReference(SpellReference.Myth_Mythblade)
 };
 
-const deckState = new DeckDuelState({ spellReferences: [], sideboardSpellReferences: [] });
+const deckState = new ClientDuelDeckState(-1, { spellReferences: [], sideboardSpellReferences: [] });
 
 export = hoarcekat(() => (
   <Container size={UDim2.fromScale(0.4, 0.4)}>

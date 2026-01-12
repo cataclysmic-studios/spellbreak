@@ -1,4 +1,5 @@
-import { QuestID } from "../quests";
+import { HashSet, u16 } from "@rbxts/serio";
+
 import type { School } from "../school";
 import type { CharacterStats } from "./character-stats";
 import type { GearCategory } from "./items/gear";
@@ -6,6 +7,7 @@ import type { DeckReferenceData } from "./items/gear/deck";
 import type { PetReferenceData } from "./items/gear/pet";
 import type { GearReference } from "./reference/gear";
 import type { SpellReference } from "./reference/spell";
+import { QuestID } from "../quests";
 
 export interface EquippedGearData {
   readonly [GearCategory.Hat]?: number;
@@ -33,10 +35,9 @@ export interface BackpackData {
   readonly [GearCategory.Deck]: DeckReferenceData[];
 }
 
-interface Vec3 {
-  readonly x: number;
-  readonly y: number;
-  readonly z: number;
+interface CharacterLocation {
+  readonly position: { x: number; y: number; z: number };
+  readonly lookAlong: { x: number; y: number; z: number };
 }
 
 export interface CharacterData {
@@ -48,20 +49,30 @@ export interface CharacterData {
   readonly trainingPoints: number;
   readonly trainedSpells: SpellReference[];
   readonly completedQuests: QuestID[];
+  readonly activeQuests: QuestID[];
   /** Values represent index in backpack data */
   readonly equippedGear: EquippedGearData;
   readonly backpack: BackpackData;
   readonly stats: CharacterStats;
-  readonly lastLocation: {
-    position: Vec3;
-    lookAlong: Vec3;
-  };
+  readonly lastLocation: CharacterLocation;
 }
 
 export interface PlayerData {
   readonly crowns: number;
   readonly characters: CharacterData[];
 }
+
+type DeepPartial<T> = {
+  readonly [K in keyof T]?: T[K] extends object
+  ? DeepPartial<T[K]>
+  : T[K];
+};
+
+type DeepKeys<T> = {
+  readonly [K in keyof T]?: true | (
+    T[K] extends object ? DeepKeys<T[K]> : never
+  );
+};
 
 export interface Diff<T> {
   readonly changed?: DeepPartial<T>;

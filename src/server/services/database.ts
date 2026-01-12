@@ -1,16 +1,17 @@
 import { Service } from "@flamework/core";
 import { createCollection, type Document } from "@rbxts/lapis";
 import { $nameof } from "rbxts-transform-debug";
-import Sift from "@rbxts/sift";
+import Signal from "@rbxts/lemon-signal";
 
+import { Message, messaging } from "shared/messaging";
+import { newCharacterData } from "shared/utility/character";
+import { createDiff } from "shared/utility/data";
+import { School } from "shared/structs/school";
 import type { OnPlayerJoin, OnPlayerLeave } from "server/hooks/players";
 import type { PlayerData } from "shared/structs/data";
-import { School } from "shared/structs/school";
-import { newCharacterData } from "shared/utility/character";
-import { Message, messaging } from "shared/messaging";
-import { createDiff } from "shared/utility/data";
 import Log from "shared/log";
 
+const VERSION = 0;
 const DEFAULT_DATA: PlayerData = {
   crowns: 0,
   characters: [newCharacterData("Test Monkey", School.Myth)]
@@ -20,13 +21,15 @@ type PlayerDataDocument = Document<PlayerData>;
 
 @Service()
 export class DatabaseService implements OnPlayerJoin, OnPlayerLeave {
+  public readonly dataLoaded = new Signal<(player: Player) => void>;
+
   private readonly documents = new Map<Player, PlayerDataDocument>;
   private readonly collection = createCollection($nameof<PlayerData>(), { defaultData: DEFAULT_DATA });
 
   public async onPlayerJoin(player: Player): Promise<void> {
     const id = player.UserId;
     const document = await this.collection
-      .load(`Player${id}`, [id])
+      .load(`Player${id}_${VERSION}`, [id])
       .catch(() => player.Kick("Data failed to load."));
 
     if (!document) return;
@@ -37,7 +40,7 @@ export class DatabaseService implements OnPlayerJoin, OnPlayerLeave {
     this.documents.set(player, document);
     const oldData = document.read();
     this.sendDiffToClient(player, {} as never, oldData);
-    task.delay(4, async () => await this.update(player, data => Sift.Dictionary.merge(oldData, { crowns: data.crowns + 100 })));
+    this.dataLoaded.Fire(player);
   }
 
   public async onPlayerLeave(player: Player): Promise<void> {

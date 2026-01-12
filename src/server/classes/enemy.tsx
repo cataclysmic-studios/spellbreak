@@ -18,7 +18,7 @@ export class Enemy extends NamedNPC<EnemyModel> implements BaseID<number> {
 
   public constructor(descriptor: EnemyDescriptor) {
     super(
-      assets.enemies.WaitForChild(descriptor.name),
+      assets.enemies.WaitForChild(descriptor.name).Clone() as never,
       () => <EnemyNametag descriptor={descriptor} />
     );
 

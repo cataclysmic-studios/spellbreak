@@ -1,5 +1,5 @@
 import { MessageEmitter } from "@rbxts/tether";
-import type { Packed, u8 } from "@rbxts/serio";
+import type { HashSet, Packed, u16, u8 } from "@rbxts/serio";
 
 import type { Diff, PlayerData } from "./structs/data";
 import type { TransitionPosePacket } from "./structs/packets";
@@ -11,7 +11,8 @@ export const enum Message {
   Movement_Toggle,
   Camera_SetPose,
   Camera_TransitionPose,
-  Data_Updated
+  Data_Updated,
+  Hydrate_NPCs
 
   // Client -> Server
 }
@@ -21,4 +22,5 @@ export interface MessageData {
   [Message.Camera_SetPose]: u8; // pose kind
   [Message.Camera_TransitionPose]: TransitionPosePacket;
   [Message.Data_Updated]: Packed<Diff<PlayerData>>;
+  [Message.Hydrate_NPCs]: Set<u8>;
 }

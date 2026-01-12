@@ -1,18 +1,24 @@
 import { Controller } from "@flamework/core";
 
-import { newCharacterData } from "shared/utility/character";
 import { getEquippedGear } from "shared/utility/data";
-import { School } from "shared/structs/school";
 import { GearCategory } from "shared/structs/data/items/gear";
 import type { CharacterData } from "shared/structs/data";
 import type { DeckData, DeckLinkedData } from "shared/structs/data/items/gear/deck";
+import { ReplicaController } from "./replica";
 
 @Controller()
 export class CharacterController {
-  private currentData = newCharacterData("Test Monkey", School.Myth);
+  public readonly updated;
+  private index = 0;
+
+  public constructor(
+    private readonly replica: ReplicaController
+  ) {
+    this.updated = replica.updated;
+  }
 
   public getData(): CharacterData {
-    return this.currentData;
+    return this.replica.data.characters[this.index];
   }
 
   public getDeck(): Maybe<DeckData & DeckLinkedData> {

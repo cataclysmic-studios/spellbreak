@@ -37,15 +37,3 @@ type RequiredKeys<T> = {
 type OptionalKeys<T> = {
   [K in keyof T]-?: {} extends Pick<T, K> ? K : never;
 }[keyof T];
-
-type DeepPartial<T> = {
-  readonly [K in keyof T]?: T[K] extends object
-  ? DeepPartial<T[K]>
-  : T[K];
-};
-
-type DeepKeys<T> = {
-  readonly [K in keyof T]?: true | (
-    T[K] extends object ? DeepKeys<T[K]> : never
-  );
-};

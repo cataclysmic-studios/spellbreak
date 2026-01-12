@@ -23,6 +23,10 @@ interface DuelCircleModel extends Model, WithAnimationController {
 
 type CombatantModel = CharacterModel | EnemyModel;
 
+interface NpcModel extends Model {
+
+}
+
 interface EnemyModel extends Model {
   collider: Part;
 }

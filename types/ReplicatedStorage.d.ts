@@ -31,5 +31,6 @@ interface ReplicatedStorage extends Instance {
       roslyn: CharacterModel;
     };
     enemies: Folder;
+    npcs: Folder;
   }
 }

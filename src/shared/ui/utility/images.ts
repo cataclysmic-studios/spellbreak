@@ -6,6 +6,7 @@ export const enum Images {
   RedRibbon = "rbxassetid://83791914432890",
   CardInfoBG = "rbxassetid://13711786825",
   WaitingForOthersBG = "rbxassetid://98612224033956",
+  RedSpiral = "http://www.roblox.com/asset/?id=951593731",
 
   // spritesheets
   LargeIconSpritesheet = "rbxassetid://16821859312",

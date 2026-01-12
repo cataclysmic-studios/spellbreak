@@ -4,16 +4,16 @@ import Vide from "@rbxts/vide";
 import { NametagContainer } from "shared/ui/components/nametag-container";
 
 export class NamedNPC<ModelShape extends Model> extends Destroyable {
-  public readonly model: ModelShape;
   public readonly root: BasePart;
 
   protected constructor(
-    modelTemplate: ModelShape,
+    public readonly model: ModelShape,
     private readonly nametagUI: () => Vide.Node
   ) {
     super();
-    this.model = this.trash.add(modelTemplate.Clone());
-    this.root = this.model.PrimaryPart!;
+    this.trash.add(model);
+    this.trash.linkToInstance(model);
+    this.root = model.PrimaryPart!;
     this.createNametag();
   }
 

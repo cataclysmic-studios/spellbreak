@@ -1,22 +1,20 @@
+import { Dependency } from "@flamework/core";
 import { Players, RunService, Workspace as World } from "@rbxts/services";
 import type { BaseID } from "@rbxts/id";
+import Destroyable from "@rbxts/destroyable";
 import Vide from "@rbxts/vide";
 
 import { assets } from "shared/constants";
-import { Destroyable } from "shared/classes/destroyable";
 import type { EnemyDescriptor } from "shared/structs/enemy/descriptor";
 
 import { NametagContainer } from "shared/ui/components/nametag-container";
 import { EnemyNametag } from "shared/ui/components/enemy-nametag";
-import { Dependency } from "@flamework/core";
-import { DuelService } from "server/services/duel";
 
 const SPEED = 3; // studs per second
 
 export class Enemy extends Destroyable implements BaseID<number> {
   public static cumulativeID = 0;
 
-  public readonly duel = Dependency<DuelService>();
   public readonly id = Enemy.cumulativeID++;
   public readonly model: EnemyModel;
   public readonly root: BasePart;
@@ -26,7 +24,7 @@ export class Enemy extends Destroyable implements BaseID<number> {
     public readonly descriptor: EnemyDescriptor
   ) {
     super();
-    this.model = this.janitor.Add(assets.enemies.WaitForChild<EnemyModel>(descriptor.name).Clone());
+    this.model = this.trash.add(assets.enemies.WaitForChild<EnemyModel>(descriptor.name).Clone());
     this.root = this.model.PrimaryPart!;
 
     this.model.AddTag("Enemy");
@@ -60,23 +58,18 @@ export class Enemy extends Destroyable implements BaseID<number> {
     this.model.Parent = World;
   }
 
-  public isInDuel(): boolean {
-    return this.duel.combatantsInDuels.has(this);
-  }
-
   private registerTouch(): void {
     const conn = this.model.collider.Touched.Connect(hit => {
       const playerWhoTouched = Players.GetPlayerFromCharacter(hit.FindFirstAncestorOfClass("Model"));
       if (playerWhoTouched === undefined) return;
       conn.Disconnect();
 
-      if (this.duel.combatantsInDuels.has(playerWhoTouched) || this.duel.combatantsInDuels.has(this)) return;
-      this.duel.startPvE(playerWhoTouched, this);
+      // start duel
     });
   }
 
   private createNametag(): void {
-    this.janitor.Add(Vide.mount(() => (
+    this.trash.add(Vide.mount(() => (
       <NametagContainer adornee={this.root}>
         <EnemyNametag descriptor={this.descriptor} containerSize={new Vector2(240, 40)} />
       </NametagContainer>

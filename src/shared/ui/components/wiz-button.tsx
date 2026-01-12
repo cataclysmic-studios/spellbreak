@@ -1,7 +1,7 @@
 import Vide, { Derivable, read, source } from "@rbxts/vide";
 
 import { usePx } from "../hooks/use-px";
-import { Palette } from "../palette";
+import { palette } from "../palette";
 import { anchorPoints, positions } from "../utility/positioning";
 import { Images } from "../utility/images";
 
@@ -32,7 +32,7 @@ export function WizButton({ text, size, anchorPoint, position, textSize, active,
       Image={Images.Vignette}
       AnchorPoint={() => read(anchorPoint) ?? anchorPoints.center}
       Position={() => read(position) ?? positions.center}
-      BackgroundColor3={() => hovered() ? Palette.wizRed : Palette.wizDeepRed}
+      BackgroundColor3={() => hovered() ? palette.wizRed : palette.wizDeepRed}
       BackgroundTransparency={transparencyIncrement}
       ImageTransparency={() => 0.3 + transparencyIncrement()}
       Size={size}
@@ -56,7 +56,7 @@ export function WizButton({ text, size, anchorPoint, position, textSize, active,
         size={UDim2.fromScale(1, 1)}
         transparency={transparencyIncrement}
         textSize={() => read(textSize) ?? px(24)}
-        textColor={() => hovered() ? Palette.white : Palette.yellow}
+        textColor={() => hovered() ? palette.white : palette.yellow}
       >
         <uipadding
           PaddingTop={verticalTextPadding}

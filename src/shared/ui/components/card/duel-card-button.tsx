@@ -3,7 +3,7 @@ import { Players, Workspace as World } from "@rbxts/services";
 import { useEventListener } from "@rbxts/pretty-vide-utils";
 
 import { usePx } from "../../hooks/use-px";
-import { Palette } from "../../palette";
+import { palette } from "../../palette";
 import type { SpellCard } from "shared/structs/spell-card";
 import type { ClientDuelInfo, DuelCirclePosition } from "shared/structs/duel";
 
@@ -26,7 +26,7 @@ export interface CardButtonFrame extends Frame {
 
 export function DuelCardButton({
   spellCard, layoutOrder, grayscale,
-  duelInfo: { state: { deck, hand, selectedCard, choosing } }
+  duelInfo: { state: { hand, selectedCard, choosing } }
 }: PropsWithChildren<DuelCardButtonProps>): Vide.Node {
   const selected = source(false);
   const hovered = source(false);
@@ -70,7 +70,7 @@ export function DuelCardButton({
     const isOpponent = auraModel.GetAttribute<boolean>("OpposingTeam")!;
     deselectAll();
     choosing(false);
-    deck.chooseCard(card, position, isOpponent);
+    // deck.chooseCard(card, position, isOpponent);
   });
   effect(() => {
     if (!isGrayscale()) return;
@@ -81,7 +81,7 @@ export function DuelCardButton({
   return (
     <Container name={spellCard.spell.name + "Card"} clipsDescendants={true}>
       <uistroke
-        Color={Palette.white}
+        Color={palette.white}
         Thickness={px(1.8)}
         Transparency={() => selected() ? 0.1 : 1}
       />
@@ -98,7 +98,7 @@ export function DuelCardButton({
 
           deselectAll();
           choosing(false);
-          deck.chooseCard(spellCard);
+          // deck.chooseCard(spellCard);
         }}
         rightClicked={discard}
       />

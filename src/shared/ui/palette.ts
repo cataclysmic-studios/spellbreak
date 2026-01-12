@@ -1,4 +1,4 @@
-export const Palette = {
+export const palette = {
   white: new Color3(1, 1, 1),
   mediumGray: new Color3(0.5, 0.5, 0.5),
   black: new Color3(0, 0, 0),

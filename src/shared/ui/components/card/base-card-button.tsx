@@ -1,7 +1,7 @@
 import Vide, { Derivable, read, source } from "@rbxts/vide";
 
 import { usePx } from "../../hooks/use-px";
-import { Palette } from "../../palette";
+import { palette } from "../../palette";
 import { Images } from "../../utility/images";
 import { anchorPoints, positions } from "../../utility/positioning";
 import { cardAspectRatio } from "shared/constants";
@@ -92,7 +92,7 @@ export function BaseCardButton({ spellCard, layoutOrder, grayscale, hovered, unh
       text={spellCard.spell.name}
       anchorPoint={anchorPoints.topCenter}
       position={positions.topCenter.add(UDim2.fromScale(0, 0.035))}
-      textColor={Palette.white}
+      textColor={palette.white}
       textScaled={true}
       size={UDim2.fromScale(1, 0.08)}
     >

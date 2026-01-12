@@ -5,7 +5,7 @@ import { positions } from "../utility/positioning";
 import { Images } from "../utility/images";
 
 import { WizText } from "./wiz-text";
-import { Palette } from "../palette";
+import { palette } from "../palette";
 
 interface ParchmentBannerProps {
   readonly name?: Derivable<string>;
@@ -33,7 +33,7 @@ export function ParchmentBanner({ name, text, textSize, textColor, size, positio
       <WizText text={text}
         position={positions.center.sub(UDim2.fromScale(0, 0.23))}
         textSize={textSize}
-        textColor={read(textColor) ?? Palette.black}
+        textColor={read(textColor) ?? palette.black}
       >
         <uistroke Thickness={px.scale(1.4)} Transparency={0.4} />
       </WizText>

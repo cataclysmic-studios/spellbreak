@@ -2,8 +2,9 @@ import Vide, { type Derivable, read } from "@rbxts/vide";
 import { TextService } from "@rbxts/services";
 
 import { usePx } from "../hooks/use-px";
-import { Palette } from "../palette";
+import { palette } from "../palette";
 import { anchorPoints, positions } from "../utility/positioning";
+import { Container } from "../utility/components/container";
 
 const luckiestGuy = new Font("rbxasset://fonts/families/LuckiestGuy.json", Enum.FontWeight.Light, Enum.FontStyle.Normal);
 
@@ -28,15 +29,14 @@ export function Nametag({ name, description, containerSize, color, children }: N
       BackgroundTransparency={1}
       FontFace={luckiestGuy}
       Size={UDim2.fromScale(1, 0.55)}
-      Text={read(name).upper()}
-      TextColor3={color ?? Palette.white}
+      Text={() => read(name).upper()}
+      TextColor3={() => read(color) ?? palette.white}
       TextScaled={true}
     />
-    <frame Name="Bottom"
-      AnchorPoint={anchorPoints.bottomCenter}
-      Position={positions.bottomCenter}
-      BackgroundTransparency={1}
-      Size={frameSize}
+    <Container name="Bottom"
+      anchorPoint={anchorPoints.bottomCenter}
+      position={positions.bottomCenter}
+      size={frameSize}
     >
       <uilistlayout
         FillDirection={Enum.FillDirection.Horizontal}
@@ -52,7 +52,7 @@ export function Nametag({ name, description, containerSize, color, children }: N
         AnchorPoint={anchorPoints.center}
         FontFace={luckiestGuy}
         Text={descriptionText}
-        TextColor3={() => read(color) ?? Palette.white}
+        TextColor3={() => read(color) ?? palette.white}
         TextScaled={true}
         Size={() => {
           const descriptionTextSize = read(containerSize)
@@ -67,6 +67,6 @@ export function Nametag({ name, description, containerSize, color, children }: N
       >
         <uipadding PaddingTop={new UDim(bottomTextOffsetScale, 0)} />
       </textlabel>
-    </frame >
+    </Container>
   </>;
 }

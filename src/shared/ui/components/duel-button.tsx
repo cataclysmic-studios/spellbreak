@@ -1,7 +1,7 @@
 import Vide, { Derivable, read, source } from "@rbxts/vide";
 
 import { usePx } from "../hooks/use-px";
-import { Palette } from "../palette";
+import { palette } from "../palette";
 import { anchorPoints, positions } from "../utility/positioning";
 import { Images } from "../utility/images";
 
@@ -30,7 +30,7 @@ export function DuelButton({ text, size, anchorPoint, position, textSize, active
   return (
     <imagebutton Name={() => read(text) + "Button"}
       Image={Images.ButtonOrange}
-      ImageColor3={() => isActive() ? Palette.white : Palette.mediumGray}
+      ImageColor3={() => isActive() ? palette.white : palette.mediumGray}
       AnchorPoint={() => read(anchorPoint) ?? anchorPoints.center}
       Position={() => read(position) ?? positions.center}
       Size={size}
@@ -50,7 +50,7 @@ export function DuelButton({ text, size, anchorPoint, position, textSize, active
         size={UDim2.fromScale(1, 1)}
         transparency={transparencyIncrement}
         textSize={() => read(textSize) ?? px(22)}
-        textColor={() => hovered() ? Palette.white : isActive() ? Palette.yellow : Palette.mediumGray}
+        textColor={() => hovered() ? palette.white : isActive() ? palette.yellow : palette.mediumGray}
       >
         <uipadding
           PaddingTop={verticalTextPadding}

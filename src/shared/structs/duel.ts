@@ -3,7 +3,6 @@ import type { BaseID } from "@rbxts/id";
 
 import type { SpellCard } from "./spell-card";
 import type { SpellReference } from "./data/reference/spell";
-import type { ClientDuelDeckState } from "shared/classes/client-deck-duel-state";
 
 export enum DuelPhase {
   Start,
@@ -26,7 +25,7 @@ export interface ClientDuelInfo extends BaseID<number> {
 }
 
 export interface ClientDuelState {
-  readonly deck: ClientDuelDeckState;
+  // readonly deck: ClientDuelDeckState;
   readonly hand: Source<SpellCard[]>;
   readonly choosing: Source<boolean>;
   readonly selectedCard: Source<Maybe<SpellCard>>;

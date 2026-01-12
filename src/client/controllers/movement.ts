@@ -3,7 +3,7 @@ import { InputManager, StandardActionBuilder } from "@rbxts/mechanism";
 import { Lazy } from "@rbxts/lazy";
 
 import { Message } from "shared/messaging";
-import { OnMessage } from "client/decorators";
+import { OnClientMessage } from "shared/meta";
 import { character } from "client/constants";
 import Log from "shared/log";
 
@@ -53,7 +53,7 @@ export class MovementController implements OnPhysics {
     this.turnAngle += turnInput * (this.turnSpeed / 3) * 60 * dt;
   }
 
-  @OnMessage(Message.ToggleMovement)
+  @OnClientMessage(Message.Movement_Toggle)
   public toggleMovement(on: boolean): void {
     Log.info("Movement toggled " + (on ? "on" : "off"));
     this.enabled = on;

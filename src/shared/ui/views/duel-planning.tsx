@@ -5,15 +5,15 @@ import type { Timer } from "@rbxts/timer";
 import { $nameof } from "rbxts-transform-debug";
 
 import { usePx } from "../hooks/use-px";
-import { Palette } from "../palette";
+import { palette } from "../palette";
 import { Images } from "../utility/images";
 import { anchorPoints, positions } from "../utility/positioning";
 import type { ClientDuelInfo } from "shared/structs/duel";
 
 import { Container } from "../utility/components/container";
 import { DeckHand } from "../components/deck-hand";
-import { WizButton } from "../components/wiz-button";
 import { DuelButton } from "../components/duel-button";
+import { WizButton } from "../components/wiz-button";
 import { WizText } from "../components/wiz-text";
 
 interface DuelPlanningProps {
@@ -21,10 +21,10 @@ interface DuelPlanningProps {
   readonly timer: Source<Timer>;
 }
 
-const STANDARD_TIMER_COLOR1 = Palette.brightYellow;
-const STANDARD_TIMER_COLOR2 = Palette.deepYellow;
-const RED_TIMER_COLOR1 = Palette.brightRed;
-const RED_TIMER_COLOR2 = Palette.red;
+const STANDARD_TIMER_COLOR1 = palette.brightYellow;
+const STANDARD_TIMER_COLOR2 = palette.deepYellow;
+const RED_TIMER_COLOR1 = palette.brightRed;
+const RED_TIMER_COLOR2 = palette.red;
 const RED_TIMER_THRESHOLD = 10; // seconds left
 
 const mouse = Players.LocalPlayer.GetMouse();
@@ -35,7 +35,7 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
   const redTimerText = () => timerRemaining() <= RED_TIMER_THRESHOLD;
   const px = usePx();
 
-  const { deck, hand, choosing, selectedCard } = duelInfo.state;
+  const { hand, choosing, selectedCard } = duelInfo.state;
   useEventListener(mouse.Button1Up, () => !choosing() ? choosing(true) : undefined);
   effect(() => {
     const currentTimer = timer();
@@ -47,7 +47,7 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
     });
   });
 
-  const buttonSize = UDim2.fromOffset(px(100), px(35));
+  const buttonSize = UDim2.fromOffset(px(110), px(35));
   return (
     <Container name={$nameof(DuelPlanning)} size={UDim2.fromOffset(px(800), px(315))}>
       <textlabel Name="Timer"
@@ -55,7 +55,7 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
         Position={positions.topCenter}
         BackgroundTransparency={1}
         Text={() => timerRemaining() === 0 ? "" : tostring(timerRemaining())}
-        TextColor3={Palette.white}
+        TextColor3={palette.white}
         TextScaled={true}
         Size={UDim2.fromOffset(px(100), px(100))}
         FontFace={new Font("rbxassetid://12187364648", Enum.FontWeight.Bold)}
@@ -70,35 +70,33 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
         />
       </textlabel>
       <Show when={choosing}>
-        {() => (
-          <>
-            <DeckHand duelInfo={duelInfo} />
-            <DuelButton text="Pass"
-              size={buttonSize}
-              position={UDim2.fromScale(0.25, 0.85)}
-              active={() => selectedCard() === undefined}
-              activated={() => {
-                choosing(false);
-                deck.pass();
-              }}
-            />
-            <DuelButton text="Draw"
-              size={buttonSize}
-              position={UDim2.fromScale(0.5, 0.85)}
-              active={() => deck.canDrawSideboard(hand())}
-              activated={() => {
-                const treasureCard = deck.drawSideboard();
-                const currentHand = hand();
-                currentHand.unshift(treasureCard);
-                hand(currentHand);
-              }}
-            />
-            <DuelButton text="Flee"
-              size={buttonSize}
-              position={UDim2.fromScale(0.75, 0.85)}
-            />
-          </>
-        )}
+        {() => <>
+          <DeckHand duelInfo={duelInfo} />
+          <DuelButton text="Pass"
+            size={buttonSize}
+            position={UDim2.fromScale(0.25, 0.85)}
+            active={() => selectedCard() === undefined}
+            activated={() => {
+              choosing(false);
+              // deck.pass();
+            }}
+          />
+          <DuelButton text="Draw"
+            size={buttonSize}
+            position={UDim2.fromScale(0.5, 0.85)}
+            // active={() => deck.canDrawSideboard(hand())}
+            // activated={() => {
+            //   const treasureCard = deck.drawSideboard();
+            //   const currentHand = hand();
+            //   currentHand.unshift(treasureCard);
+            //   hand(currentHand);
+            // }}
+          />
+          <DuelButton text="Flee"
+            size={buttonSize}
+            position={UDim2.fromScale(0.75, 0.85)}
+          />
+        </>}
       </Show>
       <Show when={() => !choosing()}>
         {() => (
@@ -118,7 +116,7 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
               position={positions.topCenter}
               size={UDim2.fromScale(1, 0.5)}
               textSize={px(18)}
-              textColor={Palette.white}
+              textColor={palette.white}
             >
               <uistroke Thickness={px(1)} Transparency={0.3} />
             </WizText>
@@ -129,7 +127,7 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
               textSize={px(16)}
               activated={() => {
                 choosing(true);
-                deck.revokeChoice();
+                // deck.revokeChoice();
               }}
             />
           </imagelabel>

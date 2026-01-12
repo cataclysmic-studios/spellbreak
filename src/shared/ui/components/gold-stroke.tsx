@@ -1,6 +1,6 @@
 import Vide, { type Derivable } from "@rbxts/vide";
 
-import { Palette } from "../palette";
+import { palette } from "../palette";
 
 interface GoldStrokeProps {
   readonly thickness: Derivable<number>;
@@ -10,7 +10,7 @@ interface GoldStrokeProps {
 export function GoldStroke({ thickness, transparency }: GoldStrokeProps): Vide.Node {
   return (
     <uistroke
-      Color={Palette.white}
+      Color={palette.white}
       Thickness={thickness}
       Transparency={transparency}
       LineJoinMode={Enum.LineJoinMode.Miter}
@@ -19,8 +19,8 @@ export function GoldStroke({ thickness, transparency }: GoldStrokeProps): Vide.N
       <uigradient
         Rotation={90}
         Color={new ColorSequence([
-          new ColorSequenceKeypoint(0, Palette.gold),
-          new ColorSequenceKeypoint(1, Palette.richGold)
+          new ColorSequenceKeypoint(0, palette.gold),
+          new ColorSequenceKeypoint(1, palette.richGold)
         ])}
       />
     </uistroke>

@@ -7,7 +7,6 @@ import { duelCameraDistance, duelCameraHeight } from "client/constants";
 import Log from "shared/log";
 
 import type { CameraController } from "client/controllers/camera";
-import type { DuelController } from "client/controllers/duel";
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const FOV = 50;
@@ -19,7 +18,6 @@ export class DuelPlanningPose extends BaseCameraPose {
 
   public constructor(
     camera: CameraController,
-    private readonly duel: DuelController
   ) { super(camera); }
 
   public update(dt: number): void {
@@ -30,8 +28,8 @@ export class DuelPlanningPose extends BaseCameraPose {
   }
 
   public transitionInto(duration: number, onCompleted?: () => void): void {
-    if (this.duel.getCurrentInfo() === undefined)
-      return Log.warn(`Attempt to transition into ${$nameof<DuelPlanningPose>()} camera pose with no client duel info set`);
+    // if (this.duel.getCurrentInfo() === undefined)
+    //   return Log.warn(`Attempt to transition into ${$nameof<DuelPlanningPose>()} camera pose with no client duel info set`);
 
     const startCFrame = this.camera.manager.getCFrame();
     const startFOV = this.camera.manager.getFOV();
@@ -51,16 +49,17 @@ export class DuelPlanningPose extends BaseCameraPose {
   }
 
   private getCurrentDuelCircleCameraCFrame(): Maybe<CFrame> {
-    const info = this.duel.getCurrentInfo();
-    if (info === undefined) // || this.duelCircleCameraCFrame !== undefined
-      return this.duelCircleCameraCFrame;
+    // const info = this.duel.getCurrentInfo();
+    // if (info === undefined) // || this.duelCircleCameraCFrame !== undefined
+    //   return this.duelCircleCameraCFrame;
 
-    const root = info.model.Root;
-    const circlePosition = root.Position;
-    const position = circlePosition
-      .add(new Vector3(0, duelCameraHeight(), 0))
-      .add(root.CFrame.LookVector.mul(duelCameraDistance()).mul(info.onOpposingTeam ? -1 : 1));
+    // const root = info.model.Root;
+    // const circlePosition = root.Position;
+    // const position = circlePosition
+    //   .add(new Vector3(0, duelCameraHeight(), 0))
+    //   .add(root.CFrame.LookVector.mul(duelCameraDistance()).mul(info.onOpposingTeam ? -1 : 1));
 
-    return this.duelCircleCameraCFrame = CFrame.lookAt(position, circlePosition);
+    // return this.duelCircleCameraCFrame = CFrame.lookAt(position, circlePosition);
+    return;
   }
 }

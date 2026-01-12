@@ -23,7 +23,7 @@ interface DeckHandProps {
 const mouse = Players.LocalPlayer.GetMouse();
 
 export function DeckHand({ duelInfo }: DeckHandProps): Vide.Node {
-  const { state: { deck, hand } } = duelInfo
+  const { state: { hand } } = duelInfo
   const absolutePosition = source(Vector2.zero);
   const absoluteSize = source(Vector2.zero);
   const px = usePx();
@@ -91,12 +91,12 @@ export function DeckHand({ duelInfo }: DeckHandProps): Vide.Node {
         SortOrder={Enum.SortOrder.LayoutOrder}
       />
       <CardBackground image={Images.CardInfoBG} layoutOrder={-1}>
-        <WizText text={() => `Cards\n${deck.getCardsLeft()} of ${deck.totalCards}`}
+        {/* <WizText text={() => `Cards\n${deck.getCardsLeft()} of ${deck.totalCards}`}
           position={positions.center}
           font={Enum.Font.Cartoon}
           size={UDim2.fromScale(1, 0.5)}
           textSize={px(16)}
-        />
+        /> */}
       </CardBackground>
       <For each={cardFrames}>
         {card => card}

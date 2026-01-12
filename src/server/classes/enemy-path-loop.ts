@@ -44,7 +44,7 @@ export class EnemyPathLoop {
     const enemyName = this.enemyNames[math.random(1, this.enemyNames.size()) - 1];
     const descriptor = getEnemyDescriptor(enemyName);
     if (descriptor === undefined)
-      return Log.warn(`Failed to spawn enemy: Failed to find enemy descriptor with name "${enemyName}"`, ["EnemyPathLoop"]);
+      return Log.warn(`Failed to spawn enemy: Failed to find enemy descriptor with name "${enemyName}"`, ["enemy path loop"]);
 
     return new Enemy(descriptor);
   }

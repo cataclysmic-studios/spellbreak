@@ -1,35 +1,28 @@
-import { Dependency } from "@flamework/core";
 import { Players, RunService, Workspace as World } from "@rbxts/services";
 import type { BaseID } from "@rbxts/id";
-import Destroyable from "@rbxts/destroyable";
 import Vide from "@rbxts/vide";
 
 import { assets } from "shared/constants";
 import type { EnemyDescriptor } from "shared/structs/enemy/descriptor";
 
-import { NametagContainer } from "shared/ui/components/nametag-container";
+import { NamedNPC } from "./named-npc";
 import { EnemyNametag } from "shared/ui/components/enemy-nametag";
 
 const SPEED = 3; // studs per second
 
-export class Enemy extends Destroyable implements BaseID<number> {
+export class Enemy extends NamedNPC<EnemyModel> implements BaseID<number> {
   public static cumulativeID = 0;
 
   public readonly id = Enemy.cumulativeID++;
-  public readonly model: EnemyModel;
-  public readonly root: BasePart;
   private moveConnection?: RBXScriptConnection;
 
-  public constructor(
-    public readonly descriptor: EnemyDescriptor
-  ) {
-    super();
-    this.model = this.trash.add(assets.enemies.WaitForChild<EnemyModel>(descriptor.name).Clone());
-    this.root = this.model.PrimaryPart!;
+  public constructor(descriptor: EnemyDescriptor) {
+    super(
+      assets.enemies.WaitForChild(descriptor.name),
+      () => <EnemyNametag descriptor={descriptor} />
+    );
 
-    this.model.AddTag("Enemy");
     this.model.SetAttribute("ID", this.id);
-    this.createNametag();
     this.registerTouch();
   }
 
@@ -64,15 +57,7 @@ export class Enemy extends Destroyable implements BaseID<number> {
       if (playerWhoTouched === undefined) return;
       conn.Disconnect();
 
-      // start duel
+      // TODO: start duel
     });
-  }
-
-  private createNametag(): void {
-    this.trash.add(Vide.mount(() => (
-      <NametagContainer adornee={this.root}>
-        <EnemyNametag descriptor={this.descriptor} containerSize={new Vector2(240, 40)} />
-      </NametagContainer>
-    ), this.root));
   }
 }

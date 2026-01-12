@@ -1,0 +1,71 @@
+import { Service } from "@flamework/core";
+import { createCollection, type Document } from "@rbxts/lapis";
+import { $nameof } from "rbxts-transform-debug";
+import Sift from "@rbxts/sift";
+
+import type { OnPlayerJoin, OnPlayerLeave } from "server/hooks/players";
+import type { PlayerData } from "shared/structs/data";
+import { School } from "shared/structs/school";
+import { newCharacterData } from "shared/utility/character";
+import { Message, messaging } from "shared/messaging";
+import { createDiff } from "shared/utility/data";
+import Log from "shared/log";
+
+const DEFAULT_DATA: PlayerData = {
+  crowns: 0,
+  characters: [newCharacterData("Test Monkey", School.Myth)]
+};
+
+type PlayerDataDocument = Document<PlayerData>;
+
+@Service()
+export class DatabaseService implements OnPlayerJoin, OnPlayerLeave {
+  private readonly documents = new Map<Player, PlayerDataDocument>;
+  private readonly collection = createCollection($nameof<PlayerData>(), { defaultData: DEFAULT_DATA });
+
+  public async onPlayerJoin(player: Player): Promise<void> {
+    const id = player.UserId;
+    const document = await this.collection
+      .load(`Player${id}`, [id])
+      .catch(() => player.Kick("Data failed to load."));
+
+    if (!document) return;
+    if (!player.Parent)
+      return await document.close();
+
+    Log.info(`Loaded player data for ${player.Name}`);
+    this.documents.set(player, document);
+    const oldData = document.read();
+    this.sendDiffToClient(player, {} as never, oldData);
+    task.delay(4, async () => await this.update(player, data => Sift.Dictionary.merge(oldData, { crowns: data.crowns + 100 })));
+  }
+
+  public async onPlayerLeave(player: Player): Promise<void> {
+    const document = this.documents.get(player);
+    if (!document) return;
+
+    this.documents.delete(player);
+    await document.close();
+  }
+
+  public async update(player: Player, transform: (data: Readonly<PlayerData>) => PlayerData): Promise<void> {
+    const document = this.getDocument(player);
+    const oldData = document.read();
+    const newData = transform(oldData);
+    print("Update! New data:", newData)
+    document.write(newData);
+    this.sendDiffToClient(player, oldData, newData);
+
+    return await document.save();
+  }
+
+  private sendDiffToClient(player: Player, oldData: PlayerData, newData: PlayerData): void {
+    messaging.client.emit(player, Message.Data_Updated, createDiff(oldData, newData));
+  }
+
+  private getDocument(player: Player): PlayerDataDocument {
+    const document = this.documents.get(player);
+    assert(document !== undefined, "Player data document not yet loaded.");
+    return document;
+  }
+}

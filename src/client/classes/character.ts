@@ -1,9 +1,9 @@
-export class Character<TModel extends CharacterModel = CharacterModel> {
-  public readonly collider: TModel["collider"];
+export class Character<ModelShape extends CharacterModel = CharacterModel> {
+  public readonly collider: ModelShape["collider"];
   public readonly attachment: Attachment;
 
   public constructor(
-    private readonly model: TModel
+    private readonly model: ModelShape
   ) {
     this.collider = model.WaitForChild("collider");
     this.attachment = new Instance("Attachment", this.collider);

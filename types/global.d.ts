@@ -39,9 +39,13 @@ type OptionalKeys<T> = {
 }[keyof T];
 
 type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends (infer U)[]
-  ? DeepPartial<U>[]
-  : T[P] extends object
-  ? DeepPartial<T[P]>
-  : T[P];
+  readonly [K in keyof T]?: T[K] extends object
+  ? DeepPartial<T[K]>
+  : T[K];
+};
+
+type DeepKeys<T> = {
+  readonly [K in keyof T]?: true | (
+    T[K] extends object ? DeepKeys<T[K]> : never
+  );
 };

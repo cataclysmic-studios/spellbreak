@@ -23,7 +23,6 @@ export = hoarcekat(() =>
         kind: EnemyKind.Regular2,
         schools: [School.Fire, School.Death]
       }}
-      containerSize={containerSize}
     />
   </Container>
 );

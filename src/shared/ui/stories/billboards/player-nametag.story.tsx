@@ -19,7 +19,6 @@ export = hoarcekat(() =>
       name="Roslyn ShadowWraith"
       description="Savior of the Spiral"
       color={nametagColors.player}
-      containerSize={containerSize}
     />
   </Container>
 );

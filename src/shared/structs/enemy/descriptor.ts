@@ -3,7 +3,9 @@ import type { EnemyClass } from "./class";
 import type { EnemyKind } from "./kind";
 
 export const enum DamageModifierKind {
+  /** Opposite school boosts, same school resists */
   Standard,
+  /** Later-world modifiers, e.g. life boosting on storm */
   Advanced,
   Custom
 }

@@ -5,19 +5,19 @@ import { usePx } from "../hooks/use-px";
 import { palette } from "../palette";
 import { anchorPoints, positions } from "../utility/positioning";
 import { Container } from "../utility/components/container";
+import { CONTAINER_SIZE } from "./nametag-container";
 
 const luckiestGuy = new Font("rbxasset://fonts/families/LuckiestGuy.json", Enum.FontWeight.Light, Enum.FontStyle.Normal);
 
 interface NametagProps {
   readonly name: Derivable<string>;
-  readonly description: Derivable<string>;
+  readonly description?: Derivable<string>;
   readonly color?: Derivable<Color3>;
-  readonly containerSize: Derivable<Vector2>;
   readonly children?: Vide.Node;
 }
 
-export function Nametag({ name, description, containerSize, color, children }: NametagProps): Vide.Node {
-  const descriptionText = () => read(description).upper();
+export function Nametag({ name, description, color, children }: NametagProps): Vide.Node {
+  const descriptionText = () => description === undefined ? "" : read(description).upper();
   const frameSize = UDim2.fromScale(1, 0.45);
   const px = usePx();
 
@@ -55,9 +55,9 @@ export function Nametag({ name, description, containerSize, color, children }: N
         TextColor3={() => read(color) ?? palette.white}
         TextScaled={true}
         Size={() => {
-          const descriptionTextSize = read(containerSize)
+          const descriptionTextSize = CONTAINER_SIZE
             .mul(new Vector2(1, frameSize.Y.Scale)).Y;
-          const frameAbsoluteSize = read(containerSize)
+          const frameAbsoluteSize = CONTAINER_SIZE
             .mul(new Vector2(frameSize.X.Scale, frameSize.Y.Scale))
             .add(new Vector2(frameSize.X.Offset, frameSize.Y.Offset));
 

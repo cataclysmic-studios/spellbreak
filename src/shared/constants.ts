@@ -37,6 +37,7 @@ export const nametagColors = {
   player: Color3.fromRGB(4, 154, 240),
   friend: Color3.fromRGB(168, 234, 254),
   bestFriend: Color3.fromRGB(180, 151, 240),
+  npc: Color3.fromRGB(0, 237, 0),
   enemy: {
     [EnemyKind.Regular]: Color3.fromRGB(255, 255, 0),
     [EnemyKind.Regular2]: Color3.fromRGB(255, 163, 0),

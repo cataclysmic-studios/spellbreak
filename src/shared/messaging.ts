@@ -1,5 +1,8 @@
-import type { DataType } from "@rbxts/flamework-binary-serializer";
 import { MessageEmitter } from "@rbxts/tether";
+import type { Packed, u8 } from "@rbxts/serio";
+
+import type { Diff, PlayerData } from "./structs/data";
+import type { TransitionPosePacket } from "./structs/packets";
 
 export const messaging = MessageEmitter.create<MessageData>();
 
@@ -8,15 +11,14 @@ export const enum Message {
   Movement_Toggle,
   Camera_SetPose,
   Camera_TransitionPose,
+  Data_Updated
 
   // Client -> Server
 }
 
 export interface MessageData {
   [Message.Movement_Toggle]: boolean;
-  [Message.Camera_SetPose]: DataType.u8; // pose kind
-  [Message.Camera_TransitionPose]: {
-    readonly poseKind: DataType.u8;
-    readonly duration: DataType.f32;
-  }
+  [Message.Camera_SetPose]: u8; // pose kind
+  [Message.Camera_TransitionPose]: TransitionPosePacket;
+  [Message.Data_Updated]: Packed<Diff<PlayerData>>;
 }

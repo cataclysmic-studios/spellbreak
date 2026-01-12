@@ -8,7 +8,6 @@ import { SpellCardKind } from "shared/structs/spell-card";
 const maxMana = 15;
 const maxEnergy = 40;
 
-
 export const DEFAULT_HEALTHS: Record<PlayableSchool, number> = {
   [School.Fire]: 415,
   [School.Ice]: 500,
@@ -29,6 +28,7 @@ export function newCharacterData(name: string, school: PlayableSchool): Characte
     gold: 0,
     trainingPoints: 0,
     trainedSpells: [SpellReference.Myth_Troll],
+    completedQuests: [],
     equippedGear: {
       [GearCategory.Deck]: 0
     },

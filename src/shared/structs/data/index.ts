@@ -1,3 +1,4 @@
+import { QuestID } from "../quests";
 import type { School } from "../school";
 import type { CharacterStats } from "./character-stats";
 import type { GearCategory } from "./items/gear";
@@ -46,6 +47,7 @@ export interface CharacterData {
   readonly gold: number;
   readonly trainingPoints: number;
   readonly trainedSpells: SpellReference[];
+  readonly completedQuests: QuestID[];
   /** Values represent index in backpack data */
   readonly equippedGear: EquippedGearData;
   readonly backpack: BackpackData;
@@ -59,4 +61,9 @@ export interface CharacterData {
 export interface PlayerData {
   readonly crowns: number;
   readonly characters: CharacterData[];
+}
+
+export interface Diff<T> {
+  readonly changed?: DeepPartial<T>;
+  readonly removed?: DeepKeys<T>;
 }

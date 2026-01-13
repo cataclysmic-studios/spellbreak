@@ -28,13 +28,13 @@ export function canReceiveQuest(character: CharacterData, id: QuestID | QuestDes
     && (!hasPrequests(quest) || quest.prequests.every(prequest => hasCompletedQuest(character, prequest)));
 }
 
-export function hasQuest(character: CharacterData, quest: QuestID | QuestDescriptor): boolean {
+export function hasQuest({ activeQuests }: CharacterData, quest: QuestID | QuestDescriptor): boolean {
   const id = getID(quest);
-  return character.activeQuests[id] !== undefined || character.activeQuests[tostring(id) as never] !== undefined;
+  return id in activeQuests || tostring(id) in activeQuests;
 }
 
-export function hasCompletedQuest(character: CharacterData, quest: QuestID | QuestDescriptor): boolean {
-  return character.completedQuests.includes(getID(quest));
+export function hasCompletedQuest({ completedQuests }: CharacterData, quest: QuestID | QuestDescriptor): boolean {
+  return completedQuests.includes(getID(quest));
 }
 
 export function hasPrequests(quest: QuestDescriptor): quest is QuestDescriptor & { prequests: NonNullable<QuestDescriptor["prequests"]> } {

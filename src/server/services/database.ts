@@ -13,7 +13,7 @@ import Log from "shared/log";
 
 import type { CharacterService } from "./character";
 
-const VERSION = 0;
+const VERSION = 7;
 const DEFAULT_DATA: PlayerData = {
   crowns: 0,
   characters: [newCharacterData("Test Monkey", School.Myth)]
@@ -42,11 +42,11 @@ export class DatabaseService implements OnPlayerJoin, OnPlayerLeave {
     if (!player.Parent)
       return await document.close();
 
-    Log.info(`Loaded player data for ${player.Name}`);
     this.documents.set(player, document);
     const oldData = document.read();
     this.sendDiffToClient(player, {} as never, oldData);
     this.dataLoaded.Fire(player);
+    Log.info(`Loaded player data for ${player.Name}`);
   }
 
   public async onPlayerLeave(player: Player): Promise<void> {

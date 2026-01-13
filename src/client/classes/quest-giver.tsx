@@ -1,5 +1,4 @@
-import { atom } from "@rbxts/charm";
-import Vide from "@rbxts/vide";
+import Vide, { source } from "@rbxts/vide";
 
 import { NpcDescriptor, NpcID } from "shared/structs/npc/descriptor";
 
@@ -17,7 +16,7 @@ const INTERACTION_DISTANCE = 7.5;
 export class QuestGiver<ModelShape extends Model = NpcModel> {
   public readonly descriptor: NpcDescriptor;
   private readonly root: BasePart;
-  private readonly alertMode = atom(AlertMode.Disabled);
+  private readonly alertMode = source(AlertMode.Disabled);
   private inRange = false;
 
   public constructor(

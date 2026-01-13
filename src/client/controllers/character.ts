@@ -4,7 +4,8 @@ import { getEquippedGear } from "shared/utility/data";
 import { GearCategory } from "shared/structs/data/items/gear";
 import type { CharacterData } from "shared/structs/data";
 import type { DeckData, DeckLinkedData } from "shared/structs/data/items/gear/deck";
-import { ReplicaController } from "./replica";
+
+import type { ReplicaController } from "./replica";
 
 @Controller()
 export class CharacterController {

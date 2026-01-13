@@ -1,4 +1,4 @@
-import Vide, { Derivable, read, source } from "@rbxts/vide";
+import Vide, { Source, read, source } from "@rbxts/vide";
 
 import { Images } from "../utility/images";
 import { WizText } from "./wiz-text";
@@ -16,7 +16,7 @@ export const enum AlertMode {
 }
 
 interface QuestAlertProps {
-  readonly mode: Derivable<AlertMode>;
+  readonly mode: Source<AlertMode>;
 }
 
 export function QuestAlert({ mode }: QuestAlertProps): Vide.Node {
@@ -32,15 +32,15 @@ export function QuestAlert({ mode }: QuestAlertProps): Vide.Node {
         Image={Images.RedSpiral}
         ImageColor3={new Color3(0.9, 0.9, 0.9)}
         Size={UDim2.fromScale(1, 1)}
-        Visible={() => read(mode) !== AlertMode.Disabled}
+        Visible={() => mode() !== AlertMode.Disabled}
         Rotation={rotation}
       />
       <WizText
         anchorPoint={anchorPoints.center}
         position={positions.center.add(UDim2.fromScale(0, 0.08))}
         size={UDim2.fromScale(1, 1)}
-        text={() => read(mode) === AlertMode.PickUp ? "!" : "?"}
-        textColor={() => read(mode) === AlertMode.InProgress ? palette.mediumGray : palette.yellow}
+        text={() => mode() === AlertMode.PickUp ? "!" : "?"}
+        textColor={() => mode() === AlertMode.InProgress ? palette.mediumGray : palette.yellow}
         textScaled={true}
       >
         <uistroke Thickness={px(1)} Transparency={0.2} />

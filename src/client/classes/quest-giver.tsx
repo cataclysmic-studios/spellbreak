@@ -3,7 +3,7 @@ import Vide, { source } from "@rbxts/vide";
 import { NpcDescriptor, NpcID } from "shared/structs/npc/descriptor";
 
 import { getNpcByID } from "shared/utility/npc";
-import { hasCompletedQuest, hasQuest } from "shared/utility/quests";
+import { canReceiveQuest, getFirstCompletableTalkGoal, hasCompletedQuest, hasQuest } from "shared/utility/quests";
 import { character } from "client/constants";
 import { AlertMode, QuestAlert } from "shared/ui/components/quest-alert";
 import { QuestAlertContainer } from "shared/ui/components/quest-alert-container";
@@ -56,12 +56,12 @@ export class QuestGiver<ModelShape extends Model = NpcModel> {
   private updateMode(): void {
     const character = this.character.getData();
     const { questsGiven } = this.descriptor;
-    const givesMoreQuests = questsGiven.some(quest => !hasQuest(character, quest) && !hasCompletedQuest(character, quest));
+    const givesMoreQuests = questsGiven.some(quest => !hasQuest(character, quest) && !hasCompletedQuest(character, quest) && canReceiveQuest(character, quest));
     if (givesMoreQuests)
       return void this.alertMode(AlertMode.PickUp);
 
-    const canHandInQuest = questsGiven.some(quest => hasQuest(character, quest) && false); // TODO: check goals
-    if (canHandInQuest)
+    const result = getFirstCompletableTalkGoal(character, this.descriptor.id);
+    if (result !== undefined)
       return void this.alertMode(AlertMode.HandIn);
 
     const inProgress = questsGiven.some(quest => hasQuest(character, quest));

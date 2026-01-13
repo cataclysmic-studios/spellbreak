@@ -5,7 +5,8 @@ import { QuestID } from "../quests";
 
 export const enum DialogID {
   enrollment_day_intro,
-  enrollment_day_end
+  enrollment_day_end,
+  new_savior_intro
 }
 
 export interface DialogDescriptor extends BaseID<DialogID> {

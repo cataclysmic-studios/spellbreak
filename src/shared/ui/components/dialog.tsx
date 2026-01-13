@@ -5,7 +5,7 @@ import { Message, messaging } from "shared/messaging";
 import { Images } from "../utility/images";
 import { anchorPoints, positions } from "../utility/positioning";
 import { getDialogByID, getNpcByID } from "shared/utility/npc";
-import { getQuestByID, hasQuest } from "shared/utility/quests";
+import { getFirstCompletableTalkGoal, getQuestByID, hasQuest } from "shared/utility/quests";
 import { usePx } from "../hooks/use-px";
 import { palette } from "../palette";
 import type { CharacterData } from "shared/structs/data";
@@ -22,7 +22,10 @@ export function Dialog({ id, character }: DialogProps): Vide.Node {
   const px = usePx();
   const paragraphIndex = source(0);
   const getDialog = () => id() !== undefined ? getDialogByID(id()!) : undefined;
-  const closeDialog = () => id(undefined);
+  const closeDialog = () => {
+    id(undefined);
+    paragraphIndex(0);
+  };
   const portraitImage = () => {
     const dialog = getDialog();
     if (!dialog) return "";
@@ -75,7 +78,12 @@ export function Dialog({ id, character }: DialogProps): Vide.Node {
           npcID: dialog.speaker,
         });
 
-      return;
+      const data = character();
+      const result = getFirstCompletableTalkGoal(data, dialog.speaker);
+      if (result !== undefined) {
+        const { questID: id, goalIndex } = result;
+        messaging.server.emit(Message.Quest_CompleteGoal, { id, goalIndex });
+      }
     }
 
     paragraphIndex(paragraphIndex() + 1);

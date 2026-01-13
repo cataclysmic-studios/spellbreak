@@ -13,7 +13,7 @@ import Log from "shared/log";
 
 import type { CharacterService } from "./character";
 
-const VERSION = 7;
+const VERSION = 8;
 const DEFAULT_DATA: PlayerData = {
   crowns: 0,
   characters: [newCharacterData("Test Monkey", School.Myth)]
@@ -68,7 +68,7 @@ export class DatabaseService implements OnPlayerJoin, OnPlayerLeave {
   public async updateCharacter(player: Player, transform: (data: Readonly<CharacterData>) => CharacterData): Promise<void> {
     const oldData = this.get(player);
     const characterIndex = this.character.getSelected();
-    return await this.update(player, data => updateCharacter(oldData, characterIndex, transform(data.characters[characterIndex])))
+    await this.update(player, data => updateCharacter(oldData, characterIndex, transform(data.characters[characterIndex])))
   }
 
   public async update(player: Player, transform: (data: Readonly<PlayerData>) => PlayerData): Promise<void> {
@@ -78,7 +78,7 @@ export class DatabaseService implements OnPlayerJoin, OnPlayerLeave {
     document.write(newData);
     this.sendDiffToClient(player, oldData, newData);
 
-    return await document.save();
+    await document.save();
   }
 
   private sendDiffToClient(player: Player, oldData: PlayerData, newData: PlayerData): void {

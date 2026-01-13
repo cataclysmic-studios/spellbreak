@@ -1,4 +1,3 @@
-import { getQuestByID } from "shared/utility/quests";
 import { Images } from "shared/ui/utility/images";
 import { QuestID } from "shared/structs/quests";
 import { type NpcDescriptor, NpcID } from "shared/structs/npc/descriptor";
@@ -8,5 +7,5 @@ export = {
   name: "Benedict Hale",
   title: "Headmaster",
   portrait: Images.Portrait_HeadmasterHale,
-  questsGiven: [QuestID.WC_1].map(getQuestByID),
+  questsGiven: [QuestID.WC_1],
 } satisfies NpcDescriptor;

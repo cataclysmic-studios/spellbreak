@@ -21,6 +21,7 @@ export interface WizTextProps {
   readonly alignX?: Derivable<Enum.TextXAlignment>;
   readonly alignY?: Derivable<Enum.TextYAlignment>;
   readonly automaticSize?: Derivable<Enum.AutomaticSize>;
+  readonly visible?: Derivable<boolean>;
   readonly layoutOrder?: Derivable<number>;
   readonly zIndex?: Derivable<number>;
   readonly textBoundsChanged?: Source<Vector2>;
@@ -34,7 +35,7 @@ const DEFAULT_TEXT_SIZE = 14;
 
 export function WizText({
   name, text, textSize, textColor, textScaled, textWrap, transparency, backgroundTransparency,
-  size, position, anchorPoint, font, alignX, alignY, automaticSize, layoutOrder, zIndex,
+  size, position, anchorPoint, font, alignX, alignY, automaticSize, visible, layoutOrder, zIndex,
   textBoundsChanged, absoluteSizeChanged, absolutePositionChanged,
   children
 }: WizTextProps): Vide.Node {
@@ -59,6 +60,7 @@ export function WizText({
       Size={() => read(size) ?? UDim2.fromScale(1, 1)}
       Font={() => read(font) ?? Enum.Font.LuckiestGuy}
       TextTransparency={transparency}
+      Visible={visible}
       LayoutOrder={layoutOrder}
       ZIndex={zIndex}
       TextBoundsChanged={textBoundsChanged}

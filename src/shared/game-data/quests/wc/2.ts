@@ -6,12 +6,13 @@ export = {
   name: "New Savior",
   requiredLevel: 0,
   main: true,
+  prequests: [QuestID.WC_1],
+  dialog: DialogID.new_savior_intro,
   goals: [
     {
       action: QuestGoalAction.Go,
       target: "Pegasus Lane",
-      location: "Pegasus Lane",
-      dialog: DialogID.enrollment_day_end,
+      location: "Pegasus Lane"
     }
   ]
 } satisfies QuestDescriptor;

@@ -2,7 +2,7 @@ import { MessageEmitter } from "@rbxts/tether";
 import type { Packed, u8 } from "@rbxts/serio";
 
 import type { Diff, PlayerData } from "./structs/data";
-import type { PickUpQuestPacket, TransitionPosePacket } from "./structs/packets";
+import type { CompleteGoalPacket, PickUpQuestPacket, TransitionPosePacket } from "./structs/packets";
 
 export const messaging = MessageEmitter.create<MessageData>();
 
@@ -16,6 +16,7 @@ export const enum Message {
 
   // Client -> Server
   Quest_PickUp,
+  Quest_CompleteGoal,
 }
 
 export interface MessageData {
@@ -25,4 +26,5 @@ export interface MessageData {
   [Message.Data_Updated]: Packed<Diff<PlayerData>>;
   [Message.Hydrate_NPCs]: Set<u8>;
   [Message.Quest_PickUp]: PickUpQuestPacket;
+  [Message.Quest_CompleteGoal]: CompleteGoalPacket;
 }

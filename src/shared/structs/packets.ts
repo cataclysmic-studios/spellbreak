@@ -9,3 +9,7 @@ export interface TransitionPosePacket {
 export interface PickUpQuestPacket extends BaseID<u8> {
   readonly npcID: u8;
 }
+
+export interface CompleteGoalPacket extends BaseID<u8> {
+  readonly goalIndex: u8;
+}

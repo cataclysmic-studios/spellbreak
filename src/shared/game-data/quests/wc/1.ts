@@ -7,12 +7,13 @@ export = {
   name: "Enrollment Day",
   requiredLevel: 0,
   main: true,
+  dialog: DialogID.enrollment_day_intro,
   goals: [
     {
       action: QuestGoalAction.Talk,
       target: NpcID.PrivatePike,
       location: "City Square",
-      dialog: DialogID.enrollment_day_intro
+      dialog: DialogID.enrollment_day_end
     }
   ]
 } satisfies QuestDescriptor;

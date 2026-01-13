@@ -1,20 +1,20 @@
 import { getInstanceAtPath } from "@rbxts/flamework-meta-utils";
-import { getChildrenOfType } from "@rbxts/instance-utility";
+import { getDescendantsOfType } from "@rbxts/instance-utility";
 
 import type { QuestID } from "shared/structs/quests";
-import type { NpcDescriptor, NpcID } from "shared/structs/npc/descriptor";
+import type { NpcID, NpcDescriptor } from "shared/structs/npc/descriptor";
 import type { DialogID, DialogDescriptor } from "shared/structs/npc/dialog";
 
 const allNPCs = new Map<NpcID, NpcDescriptor>;
 const npcsFolder = getInstanceAtPath("src/shared/game-data/npcs") as Folder;
-for (const npcModule of getChildrenOfType(npcsFolder, "ModuleScript")) {
+for (const npcModule of getDescendantsOfType(npcsFolder, "ModuleScript")) {
   const npc = require<NpcDescriptor>(npcModule);
   allNPCs.set(npc.id, npc);
 }
 
 const allDialogs = new Map<DialogID, DialogDescriptor>;
 const dialogFolder = getInstanceAtPath("src/shared/game-data/dialog") as Folder;
-for (const dialogModule of getChildrenOfType(dialogFolder, "ModuleScript")) {
+for (const dialogModule of getDescendantsOfType(dialogFolder, "ModuleScript")) {
   const dialog = require<DialogDescriptor>(dialogModule);
   allDialogs.set(dialog.id, dialog);
 }
@@ -33,7 +33,7 @@ export function getNpcByID(id: NpcID): NpcDescriptor {
 }
 
 export function npcGivesQuest(id: NpcID, questID: QuestID): boolean {
-  return getNpcByID(id).questsGiven.some(quest => quest.id === questID);
+  return getNpcByID(id).questsGiven.some(id => id === questID);
 }
 
 export function getDialogByID(id: DialogID): DialogDescriptor {

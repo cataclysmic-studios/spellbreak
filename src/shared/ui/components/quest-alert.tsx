@@ -22,6 +22,7 @@ interface QuestAlertProps {
 export function QuestAlert({ mode }: QuestAlertProps): Vide.Node {
   const px = usePx();
   const rotation = source(0);
+  const visible = () => mode() !== AlertMode.Disabled;
   useEventListener(RunService.PreRender, dt => rotation(rotation() + dt * 16));
 
   return (
@@ -32,7 +33,7 @@ export function QuestAlert({ mode }: QuestAlertProps): Vide.Node {
         Image={Images.RedSpiral}
         ImageColor3={new Color3(0.9, 0.9, 0.9)}
         Size={UDim2.fromScale(1, 1)}
-        Visible={() => mode() !== AlertMode.Disabled}
+        Visible={visible}
         Rotation={rotation}
       />
       <WizText
@@ -42,6 +43,7 @@ export function QuestAlert({ mode }: QuestAlertProps): Vide.Node {
         text={() => mode() === AlertMode.PickUp ? "!" : "?"}
         textColor={() => mode() === AlertMode.InProgress ? palette.mediumGray : palette.yellow}
         textScaled={true}
+        visible={visible}
       >
         <uistroke Thickness={px(1)} Transparency={0.2} />
       </WizText>

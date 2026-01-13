@@ -4,6 +4,7 @@ import { getChildrenOfType } from "@rbxts/instance-utility";
 
 import { Message, type MessageData } from "shared/messaging";
 import { OnClientMessage } from "shared/meta";
+import { canReceiveQuest, getActiveQuestIDs, getFirstCompletableTalkGoal, getQuestByID, hasCompletedQuest, hasQuest } from "shared/utility/quests";
 import { QuestGiver } from "client/classes/quest-giver";
 import type { NpcID } from "shared/structs/npc/descriptor";
 import Log from "shared/log";
@@ -11,7 +12,9 @@ import Log from "shared/log";
 import type { UIController } from "./ui";
 import type { InputController } from "./input";
 import type { CharacterController } from "./character";
-import { canReceiveQuest, hasQuest } from "shared/utility/quests";
+import Object from "@rbxts/object-utils";
+import { QuestID } from "shared/structs/quests";
+import { CharacterData } from "shared/structs/data";
 
 const NPC_MODELS = getChildrenOfType<"Model", NpcModel>(World.NPCs, "Model");
 
@@ -29,7 +32,7 @@ export class QuestController implements OnStart, OnTick {
     this.input.actions.interact.activated.Connect(() => {
       for (const [_, questGiver] of this.questGivers)
         if (questGiver.canInteract())
-          return this.npcInteract(questGiver)
+          return this.npcInteract(questGiver);
     });
   }
 
@@ -54,15 +57,21 @@ export class QuestController implements OnStart, OnTick {
   }
 
   private npcInteract(questGiver: QuestGiver): void {
-    Log.info("Interacting with NPC: " + questGiver.descriptor.name);
+    const { descriptor } = questGiver;
+    Log.info("Interacting with NPC: " + descriptor.name);
+
     const character = this.character.getData();
-    for (const quest of questGiver.descriptor.questsGiven) {
-      if (canReceiveQuest(character, quest))
-        return this.ui.createDialog(quest.goals[0].dialog);
-      else if (hasQuest(character, quest)) {
-        const goalIndex = character.activeQuests[quest.id] ?? 0;
-        return this.ui.createDialog(quest.goals[goalIndex].dialog);
-      }
+    const ids = [...getActiveQuestIDs(character), ...descriptor.questsGiven];
+    const result = getFirstCompletableTalkGoal(character, descriptor.id, ids);
+    if (result !== undefined) {
+      const { goal } = result;
+      return this.ui.createDialog(goal.dialog);
+    }
+
+    for (const id of descriptor.questsGiven) {
+      const givenQuest = getQuestByID(id);
+      if (canReceiveQuest(character, givenQuest) || hasQuest(character, givenQuest))
+        return this.ui.createDialog(givenQuest.dialog);
     }
   }
 }

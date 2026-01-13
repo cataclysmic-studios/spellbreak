@@ -1,4 +1,3 @@
-import { getQuestByID } from "shared/utility/quests";
 import { Images } from "shared/ui/utility/images";
 import { QuestID } from "shared/structs/quests";
 import { type NpcDescriptor, NpcID } from "shared/structs/npc/descriptor";
@@ -8,5 +7,5 @@ export = {
   name: "Private Pike",
   title: "Pegasus Lane Guard",
   portrait: Images.Portrait_PrivatePike,
-  questsGiven: [QuestID.WC_2].map(getQuestByID),
+  questsGiven: [QuestID.WC_2],
 } satisfies NpcDescriptor;

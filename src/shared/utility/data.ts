@@ -38,7 +38,7 @@ export function createDiff<T>(oldData: T, newData: T): Diff<T> {
       continue;
     }
 
-    if (!typeIs(oldValue, "table") || !typeIs(newValue, "table")) {
+    if ((!typeIs(oldValue, "table") || !typeIs(newValue, "table")) && oldValue !== newValue) {
       changed ??= {};
       (changed as GenericRecord)[key] = newValue;
       continue;

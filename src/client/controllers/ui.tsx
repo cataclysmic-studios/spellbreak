@@ -1,29 +1,35 @@
-import { Controller, OnStart } from "@flamework/core";
+import { Controller, type OnStart } from "@flamework/core";
 import { Timer } from "@rbxts/timer";
-import Vide, { Source, mount, cleanup, source } from "@rbxts/vide";
+import Vide, { mount, cleanup, source } from "@rbxts/vide";
 
 import { playerGui } from "client/constants";
 import { timerLength } from "shared/constants";
-import { getDialogByID } from "shared/utility/npc";
 import { DialogID } from "shared/structs/npc/dialog";
 import { PlaceID } from "shared/structs/place-id";
 import type { ClientDuelInfo } from "shared/structs/duel";
+import Log from "shared/log";
 
 import { OnlyInPlace } from "shared/ui/utility/components/only-in-place";
 import { MainMenu } from "shared/ui/views/main-menu";
 import { HUD, type HudProps } from "shared/ui/views/hud";
 import { DuelPlanning } from "shared/ui/views/duel-planning";
-import Log from "shared/log";
+
+import type { CharacterController } from "./character";
 
 @Controller()
 export class UIController implements OnStart {
   private readonly hudState: HudProps = {
+    character: source({}) as never,
     bookOpen: source(false),
     activeDialog: source<Maybe<DialogID>>(undefined)
   };
 
   private timer?: Timer;
   private duelPlanningDestructor?: () => void;
+
+  public constructor(character: CharacterController) {
+    character.updated.Connect(() => this.hudState.character(character.getData()));
+  }
 
   public onStart(): void {
     Vide.mount(() => <>

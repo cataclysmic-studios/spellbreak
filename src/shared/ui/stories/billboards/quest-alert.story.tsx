@@ -11,7 +11,7 @@ export = hoarcekat(() =>
   <Container
     anchorPoint={anchorPoints.center}
     position={positions.center}
-    size={UDim2.fromScale(0.4, 0.4)}
+    size={UDim2.fromScale(0.25, 0.25)}
   >
     <QuestAlert mode={AlertMode.PickUp} />
   </Container>

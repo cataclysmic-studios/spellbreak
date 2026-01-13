@@ -10,5 +10,6 @@ export const enum NpcID {
 export interface NpcDescriptor extends BaseID<NpcID> {
   readonly name: string;
   readonly title?: string;
+  readonly portrait: string;
   readonly questsGiven: QuestDescriptor[];
 }

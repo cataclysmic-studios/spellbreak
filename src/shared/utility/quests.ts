@@ -1,5 +1,6 @@
 import { getInstanceAtPath } from "@rbxts/flamework-meta-utils";
 import { getDescendantsOfType } from "@rbxts/instance-utility";
+import Log from "shared/log";
 import type { CharacterData } from "shared/structs/data";
 import type { QuestDescriptor, QuestID } from "shared/structs/quests";
 
@@ -11,6 +12,7 @@ for (const questModule of getDescendantsOfType(questsFolder, "ModuleScript")) {
 }
 
 export function getQuestByID(id: QuestID): QuestDescriptor {
+  assert(allQuests.has(id), "quest with ID " + id + " not found");
   return allQuests.get(id)!;
 }
 
@@ -21,12 +23,14 @@ function getID(quest: QuestID | QuestDescriptor): QuestID {
 export function canReceiveQuest(character: CharacterData, id: QuestID | QuestDescriptor): boolean {
   const quest = typeIs(id, "number") ? getQuestByID(id) : id;
   return character.level >= quest.requiredLevel
+    && !hasQuest(character, quest)
     && !hasCompletedQuest(character, quest)
     && (!hasPrequests(quest) || quest.prequests.every(prequest => hasCompletedQuest(character, prequest)));
 }
 
 export function hasQuest(character: CharacterData, quest: QuestID | QuestDescriptor): boolean {
-  return character.activeQuests[getID(quest)] !== undefined;
+  const id = getID(quest);
+  return character.activeQuests[id] !== undefined || character.activeQuests[tostring(id) as never] !== undefined;
 }
 
 export function hasCompletedQuest(character: CharacterData, quest: QuestID | QuestDescriptor): boolean {

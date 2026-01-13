@@ -7,11 +7,6 @@ import type { PlayerData } from "./structs/data";
 
 export const { assets } = ReplicatedStorage;
 
-export const defaultData: PlayerData = {
-  crowns: 0,
-  characters: []
-};
-
 export const timerLength = 30;
 export const cardAspectRatio = 0.68;
 export const maxCardsInHand = 7;

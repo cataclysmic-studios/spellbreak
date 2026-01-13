@@ -57,6 +57,10 @@ export class DatabaseService implements OnPlayerJoin, OnPlayerLeave {
     await document.close();
   }
 
+  public getCharacter(player: Player): CharacterData {
+    return this.get(player).characters[this.character.getSelected()];
+  }
+
   public get(player: Player): PlayerData {
     return this.getDocument(player).read();
   }
@@ -71,7 +75,6 @@ export class DatabaseService implements OnPlayerJoin, OnPlayerLeave {
     const document = this.getDocument(player);
     const oldData = document.read();
     const newData = transform(oldData);
-    print("Update! New data:", newData)
     document.write(newData);
     this.sendDiffToClient(player, oldData, newData);
 

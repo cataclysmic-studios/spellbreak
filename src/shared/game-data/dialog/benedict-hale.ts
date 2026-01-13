@@ -1,5 +1,6 @@
 import { NpcID } from "shared/structs/npc/descriptor";
 import { type DialogDescriptor, DialogID } from "shared/structs/npc/dialog";
+import { QuestID } from "shared/structs/quests";
 
 export = {
   id: DialogID.enrollment_day_intro,
@@ -11,5 +12,6 @@ export = {
     "You will find instructors eager to impart their knowledge, though none will offer it freely or gently. Lessons here are paid for in effort, mistakes, and the quiet humility that follows both.",
     "Engrave this truth into your thoughts: power gained without restraint is not strength, but a liability waiting for the proper moment to betray its bearer. Many before you have learned this lesson too late.",
     "Now go. Orientation begins shortly, and the path set before you will not slow for hesitation. Destiny, like this Academy, favors those who step forward without asking permission."
-  ]
+  ],
+  givesQuest: QuestID.WC_1
 } satisfies DialogDescriptor;

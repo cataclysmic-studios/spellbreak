@@ -5,11 +5,16 @@ export const enum Images {
   BookBinding = "rbxassetid://92180308011222",
   RedRibbon = "rbxassetid://83791914432890",
   RedSpiral = "http://www.roblox.com/asset/?id=951593731",
+  CharacterPortraitBorder = "rbxassetid://70593165679463",
 
   // backgrounds
   Background_WaitingForOthers = "rbxassetid://98612224033956",
   Background_CardInfo = "rbxassetid://13711786825",
   Background_Dialog = "rbxassetid://125227688237254",
+
+  // portraits
+  Portrait_HeadmasterHale = "rbxassetid://131377265144889",
+  Portrait_PrivatePike = "rbxassetid://108261292143077",
 
   // spritesheets
   LargeIconSpritesheet = "rbxassetid://16821859312",

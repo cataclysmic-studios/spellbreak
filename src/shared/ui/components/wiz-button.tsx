@@ -15,11 +15,12 @@ interface WizButtonProps {
   readonly anchorPoint?: Derivable<Vector2>;
   readonly position?: Derivable<UDim2>;
   readonly textSize?: Derivable<number>;
+  readonly visible?: Derivable<boolean>;
   readonly active?: Derivable<boolean>;
   readonly activated?: () => void;
 }
 
-export function WizButton({ text, size, anchorPoint, position, textSize, active, activated }: WizButtonProps): Vide.Node {
+export function WizButton({ text, size, anchorPoint, position, textSize, visible, active, activated }: WizButtonProps): Vide.Node {
   const hovered = source(false);
   const px = usePx();
 
@@ -35,8 +36,9 @@ export function WizButton({ text, size, anchorPoint, position, textSize, active,
       BackgroundColor3={() => hovered() ? palette.wizRed : palette.wizDeepRed}
       BackgroundTransparency={transparencyIncrement}
       ImageTransparency={() => 0.3 + transparencyIncrement()}
-      Size={size}
       AutoButtonColor={false}
+      Size={size}
+      Visible={visible}
 
       MouseLeave={() => hovered(false)}
       MouseEnter={() => {

@@ -10,16 +10,19 @@ export interface WizTextProps {
   readonly textSize?: Derivable<number>;
   readonly textColor?: Derivable<Color3>;
   readonly textScaled?: Derivable<boolean>;
+  readonly textWrap?: Derivable<boolean>;
   readonly transparency?: Derivable<number>;
   readonly backgroundTransparency?: Derivable<number>;
   readonly size?: Derivable<UDim2>;
   readonly position?: Derivable<UDim2>;
   readonly anchorPoint?: Derivable<Vector2>;
   readonly font?: Derivable<Enum.Font>;
+  readonly fontSize?: Derivable<number>;
   readonly alignX?: Derivable<Enum.TextXAlignment>;
   readonly alignY?: Derivable<Enum.TextYAlignment>;
   readonly automaticSize?: Derivable<Enum.AutomaticSize>;
   readonly layoutOrder?: Derivable<number>;
+  readonly zIndex?: Derivable<number>;
   readonly textBoundsChanged?: Source<Vector2>;
   readonly absoluteSizeChanged?: Source<Vector2>;
   readonly absolutePositionChanged?: Source<Vector2>;
@@ -30,8 +33,8 @@ const DEFAULT_FONT = Enum.Font.LuckiestGuy;
 const DEFAULT_TEXT_SIZE = 14;
 
 export function WizText({
-  name, text, textSize, textColor, textScaled, transparency, backgroundTransparency,
-  size, position, anchorPoint, font, alignX, alignY, automaticSize, layoutOrder,
+  name, text, textSize, textColor, textScaled, textWrap, transparency, backgroundTransparency,
+  size, position, anchorPoint, font, alignX, alignY, automaticSize, layoutOrder, zIndex,
   textBoundsChanged, absoluteSizeChanged, absolutePositionChanged,
   children
 }: WizTextProps): Vide.Node {
@@ -44,10 +47,11 @@ export function WizText({
     <textlabel Name={name}
       AutomaticSize={automaticSize}
       AnchorPoint={() => read(anchorPoint) ?? anchorPoints.center}
-      Position={() => isDefaultFont() ? getPosition().add(UDim2.fromOffset(0, getTextSize() / px(5))) : getPosition()}
+      Position={() => isDefaultFont() ? getPosition().add(UDim2.fromOffset(0, getTextSize() / px(6))) : getPosition()}
       Text={() => isDefaultFont() ? read(text).upper() : read(text)}
       TextSize={getTextSize}
       TextScaled={textScaled}
+      TextWrapped={textWrap}
       TextColor3={() => read(textColor) ?? palette.yellow}
       TextXAlignment={alignX}
       TextYAlignment={alignY}
@@ -56,6 +60,7 @@ export function WizText({
       Font={() => read(font) ?? Enum.Font.LuckiestGuy}
       TextTransparency={transparency}
       LayoutOrder={layoutOrder}
+      ZIndex={zIndex}
       TextBoundsChanged={textBoundsChanged}
       AbsoluteSizeChanged={absoluteSizeChanged}
       AbsolutePositionChanged={absolutePositionChanged}

@@ -5,7 +5,7 @@ interface QuestAlertContainerProps {
   readonly offset?: Derivable<Vector3>;
 }
 
-export const CONTAINER_SIZE = new Vector2(75, 75);
+export const CONTAINER_SIZE = new Vector2(70, 70);
 
 export function QuestAlertContainer({ adornee, offset, children }: PropsWithChildren<QuestAlertContainerProps>): Vide.Node {
   return (

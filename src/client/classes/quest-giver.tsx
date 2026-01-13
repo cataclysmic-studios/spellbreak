@@ -15,9 +15,9 @@ import type { CharacterController } from "client/controllers/character";
 const INTERACTION_DISTANCE = 7.5;
 
 export class QuestGiver<ModelShape extends Model = NpcModel> {
-  public readonly alertMode = atom(AlertMode.Disabled);
-  public readonly root: BasePart;
   public readonly descriptor: NpcDescriptor;
+  private readonly root: BasePart;
+  private readonly alertMode = atom(AlertMode.Disabled);
   private inRange = false;
 
   public constructor(

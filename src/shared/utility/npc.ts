@@ -28,6 +28,7 @@ export function getNpcByName(name: string): NpcDescriptor {
 }
 
 export function getNpcByID(id: NpcID): NpcDescriptor {
+  assert(allNPCs.has(id), "npc with ID " + id + " not found");
   return allNPCs.get(id)!;
 }
 

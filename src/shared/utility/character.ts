@@ -29,7 +29,7 @@ export function newCharacterData(name: string, school: PlayableSchool): Characte
     trainingPoints: 0,
     trainedSpells: [SpellReference.Myth_Troll],
     completedQuests: [],
-    activeQuests: [],
+    activeQuests: {},
     equippedGear: {
       [GearCategory.Deck]: 0
     },

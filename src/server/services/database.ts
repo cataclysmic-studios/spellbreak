@@ -5,11 +5,13 @@ import Signal from "@rbxts/lemon-signal";
 
 import { Message, messaging } from "shared/messaging";
 import { newCharacterData } from "shared/utility/character";
-import { createDiff } from "shared/utility/data";
+import { createDiff, updateCharacter } from "shared/utility/data";
 import { School } from "shared/structs/school";
 import type { OnPlayerJoin, OnPlayerLeave } from "server/hooks/players";
-import type { PlayerData } from "shared/structs/data";
+import type { CharacterData, PlayerData } from "shared/structs/data";
 import Log from "shared/log";
+
+import type { CharacterService } from "./character";
 
 const VERSION = 0;
 const DEFAULT_DATA: PlayerData = {
@@ -25,6 +27,10 @@ export class DatabaseService implements OnPlayerJoin, OnPlayerLeave {
 
   private readonly documents = new Map<Player, PlayerDataDocument>;
   private readonly collection = createCollection($nameof<PlayerData>(), { defaultData: DEFAULT_DATA });
+
+  public constructor(
+    private readonly character: CharacterService
+  ) { }
 
   public async onPlayerJoin(player: Player): Promise<void> {
     const id = player.UserId;
@@ -49,6 +55,16 @@ export class DatabaseService implements OnPlayerJoin, OnPlayerLeave {
 
     this.documents.delete(player);
     await document.close();
+  }
+
+  public get(player: Player): PlayerData {
+    return this.getDocument(player).read();
+  }
+
+  public async updateCharacter(player: Player, transform: (data: Readonly<CharacterData>) => CharacterData): Promise<void> {
+    const oldData = this.get(player);
+    const characterIndex = this.character.getSelected();
+    return await this.update(player, data => updateCharacter(oldData, characterIndex, transform(data.characters[characterIndex])))
   }
 
   public async update(player: Player, transform: (data: Readonly<PlayerData>) => PlayerData): Promise<void> {

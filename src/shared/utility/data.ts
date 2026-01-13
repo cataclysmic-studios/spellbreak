@@ -1,9 +1,16 @@
 import { getDeckByReferenceData, getPetByReferenceData, getGearByReference } from "./items";
 import { type GearData, GearCategory } from "shared/structs/data/items/gear";
-import type { CharacterData, Diff } from "shared/structs/data";
+import type { CharacterData, Diff, PlayerData } from "shared/structs/data";
 import type { DeckReferenceData } from "shared/structs/data/items/gear/deck";
 import type { PetReferenceData } from "shared/structs/data/items/gear/pet";
 import type { GearReference } from "shared/structs/data/reference/gear";
+import Sift from "@rbxts/sift";
+
+export function updateCharacter(data: PlayerData, index: number, newCharacter: CharacterData): PlayerData {
+  return Sift.Dictionary.merge(data, {
+    characters: Sift.Array.set(data.characters, index, newCharacter)
+  });
+}
 
 type GenericRecord = Record<string, unknown>;
 

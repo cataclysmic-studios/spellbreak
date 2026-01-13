@@ -1,14 +1,15 @@
 import { School } from "shared/structs/school";
 import { EnemyKind } from "shared/structs/enemy/kind";
 import { EnemyClass } from "shared/structs/enemy/class";
-import { DamageModifierKind, type EnemyDescriptor } from "shared/structs/enemy/descriptor";
+import { DamageModifierKind, EnemyID, type EnemyDescriptor } from "shared/structs/enemy/descriptor";
 
 export = {
-  name: "Shatterbones",
-  health: 280,
-  schools: [School.Ice],
+  id: EnemyID.DarkWizard,
+  name: "Dark Wizard",
+  health: 80,
+  schools: [School.Death],
   rank: 1,
-  kind: EnemyKind.Boss,
+  kind: EnemyKind.Regular,
   class: EnemyClass.Undead,
   stunnable: true,
   startingPips: 1,

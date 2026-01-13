@@ -21,7 +21,6 @@
   },
   "dependencies": {
     "@flamework/core": "^1.3.2",
-    "@rbxts/builders": "^1.0.2",
     "@rbxts/charm": "^0.10.0",
     "@rbxts/destroyable": "^1.0.9",
     "@rbxts/ez-log": "^1.0.2",
@@ -29,7 +28,6 @@
     "@rbxts/id": "^1.0.0",
     "@rbxts/instance-utility": "^1.0.3",
     "@rbxts/lapis": "^0.3.8",
-    "@rbxts/lazy": "^1.0.1",
     "@rbxts/lemon-signal": "^1.2.0",
     "@rbxts/mechanism": "^1.1.2",
     "@rbxts/object-utils": "^1.0.4",

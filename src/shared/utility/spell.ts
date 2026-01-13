@@ -26,6 +26,6 @@ export function getAllSpells(): Spell[] {
   if (allSpellsCache !== undefined)
     return allSpellsCache;
 
-  const spellsFolder = getInstanceAtPath("src/shared/spells")!;
+  const spellsFolder = getInstanceAtPath("src/shared/game-data/spells")!;
   return allSpellsCache = getDescendantsOfType(spellsFolder, "ModuleScript").mapFiltered(require<Spell>);
 }

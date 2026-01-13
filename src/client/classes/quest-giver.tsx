@@ -5,16 +5,20 @@ import { NpcDescriptor, NpcID } from "shared/structs/npc/descriptor";
 
 import { getNpcByID } from "shared/utility/npc";
 import { hasCompletedQuest, hasQuest } from "shared/utility/quests";
+import { character } from "client/constants";
 import { AlertMode, QuestAlert } from "shared/ui/components/quest-alert";
 import { QuestAlertContainer } from "shared/ui/components/quest-alert-container";
-
-import type { CharacterController } from "client/controllers/character";
 import Log from "shared/log";
 
-export class QuestGiver<ModelShape extends Model> {
+import type { CharacterController } from "client/controllers/character";
+
+const INTERACTION_DISTANCE = 7.5;
+
+export class QuestGiver<ModelShape extends Model = NpcModel> {
   public readonly alertMode = atom(AlertMode.Disabled);
   public readonly root: BasePart;
   public readonly descriptor: NpcDescriptor;
+  private inRange = false;
 
   public constructor(
     private readonly character: CharacterController,
@@ -31,6 +35,17 @@ export class QuestGiver<ModelShape extends Model> {
     Log.info("Created new quest giver for NPC: " + this.descriptor.name);
   }
 
+  public canInteract(): boolean {
+    return this.inRange;
+  }
+
+  public update(dt: number): void {
+    const characterPosition = character.collider.Position;
+    const position = this.root.Position;
+    const distance = position.sub(characterPosition).Magnitude;
+    this.inRange = distance <= INTERACTION_DISTANCE;
+  }
+
   private mountQuestAlert(): void {
     Vide.mount(() => (
       <QuestAlertContainer adornee={this.root} >
@@ -41,15 +56,16 @@ export class QuestGiver<ModelShape extends Model> {
 
   private updateMode(): void {
     const character = this.character.getData();
-    const givesMoreQuests = this.descriptor.questsGiven.some(quest => !hasQuest(character, quest) && !hasCompletedQuest(character, quest));
+    const { questsGiven } = this.descriptor;
+    const givesMoreQuests = questsGiven.some(quest => !hasQuest(character, quest) && !hasCompletedQuest(character, quest));
     if (givesMoreQuests)
       return void this.alertMode(AlertMode.PickUp);
 
-    const canHandInQuest = this.descriptor.questsGiven.some(quest => hasQuest(character, quest) && false); // TODO: check goals
+    const canHandInQuest = questsGiven.some(quest => hasQuest(character, quest) && false); // TODO: check goals
     if (canHandInQuest)
       return void this.alertMode(AlertMode.HandIn);
 
-    const inProgress = this.descriptor.questsGiven.some(quest => hasQuest(character, quest));
+    const inProgress = questsGiven.some(quest => hasQuest(character, quest));
     if (inProgress)
       return void this.alertMode(AlertMode.InProgress);
 

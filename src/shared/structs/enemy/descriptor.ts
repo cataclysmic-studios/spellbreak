@@ -1,6 +1,13 @@
+import type { BaseID } from "@rbxts/id";
+
 import type { School } from "../school";
 import type { EnemyClass } from "./class";
 import type { EnemyKind } from "./kind";
+
+export const enum EnemyID {
+  DarkWizard,
+  Shatterbones
+}
 
 export const enum DamageModifierKind {
   /** Opposite school boosts, same school resists */
@@ -10,7 +17,7 @@ export const enum DamageModifierKind {
   Custom
 }
 
-export interface BaseEnemyDescriptor {
+export interface BaseEnemyDescriptor extends BaseID<EnemyID> {
   readonly name: string;
   readonly health: number;
   readonly schools: School[];

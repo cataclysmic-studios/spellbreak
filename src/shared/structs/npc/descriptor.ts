@@ -1,11 +1,13 @@
+import type { BaseID } from "@rbxts/id";
+
 import type { QuestDescriptor } from "../quests";
 
 export const enum NpcID {
-  HeadmasterHale
+  HeadmasterHale,
+  PrivatePike
 }
 
-export interface NpcDescriptor {
-  readonly id: NpcID;
+export interface NpcDescriptor extends BaseID<NpcID> {
   readonly name: string;
   readonly title?: string;
   readonly questsGiven: QuestDescriptor[];

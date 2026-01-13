@@ -5,8 +5,6 @@ import { palette } from "../palette";
 import { anchorPoints, positions } from "../utility/positioning";
 import { Images } from "../utility/images";
 
-import { Container } from "../utility/components/container";
-import { GoldStroke } from "./gold-stroke";
 import { WizText } from "./wiz-text";
 
 interface WizButton2Props {

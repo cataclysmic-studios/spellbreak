@@ -105,7 +105,7 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
             Position={positions.center}
             Size={UDim2.fromOffset(px(300), px(90))}
             BackgroundTransparency={1}
-            Image={Images.WaitingForOthersBG}
+            Image={Images.Background_WaitingForOthers}
           >
             <uipadding
               PaddingTop={new UDim(0, px(18))}

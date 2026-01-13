@@ -8,8 +8,14 @@ import Log from "shared/log";
 
 @Service()
 export class CharacterService implements OnPlayerJoin {
+  private selectedIndex = 0; // TODO: selection
+
   public onPlayerJoin(player: Player): void {
     this.load(player, "roslyn", new CFrame(0, 5, 0));
+  }
+
+  public getSelected(): number {
+    return this.selectedIndex;
   }
 
   public load(player: Player, modelName: ExtractKeys<typeof assets.characters, CharacterModel>, location: CFrame): void {

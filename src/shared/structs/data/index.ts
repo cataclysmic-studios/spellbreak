@@ -49,7 +49,7 @@ export interface CharacterData {
   readonly trainingPoints: number;
   readonly trainedSpells: SpellReference[];
   readonly completedQuests: QuestID[];
-  readonly activeQuests: QuestID[];
+  readonly activeQuests: Partial<Record<QuestID, number>>; // quest id -> goal index
   /** Values represent index in backpack data */
   readonly equippedGear: EquippedGearData;
   readonly backpack: BackpackData;

@@ -4,9 +4,12 @@ export const enum Images {
   ParchmentBanner = "rbxassetid://6099008610",
   BookBinding = "rbxassetid://92180308011222",
   RedRibbon = "rbxassetid://83791914432890",
-  CardInfoBG = "rbxassetid://13711786825",
-  WaitingForOthersBG = "rbxassetid://98612224033956",
   RedSpiral = "http://www.roblox.com/asset/?id=951593731",
+
+  // backgrounds
+  Background_WaitingForOthers = "rbxassetid://98612224033956",
+  Background_CardInfo = "rbxassetid://13711786825",
+  Background_Dialog = "rbxassetid://125227688237254",
 
   // spritesheets
   LargeIconSpritesheet = "rbxassetid://16821859312",

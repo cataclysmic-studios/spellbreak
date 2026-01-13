@@ -7,10 +7,11 @@ import { SpritestripButton } from "../spritestrip-button";
 
 interface BookButtonProps {
   readonly isOpen: Source<boolean>;
+  readonly visible: Source<boolean>;
 }
 
 const buttonSize = 128;
-export function BookButton({ isOpen }: BookButtonProps): Vide.Node {
+export function BookButton({ isOpen, visible }: BookButtonProps): Vide.Node {
   const hovered = source(false);
   const springOffset = spring(() => hovered() ? 12 : 0, 0.15, 1);
   const px = usePx();
@@ -22,6 +23,8 @@ export function BookButton({ isOpen }: BookButtonProps): Vide.Node {
       size={() => UDim2.fromOffset(px(buttonSize + springOffset()), px(buttonSize + springOffset()))}
       spritestripImage={Images.SpellbookButton}
       tileSize={buttonSize}
+      visible={visible}
+      active={visible}
 
       hovered={() => hovered(true)}
       unhovered={() => hovered(false)}

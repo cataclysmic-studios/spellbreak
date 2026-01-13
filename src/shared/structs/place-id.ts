@@ -1,4 +1,4 @@
 export const enum PlaceID {
-  MainMenu = 89596008959999, // temp
-  InGame = 89596008959999, // temp
+  MainMenu = 0, // temp
+  InGame = 16745884656, // temp
 }

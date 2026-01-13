@@ -26,7 +26,7 @@ export function getAllGear(): GearData[] {
   if (allGearsCache !== undefined)
     return allGearsCache;
 
-  const decksFolder = getInstanceAtPath("src/shared/items/gear")!;
+  const decksFolder = getInstanceAtPath("src/shared/game-data/items/gear")!;
   return allGearsCache = getDescendantsOfType(decksFolder, "ModuleScript").map(require<GearData>);
 }
 
@@ -53,7 +53,7 @@ export function getAllPets(): PetData[] {
   if (allPetsCache !== undefined)
     return allPetsCache;
 
-  const decksFolder = getInstanceAtPath("src/shared/items/gear/pets")!;
+  const decksFolder = getInstanceAtPath("src/shared/game-data/items/gear/pets")!;
   return allPetsCache = getDescendantsOfType(decksFolder, "ModuleScript").map(require<PetData>);
 }
 
@@ -80,7 +80,7 @@ export function getAllDecks(): DeckData[] {
   if (allDecksCache !== undefined)
     return allDecksCache;
 
-  const decksFolder = getInstanceAtPath("src/shared/items/gear/decks")!;
+  const decksFolder = getInstanceAtPath("src/shared/game-data/items/gear/decks")!;
   return allDecksCache = getDescendantsOfType(decksFolder, "ModuleScript").map(require<DeckData>);
 }
 

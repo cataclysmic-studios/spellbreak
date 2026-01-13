@@ -90,7 +90,7 @@ export function DeckHand({ duelInfo }: DeckHandProps): Vide.Node {
         VerticalAlignment={Enum.VerticalAlignment.Center}
         SortOrder={Enum.SortOrder.LayoutOrder}
       />
-      <CardBackground image={Images.CardInfoBG} layoutOrder={-1}>
+      <CardBackground image={Images.Background_CardInfo} layoutOrder={-1}>
         {/* <WizText text={() => `Cards\n${deck.getCardsLeft()} of ${deck.totalCards}`}
           position={positions.center}
           font={Enum.Font.Cartoon}

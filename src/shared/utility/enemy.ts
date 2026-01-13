@@ -12,6 +12,6 @@ function getAllEnemyDescriptors(): EnemyDescriptor[] {
   if (allEnemyDescriptorsCache !== undefined)
     return allEnemyDescriptorsCache;
 
-  const descriptorFolder = getInstanceAtPath("src/shared/enemies")!;
+  const descriptorFolder = getInstanceAtPath("src/shared/game-data/enemies")!;
   return allEnemyDescriptorsCache = getDescendantsOfType(descriptorFolder, "ModuleScript").map(require<EnemyDescriptor>);
 }

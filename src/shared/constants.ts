@@ -2,8 +2,8 @@ import { ReplicatedStorage } from "@rbxts/services";
 import Signal from "@rbxts/lemon-signal";
 
 import { EnemyKind } from "./structs/enemy/kind";
-import type { PlayerData } from "./structs/data";
 import { SpellKind } from "./structs/spell";
+import type { PlayerData } from "./structs/data";
 
 export const { assets } = ReplicatedStorage;
 

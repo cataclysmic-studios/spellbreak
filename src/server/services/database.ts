@@ -13,7 +13,7 @@ import Log from "shared/log";
 
 import type { CharacterService } from "./character";
 
-const VERSION = 8;
+const VERSION = 11;
 const DEFAULT_DATA: PlayerData = {
   crowns: 0,
   characters: [newCharacterData("Test Monkey", School.Myth)]

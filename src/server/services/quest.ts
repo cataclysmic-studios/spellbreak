@@ -24,16 +24,11 @@ export class QuestService {
     const character = this.database.getCharacter(player);
     if (!canReceiveQuest(character, id)) return;
     if (!npcGivesQuest(npcID, id))
-      return Log.warn("Cannot pick up quest " + id + ": NPC " + npcID + " does not give this quest", LOG_TAGS);
+      return Log.warn(`Cannot pick up quest ${id}: NPC ${player} does not give this quest`, LOG_TAGS);
 
-    Log.info(player + " picked up quest " + id + " from NPC " + npcID, LOG_TAGS);
+    Log.info(`${player} picked up quest ${id} from NPC ${npcID}`, LOG_TAGS);
     if (this.checkCompletion(player, id, 0)) return; // some quests can be picked up and immediately completed w/o doing anything
-
-    this.database.updateCharacter(player, character =>
-      Sift.Dictionary.merge(character, {
-        activeQuests: Sift.Dictionary.set(character.activeQuests, id, 0)
-      })
-    );
+    this.setActiveQuestGoal(player, id, 0);
   }
 
   /** @hidden */
@@ -45,18 +40,18 @@ export class QuestService {
     const currentGoalIndex = getCurrentGoalIndex(character, id);
     const goalNumber = goalIndex + 1;
     if (currentGoalIndex !== goalIndex)
-      return Log.warn("Cannot complete goal #" + goalNumber + " for " + player + " on quest " + id + ": Current goal is #" + goalNumber, LOG_TAGS);
+      return Log.warn(`Cannot complete goal #${goalNumber} for ${player} on quest ${id}: Current goal is #${goalNumber}`, LOG_TAGS);
 
-    Log.info(player + " completed goal #" + goalNumber + " for quest " + id, LOG_TAGS);
-    if (this.checkCompletion(player, id, goalIndex)) return;
+    Log.info(`${player} completed goal #${goalNumber} for quest ${id}`, LOG_TAGS);
+    if (this.checkCompletion(player, id, goalNumber)) return;
     this.setActiveQuestGoal(player, id, goalNumber);
   }
 
   public async complete(player: Player, id: QuestID): Promise<void> {
-    Log.info(player + " completed quest " + id + "!", LOG_TAGS);
+    Log.info(`${player} completed quest ${id}!`, LOG_TAGS);
     await this.database.updateCharacter(player, character =>
       Sift.Dictionary.merge(character, {
-        activeQuests: Sift.Dictionary.removeKey(character.activeQuests, id),
+        activeQuests: Sift.Dictionary.filter(character.activeQuests, key => key !== id),
         completedQuests: Sift.Array.push(character.completedQuests, id)
       })
     );
@@ -64,8 +59,8 @@ export class QuestService {
 
   private checkCompletion(player: Player, id: QuestID, goalIndex: number): boolean {
     const quest = getQuestByID(id);
-    const completed = goalIndex + 1 === quest.goals.size();
-    Log.info("Is quest " + id + " @ goal #" + goalIndex + " is complete for " + player + "?: " + (completed ? "yes" : "no"), LOG_TAGS);
+    const completed = goalIndex === quest.goals.size();
+    Log.info(`Is quest ${id} @ goal #${goalIndex + 1} complete for player ${player}?: ${completed ? "yes" : "no"}`, LOG_TAGS);
 
     if (completed)
       this.complete(player, id);

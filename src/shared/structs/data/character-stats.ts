@@ -1,6 +1,6 @@
 import type { School } from "../school";
 
-interface PerSchoolStats<T> {
+export interface PerSchoolStats<T> {
   readonly [School.Fire]: T;
   readonly [School.Ice]: T;
   readonly [School.Storm]: T;

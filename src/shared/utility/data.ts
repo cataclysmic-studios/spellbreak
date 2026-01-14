@@ -1,9 +1,10 @@
 import { getDeckByReferenceData, getPetByReferenceData, getGearByReference } from "./items";
 import { type GearData, GearCategory } from "shared/structs/data/items/gear";
-import type { CharacterData, Diff, PlayerData } from "shared/structs/data";
+import type { CharacterData, PlayerData } from "shared/structs/data";
 import type { DeckReferenceData } from "shared/structs/data/items/gear/deck";
 import type { PetReferenceData } from "shared/structs/data/items/gear/pet";
 import type { GearReference } from "shared/structs/data/reference/gear";
+import type { Diff } from "shared/structs/data/serialization";
 import Sift from "@rbxts/sift";
 
 export function updateCharacter(data: PlayerData, index: number, newCharacter: CharacterData): PlayerData {
@@ -33,20 +34,20 @@ export function createDiff<T>(oldData: T, newData: T): Diff<T> {
   for (const [key, newValue] of pairs(newData)) {
     const oldValue = oldData[key];
     if (oldValue === undefined) {
-      changed ??= {};
+      changed ??= {} as never;
       (changed as GenericRecord)[key] = newValue;
       continue;
     }
 
     if ((!typeIs(oldValue, "table") || !typeIs(newValue, "table")) && oldValue !== newValue) {
-      changed ??= {};
+      changed ??= {} as never;
       (changed as GenericRecord)[key] = newValue;
       continue;
     }
 
     const childDiff = createDiff(oldValue, newValue);
     if ("changed" in childDiff) {
-      changed ??= {};
+      changed ??= {} as never;
       (changed as GenericRecord)[key] = childDiff.changed ?? newValue;
     }
     if ("removed" in childDiff) {

@@ -1,10 +1,17 @@
-import { MessageEmitter } from "@rbxts/tether";
+import { MessageEmitter, type MiddlewareContext } from "@rbxts/tether";
 import type { Packed, u8 } from "@rbxts/serio";
 
+import { fixNumericKeys } from "./utility/data";
 import type { CompleteGoalPacket, PickUpQuestPacket, TransitionPosePacket } from "./structs/packets";
 import type { PlayerDataSchema, Diff } from "./structs/data/serialization";
+import Log from "./log";
 
 export const messaging = MessageEmitter.create<MessageData>();
+messaging.middleware.onRequestDropped((message, reason) => Log.warn(`Dropped message ${message}: ${reason}`));
+messaging.middleware
+  .useClientReceive(Message.Data_Updated, (ctx: MiddlewareContext<MessageData[Message.Data_Updated]>) => {
+    ctx.data = fixNumericKeys(ctx.data);
+  });
 
 export const enum Message {
   // Server -> Client

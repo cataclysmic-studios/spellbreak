@@ -8,16 +8,16 @@ import type { SpellReference } from "./reference/spell";
 import type { QuestID } from "../quests";
 
 export interface EquippedGearData {
-  readonly [GearCategory.Hat]?: GearReference;
-  readonly [GearCategory.Robe]?: GearReference;
-  readonly [GearCategory.Boots]?: GearReference;
-  readonly [GearCategory.Wand]?: GearReference;
-  readonly [GearCategory.Athame]?: GearReference;
-  readonly [GearCategory.Amulet]?: GearReference;
-  readonly [GearCategory.Ring]?: GearReference;
-  readonly [GearCategory.Pet]?: GearReference;
-  readonly [GearCategory.Mount]?: GearReference;
-  readonly [GearCategory.Deck]?: GearReference;
+  readonly [GearCategory.Hat]?: number;
+  readonly [GearCategory.Robe]?: number;
+  readonly [GearCategory.Boots]?: number;
+  readonly [GearCategory.Wand]?: number;
+  readonly [GearCategory.Athame]?: number;
+  readonly [GearCategory.Amulet]?: number;
+  readonly [GearCategory.Ring]?: number;
+  readonly [GearCategory.Pet]?: number;
+  readonly [GearCategory.Mount]?: number;
+  readonly [GearCategory.Deck]?: number;
 }
 
 export interface BackpackData {

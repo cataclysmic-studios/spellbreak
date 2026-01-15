@@ -37,7 +37,7 @@
     "@rbxts/services": "^1.5.5",
     "@rbxts/sift": "^0.0.11",
     "@rbxts/string-utils": "^1.0.3",
-    "@rbxts/tether": "^1.4.3",
+    "@rbxts/tether": "^1.4.7",
     "@rbxts/timer": "^0.0.9",
     "@rbxts/trash": "^1.0.8",
     "@rbxts/vide": "^0.5.7"

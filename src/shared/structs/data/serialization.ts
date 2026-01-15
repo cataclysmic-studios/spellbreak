@@ -5,6 +5,7 @@ import type { PerSchoolStats } from "./character-stats";
 import type { GearCategory } from "./items/gear";
 import type { DeckLinkedData } from "./items/gear/deck";
 import type { PetLinkedData } from "./items/gear/pet";
+import { EquippedGearData } from ".";
 
 type QuestIDSchema = u16;
 type SpellReferenceSchema = u16;
@@ -42,18 +43,7 @@ interface ReferenceWithDataSchema<T, R extends number = u16> {
   readonly data: T;
 }
 
-export interface EquippedGearDataSchema {
-  readonly [GearCategory.Hat]?: GearReferenceSchema;
-  readonly [GearCategory.Robe]?: GearReferenceSchema;
-  readonly [GearCategory.Boots]?: GearReferenceSchema;
-  readonly [GearCategory.Wand]?: GearReferenceSchema;
-  readonly [GearCategory.Athame]?: GearReferenceSchema;
-  readonly [GearCategory.Amulet]?: GearReferenceSchema;
-  readonly [GearCategory.Ring]?: GearReferenceSchema;
-  readonly [GearCategory.Pet]?: ReferenceWithDataSchema<PetLinkedData>;
-  readonly [GearCategory.Mount]?: GearReferenceSchema;
-  readonly [GearCategory.Deck]?: ReferenceWithDataSchema<DeckLinkedData>;
-}
+export type EquippedGearDataSchema = { [K in keyof EquippedGearData]: u8; };
 
 export interface BackpackDataSchema {
   readonly [GearCategory.Hat]: GearReferenceSchema[];

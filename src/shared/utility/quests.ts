@@ -71,7 +71,7 @@ export function getCurrentGoalIndex(character: CharacterData, arg: QuestID | Que
   const id = getID(quest);
   if (!("goals" in quest)) return;
 
-  const goalIndex = character.activeQuests[id] ?? character.activeQuests[tostring(id) as never];
+  const goalIndex = character.activeQuests[id];
   assert(goalIndex !== undefined, "cannot get current goal for quest " + id + ", quest is inactive");
 
   return goalIndex;
@@ -79,7 +79,7 @@ export function getCurrentGoalIndex(character: CharacterData, arg: QuestID | Que
 
 export function hasQuest({ activeQuests }: CharacterData, quest: QuestID | QuestDescriptor): boolean {
   const id = getID(quest);
-  return id in activeQuests || tostring(id) in activeQuests;
+  return id in activeQuests;
 }
 
 export function hasCompletedQuest({ completedQuests }: CharacterData, quest: QuestID | QuestDescriptor): boolean {

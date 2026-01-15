@@ -4,8 +4,8 @@ import { $nameof } from "rbxts-transform-debug";
 import Signal from "@rbxts/lemon-signal";
 
 import { Message, messaging } from "shared/messaging";
+import { createDiff, fixNumericKeys, updateCharacter } from "shared/utility/data";
 import { newCharacterData } from "shared/utility/character";
-import { createDiff, updateCharacter } from "shared/utility/data";
 import { School } from "shared/structs/school";
 import type { OnPlayerJoin, OnPlayerLeave } from "server/hooks/players";
 import type { CharacterData, PlayerData } from "shared/structs/data";
@@ -13,13 +13,13 @@ import Log from "shared/log";
 
 import type { CharacterService } from "./character";
 
-const VERSION = 11;
+type PlayerDataDocument = Document<PlayerData>;
+
+const VERSION = 14;
 const DEFAULT_DATA: PlayerData = {
   crowns: 0,
-  characters: [newCharacterData("Test Monkey", School.Myth)]
+  characters: [fixNumericKeys(newCharacterData("Test Monkey", School.Myth))]
 };
-
-type PlayerDataDocument = Document<PlayerData>;
 
 @Service()
 export class DatabaseService implements OnPlayerJoin, OnPlayerLeave {
@@ -61,28 +61,29 @@ export class DatabaseService implements OnPlayerJoin, OnPlayerLeave {
     return this.get(player).characters[this.character.getSelected()];
   }
 
-  public get(player: Player): PlayerData {
-    return this.getDocument(player).read();
+  public get(player: Player, document = this.getDocument(player)): PlayerData {
+    return fixNumericKeys(document.read());
   }
 
   public async updateCharacter(player: Player, transform: (data: Readonly<CharacterData>) => CharacterData): Promise<void> {
-    const oldData = this.get(player);
     const characterIndex = this.character.getSelected();
-    await this.update(player, data => updateCharacter(oldData, characterIndex, transform(data.characters[characterIndex])))
+    await this.update(player, data =>
+      updateCharacter(data, characterIndex, transform(data.characters[characterIndex]))
+    );
   }
 
   public async update(player: Player, transform: (data: Readonly<PlayerData>) => PlayerData): Promise<void> {
     const document = this.getDocument(player);
-    const oldData = document.read();
-    const newData = transform(oldData);
-    document.write(newData);
+    const oldData = this.get(player, document);
+    const newData = fixNumericKeys(transform(oldData));
     this.sendDiffToClient(player, oldData, newData);
 
+    document.write(newData);
     await document.save();
   }
 
   private sendDiffToClient(player: Player, oldData: PlayerData, newData: PlayerData): void {
-    messaging.client.emit(player, Message.Data_Updated, createDiff(oldData, newData));
+    messaging.client.emit(player, Message.Data_Updated, fixNumericKeys(createDiff(oldData, newData)));
   }
 
   private getDocument(player: Player): PlayerDataDocument {

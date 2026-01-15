@@ -1,3 +1,6 @@
+import type { Modding } from "@flamework/core";
+import Sift from "@rbxts/sift";
+
 import { getDeckByReferenceData, getPetByReferenceData, getGearByReference } from "./items";
 import { type GearData, GearCategory } from "shared/structs/data/items/gear";
 import type { CharacterData, PlayerData } from "shared/structs/data";
@@ -5,7 +8,33 @@ import type { DeckReferenceData } from "shared/structs/data/items/gear/deck";
 import type { PetReferenceData } from "shared/structs/data/items/gear/pet";
 import type { GearReference } from "shared/structs/data/reference/gear";
 import type { Diff } from "shared/structs/data/serialization";
-import Sift from "@rbxts/sift";
+
+type NumericKey =
+  | number
+  | `${number}`;
+
+type NumericKeys<T> = Extract<keyof T, NumericKey>;
+type NumericRecordGuard<T extends {}> = Modding.Generic<{ [K in keyof T as K extends NumericKeys<T> ? K : never]: T[K] }, "guard">;
+
+/** @metadata macro */
+export function fixNumericKeys<T extends {}>(data: T, guard?: NumericRecordGuard<T>): T {
+  assert(guard !== undefined);
+  if (!guard(data))
+    return data;
+
+  const result = {} as T;
+  for (const [key, value] of pairs(data)) {
+    const newValue = fixNumericKeys(value, ((v: unknown) => typeIs(v, "table")) as never);
+    if (typeIs(key, "string") && tonumber(key) !== undefined) {
+      result[tonumber(key) as never] = newValue;
+      continue;
+    }
+
+    result[key] = newValue;
+  }
+
+  return result;
+}
 
 export function updateCharacter(data: PlayerData, index: number, newCharacter: CharacterData): PlayerData {
   return Sift.Dictionary.merge(data, {

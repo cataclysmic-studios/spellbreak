@@ -19,6 +19,7 @@ export class CharacterController {
   }
 
   public getData(): CharacterData {
+    assert(this.replica.data.characters !== undefined, "data accessed before replica load")
     return this.replica.data.characters[this.index];
   }
 

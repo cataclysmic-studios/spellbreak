@@ -39,6 +39,7 @@ export class QuestGiver<ModelShape extends Model = NpcModel> {
   }
 
   public update(dt: number): void {
+    // TODO: show interact prompt
     const characterPosition = character.collider.Position;
     const position = this.root.Position;
     const distance = position.sub(characterPosition).Magnitude;

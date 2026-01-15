@@ -94,8 +94,14 @@ export function applyPatch<T extends object>(base: T, diff: Diff<T>): T {
     result[key as never] = value;
 
   if (diff.removed)
-    for (const [key] of pairs(diff.removed))
-      result[key as never] = undefined!;
+    for (const [key, value] of pairs(diff.removed))
+      if (value === true)
+        result[key as never] = undefined!;
+      else
+        result[key as never] = applyPatch(base[key as never], {
+          changed: diff.changed?.[key as never],
+          removed: diff.removed?.[key as never]
+        });
 
   if (diff.changed)
     for (const [key, value] of pairs(diff.changed)) {
@@ -103,7 +109,7 @@ export function applyPatch<T extends object>(base: T, diff: Diff<T>): T {
       if (typeIs(value, "table") && typeIs(baseValue, "table"))
         result[key as never] = applyPatch(baseValue, {
           changed: value as never,
-          removed: diff.removed && diff.removed[key as never]
+          removed: diff.removed?.[key as never]
         });
       else
         result[key as never] = value as never;

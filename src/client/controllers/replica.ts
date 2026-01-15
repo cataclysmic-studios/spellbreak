@@ -15,7 +15,7 @@ export class ReplicaController {
   @OnClientMessage(Message.Data_Updated)
   public onUpdate(diff: MessageData[Message.Data_Updated]): void {
     this.data = applyPatch(this.data, diff as never);
+    print(diff)
     this.updated.Fire();
-    // Log.info("Diff:\n" + repr(diff));
   }
 }

@@ -15,7 +15,7 @@ import type { CharacterService } from "./character";
 
 type PlayerDataDocument = Document<PlayerData>;
 
-const VERSION = 14;
+const VERSION = 16;
 const DEFAULT_DATA: PlayerData = {
   crowns: 0,
   characters: [fixNumericKeys(newCharacterData("Test Monkey", School.Myth))]

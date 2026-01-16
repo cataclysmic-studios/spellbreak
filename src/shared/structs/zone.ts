@@ -1,9 +1,13 @@
 export const enum ZoneID {
   WC_TownSquare,
-  WC_PegasusLane
+  WC_TownSquare_HeadmastersOffice,
+  WC_PegasusLane,
+  WC_PegasusLane_ShatterbonesTower,
 }
 
 export interface ZoneNames {
   [ZoneID.WC_TownSquare]: "Town Square",
-  [ZoneID.WC_PegasusLane]: "Pegasus Lane"
+  [ZoneID.WC_TownSquare_HeadmastersOffice]: "Headmaster's Office",
+  [ZoneID.WC_PegasusLane]: "Pegasus Lane",
+  [ZoneID.WC_PegasusLane_ShatterbonesTower]: "Shatterbones' Tower",
 }

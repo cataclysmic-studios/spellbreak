@@ -1,4 +1,4 @@
-import Vide, { source, Source } from "@rbxts/vide";
+import Vide, { derive, source, Source } from "@rbxts/vide";
 import type { BaseID } from "@rbxts/id";
 
 import { Message, messaging } from "shared/messaging";
@@ -13,6 +13,7 @@ import type { DialogDescriptor, DialogID } from "shared/structs/npc/dialog";
 
 import { WizText } from "./wiz-text";
 import { WizButton } from "./wiz-button";
+import { effect } from "@rbxts/charm";
 
 interface DialogProps extends BaseID<Source<Maybe<DialogID>>> {
   readonly character: Source<CharacterData>
@@ -20,12 +21,12 @@ interface DialogProps extends BaseID<Source<Maybe<DialogID>>> {
 
 export function Dialog({ id, character }: DialogProps): Vide.Node {
   const px = usePx();
-  const paragraphIndex = source(0);
+  const paragraphIndex = derive(() => {
+    id();
+    return source(0);
+  });
   const getDialog = () => id() !== undefined ? getDialogByID(id()!) : undefined;
-  const closeDialog = () => {
-    id(undefined);
-    paragraphIndex(0);
-  };
+  const closeDialog = () => id(undefined);
   const portraitImage = () => {
     const dialog = getDialog();
     if (!dialog) return "";
@@ -44,9 +45,9 @@ export function Dialog({ id, character }: DialogProps): Vide.Node {
     const dialog = getDialog();
     if (!dialog) return "";
 
-    return dialog.paragraphs[paragraphIndex()];
+    return dialog.paragraphs[paragraphIndex()()];
   }
-  const isOnLastParagraph = (dialog: DialogDescriptor) => paragraphIndex() + 1 === dialog.paragraphs.size();
+  const isOnLastParagraph = (dialog: DialogDescriptor) => paragraphIndex()() + 1 === dialog.paragraphs.size();
   const canAcceptQuest = (dialog: DialogDescriptor) => dialog.givesQuest !== undefined && !hasQuest(character(), dialog.givesQuest);
   const advanceButtonText = () => {
     const dialog = getDialog();
@@ -72,22 +73,21 @@ export function Dialog({ id, character }: DialogProps): Vide.Node {
 
     if (isOnLastParagraph(dialog)) {
       closeDialog();
-      if (canAcceptQuest(dialog))
-        messaging.server.emit(Message.Quest_PickUp, {
-          id: dialog.givesQuest!,
-          npcID: dialog.speaker,
-        });
-
       const data = character();
       const result = getFirstCompletableTalkGoal(data, dialog.speaker);
       if (result !== undefined) {
         const { questID: id, goalIndex } = result;
         messaging.server.emit(Message.Quest_CompleteGoal, { id, goalIndex });
-      }
+      } else if (canAcceptQuest(dialog))
+        messaging.server.emit(Message.Quest_PickUp, {
+          id: dialog.givesQuest!,
+          npcID: dialog.speaker,
+        });
     }
 
-    paragraphIndex(paragraphIndex() + 1);
+    paragraphIndex()(paragraphIndex()() + 1);
   }
+  const isBackButton = () => paragraphIndex()() > 0;
 
   const rightPad = 0.08;
   const buttonYOffset = 0.02;
@@ -138,9 +138,8 @@ export function Dialog({ id, character }: DialogProps): Vide.Node {
         anchorPoint={anchorPoints.bottomLeft}
         position={positions.bottomLeft.add(UDim2.fromScale(0.25, buttonYOffset))}
         size={buttonSize}
-        visible={() => paragraphIndex() > 0}
-        text="Back"
-        activated={() => paragraphIndex(paragraphIndex() - 1)}
+        text={() => isBackButton() ? "Back" : "Cancel"}
+        activated={() => isBackButton() ? paragraphIndex()(paragraphIndex()() - 1) : closeDialog()}
       />
       <WizButton
         anchorPoint={anchorPoints.bottomLeft}

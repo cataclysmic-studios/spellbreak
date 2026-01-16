@@ -2,9 +2,13 @@ import { getInstanceAtPath } from "@rbxts/flamework-meta-utils";
 import { getDescendantsOfType } from "@rbxts/instance-utility";
 import Object from "@rbxts/object-utils";
 
+import { getNpcByID } from "./npc";
+import { getEnemyByID } from "./enemy";
+import { getZoneName } from "./zone";
+import { QuestGoalAction, type TalkQuestGoal, type QuestDescriptor, type QuestGoal, type QuestID } from "shared/structs/quests";
 import type { CharacterData } from "shared/structs/data";
-import { NpcID } from "shared/structs/npc/descriptor";
-import { QuestGoalAction, TalkQuestGoal, type QuestDescriptor, type QuestGoal, type QuestID } from "shared/structs/quests";
+import type { NpcDescriptor, NpcID } from "shared/structs/npc/descriptor";
+import type { ZoneID } from "shared/structs/zone";
 
 const allQuests = new Map<QuestID, QuestDescriptor>;
 const questsFolder = getInstanceAtPath("src/shared/game-data/quests") as Folder;
@@ -88,4 +92,42 @@ export function hasCompletedQuest({ completedQuests }: CharacterData, quest: Que
 
 export function hasPrequests(quest: QuestDescriptor): quest is QuestDescriptor & { prequests: NonNullable<QuestDescriptor["prequests"]> } {
   return quest.prequests !== undefined && quest.prequests.size() > 0;
+}
+
+export function canGiveNewQuest(character: CharacterData, { questsGiven }: NpcDescriptor): boolean {
+  return questsGiven.some(quest => canReceiveQuest(character, quest));
+}
+
+export function hasActiveQuestFrom(character: CharacterData, { questsGiven }: NpcDescriptor): boolean {
+  return questsGiven.some(quest => hasQuest(character, quest));
+}
+
+export function getGoalTargetName({ action, target }: QuestGoal): string {
+  switch (action) {
+    case QuestGoalAction.Talk:
+      return getNpcByID(target).name;
+    case QuestGoalAction.Explore:
+      return getZoneName(target);
+    case QuestGoalAction.Defeat:
+      return getEnemyByID(target).name;
+  }
+}
+
+export function getGoalTargetZone({ action, target }: QuestGoal): ZoneID {
+  switch (action) {
+    case QuestGoalAction.Talk:
+      return getNpcByID(target).zone;
+    case QuestGoalAction.Explore:
+      return target;
+    case QuestGoalAction.Defeat:
+      return getEnemyByID(target).zone;
+  }
+}
+
+export function getQuestDescription(id: QuestID, goalIndex = 0): string {
+  const quest = getQuestByID(id);
+  const goal = quest.goals[goalIndex];
+  const zone = getGoalTargetZone(goal);
+
+  return `${goal.action} ${getGoalTargetName(goal)} in ${getZoneName(zone)}`;
 }

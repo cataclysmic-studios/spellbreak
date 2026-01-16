@@ -1,17 +1,20 @@
 import { getInstanceAtPath } from "@rbxts/flamework-meta-utils";
 import { getDescendantsOfType } from "@rbxts/instance-utility";
 
-import type { EnemyDescriptor } from "../structs/enemy/descriptor";
+import { EnemyID, type EnemyDescriptor } from "../structs/enemy/descriptor";
 
-export function getEnemyDescriptor(name: string): Maybe<EnemyDescriptor> {
-  return getAllEnemyDescriptors().find(descriptor => descriptor.name === name);
+const allEnemies = new Map<EnemyID, EnemyDescriptor>;;
+const descriptorFolder = getInstanceAtPath("src/shared/game-data/enemies")!;
+for (const descriptor of getDescendantsOfType(descriptorFolder, "ModuleScript").map(require<EnemyDescriptor>))
+  allEnemies.set(descriptor.id, descriptor);
+
+export function getEnemyByID(id: EnemyID): EnemyDescriptor {
+  assert(allEnemies.has(id), "enemy with ID " + id + " not found");
+  return allEnemies.get(id)!;
 }
 
-let allEnemyDescriptorsCache: Maybe<EnemyDescriptor[]>;
-function getAllEnemyDescriptors(): EnemyDescriptor[] {
-  if (allEnemyDescriptorsCache !== undefined)
-    return allEnemyDescriptorsCache;
-
-  const descriptorFolder = getInstanceAtPath("src/shared/game-data/enemies")!;
-  return allEnemyDescriptorsCache = getDescendantsOfType(descriptorFolder, "ModuleScript").map(require<EnemyDescriptor>);
+export function getEnemyByName(name: string): Maybe<EnemyDescriptor> {
+  for (const [_, descriptor] of allEnemies)
+    if (descriptor.name === name)
+      return descriptor;
 }

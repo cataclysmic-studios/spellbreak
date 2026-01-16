@@ -35,7 +35,7 @@ export interface BackpackData {
 
 interface CharacterLocation {
   readonly position: { x: number; y: number; z: number };
-  readonly lookAlong: { x: number; y: number; z: number };
+  readonly lookAlong: { x: number; z: number };
 }
 
 export interface CharacterData {
@@ -46,6 +46,7 @@ export interface CharacterData {
   readonly gold: number;
   readonly trainingPoints: number;
   readonly trainedSpells: SpellReference[];
+  readonly selectedQuest?: QuestID;
   readonly completedQuests: QuestID[];
   readonly activeQuests: Partial<Record<QuestID, number>>; // quest id -> goal index
   /** Values represent index in backpack data */

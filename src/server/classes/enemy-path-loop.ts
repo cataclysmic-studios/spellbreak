@@ -1,7 +1,7 @@
 import { getChildrenOfType } from "@rbxts/instance-utility";
 
 import { Enemy } from "./enemy";
-import { getEnemyDescriptor } from "shared/utility/enemy";
+import { getEnemyByName } from "shared/utility/enemy";
 import Log from "shared/log";
 
 export class EnemyPathLoop {
@@ -42,7 +42,7 @@ export class EnemyPathLoop {
 
   public getRandomEnemy(): Enemy {
     const enemyName = this.enemyNames[math.random(1, this.enemyNames.size()) - 1];
-    const descriptor = getEnemyDescriptor(enemyName);
+    const descriptor = getEnemyByName(enemyName);
     if (descriptor === undefined)
       return Log.warn(`Failed to spawn enemy: Failed to find enemy descriptor with name "${enemyName}"`, ["enemy path loop"]);
 

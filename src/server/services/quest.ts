@@ -26,7 +26,7 @@ export class QuestService {
 
     Log.info(`${player} picked up quest ${id} from NPC ${npcID}`, ["quest service"]);
     if (this.checkCompletion(player, id, 0)) return; // some quests can be picked up and immediately completed w/o doing anything
-    this.setActiveQuestGoal(player, id, 0);
+    this.setActiveQuestGoal(player, id, 0, true);
   }
 
   /** @hidden */
@@ -49,6 +49,7 @@ export class QuestService {
     Log.info(`${player} completed quest ${id}!`, ["quest service"]);
     await this.database.updateCharacter(player, character =>
       Sift.Dictionary.merge(character, {
+        selectedQuest: character.selectedQuest === id ? undefined : character.selectedQuest,
         activeQuests: Sift.Dictionary.filter(character.activeQuests, key => key !== id),
         completedQuests: Sift.Array.push(character.completedQuests, id)
       })
@@ -66,9 +67,10 @@ export class QuestService {
     return completed;
   }
 
-  private async setActiveQuestGoal(player: Player, id: QuestID, goalIndex: number): Promise<void> {
+  private async setActiveQuestGoal(player: Player, id: QuestID, goalIndex: number, selectQuest = false): Promise<void> {
     await this.database.updateCharacter(player, character =>
       Sift.Dictionary.merge(character, {
+        selectedQuest: selectQuest ? id : character.selectedQuest,
         activeQuests: Sift.Dictionary.set(character.activeQuests, id, goalIndex)
       })
     );

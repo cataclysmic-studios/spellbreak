@@ -1,7 +1,7 @@
 import Vide, { source } from "@rbxts/vide";
 
-import { canGiveNewQuest, getNpcByID, hasActiveQuestFrom } from "shared/utility/npc";
-import { canReceiveQuest, getActiveQuestIDs, getFirstCompletableTalkGoal, getQuestByID, hasQuest} from "shared/utility/quests";
+import { getNpcByID } from "shared/utility/npc";
+import { canReceiveQuest, getActiveQuestIDs, getFirstCompletableTalkGoal, getQuestByID, hasQuest, canGiveNewQuest, hasActiveQuestFrom } from "shared/utility/quests";
 import { character } from "client/constants";
 import { NpcID, type NpcDescriptor } from "shared/structs/npc/descriptor";
 import type { DialogID } from "shared/structs/npc/dialog";

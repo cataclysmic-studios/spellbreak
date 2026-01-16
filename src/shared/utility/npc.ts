@@ -4,8 +4,6 @@ import { getDescendantsOfType } from "@rbxts/instance-utility";
 import type { QuestID } from "shared/structs/quests";
 import type { NpcID, NpcDescriptor } from "shared/structs/npc/descriptor";
 import type { DialogID, DialogDescriptor } from "shared/structs/npc/dialog";
-import { CharacterData } from "shared/structs/data";
-import { canReceiveQuest, hasCompletedQuest, hasQuest } from "./quests";
 
 const allNPCs = new Map<NpcID, NpcDescriptor>;
 const npcsFolder = getInstanceAtPath("src/shared/game-data/npcs") as Folder;
@@ -40,12 +38,4 @@ export function npcGivesQuest(id: NpcID, questID: QuestID): boolean {
 
 export function getDialogByID(id: DialogID): DialogDescriptor {
   return allDialogs.get(id)!;
-}
-
-export function canGiveNewQuest(character: CharacterData, { questsGiven }: NpcDescriptor): boolean {
-  return questsGiven.some(quest => canReceiveQuest(character, quest));
-}
-
-export function hasActiveQuestFrom(character: CharacterData, { questsGiven }: NpcDescriptor): boolean {
-  return questsGiven.some(quest => hasQuest(character, quest));
 }

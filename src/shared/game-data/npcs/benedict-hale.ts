@@ -1,5 +1,6 @@
 import { Images } from "shared/ui/utility/images";
 import { QuestID } from "shared/structs/quests";
+import { ZoneID } from "shared/structs/zone";
 import { type NpcDescriptor, NpcID } from "shared/structs/npc/descriptor";
 
 export = {
@@ -8,4 +9,5 @@ export = {
   title: "Headmaster",
   portrait: Images.Portrait_HeadmasterHale,
   questsGiven: [QuestID.WC_1],
+  zone: ZoneID.WC_TownSquare_HeadmastersOffice
 } satisfies NpcDescriptor;

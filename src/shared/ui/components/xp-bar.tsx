@@ -1,23 +1,26 @@
 import Vide, { type Source } from "@rbxts/vide";
+
 import { usePx } from "../hooks/use-px";
 import { Images } from "../utility/images";
 import { anchorPoints, positions } from "../utility/positioning";
 
 interface XpBarProps {
   readonly progress: Source<number>;
+  readonly visible?: Source<boolean>;
 }
 
-export function XpBar({ progress }: XpBarProps): Vide.Node {
+export function XpBar({ progress, visible }: XpBarProps): Vide.Node {
   const px = usePx();
 
   return (
     <imagelabel Name="XpBarBackground"
       BackgroundTransparency={1}
       AnchorPoint={anchorPoints.bottomCenter}
-      Position={positions.bottomCenter.sub(UDim2.fromOffset(0, px(10)))}
-      Size={UDim2.fromOffset(px(512), px(18))}
+      Position={positions.bottomCenter.sub(UDim2.fromOffset(0, px(8)))}
+      Size={UDim2.fromOffset(px(512), px(20))}
       Image={Images.Background_Xp}
       ZIndex={1}
+      Visible={visible}
     >
       <uipadding
         PaddingLeft={new UDim(0, px(16))}

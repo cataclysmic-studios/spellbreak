@@ -37,6 +37,7 @@ export function newCharacterData(name: string, school: PlayableSchool): Characte
     gold: 0,
     trainingPoints: 0,
     trainedSpells: [SpellReference.Myth_Troll],
+    selectedQuest: undefined,
     completedQuests: [],
     activeQuests: {},
     equippedGear: {
@@ -76,7 +77,7 @@ export function newCharacterData(name: string, school: PlayableSchool): Characte
     },
     lastLocation: {
       position: { x: 0, y: 0, z: 0 },
-      lookAlong: { x: 0, y: 0, z: 1 }
+      lookAlong: { x: 0, z: 1 }
     },
     stats: {
       maxHealth,

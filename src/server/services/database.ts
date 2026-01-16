@@ -11,12 +11,10 @@ import type { CharacterData, PlayerData } from "shared/structs/data";
 import Log from "shared/log";
 
 import type { CharacterService } from "./character";
-import Sift from "@rbxts/sift";
 
 type PlayerDataDocument = Document<PlayerData>;
 
-const VERSION = 17;
-
+const VERSION = 18;
 
 @Service()
 export class DatabaseService implements OnPlayerJoin, OnPlayerLeave {

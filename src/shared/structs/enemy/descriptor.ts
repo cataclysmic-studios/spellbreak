@@ -3,6 +3,7 @@ import type { BaseID } from "@rbxts/id";
 import type { School } from "../school";
 import type { EnemyClass } from "./class";
 import type { EnemyKind } from "./kind";
+import type { ZoneID } from "../zone";
 
 export const enum EnemyID {
   DarkWizard,
@@ -18,6 +19,7 @@ export const enum DamageModifierKind {
 }
 
 export interface BaseEnemyDescriptor extends BaseID<EnemyID> {
+  readonly zone: ZoneID;
   readonly name: string;
   readonly health: number;
   readonly schools: School[];

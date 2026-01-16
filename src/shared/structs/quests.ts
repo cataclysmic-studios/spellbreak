@@ -13,9 +13,10 @@ export const enum QuestID {
 export const enum QuestGoalAction {
   Talk = "Talk to",
   Explore = "Go to",
+  Defeat = "Defeat",
 }
 
-export type QuestGoalTarget = NpcID | EnemyID | ZoneID; // TODO: quest collectibles, interactables, locations, etc.
+export type QuestGoalTarget = NpcID | EnemyID | ZoneID; // TODO: quest collectibles, interactables, etc.
 
 interface BaseQuestGoal {
   readonly action: QuestGoalAction;
@@ -23,16 +24,23 @@ interface BaseQuestGoal {
   readonly completionDialog?: DialogID;
 }
 
-export type TalkQuestGoal = BaseQuestGoal & {
+export interface TalkQuestGoal extends BaseQuestGoal {
   readonly action: QuestGoalAction.Talk;
+  readonly target: NpcID;
   readonly completionDialog: NonNullable<BaseQuestGoal["completionDialog"]>;
 }
 
-export type QuestGoal = BaseQuestGoal & (
-  | TalkQuestGoal
-  | {
-    readonly action: Exclude<QuestGoalAction, QuestGoalAction.Talk>;
-  });
+export interface ExploreQuestGoal extends BaseQuestGoal {
+  readonly action: QuestGoalAction.Explore;
+  readonly target: ZoneID;
+}
+
+export interface DefeatQuestGoal extends BaseQuestGoal {
+  readonly action: QuestGoalAction.Defeat;
+  readonly target: EnemyID;
+}
+
+export type QuestGoal = TalkQuestGoal | ExploreQuestGoal | DefeatQuestGoal;
 
 export interface QuestDescriptor extends BaseID<QuestID> {
   readonly name: string;

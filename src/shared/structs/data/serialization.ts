@@ -1,11 +1,11 @@
 import type { f16, u8, u16, u32, u24, String } from "@rbxts/serio";
 
 import type { School } from "../school";
-import type { PerSchoolStats } from "./character-stats";
+import type { CharacterStats, PerSchoolStats } from "./character-stats";
 import type { GearCategory } from "./items/gear";
 import type { DeckLinkedData } from "./items/gear/deck";
 import type { PetLinkedData } from "./items/gear/pet";
-import { EquippedGearData } from ".";
+import type { BackpackData, CharacterData, EquippedGearData } from ".";
 
 type QuestIDSchema = u16;
 type SpellReferenceSchema = u16;
@@ -45,7 +45,7 @@ interface ReferenceWithDataSchema<T, R extends number = u16> {
 
 export type EquippedGearDataSchema = { [K in keyof EquippedGearData]: u8; };
 
-export interface BackpackDataSchema {
+export interface BackpackDataSchema extends BackpackData {
   readonly [GearCategory.Hat]: GearReferenceSchema[];
   readonly [GearCategory.Robe]: GearReferenceSchema[];
   readonly [GearCategory.Boots]: GearReferenceSchema[];
@@ -63,7 +63,7 @@ interface CharacterLocationSchema {
   readonly lookAlong: { x: f16; z: f16 };
 }
 
-export interface CharacterStatsSchema {
+export interface CharacterStatsSchema extends CharacterStats {
   readonly health: u16;
   readonly mana: u16;
   readonly energy: u16;
@@ -83,7 +83,7 @@ export interface CharacterStatsSchema {
   readonly pierce: PerSchoolStats<u8>;
 }
 
-export interface CharacterDataSchema {
+export interface CharacterDataSchema extends CharacterData {
   readonly name: String<u8>;
   readonly school: School;
   readonly level: u8;
@@ -91,6 +91,7 @@ export interface CharacterDataSchema {
   readonly gold: u24;
   readonly trainingPoints: u8;
   readonly trainedSpells: SpellReferenceSchema[];
+  readonly selectedQuest?: QuestIDSchema;
   readonly completedQuests: QuestIDSchema[];
   readonly activeQuests: Partial<Record<QuestIDSchema, u8>>; // quest id -> goal index
   /** Values represent index in backpack data */

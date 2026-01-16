@@ -1,4 +1,4 @@
-import Vide, { type Source, type Derivable, read } from "@rbxts/vide";
+import Vide, { type Source, type Derivable, read, Show } from "@rbxts/vide";
 
 import { anchorPoints, positions } from "../utility/positioning";
 import { palette } from "../palette";
@@ -24,6 +24,7 @@ export interface WizTextProps {
   readonly visible?: Derivable<boolean>;
   readonly layoutOrder?: Derivable<number>;
   readonly zIndex?: Derivable<number>;
+  readonly dropShadow?: Derivable<number>;
   readonly textBoundsChanged?: Source<Vector2>;
   readonly absoluteSizeChanged?: Source<Vector2>;
   readonly absolutePositionChanged?: Source<Vector2>;
@@ -33,22 +34,25 @@ export interface WizTextProps {
 const DEFAULT_FONT = Enum.Font.LuckiestGuy;
 const DEFAULT_TEXT_SIZE = 14;
 
-export function WizText({
-  name, text, textSize, textColor, textScaled, textWrap, transparency, backgroundTransparency,
-  size, position, anchorPoint, font, alignX, alignY, automaticSize, visible, layoutOrder, zIndex,
-  textBoundsChanged, absoluteSizeChanged, absolutePositionChanged,
-  children
-}: WizTextProps): Vide.Node {
+export function WizText(props: WizTextProps): Vide.Node {
+  const {
+    name, text, textSize, textColor, textScaled, textWrap, transparency, backgroundTransparency,
+    size, position, anchorPoint, font, alignX, alignY, automaticSize, visible, layoutOrder, zIndex, dropShadow,
+    textBoundsChanged, absoluteSizeChanged, absolutePositionChanged,
+    children
+  } = props;
   const isDefaultFont = () => read(font) === undefined || read(font) === DEFAULT_FONT;
   const getPosition = () => read(position) ?? positions.center;
   const getTextSize = () => read(textSize) ?? DEFAULT_TEXT_SIZE;
+  const finalPosition = () => isDefaultFont() ? getPosition().add(UDim2.fromOffset(0, getTextSize() / px(6))) : getPosition();
+  const getZIndex = () => read(zIndex) ?? 1;
   const px = usePx();
 
   return (
     <textlabel Name={name}
       AutomaticSize={automaticSize}
       AnchorPoint={() => read(anchorPoint) ?? anchorPoints.center}
-      Position={() => isDefaultFont() ? getPosition().add(UDim2.fromOffset(0, getTextSize() / px(6))) : getPosition()}
+      Position={finalPosition}
       Text={() => isDefaultFont() ? read(text).upper() : read(text)}
       TextSize={getTextSize}
       TextScaled={textScaled}
@@ -62,12 +66,24 @@ export function WizText({
       TextTransparency={transparency}
       Visible={visible}
       LayoutOrder={layoutOrder}
-      ZIndex={zIndex}
+      ZIndex={getZIndex}
       TextBoundsChanged={textBoundsChanged}
       AbsoluteSizeChanged={absoluteSizeChanged}
       AbsolutePositionChanged={absolutePositionChanged}
     >
       {children}
+      <Show when={() => read(dropShadow) !== undefined}>
+        {() => (
+          <WizText
+            {...props}
+            dropShadow={undefined}
+            anchorPoint={anchorPoints.topLeft}
+            position={() => UDim2.fromOffset(read(dropShadow)!, read(dropShadow)!)}
+            textColor={palette.black}
+            zIndex={() => getZIndex() - 1}
+          />
+        )}
+      </Show>
     </textlabel >
   );
 }

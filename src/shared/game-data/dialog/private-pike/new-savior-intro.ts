@@ -1,14 +1,12 @@
 import { NpcID } from "shared/structs/npc/descriptor";
 import { type DialogDescriptor, DialogID } from "shared/structs/npc/dialog";
+import { QuestID } from "shared/structs/quests";
 
 export = {
-  id: DialogID.enrollment_day_end,
+  id: DialogID.new_savior_intro,
   speaker: NpcID.PrivatePike,
+  givesQuest: QuestID.WC_2,
   paragraphs: [
-    "Halt! Pegasus Lane is sealed by Crown order. No civilians, no spellcasters, and certainly no one wandering in on a quiet watch like this. If you've business here, it'll have to wait for daylight.",
-
-    "…That sigil. Headmaster Hale doesn't send messengers lightly, and he doesn't lend his authority to fools. If he's involved, then whatever's happening beyond that gate is worse than what the reports say.",
-
     "I won't pretend I'm not afraid. The sounds coming from the lane at night—scraping stone, whispers where there shouldn't be any—no guard should face that alone, and the others won't step inside.",
 
     "If I open this gate, I'll be breaking orders. If I don't, I'll be leaving people trapped with whatever's taken hold in there. I didn't take this post to stand idle while a street dies behind iron bars.",

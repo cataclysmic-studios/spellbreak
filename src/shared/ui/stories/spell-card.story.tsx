@@ -4,7 +4,7 @@ import { hoarcekat } from "../utility/hoarcekat";
 import { createMockDuelInfo } from "./common";
 import { getSpellFromReference } from "shared/utility/spell";
 import { SpellReference } from "shared/structs/data/reference/spell";
-import { type SpellCard, SpellCardKind } from "shared/structs/spell-card";
+import { type SpellCard, SpellCardKind } from "shared/structs/spell/card";
 import "../dev";
 
 import { Container } from "../utility/components/container";

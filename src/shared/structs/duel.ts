@@ -1,7 +1,7 @@
 import type { Source } from "@rbxts/vide";
 import type { BaseID } from "@rbxts/id";
 
-import type { SpellCard } from "./spell-card";
+import type { SpellCard } from "./spell/card";
 import type { SpellReference } from "./data/reference/spell";
 
 export enum DuelPhase {

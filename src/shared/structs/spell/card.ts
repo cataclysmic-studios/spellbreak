@@ -1,4 +1,4 @@
-import type { Spell } from "./spell";
+import type { Spell } from ".";
 
 export const enum SpellCardKind {
   Normal,

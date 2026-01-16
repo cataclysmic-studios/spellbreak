@@ -3,7 +3,7 @@ import { getDescendantsOfType } from "@rbxts/instance-utility";
 
 import type { Spell, SpellReferenceData } from "shared/structs/spell";
 import type { SpellReference } from "shared/structs/data/reference/spell";
-import type { SpellCard } from "shared/structs/spell-card";
+import type { SpellCard } from "shared/structs/spell/card";
 
 export function getSpellCardFromReferenceData({ reference, data }: SpellReferenceData): SpellCard {
   const spell = getSpellFromReference(reference);

@@ -1,5 +1,6 @@
 import { DialogID } from "shared/structs/npc/dialog";
 import { QuestGoalAction, QuestID, type QuestDescriptor } from "shared/structs/quests";
+import { ZoneID } from "shared/structs/zone";
 
 export = {
   id: QuestID.WC_2,
@@ -10,9 +11,8 @@ export = {
   dialog: DialogID.new_savior_intro,
   goals: [
     {
-      action: QuestGoalAction.Go,
-      target: "Pegasus Lane",
-      location: "Pegasus Lane"
+      action: QuestGoalAction.Explore,
+      target: ZoneID.WC_PegasusLane
     }
   ]
 } satisfies QuestDescriptor;

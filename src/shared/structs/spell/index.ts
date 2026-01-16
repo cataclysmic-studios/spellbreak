@@ -1,8 +1,8 @@
-import type { School } from "./school";
-import type { SpellAction } from "./spell-actions";
-import type { SpellCardKind } from "./spell-card";
-import type { SpellReference } from "./data/reference/spell";
-import type { ReferenceWithData } from "./data/reference";
+import type { School } from "../school";
+import type { SpellAction } from "./actions";
+import type { SpellCardKind } from "./card";
+import type { SpellReference } from "../data/reference/spell";
+import type { ReferenceWithData } from "../data/reference";
 
 interface SpellCost {
   readonly pips: number | "X";
@@ -76,4 +76,4 @@ export type Spell = BaseSpell & ({
 } | {
   readonly hasTarget: false;
   readonly targetKind?: undefined;
-})
+});

@@ -3,7 +3,7 @@ import { source } from "@rbxts/vide";
 import { assets } from "shared/constants";
 import { getSpellCardFromReferenceData } from "shared/utility/spell";
 import { SpellReference } from "shared/structs/data/reference/spell";
-import { SpellCardKind, type SpellCard } from "shared/structs/spell-card";
+import { SpellCardKind, type SpellCard } from "shared/structs/spell/card";
 
 const enum Mock {
   ID = -1

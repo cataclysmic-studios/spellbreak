@@ -1,5 +1,5 @@
 import { School } from "shared/structs/school";
-import { SpellActionKind } from "shared/structs/spell-actions";
+import { SpellActionKind } from "shared/structs/spell/actions";
 import { SpellReference } from "shared/structs/data/reference/spell";
 import { type Spell, CardDescriptionImageKind, SpellKind, SpellTargetKind } from "shared/structs/spell";
 

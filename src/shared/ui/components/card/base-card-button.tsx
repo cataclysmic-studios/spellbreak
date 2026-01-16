@@ -6,7 +6,7 @@ import { Images } from "../../utility/images";
 import { anchorPoints, positions } from "../../utility/positioning";
 import { cardAspectRatio } from "shared/constants";
 import { School } from "shared/structs/school";
-import { SpellCardKind, type SpellCard } from "shared/structs/spell-card";
+import { SpellCardKind, type SpellCard } from "shared/structs/spell/card";
 
 import { WizText } from "../wiz-text";
 import { SchoolIcon } from "../school-icon";

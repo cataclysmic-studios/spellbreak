@@ -3,7 +3,7 @@ import { SpellReference } from "shared/structs/data/reference/spell";
 import { DeckReference } from "shared/structs/data/reference/gear/deck";
 import { type PlayableSchool, School } from "shared/structs/school";
 import type { CharacterData } from "shared/structs/data";
-import { SpellCardKind } from "shared/structs/spell-card";
+import { SpellCardKind } from "shared/structs/spell/card";
 
 const maxMana = 15;
 const maxEnergy = 40;

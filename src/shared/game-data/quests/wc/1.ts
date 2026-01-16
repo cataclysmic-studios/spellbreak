@@ -12,7 +12,6 @@ export = {
     {
       action: QuestGoalAction.Talk,
       target: NpcID.PrivatePike,
-      location: "City Square",
       completionDialog: DialogID.enrollment_day_end
     }
   ]

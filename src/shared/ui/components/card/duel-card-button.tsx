@@ -4,7 +4,7 @@ import { useEventListener } from "@rbxts/pretty-vide-utils";
 
 import { usePx } from "../../hooks/use-px";
 import { palette } from "../../palette";
-import type { SpellCard } from "shared/structs/spell-card";
+import type { SpellCard } from "shared/structs/spell/card";
 import type { ClientDuelInfo, DuelCirclePosition } from "shared/structs/duel";
 
 import { Container } from "../../utility/components/container";

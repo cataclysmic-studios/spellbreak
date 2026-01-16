@@ -6,11 +6,13 @@ export const enum Images {
   RedRibbon = "rbxassetid://83791914432890",
   RedSpiral = "http://www.roblox.com/asset/?id=951593731",
   CharacterPortraitBorder = "rbxassetid://70593165679463",
+  XpBar = "rbxassetid://98343191921887",
 
   // backgrounds
   Background_WaitingForOthers = "rbxassetid://98612224033956",
   Background_CardInfo = "rbxassetid://13711786825",
   Background_Dialog = "rbxassetid://125227688237254",
+  Background_Xp = "rbxassetid://78695210211208",
 
   // portraits
   Portrait_HeadmasterHale = "rbxassetid://131377265144889",

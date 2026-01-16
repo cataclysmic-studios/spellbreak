@@ -1,8 +1,10 @@
 import { ReplicatedStorage } from "@rbxts/services";
-import Signal from "@rbxts/lemon-signal";
 
+import { fixNumericKeys } from "./utility/data";
+import { newCharacterData } from "./utility/character";
 import { EnemyKind } from "./structs/enemy/kind";
 import { SpellKind } from "./structs/spell";
+import { School } from "./structs/school";
 import type { PlayerData } from "./structs/data";
 
 export const { assets } = ReplicatedStorage;
@@ -41,4 +43,7 @@ export const nametagColors = {
   }
 };
 
-export const flameworkIgnited = new Signal;
+export const defaultData: PlayerData = {
+  crowns: 0,
+  characters: [fixNumericKeys(newCharacterData("Test Monkey", School.Myth))]
+};

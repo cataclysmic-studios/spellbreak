@@ -5,28 +5,25 @@ import Signal from "@rbxts/lemon-signal";
 
 import { Message, messaging } from "shared/messaging";
 import { createDiff, fixNumericKeys, updateCharacter } from "shared/utility/data";
-import { newCharacterData } from "shared/utility/character";
-import { School } from "shared/structs/school";
+import { defaultData } from "shared/constants";
 import type { OnPlayerJoin, OnPlayerLeave } from "server/hooks/players";
 import type { CharacterData, PlayerData } from "shared/structs/data";
 import Log from "shared/log";
 
 import type { CharacterService } from "./character";
+import Sift from "@rbxts/sift";
 
 type PlayerDataDocument = Document<PlayerData>;
 
 const VERSION = 17;
-const DEFAULT_DATA: PlayerData = {
-  crowns: 0,
-  characters: [fixNumericKeys(newCharacterData("Test Monkey", School.Myth))]
-};
+
 
 @Service()
 export class DatabaseService implements OnPlayerJoin, OnPlayerLeave {
   public readonly dataLoaded = new Signal<(player: Player) => void>;
 
   private readonly documents = new Map<Player, PlayerDataDocument>;
-  private readonly collection = createCollection($nameof<PlayerData>(), { defaultData: DEFAULT_DATA });
+  private readonly collection = createCollection($nameof<PlayerData>(), { defaultData });
 
   public constructor(
     private readonly character: CharacterService

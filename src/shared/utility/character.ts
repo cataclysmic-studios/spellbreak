@@ -1,9 +1,18 @@
 import { GearCategory } from "shared/structs/data/items/gear";
 import { SpellReference } from "shared/structs/data/reference/spell";
 import { DeckReference } from "shared/structs/data/reference/gear/deck";
+import { SpellCardKind } from "shared/structs/spell/card";
 import { type PlayableSchool, School } from "shared/structs/school";
 import type { CharacterData } from "shared/structs/data";
-import { SpellCardKind } from "shared/structs/spell/card";
+
+const { min, floor } = math;
+
+const base = 100;
+const growth = 1.08;
+const hardCap = 1.25e6;
+export function getRequiredXpForNextLevel(level: number): number {
+  return min(floor(base * level * level * growth), hardCap);
+}
 
 const maxMana = 15;
 const maxEnergy = 40;

@@ -3,7 +3,7 @@ import { Timer } from "@rbxts/timer";
 import Vide, { mount, cleanup, source } from "@rbxts/vide";
 
 import { playerGui } from "client/constants";
-import { timerLength } from "shared/constants";
+import { defaultData, timerLength } from "shared/constants";
 import { DialogID } from "shared/structs/npc/dialog";
 import { PlaceID } from "shared/structs/place-id";
 import type { ClientDuelInfo } from "shared/structs/duel";
@@ -19,7 +19,7 @@ import type { CharacterController } from "./character";
 @Controller()
 export class UIController implements OnStart {
   private readonly hudState: HudProps = {
-    character: source({}) as never,
+    character: source(defaultData.characters[0]),
     bookOpen: source(false),
     activeDialog: source<Maybe<DialogID>>(undefined)
   };
@@ -35,14 +35,14 @@ export class UIController implements OnStart {
     Vide.mount(() => <>
       <OnlyInPlace placeID={PlaceID.MainMenu}>
         {() => (
-          <screengui Name="MainMenu" ScreenInsets={Enum.ScreenInsets.DeviceSafeInsets} ResetOnSpawn={false}>
+          <screengui Name="MainMenu" ScreenInsets="DeviceSafeInsets" ResetOnSpawn={false}>
             <MainMenu />
           </screengui>
         )}
       </OnlyInPlace>
       <OnlyInPlace placeID={PlaceID.InGame}>
         {() => (
-          <screengui Name="HUD" ScreenInsets={Enum.ScreenInsets.DeviceSafeInsets} ResetOnSpawn={false}>
+          <screengui Name="HUD" ZIndexBehavior="Global" ScreenInsets="DeviceSafeInsets" ResetOnSpawn={false}>
             <HUD {...this.hudState} />
           </screengui>
         )}

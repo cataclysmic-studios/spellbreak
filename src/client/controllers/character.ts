@@ -19,8 +19,12 @@ export class CharacterController {
   }
 
   public getData(): CharacterData {
-    assert(this.replica.data.characters !== undefined, "data accessed before replica load")
+    assert(this.isLoaded(), "data accessed before replica load");
     return this.replica.data.characters[this.index];
+  }
+
+  public isLoaded(): boolean {
+    return this.replica.data.characters !== undefined;
   }
 
   public getDeck(): Maybe<DeckData & DeckLinkedData> {

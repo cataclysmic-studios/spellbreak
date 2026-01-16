@@ -13,7 +13,7 @@ export = {
       action: QuestGoalAction.Talk,
       target: NpcID.PrivatePike,
       location: "City Square",
-      dialog: DialogID.enrollment_day_end
+      completionDialog: DialogID.enrollment_day_end
     }
   ]
 } satisfies QuestDescriptor;

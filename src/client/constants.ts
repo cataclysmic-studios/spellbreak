@@ -1,13 +1,12 @@
 import { Players } from "@rbxts/services";
-import { atom } from "@rbxts/charm";
 
 import { Character } from "./classes/character";
-
-export const duelCameraHeight = atom(24);
-export const duelCameraDistance = atom(42);
+import { safeCast } from "@rbxts/flamework-meta-utils";
 
 export const player = Players.LocalPlayer;
 export const playerGui = player.WaitForChild("PlayerGui");
 
-const model = player.Character ?? player.CharacterAdded.Wait()[0];
-export const character = new Character(model as CharacterModel);
+const model = safeCast<CharacterModel>(player.Character ?? player.CharacterAdded.Wait()[0]);
+assert(model !== undefined, "character model type not assignable to CharacterModel");
+
+export const character = new Character(model);

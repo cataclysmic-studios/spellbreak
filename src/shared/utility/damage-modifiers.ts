@@ -1,4 +1,4 @@
-import { DamageModifierKind, EnemyDescriptor } from "../structs/enemy/descriptor";
+import { DamageModifierKind, type EnemyDescriptor } from "../structs/enemy/descriptor";
 import { EnemyKind } from "../structs/enemy/kind";
 import { School } from "../structs/school";
 

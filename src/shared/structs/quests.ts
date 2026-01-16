@@ -20,11 +20,13 @@ interface BaseQuestGoal {
   readonly action: QuestGoalAction;
   readonly target: QuestGoalTarget;
   readonly location: string;
+  readonly completionDialog?: DialogID;
+
 }
 
 export type TalkQuestGoal = BaseQuestGoal & {
   readonly action: QuestGoalAction.Talk;
-  readonly dialog: DialogID;
+  readonly completionDialog: NonNullable<BaseQuestGoal["completionDialog"]>;
 }
 
 export type QuestGoal = BaseQuestGoal & (

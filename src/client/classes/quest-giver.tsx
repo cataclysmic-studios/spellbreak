@@ -1,13 +1,15 @@
 import Vide, { source } from "@rbxts/vide";
 
-import { NpcDescriptor, NpcID } from "shared/structs/npc/descriptor";
-
-import { getNpcByID } from "shared/utility/npc";
-import { canReceiveQuest, getFirstCompletableTalkGoal, hasCompletedQuest, hasQuest } from "shared/utility/quests";
+import { canGiveNewQuest, getNpcByID, hasActiveQuestFrom } from "shared/utility/npc";
+import { canReceiveQuest, getActiveQuestIDs, getFirstCompletableTalkGoal, getQuestByID, hasQuest} from "shared/utility/quests";
 import { character } from "client/constants";
+import { NpcID, type NpcDescriptor } from "shared/structs/npc/descriptor";
+import type { DialogID } from "shared/structs/npc/dialog";
+import type { CharacterData } from "shared/structs/data";
+import Log from "shared/log";
+
 import { AlertMode, QuestAlert } from "shared/ui/components/quest-alert";
 import { QuestAlertContainer } from "shared/ui/components/quest-alert-container";
-import Log from "shared/log";
 
 import type { CharacterController } from "client/controllers/character";
 
@@ -34,6 +36,22 @@ export class QuestGiver<ModelShape extends Model = NpcModel> {
     Log.info("Created new quest giver for NPC: " + this.descriptor.name);
   }
 
+  public interact(character: CharacterData): Maybe<DialogID> {
+    const {descriptor} = this;
+    const ids = [...getActiveQuestIDs(character), ...descriptor.questsGiven];
+    const result = getFirstCompletableTalkGoal(character, descriptor.id, ids);
+    if (result !== undefined)
+      return result.goal.completionDialog;
+
+    for (const id of descriptor.questsGiven) {
+      const givenQuest = getQuestByID(id);
+      if (canReceiveQuest(character, givenQuest) || hasQuest(character, givenQuest))
+        return givenQuest.dialog;
+    }
+
+    return;
+  }
+
   public canInteract(): boolean {
     return this.inRange;
   }
@@ -56,19 +74,16 @@ export class QuestGiver<ModelShape extends Model = NpcModel> {
 
   private updateMode(): void {
     const character = this.character.getData();
-    const { questsGiven } = this.descriptor;
-    const givesMoreQuests = questsGiven.some(quest => !hasQuest(character, quest) && !hasCompletedQuest(character, quest) && canReceiveQuest(character, quest));
-    if (givesMoreQuests)
+    if (canGiveNewQuest(character, this.descriptor))
       return void this.alertMode(AlertMode.PickUp);
 
     const result = getFirstCompletableTalkGoal(character, this.descriptor.id);
     if (result !== undefined)
       return void this.alertMode(AlertMode.HandIn);
 
-    const inProgress = questsGiven.some(quest => hasQuest(character, quest));
-    if (inProgress)
+    if (hasActiveQuestFrom(character, this.descriptor))
       return void this.alertMode(AlertMode.InProgress);
 
-    return void this.alertMode(AlertMode.Disabled);
+    this.alertMode(AlertMode.Disabled);
   }
 }

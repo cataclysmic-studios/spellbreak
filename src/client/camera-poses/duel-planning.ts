@@ -3,7 +3,6 @@ import { $nameof } from "rbxts-transform-debug";
 
 import { CameraPoseKind } from "shared/structs/camera";
 import { BaseCameraPose } from "./base";
-import { duelCameraDistance, duelCameraHeight } from "client/constants";
 import Log from "shared/log";
 
 import type { CameraController } from "client/controllers/camera";
@@ -56,8 +55,8 @@ export class DuelPlanningPose extends BaseCameraPose {
     // const root = info.model.Root;
     // const circlePosition = root.Position;
     // const position = circlePosition
-    //   .add(new Vector3(0, duelCameraHeight(), 0))
-    //   .add(root.CFrame.LookVector.mul(duelCameraDistance()).mul(info.onOpposingTeam ? -1 : 1));
+    //   .add(new Vector3(0, this.camera.duelCameraHeight(), 0))
+    //   .add(root.CFrame.LookVector.mul(this.camera.duelCameraDistance()).mul(info.onOpposingTeam ? -1 : 1));
 
     // return this.duelCircleCameraCFrame = CFrame.lookAt(position, circlePosition);
     return;

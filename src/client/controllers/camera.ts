@@ -1,4 +1,5 @@
 import { Controller, type OnRender } from "@flamework/core";
+import { atom } from "@rbxts/charm";
 
 import { Message, type MessageData } from "shared/messaging";
 import { OnClientMessage } from "shared/meta";
@@ -13,6 +14,8 @@ import { DuelCastingPose } from "client/camera-poses/duel-casting";
 @Controller()
 export class CameraController implements OnRender {
   public readonly manager = new CameraManager;
+  public readonly duelCameraHeight = atom(24);
+  public readonly duelCameraDistance = atom(42);
 
   private readonly cachedPoses: Partial<Record<CameraPoseKind, BaseCameraPose>> = {};
 

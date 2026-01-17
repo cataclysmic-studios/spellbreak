@@ -8,8 +8,8 @@ import type { DialogID } from "shared/structs/npc/dialog";
 import type { CharacterData } from "shared/structs/data";
 import Log from "shared/log";
 
-import { AlertMode, QuestAlert } from "shared/ui/components/quest-alert";
-import { QuestAlertContainer } from "shared/ui/components/quest-alert-container";
+import { AlertMode, QuestAlert } from "shared/ui/components/quest/alert";
+import { QuestAlertContainer } from "shared/ui/components/quest/alert-container";
 
 import type { CharacterController } from "client/controllers/character";
 

@@ -2,10 +2,10 @@ import { getInstanceAtPath } from "@rbxts/flamework-meta-utils";
 import { getDescendantsOfType } from "@rbxts/instance-utility";
 import Object from "@rbxts/object-utils";
 
-import { getNpcByID } from "./npc";
+import { getNpcByID, getNpcModelByID } from "./npc";
 import { getEnemyByID } from "./enemy";
 import { getZoneName } from "./zone";
-import { QuestGoalAction, type TalkQuestGoal, type QuestDescriptor, type QuestGoal, type QuestID } from "shared/structs/quests";
+import { QuestGoalAction, type TalkQuestGoal, type QuestDescriptor, type QuestGoal, type QuestID, type QuestInfo } from "shared/structs/quests";
 import type { CharacterData } from "shared/structs/data";
 import type { NpcDescriptor, NpcID } from "shared/structs/npc/descriptor";
 import type { ZoneID } from "shared/structs/zone";
@@ -124,10 +124,30 @@ export function getGoalTargetZone({ action, target }: QuestGoal): ZoneID {
   }
 }
 
+export function getGoalTargetPosition({ action, target }: QuestGoal): Vector3 {
+  switch (action) {
+    case QuestGoalAction.Talk:
+      return getNpcModelByID(target).PrimaryPart!.Position;
+    case QuestGoalAction.Explore:
+      return Vector3.zero;
+    case QuestGoalAction.Defeat:
+      return Vector3.zero;
+  }
+}
+
 export function getQuestDescription(id: QuestID, goalIndex = 0): string {
   const quest = getQuestByID(id);
   const goal = quest.goals[goalIndex];
   const zone = getGoalTargetZone(goal);
 
   return `${goal.action} ${getGoalTargetName(goal)} in ${getZoneName(zone)}`;
+}
+
+export function getSelectedQuestInfo({ selectedQuest, activeQuests }: CharacterData): Maybe<QuestInfo> {
+  if (selectedQuest === undefined) return;
+
+  const goalIndex = activeQuests[selectedQuest];
+  if (goalIndex === undefined) return;
+
+  return { questID: selectedQuest, goalIndex };
 }

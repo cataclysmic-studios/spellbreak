@@ -5,7 +5,7 @@ import { hoarcekat } from "../../utility/hoarcekat";
 import "../../dev";
 
 import { Container } from "../../utility/components/container";
-import { AlertMode, QuestAlert } from "shared/ui/components/quest-alert";
+import { AlertMode, QuestAlert } from "shared/ui/components/quest/alert";
 
 const mode = source(AlertMode.PickUp);
 export = hoarcekat(() =>

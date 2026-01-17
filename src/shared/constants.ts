@@ -8,6 +8,7 @@ import { School } from "./structs/school";
 import type { PlayerData } from "./structs/data";
 
 export const { assets } = ReplicatedStorage;
+export const XZ = new Vector3(1, 0, 1);
 
 export const timerLength = 30;
 export const cardAspectRatio = 0.68;

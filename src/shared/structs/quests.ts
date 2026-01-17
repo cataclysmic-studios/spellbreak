@@ -50,3 +50,8 @@ export interface QuestDescriptor extends BaseID<QuestID> {
   readonly goals: QuestGoal[];
   readonly dialog: DialogID;
 }
+
+export interface QuestInfo {
+  readonly questID: QuestID;
+  readonly goalIndex: number;
+}

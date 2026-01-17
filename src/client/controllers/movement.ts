@@ -6,10 +6,10 @@ import { character } from "client/constants";
 import Log from "shared/log";
 
 import type { InputController } from "./input";
+import { XZ } from "shared/constants";
 
 const { rad } = math;
 const angles = CFrame.Angles
-const XZ = new Vector3(1, 0, 1);
 
 @Controller()
 export class MovementController implements OnPhysics {
@@ -38,7 +38,7 @@ export class MovementController implements OnPhysics {
     const [x, y] = this.input.getInputVector();
     const velocity = character.getCFrame().LookVector
       .mul(y * this.walkSpeed)
-      .mul(XZ)
+      .mul(XZ);
 
     character.setVelocity(velocity);
     this.turnAngle += x * (this.turnSpeed / 3) * 60 * dt;

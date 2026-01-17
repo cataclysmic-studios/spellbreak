@@ -1,18 +1,15 @@
 import { Controller, type OnStart, type OnTick } from "@flamework/core";
-import { Workspace as World } from "@rbxts/services";
-import { getChildrenOfType } from "@rbxts/instance-utility";
 
 import { Message, type MessageData } from "shared/messaging";
 import { OnClientMessage } from "shared/meta";
 import { QuestGiver } from "client/classes/quest-giver";
+import { getNpcModelByID } from "shared/utility/npc";
 import type { NpcID } from "shared/structs/npc/descriptor";
 import Log from "shared/log";
 
 import type { UIController } from "./ui";
 import type { InputController } from "./input";
 import type { CharacterController } from "./character";
-
-const NPC_MODELS = getChildrenOfType<"Model", NpcModel>(World.NPCs, "Model");
 
 @Controller()
 export class NpcController implements OnStart, OnTick {
@@ -37,7 +34,7 @@ export class NpcController implements OnStart, OnTick {
   public onNpcHydrate(toHydrate: MessageData[Message.Hydrate_NPCs]): void {
     Log.info("Hydrating NPCs...");
     for (const id of toHydrate) {
-      const model = NPC_MODELS.find(child => child.GetAttribute<NpcID>("ID") === id);
+      const model = getNpcModelByID(id);
       if (model === undefined) {
         Log.warn(`Failed to hydrate NPC with ID ${id}, no model found`);
         continue;

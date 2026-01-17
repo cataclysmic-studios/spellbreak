@@ -1,5 +1,6 @@
+import { Workspace as World } from "@rbxts/services";
 import { getInstanceAtPath } from "@rbxts/flamework-meta-utils";
-import { getDescendantsOfType } from "@rbxts/instance-utility";
+import { getChildrenOfType, getDescendantsOfType } from "@rbxts/instance-utility";
 
 import type { QuestID } from "shared/structs/quests";
 import type { NpcID, NpcDescriptor } from "shared/structs/npc/descriptor";
@@ -38,4 +39,13 @@ export function npcGivesQuest(id: NpcID, questID: QuestID): boolean {
 
 export function getDialogByID(id: DialogID): DialogDescriptor {
   return allDialogs.get(id)!;
+}
+
+const modelMap = new Map<NpcID, NpcModel>;
+export function getNpcModelByID(id: NpcID): NpcModel {
+  if (!modelMap.has(id))
+    for (const model of getChildrenOfType<"Model", NpcModel>(World.NPCs, "Model"))
+      modelMap.set(model.GetAttribute<NpcID>("ID")!, model);
+
+  return modelMap.get(id)!;
 }

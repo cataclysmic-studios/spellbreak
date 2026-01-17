@@ -1,4 +1,4 @@
-import { Service, type OnStart } from "@flamework/core";
+import { Service } from "@flamework/core";
 import { Workspace as World } from "@rbxts/services";
 import { getChildrenOfType } from "@rbxts/instance-utility";
 
@@ -11,14 +11,10 @@ import Log from "shared/log";
 import type { DatabaseService } from "./database";
 
 @Service()
-export class NpcService implements OnStart {
+export class NpcService {
   private readonly toHydrate = new Set<NpcID>;
 
   public constructor(database: DatabaseService) {
-    database.dataLoaded.Once(player => this.sendHydration(player));
-  }
-
-  public onStart(): void {
     const npcs = new Set<NPC>;
     const npcModels = getChildrenOfType<"Model", NpcModel>(World.NPCs, "Model");
     Log.info("Found " + npcModels.size() + " NPC models");
@@ -32,6 +28,7 @@ export class NpcService implements OnStart {
       this.toHydrate.add(npc.descriptor.id);
 
     Log.info("Populated hydration set with " + this.toHydrate.size() + " NPCs");
+    database.dataLoaded.Once(player => this.sendHydration(player));
   }
 
   public sendHydration(player: Player): void {

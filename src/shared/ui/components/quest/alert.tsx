@@ -1,10 +1,10 @@
 import Vide, { Source, read, source } from "@rbxts/vide";
 
-import { Images } from "../utility/images";
-import { WizText } from "./wiz-text";
-import { anchorPoints, positions } from "../utility/positioning";
-import { usePx } from "../hooks/use-px";
-import { palette } from "../palette";
+import { Images } from "../../utility/images";
+import { WizText } from "../wiz-text";
+import { anchorPoints, positions } from "../../utility/positioning";
+import { usePx } from "../../hooks/use-px";
+import { palette } from "../../palette";
 import { useEventListener } from "@rbxts/pretty-vide-utils";
 import { RunService } from "@rbxts/services";
 

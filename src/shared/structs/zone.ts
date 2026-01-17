@@ -1,3 +1,5 @@
+import type { BaseID } from "@rbxts/id";
+
 export const enum ZoneID {
   WC_TownSquare,
   WC_TownSquare_HeadmastersOffice,
@@ -10,4 +12,8 @@ export interface ZoneNames {
   [ZoneID.WC_TownSquare_HeadmastersOffice]: "Headmaster's Office",
   [ZoneID.WC_PegasusLane]: "Pegasus Lane",
   [ZoneID.WC_PegasusLane_ShatterbonesTower]: "Shatterbones' Tower",
+}
+
+export interface Zone extends BaseID<ZoneID> {
+  readonly exits: Map<ZoneID, Vector3>;
 }

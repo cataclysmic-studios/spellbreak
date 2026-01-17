@@ -11,17 +11,19 @@ interface XpBarProps {
 
 export function XpBar({ progress, visible }: XpBarProps): Vide.Node {
   const px = usePx();
+  const size = px(600);
 
   return (
     <imagelabel Name="XpBarBackground"
       BackgroundTransparency={1}
       AnchorPoint={anchorPoints.bottomCenter}
       Position={positions.bottomCenter.sub(UDim2.fromOffset(0, px(8)))}
-      Size={UDim2.fromOffset(px(512), px(20))}
+      Size={UDim2.fromOffset(size, size)}
       Image={Images.Background_Xp}
       ZIndex={1}
       Visible={visible}
     >
+      <uiaspectratioconstraint AspectRatio={25} />
       <uipadding
         PaddingLeft={new UDim(0, px(16))}
         PaddingRight={new UDim(0, px(16))}

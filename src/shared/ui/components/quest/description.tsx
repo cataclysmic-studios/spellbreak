@@ -9,12 +9,13 @@ import { WizText } from "../wiz-text";
 
 const { fromOffset } = UDim2;
 
-interface QuestDescriptionProps {
+export interface QuestHelperProps {
   readonly info: Source<Maybe<QuestInfo>>;
+  readonly offset: Source<UDim2>;
   readonly visible?: Source<boolean>;
 }
 
-export function QuestDescription({ info, visible }: QuestDescriptionProps): Vide.Node {
+export function QuestDescription({ info, offset, visible }: QuestHelperProps): Vide.Node {
   const px = usePx();
   const description = () => {
     const currentInfo = info();
@@ -24,10 +25,10 @@ export function QuestDescription({ info, visible }: QuestDescriptionProps): Vide
   }
 
   return (
-    <WizText
+    <WizText name="QuestDescription"
       anchorPoint={anchorPoints.bottomCenter}
-      position={positions.bottomCenter.sub(fromOffset(0, px(40)))}
-      size={fromOffset(px(384), px(17))}
+      position={() => positions.bottomCenter.sub(fromOffset(0, px(50))).add(offset())}
+      size={fromOffset(px(428), px(20))}
       dropShadow={px(1)}
       font={Enum.Font.Cartoon}
       textScaled={true}

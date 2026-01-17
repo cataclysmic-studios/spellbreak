@@ -1,30 +1,26 @@
-import Vide, { cleanup, source, type Source } from "@rbxts/vide";
+import { Players, RunService, Workspace as World } from "@rbxts/services";
+import { useEventListener } from "@rbxts/pretty-vide-utils";
+import Vide, { cleanup, source } from "@rbxts/vide";
 
 import { usePx } from "../../hooks/use-px";
 import { anchorPoints, positions } from "../../utility/positioning";;
-import { assets, XZ } from "shared/constants";
-import type { QuestInfo } from "shared/structs/quests";
-import { getGoalTargetPosition, getQuestByID } from "shared/utility/quests";
-import { useEventListener } from "@rbxts/pretty-vide-utils";
-import { Players, RunService, Workspace as World } from "@rbxts/services";
-import { WizText } from "../wiz-text";
 import { palette } from "shared/ui/palette";
+import { getGoalTargetPosition, getQuestByID } from "shared/utility/quests";
+import { assets, XZ } from "shared/constants";
+import type { QuestHelperProps } from "./description";
+
+import { WizText } from "../wiz-text";
 
 const { fromOffset } = UDim2;
 const { lookAlong, lookAt, Angles: angles } = CFrame;
 const { rad, clamp, floor } = math;
-
-interface QuestArrowProps {
-  readonly info: Source<Maybe<QuestInfo>>;
-  readonly visible?: Source<boolean>;
-}
 
 const CAMERA_OFFSET = new Vector3(0, 7, 8);
 const FINAL_ROTATION = angles(rad(90), 0, 0);
 const FADE_DISTANCE = 6;
 const STUDS_TO_METERS = 25 / 7;
 
-export function QuestArrow({ info, visible }: QuestArrowProps): Vide.Node {
+export function QuestArrow({ info, offset, visible }: QuestHelperProps): Vide.Node {
   const px = usePx();
   const hovered = source(false);
   const transparency = source(0);
@@ -77,7 +73,7 @@ export function QuestArrow({ info, visible }: QuestArrowProps): Vide.Node {
   return (
     <viewportframe Name="QuestArrow"
       AnchorPoint={anchorPoints.bottomCenter}
-      Position={positions.bottomCenter.sub(fromOffset(0, px(60)))}
+      Position={() => positions.bottomCenter.sub(fromOffset(0, px(70))).add(offset())}
       Size={fromOffset(size, size)}
       BackgroundTransparency={1}
       ImageTransparency={transparency}

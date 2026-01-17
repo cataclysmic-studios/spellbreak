@@ -1,18 +1,16 @@
 import { Controller, type OnStart } from "@flamework/core";
-import { Timer } from "@rbxts/timer";
-import Vide, { mount, cleanup, source } from "@rbxts/vide";
+import Vide, { source } from "@rbxts/vide";
 
 import { playerGui } from "client/constants";
-import { defaultData, timerLength } from "shared/constants";
-import { DialogID } from "shared/structs/npc/dialog";
+import { defaultData } from "shared/constants";
 import { PlaceID } from "shared/structs/place-id";
-import type { ClientDuelInfo } from "shared/structs/duel";
+import type { DialogID } from "shared/structs/npc/dialog";
+import type { Interactable } from "shared/structs/interactable";
 import Log from "shared/log";
 
 import { OnlyInPlace } from "shared/ui/utility/components/only-in-place";
 import { MainMenu } from "shared/ui/views/main-menu";
 import { HUD, type HudProps } from "shared/ui/views/hud";
-import { DuelPlanning } from "shared/ui/views/duel-planning";
 
 import type { CharacterController } from "./character";
 
@@ -21,11 +19,9 @@ export class UIController implements OnStart {
   private readonly hudState: HudProps = {
     character: source(defaultData.characters[0]),
     bookOpen: source(false),
-    activeDialog: source<Maybe<DialogID>>(undefined)
+    activeDialog: source<Maybe<DialogID>>(undefined),
+    activeInteractable: source<Maybe<Interactable>>(undefined)
   };
-
-  private timer?: Timer;
-  private duelPlanningDestructor?: () => void;
 
   public constructor(character: CharacterController) {
     character.updated.Connect(() => this.hudState.character(character.getData()));
@@ -56,25 +52,11 @@ export class UIController implements OnStart {
     this.hudState.activeDialog(id);
   }
 
-  public enableDuelPlanning(duelInfo: ClientDuelInfo): void {
-    this.timer = new Timer(timerLength);
-    this.timer.start();
-
-    this.duelPlanningDestructor = mount(() => {
-      const component = (
-        <screengui Name="DuelPlanningHUD" ScreenInsets={Enum.ScreenInsets.DeviceSafeInsets}>
-          <DuelPlanning duelInfo={duelInfo} timer={() => this.timer!} />
-        </screengui>
-      );
-
-      cleanup(component as Instance);
-      return component;
-    }, playerGui);
+  public enableInteractPrompt(interactable: Interactable): void {
+    this.hudState.activeInteractable(interactable);
   }
 
-  public disableDuelPlanning(): void {
-    this.duelPlanningDestructor?.();
-    this.timer?.destroy();
-    this.timer = undefined;
+  public disableInteractPrompt(): void {
+    this.hudState.activeInteractable(undefined);
   }
 }

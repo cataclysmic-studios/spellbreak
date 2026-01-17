@@ -2,7 +2,6 @@ import Vide, { derive, source, Source } from "@rbxts/vide";
 import type { BaseID } from "@rbxts/id";
 
 import { Message, messaging } from "shared/messaging";
-import { Images } from "../utility/images";
 import { anchorPoints, positions } from "../utility/positioning";
 import { getDialogByID, getNpcByID } from "shared/utility/npc";
 import { getFirstCompletableTalkGoal, getQuestByID, hasQuest } from "shared/utility/quests";
@@ -13,7 +12,7 @@ import type { DialogDescriptor, DialogID } from "shared/structs/npc/dialog";
 
 import { WizText } from "./wiz-text";
 import { WizButton } from "./wiz-button";
-import { effect } from "@rbxts/charm";
+import { PromptPanel } from "./prompt-panel";
 
 interface DialogProps extends BaseID<Source<Maybe<DialogID>>> {
   readonly character: Source<CharacterData>
@@ -27,18 +26,19 @@ export function Dialog({ id, character }: DialogProps): Vide.Node {
   });
   const getDialog = () => id() !== undefined ? getDialogByID(id()!) : undefined;
   const closeDialog = () => id(undefined);
-  const portraitImage = () => {
-    const dialog = getDialog();
-    if (!dialog) return "";
+  const getSpeaker = () => getDialog()?.speaker;
+  const portrait = () => {
+    const speaker = getSpeaker();
+    if (speaker === undefined) return "";
 
-    const npc = getNpcByID(dialog.speaker);
+    const npc = getNpcByID(speaker);
     return npc.portrait;
   }
-  const titleText = () => {
-    const dialog = getDialog();
-    if (!dialog) return "";
+  const title = () => {
+    const speaker = getSpeaker();
+    if (speaker === undefined) return "";
 
-    const npc = getNpcByID(dialog.speaker);
+    const npc = getNpcByID(speaker);
     return npc.name;
   }
   const bodyText = () => {
@@ -87,41 +87,21 @@ export function Dialog({ id, character }: DialogProps): Vide.Node {
 
     paragraphIndex()(paragraphIndex()() + 1);
   }
-  const isBackButton = () => paragraphIndex()() > 0;
+  const canGoBack = () => paragraphIndex()() > 0;
 
   const rightPad = 0.08;
   const buttonYOffset = 0.02;
   const buttonSize = UDim2.fromOffset(px(120), px(33));
+  const size = px(680);
   return (
-    <imagelabel Name="DialogContainer"
-      AnchorPoint={anchorPoints.bottomCenter}
-      Position={positions.bottomCenter.sub(UDim2.fromScale(0, buttonYOffset))}
-      BackgroundTransparency={1}
-      Size={UDim2.fromScale(0.5, 0.5)}
-      Visible={() => id() !== undefined}
-      Image={Images.Background_Dialog}
+    <PromptPanel name="DialogContainer"
+      anchorPoint={anchorPoints.bottomCenter}
+      position={positions.bottomCenter.sub(UDim2.fromScale(0, buttonYOffset))}
+      size={UDim2.fromOffset(size, size)}
+      title={title}
+      portrait={portrait}
+      visible={() => id() !== undefined}
     >
-      <uiaspectratioconstraint AspectRatio={4} />
-      <imagelabel Name="PortraitBorder"
-        AnchorPoint={anchorPoints.leftCenter}
-        Position={positions.leftCenter}
-        BackgroundTransparency={1}
-        Size={UDim2.fromScale(0.95, 0.95)}
-        Image={portraitImage}
-        ZIndex={2}
-      >
-        <uiaspectratioconstraint />
-      </imagelabel>
-      <WizText name="Title"
-        anchorPoint={anchorPoints.topCenter}
-        position={positions.topCenter.add(UDim2.fromScale(0, 0.06))}
-        size={UDim2.fromScale(0.55, 0.15)}
-        alignX={Enum.TextXAlignment.Left}
-        textScaled={true}
-        textColor={palette.black}
-        text={titleText}
-        zIndex={1}
-      />
       <WizText name="Body"
         anchorPoint={anchorPoints.bottomRight}
         position={positions.bottomRight.sub(UDim2.fromScale(rightPad, 0.19))}
@@ -132,14 +112,13 @@ export function Dialog({ id, character }: DialogProps): Vide.Node {
         alignX={Enum.TextXAlignment.Left}
         textColor={palette.black}
         text={bodyText}
-        zIndex={1}
       />
       <WizButton
         anchorPoint={anchorPoints.bottomLeft}
         position={positions.bottomLeft.add(UDim2.fromScale(0.25, buttonYOffset))}
         size={buttonSize}
-        text={() => isBackButton() ? "Back" : "Cancel"}
-        activated={() => isBackButton() ? paragraphIndex()(paragraphIndex()() - 1) : closeDialog()}
+        text={() => canGoBack() ? "Back" : "Cancel"}
+        activated={() => canGoBack() ? paragraphIndex()(paragraphIndex()() - 1) : closeDialog()}
       />
       <WizButton
         anchorPoint={anchorPoints.bottomLeft}
@@ -156,6 +135,6 @@ export function Dialog({ id, character }: DialogProps): Vide.Node {
         text={advanceButtonText}
         activated={advance}
       />
-    </imagelabel>
+    </PromptPanel>
   );
 }

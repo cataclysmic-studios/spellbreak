@@ -26,8 +26,17 @@ export class NpcController implements OnStart, OnTick {
   }
 
   public onTick(dt: number): void {
-    for (const [_, questGiver] of this.questGivers)
+    let interacting = false;
+    for (const [_, questGiver] of this.questGivers) {
       questGiver.update(dt);
+
+      if (!questGiver.canInteract()) continue;
+      this.ui.enableInteractPrompt(questGiver.descriptor.id);
+      interacting = true;
+    }
+
+    if (interacting) return;
+    this.ui.disableInteractPrompt();
   }
 
   @OnClientMessage(Message.Hydrate_NPCs)

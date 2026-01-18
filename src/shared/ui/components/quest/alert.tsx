@@ -1,12 +1,13 @@
-import Vide, { Source, read, source } from "@rbxts/vide";
+import { RunService } from "@rbxts/services";
+import { useEventListener } from "@rbxts/pretty-vide-utils";
+import Vide, { type Source, source } from "@rbxts/vide";
 
 import { Images } from "../../utility/images";
-import { WizText } from "../wiz-text";
 import { anchorPoints, positions } from "../../utility/positioning";
 import { usePx } from "../../hooks/use-px";
 import { palette } from "../../palette";
-import { useEventListener } from "@rbxts/pretty-vide-utils";
-import { RunService } from "@rbxts/services";
+
+import { WizText } from "../wiz-text";
 
 export const enum AlertMode {
   Disabled,
@@ -19,11 +20,12 @@ interface QuestAlertProps {
   readonly mode: Source<AlertMode>;
 }
 
+const ROTATION_SPEED = 32;
 export function QuestAlert({ mode }: QuestAlertProps): Vide.Node {
   const px = usePx();
   const rotation = source(0);
   const visible = () => mode() !== AlertMode.Disabled;
-  useEventListener(RunService.PreRender, dt => rotation(rotation() + dt * 16));
+  useEventListener(RunService.PreRender, dt => rotation(rotation() + dt * ROTATION_SPEED));
 
   return (
     <>
@@ -31,7 +33,7 @@ export function QuestAlert({ mode }: QuestAlertProps): Vide.Node {
       <imagelabel
         BackgroundTransparency={1}
         Image={Images.RedSpiral}
-        ImageColor3={new Color3(0.9, 0.9, 0.9)}
+        ImageColor3={new Color3(0.86, 0.86, 0.86)}
         Size={UDim2.fromScale(1, 1)}
         Visible={visible}
         Rotation={rotation}

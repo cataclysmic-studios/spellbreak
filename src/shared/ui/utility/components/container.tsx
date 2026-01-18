@@ -5,8 +5,8 @@ import { anchorPoints, positions } from "../positioning";
 interface ContainerProps {
   readonly name?: Derivable<string>;
   readonly size?: Derivable<UDim2>;
-  readonly position?: Derivable<UDim2>;
   readonly anchorPoint?: Derivable<Vector2>;
+  readonly position?: Derivable<UDim2>;
   readonly layoutOrder?: Derivable<number>;
   readonly transparency?: Derivable<number>;
   readonly clipsDescendants?: Derivable<boolean>;
@@ -19,14 +19,24 @@ interface ContainerProps {
  * A component that represents an invisible frame.
  * The container can house children components and provides an offset to center the content.
  */
-export function Container({ name, size, position, anchorPoint, layoutOrder, transparency, clipsDescendants, absolutePositionChanged: absolutePosition, absoluteSizeChanged: absoluteSize, children }: ContainerProps): Vide.Node {
+export function Container({
+  name = "ContainerFrame",
+  size = UDim2.fromScale(1, 1),
+  anchorPoint = anchorPoints.center,
+  position = positions.center,
+  layoutOrder,
+  transparency = 1,
+  clipsDescendants,
+  absolutePositionChanged: absolutePosition, absoluteSizeChanged: absoluteSize,
+  children
+}: ContainerProps): Vide.Node {
   return (
     <frame
-      Name={() => read(name) ?? "ContainerFrame"}
-      Position={() => read(position) ?? positions.center}
-      AnchorPoint={() => read(anchorPoint) ?? anchorPoints.center}
-      BackgroundTransparency={() => read(transparency) ?? 1}
-      Size={() => read(size) ?? UDim2.fromScale(1, 1)}
+      Name={name}
+      Position={position}
+      AnchorPoint={anchorPoint}
+      BackgroundTransparency={transparency}
+      Size={size}
       ClipsDescendants={clipsDescendants}
       LayoutOrder={layoutOrder}
       AbsolutePositionChanged={absolutePosition}

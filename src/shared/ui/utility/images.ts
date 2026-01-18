@@ -14,6 +14,10 @@ export const enum Images {
   Background_Dialog = "rbxassetid://125227688237254",
   Background_Xp = "rbxassetid://78695210211208",
 
+  // inputs
+  Input_X = "rbxassetid://85088521586876",
+  Input_LeftClick = "rbxassetid://100792763769033",
+
   // portraits
   Portrait_HeadmasterHale = "rbxassetid://131377265144889",
   Portrait_PrivatePike = "rbxassetid://108261292143077",

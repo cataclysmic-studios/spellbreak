@@ -1,6 +1,5 @@
 import Vide, { type Derivable } from "@rbxts/vide";
 
-import { usePx } from "../hooks/use-px";
 import { positions } from "../utility/positioning";
 import { palette } from "../palette";
 import { Images } from "../utility/images";
@@ -18,25 +17,23 @@ interface ParchmentBannerProps {
   readonly zIndex?: Derivable<number>;
 }
 
-export function ParchmentBanner({ name, text, textSize, textColor = palette.black, size, position, anchorPoint, zIndex }: ParchmentBannerProps): Vide.Node {
-  const px = usePx();
-
+export function TinyParchmentBanner({ name, text, textSize, textColor = palette.black, size, position, anchorPoint, zIndex }: ParchmentBannerProps): Vide.Node {
   return (
     <imagelabel Name={name}
       BackgroundTransparency={1}
-      Image={Images.ParchmentBanner}
+      Image={Images.TinyParchmentBanner}
       AnchorPoint={anchorPoint}
       Position={position}
       Size={size}
       ZIndex={zIndex}
     >
-      <WizText text={text}
-        position={positions.center.sub(UDim2.fromScale(0, 0.23))}
+      <WizText
+        position={positions.center.sub(UDim2.fromScale(0, 0.16))}
+        font={Enum.Font.Cartoon}
         textSize={textSize}
         textColor={textColor}
-      >
-        <uistroke Thickness={px.scale(1.4)} Transparency={0.4} />
-      </WizText>
+        text={text}
+      />
     </imagelabel>
   );
 }

@@ -42,6 +42,22 @@ export interface DefeatQuestGoal extends BaseQuestGoal {
 
 export type QuestGoal = TalkQuestGoal | ExploreQuestGoal | DefeatQuestGoal;
 
+export const enum QuestRewardKind {
+  Gold,
+  XP
+}
+
+interface BaseQuestReward {
+  readonly kind: QuestRewardKind;
+}
+
+interface NumericQuestReward extends BaseQuestReward {
+  readonly kind: QuestRewardKind.Gold | QuestRewardKind.XP;
+  readonly amount: number;
+}
+
+type QuestReward = NumericQuestReward;
+
 export interface QuestDescriptor extends BaseID<QuestID> {
   readonly name: string;
   readonly requiredLevel: number;
@@ -49,6 +65,7 @@ export interface QuestDescriptor extends BaseID<QuestID> {
   readonly prequests?: QuestID[];
   readonly goals: QuestGoal[];
   readonly dialog: DialogID;
+  readonly rewards: QuestReward[];
 }
 
 export interface QuestInfo {

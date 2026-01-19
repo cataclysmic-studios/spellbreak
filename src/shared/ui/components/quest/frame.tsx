@@ -1,4 +1,4 @@
-import Vide, { type Derivable } from "@rbxts/vide";
+import Vide, { For, type Derivable } from "@rbxts/vide";
 
 import { usePx } from "shared/ui/hooks/use-px";
 import { anchorPoints, positions } from "shared/ui/utility/positioning";
@@ -6,9 +6,16 @@ import { palette } from "shared/ui/palette";
 import { getGoalTargetName, getGoalTargetPortrait, getGoalTargetZone, getQuestByID } from "shared/utility/quests";
 import { getZoneName, getZoneWorldName } from "shared/utility/zone";
 import { Images } from "shared/ui/utility/images";
-import type { QuestInfo } from "shared/structs/quests";
+import { QuestRewardKind, type QuestInfo } from "shared/structs/quests";
 
 import { WizText } from "../wiz-text";
+import { Container } from "shared/ui/utility/components/container";
+import { RewardIcon } from "./reward-icon";
+
+const REWARD_ICONS: Record<QuestRewardKind, string> = {
+  [QuestRewardKind.Gold]: Images.Icon_Gold,
+  [QuestRewardKind.XP]: ""
+};
 
 interface QuestFrameProps {
   readonly info: QuestInfo;
@@ -89,6 +96,26 @@ export function QuestFrame({
         textColor={palette.black}
         text={locationText}
       />
+      <Container name="RewardsContainer"
+        anchorPoint={anchorPoints.bottomCenter}
+        position={positions.bottomCenter}
+        size={UDim2.fromScale(1, 0.285)}
+      >
+        <uilistlayout
+          VerticalAlignment="Center"
+          HorizontalAlignment="Center"
+          FillDirection="Horizontal"
+          SortOrder="LayoutOrder"
+          HorizontalFlex="SpaceEvenly"
+        />
+        <For each={() => quest.rewards}>
+          {reward => {
+            const icon = REWARD_ICONS[reward.kind];
+            const isNumeric = reward.kind === QuestRewardKind.Gold || reward.kind === QuestRewardKind.XP;
+            return <RewardIcon icon={icon} amount={isNumeric ? reward.amount : undefined} layoutOrder={reward.kind} />
+          }}
+        </For>
+      </Container>
     </imagelabel>
   )
 }

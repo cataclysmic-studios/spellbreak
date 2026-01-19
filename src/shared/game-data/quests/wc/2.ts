@@ -1,5 +1,5 @@
 import { DialogID } from "shared/structs/npc/dialog";
-import { QuestGoalAction, QuestID, type QuestDescriptor } from "shared/structs/quests";
+import { QuestGoalAction, QuestID, QuestRewardKind, type QuestDescriptor } from "shared/structs/quests";
 import { ZoneID } from "shared/structs/zone";
 
 export = {
@@ -13,6 +13,15 @@ export = {
     {
       action: QuestGoalAction.Explore,
       target: ZoneID.WC_PegasusLane
+    }
+  ],
+  rewards: [
+    {
+      kind: QuestRewardKind.Gold,
+      amount: 5
+    }, {
+      kind: QuestRewardKind.XP,
+      amount: 15
     }
   ]
 } satisfies QuestDescriptor;

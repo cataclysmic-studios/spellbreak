@@ -1,0 +1,39 @@
+import Vide from "@rbxts/vide";
+
+import { usePx } from "shared/ui/hooks/use-px";
+
+import { TinyParchmentBanner } from "../tiny-parchment-banner";
+import { anchorPoints, positions } from "shared/ui/utility/positioning";
+
+interface RewardIconProps {
+  readonly icon: string;
+  readonly amount?: number;
+  readonly layoutOrder: number;
+}
+
+export function RewardIcon({ icon, amount, layoutOrder }: RewardIconProps): Vide.Node {
+  const px = usePx();
+  const size = 0.65;
+
+  return (
+    <imagelabel Name="RewardIcon"
+      BackgroundTransparency={1}
+      Size={UDim2.fromScale(size, size)}
+      Image={icon}
+      LayoutOrder={layoutOrder}
+    >
+      <uiaspectratioconstraint />
+      {
+        amount !== undefined
+          ? <TinyParchmentBanner name="AmountBanner"
+              anchorPoint={anchorPoints.bottomCenter}
+              position={positions.bottomCenter.add(UDim2.fromScale(0, 0.14))}
+              textSize={px(16)}
+              size={UDim2.fromScale(1.2, 0.52)}
+              text={tostring(amount)}
+            />
+          : undefined
+      }
+    </imagelabel>
+  )
+}

@@ -94,7 +94,7 @@ export function QuestArrow({ info, offset, visible }: QuestHelperProps): Vide.No
         anchorPoint={anchorPoints.center}
         position={positions.center}
         font={Enum.Font.Cartoon}
-        textSize={px(20)}
+        textSize={px(24)}
         textColor={palette.black}
         text={() => tostring(floor(distanceInMeters()))}
       />

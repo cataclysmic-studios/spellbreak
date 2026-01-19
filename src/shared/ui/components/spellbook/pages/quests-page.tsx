@@ -4,6 +4,7 @@ import Sift from "@rbxts/sift";
 
 import { anchorPoints, positions } from "shared/ui/utility/positioning";
 import { palette } from "shared/ui/palette";
+import type { QuestID, QuestInfo } from "shared/structs/quests";
 import type { PageProps } from "..";
 
 import { Container } from "shared/ui/utility/components/container";
@@ -34,10 +35,9 @@ export function QuestsPage({ character }: PageProps): Vide.Node {
   const questPages = () => chunk(quests(), QUESTS_PER_PAGE);
   const questsOnPage = () => {
     let filler = -1;
-    return padToLength(questPages()[pageIndex()] ?? [], QUESTS_PER_PAGE, () => filler--);
+    return padToLength(questPages()[pageIndex()] ?? [], QUESTS_PER_PAGE, () => filler-- as QuestID);
   };
 
-  print(questsOnPage())
   return (
     <Container
       anchorPoint={anchorPoints.center}
@@ -49,8 +49,9 @@ export function QuestsPage({ character }: PageProps): Vide.Node {
       <uilistlayout Wraps={true} />
       <For each={questsOnPage}>
         {(quest, index) => {
-          print(quest, index())
-          return <QuestSlot quest={quest < 0 as never ? undefined : quest} slot={index() as never} />
+          const goalIndex = character().activeQuests[quest];
+          const info: Maybe<QuestInfo> = goalIndex !== undefined ? { questID: quest, goalIndex } : undefined;
+          return <QuestSlot info={info} slot={index() as never} />
         }}
       </For>
     </Container>

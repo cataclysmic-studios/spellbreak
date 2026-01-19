@@ -7,4 +7,4 @@ import "../dev";
 
 import { Spellbook } from "../components/spellbook";
 
-export = hoarcekat(() => <Spellbook isOpen={() => true} character={() => newCharacterData("Test Monkey", School.Myth)} />);
+export = hoarcekat(() => <Spellbook isOpen={() => true} character={() => newCharacterData("Mock", School.Myth)} />);

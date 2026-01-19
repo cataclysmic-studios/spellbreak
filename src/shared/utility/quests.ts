@@ -135,6 +135,17 @@ export function getGoalTargetPosition({ action, target }: QuestGoal): Vector3 {
   }
 }
 
+export function getGoalTargetPortrait({ action, target }: QuestGoal): string {
+  switch (action) {
+    case QuestGoalAction.Talk:
+      return getNpcByID(target).portrait;
+    case QuestGoalAction.Explore:
+      return "";
+    case QuestGoalAction.Defeat:
+      return "";
+  }
+}
+
 export function getQuestDescription(id: QuestID, goalIndex = 0): string {
   const quest = getQuestByID(id);
   const goal = quest.goals[goalIndex];

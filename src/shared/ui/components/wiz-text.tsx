@@ -11,6 +11,7 @@ export interface WizTextProps {
   readonly textColor?: Derivable<Color3>;
   readonly textScaled?: Derivable<boolean>;
   readonly textWrap?: Derivable<boolean>;
+  readonly lineHeight?: Derivable<number>;
   readonly transparency?: Derivable<number>;
   readonly backgroundTransparency?: Derivable<number>;
   readonly size?: Derivable<UDim2>;
@@ -36,7 +37,7 @@ const DEFAULT_TEXT_SIZE = 14;
 
 export function WizText(props: WizTextProps): Vide.Node {
   const {
-    name, text, textSize, textColor, textScaled, textWrap, transparency, backgroundTransparency,
+    name, text, textSize, textColor, textScaled, textWrap, lineHeight, transparency, backgroundTransparency,
     size, position, anchorPoint, font, alignX, alignY, automaticSize, visible, layoutOrder, zIndex, dropShadow,
     textBoundsChanged, absoluteSizeChanged, absolutePositionChanged,
     children
@@ -60,6 +61,7 @@ export function WizText(props: WizTextProps): Vide.Node {
       TextColor3={() => read(textColor) ?? palette.yellow}
       TextXAlignment={alignX}
       TextYAlignment={alignY}
+      LineHeight={lineHeight}
       BackgroundTransparency={() => read(backgroundTransparency) ?? 1}
       Size={() => read(size) ?? UDim2.fromScale(1, 1)}
       Font={() => read(font) ?? Enum.Font.LuckiestGuy}

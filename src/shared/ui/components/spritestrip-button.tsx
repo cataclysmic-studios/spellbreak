@@ -19,25 +19,26 @@ interface SpritestripButtonProps {
   readonly activated?: () => void;
 }
 
-const defaultHoveredOffset = new Vector2(1, 0);
+const DEFAULT_HOVER_OFFSET = new Vector2(1, 0);
 export function SpritestripButton({
   name,
-  offset, hoveredOffset, tileSize, spritestripImage: spritesheetImage,
-  anchorPoint, position, size, transparency, scaleType, layoutOrder, active, visible,
+  offset = Vector2.zero, hoveredOffset = DEFAULT_HOVER_OFFSET,
+  tileSize, spritestripImage: spritesheetImage, anchorPoint, position,
+  size = UDim2.fromScale(1, 1), transparency = 0,
+  scaleType, layoutOrder, active = true, visible,
   hovered, unhovered, activated
 }: SpritestripButtonProps): Vide.Node {
   const isHovered = source(false);
-  const imageOffset = () => read(isHovered() ? (hoveredOffset ?? defaultHoveredOffset) : (offset ?? Vector2.zero));
-  const isActive = () => read(active) ?? true;
+  const imageOffset = () => read(isHovered() ? hoveredOffset : offset);
 
   return (
     <imagebutton Name={name}
       BackgroundTransparency={1}
       AnchorPoint={anchorPoint}
       Position={position}
-      Size={() => read(size) ?? UDim2.fromScale(1, 1)}
+      Size={size}
       Image={spritesheetImage}
-      ImageTransparency={() => read(transparency) ?? 0}
+      ImageTransparency={transparency}
       ImageRectSize={() => new Vector2(read(tileSize), read(tileSize))}
       ImageRectOffset={() => imageOffset().mul(read(tileSize))}
       ScaleType={scaleType}
@@ -45,17 +46,17 @@ export function SpritestripButton({
       Visible={visible}
 
       MouseEnter={() => {
-        if (!isActive()) return;
+        if (!read(active)) return;
         isHovered(true);
         hovered?.();
       }}
       MouseLeave={() => {
-        if (!isActive()) return;
+        if (!read(active)) return;
         isHovered(false);
         unhovered?.();
       }}
       Activated={() => {
-        if (!isActive()) return;
+        if (!read(active)) return;
         activated?.();
       }}
     />

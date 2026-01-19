@@ -27,7 +27,7 @@ export function DuelButton({ text, size, anchorPoint, position, textSize, active
 
   return (
     <imagebutton Name={() => read(text) + "Button"}
-      Image={Images.ButtonOrange}
+      Image={Images.Button_Orange}
       ImageColor3={() => isActive() ? palette.white : palette.mediumGray}
       AnchorPoint={() => read(anchorPoint) ?? anchorPoints.center}
       Position={() => read(position) ?? positions.center}

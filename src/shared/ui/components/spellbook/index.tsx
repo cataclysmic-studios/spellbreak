@@ -1,9 +1,9 @@
-import Vide, { Show, type Source, type Derivable, source, read } from "@rbxts/vide";
-import { $nameof } from "rbxts-transform-debug";
+import Vide, { type Source, type Derivable, source, read, Switch, Case } from "@rbxts/vide";
 
 import { usePx } from "../../hooks/use-px";
 import { anchorPoints, positions } from "../../utility/positioning";
 import { Images } from "../../utility/images";
+import type { CharacterData } from "shared/structs/data";
 
 import { Container } from "../../utility/components/container";
 import { CharacterPage } from "./pages/character-page";
@@ -27,75 +27,75 @@ export const enum BookPage {
   Options
 }
 
-const bookPages: Record<BookPage, () => Vide.Node> = {
-  [BookPage.Character]: CharacterPage,
-  [BookPage.Backpack]: BackpackPage,
-  [BookPage.Pets]: PetsPage,
-  [BookPage.Deck]: DeckPage,
-  [BookPage.Quests]: QuestsPage,
-  [BookPage.Map]: MapPage,
-  [BookPage.Crafting]: CraftingPage,
-  [BookPage.Options]: OptionsPage
+export interface PageProps {
+  readonly character: Source<CharacterData>;
 }
 
 interface BookProps {
-  readonly page?: Derivable<BookPage>;
-  readonly onlyOptions?: Derivable<boolean>;
   readonly isOpen: Source<boolean>;
+  readonly character: Source<CharacterData>;
+  readonly initialPage?: BookPage;
+  readonly onlyOptions?: Derivable<boolean>;
 }
 
-export function Spellbook({ page, isOpen, onlyOptions }: BookProps): Vide.Node {
-  const selectedPage = source(read(page) ?? BookPage.Options);
+export function Spellbook({ isOpen, character, initialPage = BookPage.Options, onlyOptions = false }: BookProps): Vide.Node {
+  const selectedPage = source(initialPage);
+  const nonOptionsActive = () => read(onlyOptions) === false;
   const px = usePx();
-  const onlyEnableOptions = onlyOptions ?? false;
 
-  const CurrentPage = bookPages[selectedPage()];
-  return <Show when={isOpen}>
-    {() => (
-      <Container name={$nameof(Spellbook)}
-        anchorPoint={anchorPoints.center}
-        position={positions.center}
-        size={UDim2.fromOffset(px(800), px(600))}
+  return (
+    <Container name="Spellbook"
+      anchorPoint={anchorPoints.center}
+      position={positions.center}
+      size={UDim2.fromOffset(px(800), px(600))}
+    >
+      <imagelabel Name="LeatherBinding"
+        AnchorPoint={anchorPoints.center}
+        Position={positions.center}
+        Size={UDim2.fromScale(1, 1)}
+        BackgroundTransparency={1}
+        Image={Images.BookBinding}
       >
-        <imagelabel Name="LeatherBinding"
+        <Container name="SideButtons"
+          anchorPoint={anchorPoints.rightCenter}
+          position={positions.rightCenter.add(UDim2.fromScale(0.04, 0))}
+          size={UDim2.fromScale(0.1, 1)}
+        >
+          <uilistlayout
+            FillDirection="Vertical"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            SortOrder="LayoutOrder"
+            Padding={new UDim(0, px(10))}
+          />
+          <BookSideButton icon={Images.Button_Book_CharacterStats} active={nonOptionsActive} activated={() => selectedPage(BookPage.Character)} />
+          <BookSideButton icon={Images.Button_Book_Backpack} active={nonOptionsActive} activated={() => selectedPage(BookPage.Backpack)} />
+          <BookSideButton icon={Images.Button_Book_Pets} active={nonOptionsActive} activated={() => selectedPage(BookPage.Pets)} />
+          <BookSideButton icon={Images.Button_Book_Deck} active={nonOptionsActive} activated={() => selectedPage(BookPage.Deck)} />
+          <BookSideButton icon={Images.Button_Book_Quests} active={nonOptionsActive} activated={() => selectedPage(BookPage.Quests)} />
+          <BookSideButton icon={Images.Button_Book_Map} active={nonOptionsActive} activated={() => selectedPage(BookPage.Map)} />
+          <BookSideButton icon={Images.Button_Book_Crafting} active={nonOptionsActive} activated={() => selectedPage(BookPage.Crafting)} />
+          <BookSideButton icon={Images.Button_Book_Options} activated={() => selectedPage(BookPage.Options)} />
+          <BookSideButton icon={Images.Button_Book_Exit} iconSize={80} activated={() => isOpen(false)} />
+        </Container>
+        <imagelabel
           AnchorPoint={anchorPoints.center}
           Position={positions.center}
-          Size={UDim2.fromScale(1, 1)}
-          BackgroundTransparency={1}
-          Image={Images.BookBinding}
+          Size={UDim2.fromScale(0.9, 0.92)}
         >
-          <Container name="SideButtons"
-            anchorPoint={anchorPoints.rightCenter}
-            position={positions.rightCenter.add(UDim2.fromScale(0.04, 0))}
-            size={UDim2.fromScale(0.1, 1)}
-          >
-            <uilistlayout
-              FillDirection={Enum.FillDirection.Vertical}
-              HorizontalAlignment={Enum.HorizontalAlignment.Center}
-              VerticalAlignment={Enum.VerticalAlignment.Center}
-              SortOrder={Enum.SortOrder.LayoutOrder}
-              Padding={new UDim(0, px(10))}
-            />
-            <BookSideButton icon={Images.CharStatsButton} active={!onlyEnableOptions} activated={() => selectedPage(BookPage.Character)} />
-            <BookSideButton icon={Images.BackpackButton} active={!onlyEnableOptions} activated={() => selectedPage(BookPage.Backpack)} />
-            <BookSideButton icon={Images.PetsButton} active={!onlyEnableOptions} activated={() => selectedPage(BookPage.Pets)} />
-            <BookSideButton icon={Images.DeckButton} active={!onlyEnableOptions} activated={() => selectedPage(BookPage.Deck)} />
-            <BookSideButton icon={Images.QuestsButton} active={!onlyEnableOptions} activated={() => selectedPage(BookPage.Quests)} />
-            <BookSideButton icon={Images.MapButton} active={!onlyEnableOptions} activated={() => selectedPage(BookPage.Map)} />
-            <BookSideButton icon={Images.CraftingButton} active={!onlyEnableOptions} activated={() => selectedPage(BookPage.Crafting)} />
-            <BookSideButton icon={Images.OptionsButton} activated={() => selectedPage(BookPage.Options)} />
-            <BookSideButton icon={Images.ExitButton} iconSize={80} activated={() => isOpen(false)} />
-          </Container>
-          <imagelabel
-            AnchorPoint={anchorPoints.center}
-            Position={positions.center}
-            Size={UDim2.fromScale(0.9, 0.92)}
-          >
-            <CurrentPage />
-          </imagelabel>
-          <uicorner CornerRadius={new UDim(0, px(4))} />
+          <Switch condition={selectedPage}>
+            <Case match={BookPage.Quests}>{() => <QuestsPage character={character} />}</Case>
+            <Case match={BookPage.Character}>{() => <CharacterPage character={character} />}</Case>
+            <Case match={BookPage.Backpack}>{() => <BackpackPage character={character} />}</Case>
+            <Case match={BookPage.Pets}>{() => <PetsPage character={character} />}</Case>
+            <Case match={BookPage.Deck}>{() => <DeckPage character={character} />}</Case>
+            <Case match={BookPage.Map}>{MapPage}</Case>
+            <Case match={BookPage.Crafting}>{() => <CraftingPage character={character} />}</Case>
+            <Case match={BookPage.Options}>{OptionsPage}</Case>
+          </Switch>
         </imagelabel>
-      </Container>
-    )}
-  </Show>
+        <uicorner CornerRadius={new UDim(0, px(4))} />
+      </imagelabel>
+    </Container>
+  );
 }

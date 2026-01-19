@@ -2,6 +2,7 @@ import Vide from "@rbxts/vide";
 
 import { palette } from "shared/ui/palette";
 import { anchorPoints, positions } from "shared/ui/utility/positioning";
+import type { PageProps } from "..";
 
 export function OptionsPage(): Vide.Node {
   return <frame

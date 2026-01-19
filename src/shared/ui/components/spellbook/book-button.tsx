@@ -21,7 +21,7 @@ export function BookButton({ isOpen, visible }: BookButtonProps): Vide.Node {
       anchorPoint={anchorPoints.center}
       position={positions.bottomRight.sub(UDim2.fromOffset(buttonSize / 2, buttonSize / 2))}
       size={() => UDim2.fromOffset(px(buttonSize + springOffset()), px(buttonSize + springOffset()))}
-      spritestripImage={Images.SpellbookButton}
+      spritestripImage={Images.Button_Spellbook}
       tileSize={buttonSize}
       visible={visible}
       active={visible}

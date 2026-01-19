@@ -2,8 +2,9 @@ import Vide from "@rbxts/vide";
 
 import { palette } from "shared/ui/palette";
 import { anchorPoints, positions } from "shared/ui/utility/positioning";
+import type { PageProps } from "..";
 
-export function PetsPage(): Vide.Node {
+export function PetsPage({ character }: PageProps): Vide.Node {
   return <frame
     AnchorPoint={anchorPoints.center}
     Position={positions.center}

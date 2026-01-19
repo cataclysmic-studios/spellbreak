@@ -1,14 +1,58 @@
-import Vide from "@rbxts/vide";
+import Vide, { source, For } from "@rbxts/vide";
+import Object from "@rbxts/object-utils";
+import Sift from "@rbxts/sift";
 
-import { palette } from "shared/ui/palette";
 import { anchorPoints, positions } from "shared/ui/utility/positioning";
+import { palette } from "shared/ui/palette";
+import type { PageProps } from "..";
 
-export function QuestsPage(): Vide.Node {
-  return <frame
-    AnchorPoint={anchorPoints.center}
-    Position={positions.center}
-    BackgroundColor3={palette.black}
-    BackgroundTransparency={0.6}
-    Size={UDim2.fromScale(0.9, 0.9)}
-  />
+import { Container } from "shared/ui/utility/components/container";
+import { QuestSlot } from "../../quest/slot";
+
+const QUESTS_PER_PAGE = 4;
+
+function chunk<T>(array: T[], size: number): T[][] {
+  const result: T[][] = [];
+
+  for (const i of $range(1, array.size(), size))
+    result.push(Sift.Array.slice(array, i, i + size));
+
+  return result;
+}
+
+function padToLength<T, F extends Maybe<T>>(array: T[], length: number, filler?: () => F): (T | F)[] {
+  const result = table.clone(array);
+  for (const i of $range(result.size() + 1, length))
+    result[i - 1] = filler?.()!;
+
+  return result;
+}
+
+export function QuestsPage({ character }: PageProps): Vide.Node {
+  const pageIndex = source(0);
+  const quests = () => Object.keys(character().activeQuests);
+  const questPages = () => chunk(quests(), QUESTS_PER_PAGE);
+  const questsOnPage = () => {
+    let filler = -1;
+    return padToLength(questPages()[pageIndex()] ?? [], QUESTS_PER_PAGE, () => filler--);
+  };
+
+  print(questsOnPage())
+  return (
+    <Container
+      anchorPoint={anchorPoints.center}
+      position={positions.center}
+      color={palette.black}
+      size={UDim2.fromScale(0.9, 0.9)}
+      zIndex={4}
+    >
+      <uilistlayout Wraps={true} />
+      <For each={questsOnPage}>
+        {(quest, index) => {
+          print(quest, index())
+          return <QuestSlot quest={quest < 0 as never ? undefined : quest} slot={index() as never} />
+        }}
+      </For>
+    </Container>
+  );
 }

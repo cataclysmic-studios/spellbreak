@@ -15,7 +15,7 @@ import { WizButton } from "./wiz-button";
 import { PromptPanel } from "./prompt-panel";
 
 interface DialogProps extends BaseID<Source<Maybe<DialogID>>> {
-  readonly character: Source<CharacterData>
+  readonly character: Source<CharacterData>;
 }
 
 export function Dialog({ id, character }: DialogProps): Vide.Node {

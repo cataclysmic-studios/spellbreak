@@ -2,6 +2,7 @@ export const enum Images {
   // pieces of ui
   Vignette = "rbxassetid://94231339640816",
   ParchmentBanner = "rbxassetid://6099008610",
+  TinyParchmentBanner = "rbxassetid://139883692158687",
   BookBinding = "rbxassetid://92180308011222",
   RedRibbon = "rbxassetid://83791914432890",
   RedSpiral = "http://www.roblox.com/asset/?id=951593731",
@@ -12,7 +13,16 @@ export const enum Images {
   Background_WaitingForOthers = "rbxassetid://98612224033956",
   Background_CardInfo = "rbxassetid://13711786825",
   Background_Dialog = "rbxassetid://125227688237254",
-  Background_Xp = "rbxassetid://78695210211208",
+  Background_XP = "rbxassetid://78695210211208",
+  Background_MainQuestFrame = "rbxassetid://72251088033236",
+  Background_QuestFrame = "rbxassetid://123137161798867",
+  Background_QuestSketch1 = "rbxassetid://136091759861800",
+  Background_QuestSketch2 = "rbxassetid://130530493513222",
+  Background_QuestSketch3 = "rbxassetid://118698903024559",
+  Background_QuestSketch4 = "rbxassetid://81287145746042",
+
+  // icons
+  Icon_Gold = "rbxassetid://120546981073024",
 
   // inputs
   Input_X = "rbxassetid://85088521586876",
@@ -27,17 +37,19 @@ export const enum Images {
   LargeIconSpritesheet2 = "rbxassetid://114537181138499",
 
   // buttons
-  SpellbookButton = "rbxassetid://101729984023869",
-  CharStatsButton = "rbxassetid://127548287857297",
-  BackpackButton = "rbxassetid://114372155093803",
-  PetsButton = "rbxassetid://78685612287498",
-  QuestsButton = "rbxassetid://119445470356641",
-  DeckButton = "rbxassetid://120485483338515",
-  MapButton = "rbxassetid://126587941578717",
-  CraftingButton = "rbxassetid://125673038077458",
-  OptionsButton = "rbxassetid://130775053254795",
-  ExitButton = "rbxassetid://84638639671372",
-  ButtonOrange = "rbxassetid://127532649463801",
+  Button_Left = "rbxassetid://139103554585837",
+  Button_Right = "rbxassetid://104725083513597",
+  Button_Spellbook = "rbxassetid://101729984023869",
+  Button_Book_CharacterStats = "rbxassetid://127548287857297",
+  Button_Book_Backpack = "rbxassetid://114372155093803",
+  Button_Book_Pets = "rbxassetid://78685612287498",
+  Button_Book_Quests = "rbxassetid://119445470356641",
+  Button_Book_Deck = "rbxassetid://120485483338515",
+  Button_Book_Map = "rbxassetid://126587941578717",
+  Button_Book_Crafting = "rbxassetid://125673038077458",
+  Button_Book_Options = "rbxassetid://130775053254795",
+  Button_Book_Exit = "rbxassetid://84638639671372",
+  Button_Orange = "rbxassetid://127532649463801",
 
   // card designs
   FireCard = "rbxassetid://97523274760958",

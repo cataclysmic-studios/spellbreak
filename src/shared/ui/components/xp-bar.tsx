@@ -19,7 +19,7 @@ export function XpBar({ progress, visible }: XpBarProps): Vide.Node {
       AnchorPoint={anchorPoints.bottomCenter}
       Position={positions.bottomCenter.sub(UDim2.fromOffset(0, px(8)))}
       Size={UDim2.fromOffset(size, size)}
-      Image={Images.Background_Xp}
+      Image={Images.Background_XP}
       ZIndex={1}
       Visible={visible}
     >

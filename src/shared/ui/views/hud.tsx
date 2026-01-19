@@ -51,7 +51,7 @@ export function HUD({ character, bookOpen, activeDialog, activeInteractable }: H
       <QuestDescription info={questInfo} offset={questHelperOffset} visible={showsWithQuest} />
       <XpBar progress={xpProgress} visible={hiddenByDialog} />
       <BookButton isOpen={bookOpen} visible={hiddenByDialog} />
-      <Spellbook page={BookPage.Options} isOpen={bookOpen} />
+      <Spellbook isOpen={bookOpen} character={character} initialPage={BookPage.Options} />
     </Container>
   );
 }

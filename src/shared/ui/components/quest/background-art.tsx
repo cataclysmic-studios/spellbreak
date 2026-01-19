@@ -1,5 +1,6 @@
 import Vide from "@rbxts/vide";
 
+import { anchorPoints, positions } from "shared/ui/utility/positioning";
 import { Images } from "shared/ui/utility/images";
 
 interface QuestBackgroundArtProps {
@@ -15,10 +16,16 @@ export function QuestBackgroundArt({ slot }: QuestBackgroundArtProps): Vide.Node
         ? Images.Background_QuestSketch3
         : Images.Background_QuestSketch4;
 
-  return <imagelabel Name="QuestBackgroundArt"
-    BackgroundTransparency={1}
-    Image={art}
-    Size={UDim2.fromScale(1, 1)}
-    LayoutOrder={slot}
-  />;
+  return (
+    <imagelabel Name="QuestBackgroundArt"
+      AnchorPoint={anchorPoints.center}
+      Position={positions.center}
+      Size={UDim2.fromScale(1, 1)}
+      BackgroundTransparency={1}
+      Image={art}
+      LayoutOrder={slot}
+    >
+      <uiaspectratioconstraint />
+    </imagelabel>
+  );
 }

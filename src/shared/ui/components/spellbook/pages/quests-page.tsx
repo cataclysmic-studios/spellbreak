@@ -9,6 +9,7 @@ import type { PageProps } from "..";
 
 import { Container } from "shared/ui/utility/components/container";
 import { QuestSlot } from "../../quest/slot";
+import { usePx } from "shared/ui/hooks/use-px";
 
 const QUESTS_PER_PAGE = 4;
 
@@ -30,6 +31,7 @@ function padToLength<T, F extends Maybe<T>>(array: T[], length: number, filler?:
 }
 
 export function QuestsPage({ character }: PageProps): Vide.Node {
+  const px = usePx();
   const pageIndex = source(0);
   const quests = () => Object.keys(character().activeQuests);
   const questPages = () => chunk(quests(), QUESTS_PER_PAGE);
@@ -42,11 +44,15 @@ export function QuestsPage({ character }: PageProps): Vide.Node {
     <Container
       anchorPoint={anchorPoints.center}
       position={positions.center}
-      color={palette.black}
       size={UDim2.fromScale(0.9, 0.9)}
       zIndex={4}
     >
-      <uilistlayout Wraps={true} />
+      <uigridlayout
+        CellSize={UDim2.fromScale(0.5, 0.5)}
+        FillDirectionMaxCells={2}
+        SortOrder="LayoutOrder"
+        CellPadding={UDim2.fromOffset(0, px(10))}
+      />
       <For each={questsOnPage}>
         {(quest, index) => {
           const goalIndex = character().activeQuests[quest];

@@ -1,5 +1,5 @@
 import { Controller, type OnStart } from "@flamework/core";
-import Vide, { source } from "@rbxts/vide";
+import Vide, { mount, source } from "@rbxts/vide";
 
 import { playerGui } from "client/constants";
 import { defaultData } from "shared/constants";
@@ -28,7 +28,7 @@ export class UIController implements OnStart {
   }
 
   public onStart(): void {
-    Vide.mount(() => <>
+    mount(() => <>
       <OnlyInPlace placeID={PlaceID.MainMenu}>
         {() => (
           <screengui Name="MainMenu" ScreenInsets="DeviceSafeInsets" ResetOnSpawn={false}>

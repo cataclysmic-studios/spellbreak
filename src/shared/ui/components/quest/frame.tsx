@@ -1,14 +1,14 @@
-import Vide, { Derivable, Show, Source } from "@rbxts/vide";
+import Vide, { type Derivable } from "@rbxts/vide";
 
 import { usePx } from "shared/ui/hooks/use-px";
 import { anchorPoints, positions } from "shared/ui/utility/positioning";
+import { palette } from "shared/ui/palette";
 import { getGoalTargetName, getGoalTargetPortrait, getGoalTargetZone, getQuestByID } from "shared/utility/quests";
+import { getZoneName, getZoneWorldName } from "shared/utility/zone";
 import { Images } from "shared/ui/utility/images";
-import type { QuestID, QuestInfo } from "shared/structs/quests";
+import type { QuestInfo } from "shared/structs/quests";
 
 import { WizText } from "../wiz-text";
-import { palette } from "shared/ui/palette";
-import { getZoneName, getZoneWorldName } from "shared/utility/zone";
 
 interface QuestFrameProps {
   readonly info: QuestInfo;
@@ -18,7 +18,13 @@ interface QuestFrameProps {
   readonly layoutOrder?: Derivable<number>;
 }
 
-export function QuestFrame({ info, anchorPoint, position, size = UDim2.fromScale(1, 1), layoutOrder }: QuestFrameProps): Vide.Node {
+export function QuestFrame({
+  info,
+  anchorPoint = anchorPoints.center,
+  position = positions.center,
+  size = UDim2.fromScale(1, 1),
+  layoutOrder
+}: QuestFrameProps): Vide.Node {
   const quest = getQuestByID(info.questID);
   const currentGoal = quest.goals[info.goalIndex];
   const art = quest.main ? Images.Background_MainQuestFrame : Images.Background_QuestFrame;

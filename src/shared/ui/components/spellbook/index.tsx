@@ -48,6 +48,7 @@ export function Spellbook({ isOpen, character, initialPage = BookPage.Options, o
       anchorPoint={anchorPoints.center}
       position={positions.center}
       size={UDim2.fromOffset(px(800), px(600))}
+      visible={isOpen}
     >
       <imagelabel Name="LeatherBinding"
         AnchorPoint={anchorPoints.center}

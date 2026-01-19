@@ -14,7 +14,7 @@ interface QuestSlotProps {
 
 export function QuestSlot({ info, slot }: QuestSlotProps): Vide.Node {
   return (
-    <Container name="QuestSlot" size={UDim2.fromScale(0.5, 0.5)} color={palette.black} transparency={0}>
+    <Container name="QuestSlot" size={UDim2.fromScale(0.5, 0.5)}>
       {
         info !== undefined
           ? <QuestFrame info={info} layoutOrder={slot} />

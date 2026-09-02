@@ -40,5 +40,8 @@
     "@rbxts/timer": "^0.0.9",
     "@rbxts/trash": "^1.0.8",
     "@rbxts/vide": "^0.6.1"
+  },
+  "overrides": {
+    "@rbxts/vide": "^0.6.1"
   }
 }

@@ -1,4 +1,4 @@
-import type { f16, u8, u16, u32, u24, String } from "@rbxts/serio";
+import type { f16, u8, u16, u32, u24, String, HashMap } from "@rbxts/serio";
 
 import type { School } from "../school";
 import type { CharacterStats, PerSchoolStats } from "./character-stats";
@@ -18,8 +18,13 @@ type Primitive =
   | undefined;
 
 type NonSymbolKeys<T> = Exclude<keyof T, symbol>;
+
+// Map-shaped wire types (e.g. activeQuests) have a dynamic key set the transformer can't
+// expand field-by-field, so they're diffed/removed as an opaque whole instead of recursed into.
 type DeepPartial<T> =
   T extends Primitive
+  ? T
+  : T extends ReadonlyMap<unknown, unknown>
   ? T
   : T extends readonly (infer U)[]
   ? readonly DeepPartial<U>[]
@@ -29,7 +34,9 @@ type DeepPartial<T> =
 
 type DeepKeys<T> = {
   readonly [K in NonSymbolKeys<T>]?: true | (
-    T[K] extends object ? DeepKeys<T[K]> : never
+    T[K] extends ReadonlyMap<unknown, unknown>
+    ? never
+    : T[K] extends object ? DeepKeys<T[K]> : never
   );
 };
 
@@ -42,6 +49,7 @@ interface ReferenceWithDataSchema<T, R extends number = u16> {
   readonly reference: R;
   readonly data: T;
 }
+
 
 export type EquippedGearDataSchema = { [K in keyof EquippedGearData]: u8; };
 
@@ -83,7 +91,7 @@ export interface CharacterStatsSchema extends CharacterStats {
   readonly pierce: PerSchoolStats<u8>;
 }
 
-export interface CharacterDataSchema extends CharacterData {
+export interface CharacterDataSchema extends Omit<CharacterData, "activeQuests"> {
   readonly name: String<u8>;
   readonly school: School;
   readonly level: u8;
@@ -93,7 +101,8 @@ export interface CharacterDataSchema extends CharacterData {
   readonly trainedSpells: SpellReferenceSchema[];
   readonly selectedQuest?: QuestIDSchema;
   readonly completedQuests: QuestIDSchema[];
-  readonly activeQuests: Partial<Record<QuestIDSchema, u8>>; // quest id -> goal index
+  /** quest id -> goal index; sent as a whole map rather than diffed key-by-key */
+  readonly activeQuests: HashMap<QuestIDSchema, u8, u8>;
   /** Values represent index in backpack data */
   readonly equippedGear: EquippedGearDataSchema;
   readonly backpack: BackpackDataSchema;

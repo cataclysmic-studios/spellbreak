@@ -3,6 +3,7 @@ import Vide, { source } from "@rbxts/vide";
 import { getNpcByID } from "shared/utility/npc";
 import { canReceiveQuest, getActiveQuestIDs, getFirstCompletableTalkGoal, getQuestByID, hasQuest, canGiveNewQuest, hasActiveQuestFrom } from "shared/utility/quests";
 import { character } from "client/constants";
+import { nametagColors } from "shared/constants";
 import { NpcID, type NpcDescriptor } from "shared/structs/npc/descriptor";
 import type { DialogID } from "shared/structs/npc/dialog";
 import type { CharacterData } from "shared/structs/data";
@@ -10,6 +11,8 @@ import Log from "shared/log";
 
 import { AlertMode, QuestAlert } from "shared/ui/components/quest/alert";
 import { QuestAlertContainer } from "shared/ui/components/quest/alert-container";
+import { NametagContainer } from "shared/ui/components/nametag-container";
+import { Nametag } from "shared/ui/components/nametag";
 
 import type { CharacterController } from "client/controllers/character";
 
@@ -32,6 +35,7 @@ export class QuestGiver<ModelShape extends Model = NpcModel> {
     this.root = npcModel.PrimaryPart!;
     this.character.updated.Connect(() => this.updateMode());
     this.updateMode();
+    this.mountNametag();
     this.mountQuestAlert();
     Log.info("Created new quest giver for NPC: " + this.descriptor.name);
   }
@@ -62,6 +66,15 @@ export class QuestGiver<ModelShape extends Model = NpcModel> {
     const position = this.root.Position;
     const distance = position.sub(characterPosition).Magnitude;
     this.inRange = distance <= INTERACTION_DISTANCE;
+  }
+
+  private mountNametag(): void {
+    const { name, title } = this.descriptor;
+    Vide.mount(() => (
+      <NametagContainer adornee={this.root}>
+        <Nametag name={name} description={title} color={nametagColors.npc} />
+      </NametagContainer>
+    ), this.root);
   }
 
   private mountQuestAlert(): void {

@@ -3,7 +3,7 @@ import { createCollection, type Document } from "@rbxts/lapis";
 import { $nameof } from "rbxts-transform-debug";
 import Signal from "@rbxts/lemon-signal";
 
-import { Message, messaging } from "shared/messaging";
+import { Message, messaging, type MessageData } from "shared/messaging";
 import { createDiff, fixNumericKeys, updateCharacter } from "shared/utility/data";
 import { defaultData } from "shared/constants";
 import type { OnPlayerJoin, OnPlayerLeave } from "server/hooks/players";
@@ -78,7 +78,10 @@ export class DatabaseService implements OnPlayerJoin, OnPlayerLeave {
   }
 
   private sendDiffToClient(player: Player, oldData: PlayerData, newData: PlayerData): void {
-    messaging.client.emit(player, Message.Data_Updated, fixNumericKeys(createDiff(oldData, newData)));
+    // activeQuests is a plain dictionary at runtime; it's only typed as a serio HashMap
+    // over the wire since the transformer can't otherwise expand its dynamic key set.
+    const diff = fixNumericKeys(createDiff(oldData, newData)) as unknown as MessageData[Message.Data_Updated];
+    messaging.client.emit(player, Message.Data_Updated, diff);
   }
 
   private getDocument(player: Player): PlayerDataDocument {

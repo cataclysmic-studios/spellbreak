@@ -1,5 +1,4 @@
 import Vide, { type Source, Show, effect, source } from "@rbxts/vide";
-import { Players } from "@rbxts/services";
 import { useEventListener } from "@rbxts/pretty-vide-utils";
 import type { Timer } from "@rbxts/timer";
 import { $nameof } from "rbxts-transform-debug";
@@ -8,6 +7,7 @@ import { usePx } from "../hooks/use-px";
 import { palette } from "../palette";
 import { Images } from "../utility/images";
 import { anchorPoints, positions } from "../utility/positioning";
+import { messaging, Message } from "shared/messaging";
 import type { ClientDuelInfo } from "shared/structs/duel";
 
 import { Container } from "../utility/components/container";
@@ -27,8 +27,6 @@ const RED_TIMER_COLOR1 = palette.brightRed;
 const RED_TIMER_COLOR2 = palette.red;
 const RED_TIMER_THRESHOLD = 10; // seconds left
 
-const mouse = Players.LocalPlayer.GetMouse();
-
 /** View for passing, choosing cards, drawing cards, etc. */
 export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node {
   const timerRemaining = source(timer().getTimeLeft());
@@ -36,7 +34,13 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
   const px = usePx();
 
   const { hand, choosing, selectedCard } = duelInfo.state;
-  useEventListener(mouse.Button1Up, () => !choosing() ? choosing(true) : undefined);
+  // Passing counts as a choice too - the moment `choosing` drops, whatever the player decided
+  // (pass, a no-target spell, or a spell+target) has already been locked in by the card/pass
+  // button that flipped it, so just let the server know they're ready.
+  effect(() => {
+    if (choosing()) return;
+    messaging.server.emit(Message.Duel_ChoiceMade, duelInfo.id);
+  });
   effect(() => {
     const currentTimer = timer();
     timerRemaining(currentTimer.getTimeLeft());
@@ -44,6 +48,9 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
     useEventListener(currentTimer.completed, () => {
       timerRemaining(0);
       currentTimer.destroy();
+      // Auto-pass whoever hasn't locked in yet - drops `choosing`, which the effect
+      // above turns into a Duel_ChoiceMade, the same path the Pass button uses.
+      choosing(false);
     });
   });
 

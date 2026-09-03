@@ -23,6 +23,9 @@
 					},
 					"@flamework": {
 						"$path": "node_modules/@flamework"
+					},
+					"@kyrorblx": {
+						"$path": "node_modules/@kyrorblx"
 					}
 				}
 			},

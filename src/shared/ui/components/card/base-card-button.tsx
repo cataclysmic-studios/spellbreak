@@ -1,10 +1,10 @@
 import Vide, { Derivable, read, source } from "@rbxts/vide";
 
-import { usePx } from "../../hooks/use-px";
+import { usePx } from "shared/ui/hooks/use-px";
 import { palette } from "../../palette";
 import { Images } from "../../utility/images";
 import { anchorPoints, positions } from "../../utility/positioning";
-import { cardAspectRatio } from "shared/constants";
+import { cardReferenceWidth, cardReferenceHeight } from "shared/constants";
 import { School } from "shared/structs/school";
 import { SpellCardKind, type SpellCard } from "shared/structs/spell/card";
 
@@ -14,12 +14,12 @@ import { SpritesheetIcon } from "../spritesheet-icon";
 import { CardBackground } from "./card-background";
 import { CardDescription } from "./card-description";
 import { SpellKindIcon } from "./spell-kind-icon";
-import { Container } from "shared/ui/utility/components/container";
 
 interface BaseCardButtonProps {
   readonly spellCard: SpellCard;
   readonly layoutOrder: Derivable<number>;
   readonly grayscale: Derivable<boolean>;
+  readonly selected?: Derivable<boolean>;
   readonly hovered?: () => void;
   readonly unhovered?: () => void;
   readonly leftClicked?: () => void;
@@ -69,7 +69,14 @@ const SCHOOL_CARD_IMAGES: Record<School, string> = {
   [School.Shadow]: Images.ShadowCard
 };
 
-export function BaseCardButton({ spellCard, layoutOrder, grayscale, hovered, unhovered, leftClicked, rightClicked }: BaseCardButtonProps): Vide.Node {
+const TITLE_TEXT_SIZE = 26;
+const COST_TEXT_SIZE = 40;
+const ACCURACY_TEXT_SIZE = 36;
+const STROKE_THICKNESS = 1.5;
+const SELECTION_STROKE_THICKNESS = 3;
+
+export function BaseCardButton({ spellCard, layoutOrder, grayscale, selected, hovered, unhovered, leftClicked, rightClicked }: BaseCardButtonProps): Vide.Node {
+  const px = usePx();
   const baseZIndex = source(0);
   const belowCardZIndex = () => baseZIndex() - 1;
   const cardFrameImage = () => read(grayscale)
@@ -85,70 +92,83 @@ export function BaseCardButton({ spellCard, layoutOrder, grayscale, hovered, unh
     return read(grayscale) ? art.grayscale : art.colored;
   };
 
-  const px = usePx();
-  return <>
-    <uiaspectratioconstraint AspectRatio={cardAspectRatio} />
-    <WizText name="Title"
-      text={spellCard.spell.name}
-      anchorPoint={anchorPoints.topCenter}
-      position={positions.topCenter.add(UDim2.fromScale(0, 0.035))}
-      textColor={palette.white}
-      textScaled={true}
-      size={UDim2.fromScale(1, 0.08)}
+  return (
+    <frame Name="CardDesign"
+      AnchorPoint={anchorPoints.center}
+      Position={positions.center}
+      BackgroundTransparency={1}
+      ClipsDescendants={true}
+      Size={UDim2.fromOffset(cardReferenceWidth, cardReferenceHeight)}
     >
-      <uistroke Thickness={px.scale(1)} Transparency={0.7} />
-    </WizText>
-    <WizText name="Cost"
-      text={tostring(spellCard.spell.cost.pips)}
-      anchorPoint={anchorPoints.center}
-      position={positions.topLeft.add(UDim2.fromScale(0.135, 0.2))}
-      textScaled={true}
-      size={UDim2.fromScale(0.15, 0.15)}
-    >
-      <uiaspectratioconstraint />
-      < uistroke Thickness={px.scale(1)} Transparency={0.3} />
-    </WizText>
-    <WizText name="Accuracy"
-      text={spellCard.spell.accuracy + "%"}
-      backgroundTransparency={1}
-      anchorPoint={anchorPoints.center}
-      position={positions.bottomLeft.add(UDim2.fromScale(0.128, -0.43))}
-      font={Enum.Font.Cartoon}
-      textScaled={true}
-      size={UDim2.fromScale(0.225, 0.1)}
-    >
-      <uistroke Thickness={px.scale(1)} Transparency={0.3} />
-    </WizText>
-    <SchoolIcon school={spellCard.spell.school}
-      anchorPoint={anchorPoints.center}
-      position={positions.topRight.add(UDim2.fromScale(-0.125, 0.195))}
-      size={new UDim(0.18)}
-    />
-    <SpellKindIcon
-      kind={spellCard.spell.kind}
-      size={new UDim(0.18)}
-      position={positions.bottomRight.add(UDim2.fromScale(-0.129, -0.429))}
-    />
-    <CardDescription parts={spellCard.spell.description} />
-    <CardBackground name="CardFrame"
-      image={cardFrameImage}
-      layoutOrder={layoutOrder}
-      zIndex={baseZIndex}
-      hovered={hovered}
-      unhovered={unhovered}
-      leftClicked={leftClicked}
-      rightClicked={rightClicked}
-    />
-    <SpritesheetIcon name="SpellImage"
-      anchorPoint={anchorPoints.topCenter}
-      position={positions.topCenter.add(UDim2.fromOffset(0, px(6)))}
-      size={UDim2.fromScale(0.95, 0.95)}
-      spritesheetImage={cardImage}
-      iconSize={SPELL_ART_SIZE}
-      offset={spellCard.spell.cardImageOffset}
-      zIndex={belowCardZIndex}
-    >
-      <uiaspectratioconstraint />
-    </SpritesheetIcon>
-  </>;
+      <uistroke
+        Color={palette.white}
+        Thickness={SELECTION_STROKE_THICKNESS}
+        Transparency={() => read(selected) ?? false ? 0.1 : 1}
+      />
+      <WizText name="Title"
+        text={spellCard.spell.name}
+        anchorPoint={anchorPoints.topCenter}
+        position={positions.topCenter.add(UDim2.fromScale(0, 0.035))}
+        textColor={palette.white}
+        textSize={TITLE_TEXT_SIZE}
+        size={UDim2.fromScale(1, 0.08)}
+        dropShadow={px(1)}
+      >
+        <uistroke Thickness={STROKE_THICKNESS} Transparency={0.7} />
+      </WizText>
+      <WizText name="Cost"
+        text={tostring(spellCard.spell.cost.pips)}
+        anchorPoint={anchorPoints.center}
+        position={positions.topLeft.add(UDim2.fromScale(0.135, 0.2))}
+        textSize={COST_TEXT_SIZE}
+        size={UDim2.fromScale(0.15, 0.15)}
+      >
+        <uiaspectratioconstraint />
+        <uistroke Thickness={STROKE_THICKNESS} Transparency={0.3} />
+      </WizText>
+      <WizText name="Accuracy"
+        text={spellCard.spell.accuracy + "%"}
+        backgroundTransparency={1}
+        anchorPoint={anchorPoints.center}
+        position={positions.bottomLeft.add(UDim2.fromScale(0.15, -0.43))}
+        font={Enum.Font.Cartoon}
+        textSize={ACCURACY_TEXT_SIZE}
+        size={UDim2.fromScale(0.225, 0.1)}
+        dropShadow={px(2)}
+      >
+        <uistroke Thickness={STROKE_THICKNESS} Transparency={0.3} />
+      </WizText>
+      <SchoolIcon school={spellCard.spell.school}
+        anchorPoint={anchorPoints.center}
+        position={positions.topRight.add(UDim2.fromScale(-0.125, 0.195))}
+        size={new UDim(0.18)}
+      />
+      <SpellKindIcon
+        kind={spellCard.spell.kind}
+        size={new UDim(0.18)}
+        position={positions.bottomRight.add(UDim2.fromScale(-0.129, -0.429))}
+      />
+      <CardDescription parts={spellCard.spell.description} />
+      <CardBackground name="CardFrame"
+        image={cardFrameImage}
+        layoutOrder={layoutOrder}
+        zIndex={baseZIndex}
+        hovered={hovered}
+        unhovered={unhovered}
+        leftClicked={leftClicked}
+        rightClicked={rightClicked}
+      />
+      <SpritesheetIcon name="SpellImage"
+        anchorPoint={anchorPoints.topCenter}
+        position={positions.topCenter.add(UDim2.fromOffset(0, 6))}
+        size={UDim2.fromScale(0.95, 0.95)}
+        spritesheetImage={cardImage}
+        iconSize={SPELL_ART_SIZE}
+        offset={spellCard.spell.cardImageOffset}
+        zIndex={belowCardZIndex}
+      >
+        <uiaspectratioconstraint />
+      </SpritesheetIcon>
+    </frame>
+  );
 }

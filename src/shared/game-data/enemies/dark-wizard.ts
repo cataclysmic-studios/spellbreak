@@ -7,7 +7,7 @@ import { DamageModifierKind, EnemyID, type EnemyDescriptor } from "shared/struct
 export = {
   id: EnemyID.DarkWizard,
   name: "Dark Wizard",
-  zone: ZoneID.WC_PegasusLane,
+  zone: ZoneID.PegasusLane,
   health: 80,
   schools: [School.Death],
   rank: 1,

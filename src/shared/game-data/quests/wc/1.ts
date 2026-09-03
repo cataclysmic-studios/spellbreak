@@ -7,12 +7,12 @@ export = {
   name: "Enrollment Day",
   requiredLevel: 0,
   main: true,
-  dialog: DialogID.enrollment_day_intro,
+  dialog: DialogID.Wc1_EnrollmentIntro,
   goals: [
     {
       action: QuestGoalAction.Talk,
       target: NpcID.PrivatePike,
-      completionDialog: DialogID.enrollment_day_end
+      completionDialog: DialogID.Wc1_EnrollmentEnd
     }
   ],
   rewards: [

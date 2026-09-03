@@ -13,6 +13,7 @@ export const createMockDuelInfo = () => ({
   id: Mock.ID,
   model: assets.duel.circle,
   onOpposingTeam: false,
+  firstTurnOnTeam: true,
   state: {
     // deck: new ClientDuelDeckState(Mock.ID, {
     //   spellReferences: [],

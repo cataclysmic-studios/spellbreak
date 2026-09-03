@@ -5,10 +5,16 @@ import { getChildrenOfType } from "@rbxts/instance-utility";
 import { EnemyPathLoop } from "server/classes/enemy-path-loop";
 import type { Enemy } from "server/classes/enemy";
 
+import type { DuelService } from "./duel";
+
 @Service()
 export class EnemyService implements OnTick {
   private readonly pathLoops = getChildrenOfType(World.WaitForChild("EnemyPathLoops"), "Model")
     .map(model => new EnemyPathLoop(model));
+
+  public constructor(
+    private readonly duel: DuelService
+  ) { }
 
   public onTick(dt: number): void {
     for (const pathLoop of this.pathLoops) {
@@ -16,6 +22,9 @@ export class EnemyService implements OnTick {
 
       if (!pathLoop.canSpawn()) continue;
       const enemy = pathLoop.getRandomEnemy();
+      if (enemy === undefined) continue;
+
+      enemy.touchedByPlayer.Connect(player => this.duel.startDuel(player, enemy));
       pathLoop.spawn(enemy);
     }
   }

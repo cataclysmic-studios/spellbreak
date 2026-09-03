@@ -1,9 +1,10 @@
-import Vide, { derive, source, Source } from "@rbxts/vide";
+import Vide, { derive, Show, source, Source } from "@rbxts/vide";
 import type { BaseID } from "@rbxts/id";
 
 import { Message, messaging } from "shared/messaging";
 import { anchorPoints, positions } from "../utility/positioning";
-import { getDialogByID, getNpcByID } from "shared/utility/npc";
+import { getNpcByID } from "shared/utility/npc";
+import { getDialogByID } from "shared/utility/dialog";
 import { getFirstCompletableTalkGoal, getQuestByID, hasQuest } from "shared/utility/quests";
 import { usePx } from "../hooks/use-px";
 import { palette } from "../palette";
@@ -13,6 +14,7 @@ import type { DialogDescriptor, DialogID } from "shared/structs/npc/dialog";
 import { WizText } from "./wiz-text";
 import { WizButton } from "./wiz-button";
 import { PromptPanel } from "./prompt-panel";
+import { QuestFrame } from "./quest/frame";
 
 interface DialogProps extends BaseID<Source<Maybe<DialogID>>> {
   readonly character: Source<CharacterData>;
@@ -88,6 +90,12 @@ export function Dialog({ id, character }: DialogProps): Vide.Node {
     paragraphIndex()(paragraphIndex()() + 1);
   }
   const canGoBack = () => paragraphIndex()() > 0;
+  const showGivenQuest = () => {
+    const dialog = getDialog();
+    if (!dialog) return false;
+
+    return dialog.givesQuest !== undefined && isOnLastParagraph(dialog);
+  };
 
   const rightPad = 0.08;
   const buttonYOffset = 0.02;
@@ -102,6 +110,16 @@ export function Dialog({ id, character }: DialogProps): Vide.Node {
       portrait={portrait}
       visible={() => id() !== undefined}
     >
+      <Show when={showGivenQuest}>
+        {() => (
+          <QuestFrame
+            anchorPoint={anchorPoints.topRight}
+            position={positions.topRight.sub(UDim2.fromScale(rightPad / 6, 1.4))}
+            size={UDim2.fromScale(1.36, 1.36)}
+            info={{ questID: getDialog()!.givesQuest!, goalIndex: 0 }}
+          />
+        )}
+      </Show>
       <WizText name="Body"
         anchorPoint={anchorPoints.bottomRight}
         position={positions.bottomRight.sub(UDim2.fromScale(rightPad, 0.19))}

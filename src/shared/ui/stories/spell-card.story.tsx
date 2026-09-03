@@ -1,4 +1,6 @@
-import Vide from "@rbxts/vide";
+import { RunService } from "@rbxts/services";
+import { useEventListener } from "@rbxts/pretty-vide-utils";
+import Vide, { source } from "@rbxts/vide";
 
 import { hoarcekat } from "../utility/hoarcekat";
 import { createMockDuelInfo } from "./common";
@@ -15,11 +17,17 @@ const card: SpellCard = {
   spell: getSpellFromReference(SpellReference.Myth_Mythblade)
 };
 
-export = hoarcekat(() => (
-  <Container size={UDim2.fromScale(0.4, 0.4)}>
-    <DuelCardButton spellCard={card}
-      layoutOrder={0}
-      duelInfo={createMockDuelInfo()}
-    />
-  </Container>
-));
+export = hoarcekat(() => {
+  const n = source(0);
+  useEventListener(RunService.RenderStepped, () => n(math.sin(os.clock()) / 4));
+
+  return (
+    <Container size={() => UDim2.fromScale(0.4, 0.4)}>
+      <DuelCardButton spellCard={card}
+        scale={() => 1 + n()}
+        layoutOrder={0}
+        duelInfo={createMockDuelInfo()}
+      />
+    </Container>
+  );
+});

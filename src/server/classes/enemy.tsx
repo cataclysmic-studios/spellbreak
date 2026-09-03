@@ -1,5 +1,6 @@
 import { Players, RunService, Workspace as World } from "@rbxts/services";
 import type { BaseID } from "@rbxts/id";
+import Signal from "@rbxts/lemon-signal";
 import Vide from "@rbxts/vide";
 
 import { assets } from "shared/constants";
@@ -14,9 +15,12 @@ export class Enemy extends NamedNPC<EnemyModel> implements BaseID<number> {
   public static cumulativeID = 0;
 
   public readonly id = Enemy.cumulativeID++;
+  /** Fires once, the first time a player touches this enemy, with the player who touched it. */
+  public readonly touchedByPlayer = new Signal<(player: Player) => void>;
+
   private moveConnection?: RBXScriptConnection;
 
-  public constructor(descriptor: EnemyDescriptor) {
+  public constructor(public readonly descriptor: EnemyDescriptor) {
     super(
       assets.enemies.WaitForChild(descriptor.name).Clone() as never,
       () => <EnemyNametag descriptor={descriptor} />
@@ -57,7 +61,7 @@ export class Enemy extends NamedNPC<EnemyModel> implements BaseID<number> {
       if (playerWhoTouched === undefined) return;
       conn.Disconnect();
 
-      // TODO: start duel
+      this.touchedByPlayer.Fire(playerWhoTouched);
     });
   }
 }

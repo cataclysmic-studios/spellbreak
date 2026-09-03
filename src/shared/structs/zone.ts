@@ -1,26 +1,24 @@
 import type { BaseID } from "@rbxts/id";
 
+export const enum World {
+  WizardCity,
+}
+
+export const WorldNames: Record<World, string> = {
+  [World.WizardCity]: "Wizard City",
+};
+
 export const enum ZoneID {
-  WC_TownSquare,
-  WC_TownSquare_HeadmastersOffice,
-  WC_PegasusLane,
-  WC_PegasusLane_ShatterbonesTower,
+  TownSquare,
+  HeadmastersOffice,
+  PegasusLane,
+  ShatterbonesTower,
 }
 
-export interface ZoneNames {
-  [ZoneID.WC_TownSquare]: "Town Square",
-  [ZoneID.WC_TownSquare_HeadmastersOffice]: "Headmaster's Office",
-  [ZoneID.WC_PegasusLane]: "Pegasus Lane",
-  [ZoneID.WC_PegasusLane_ShatterbonesTower]: "Shatterbones' Tower",
-}
-
-export interface ZoneWorlds {
-  [ZoneID.WC_TownSquare]: "Wizard City",
-  [ZoneID.WC_TownSquare_HeadmastersOffice]: "Wizard City",
-  [ZoneID.WC_PegasusLane]: "Wizard City",
-  [ZoneID.WC_PegasusLane_ShatterbonesTower]: "Wizard City",
-}
-
-export interface Zone extends BaseID<ZoneID> {
+export interface ZoneDescriptor extends BaseID<ZoneID> {
+  readonly name: string;
+  readonly world: World;
+  /** The zone this one is nested inside of (e.g. a building interior within a town), if any. */
+  readonly parent?: ZoneID;
   readonly exits: Map<ZoneID, Vector3>;
 }

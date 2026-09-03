@@ -7,7 +7,9 @@ interface ReplicatedStorage extends Instance {
           combatantAdded: Animation;
           combatantRemoved: Animation;
         };
-      }
+      };
+      /** Plays on the load screen's `Page` rig once loading finishes. */
+      pageFlip: Animation;
     };
     duel: Folder & {
       circle: DuelCircleModel;
@@ -16,7 +18,11 @@ interface ReplicatedStorage extends Instance {
       pip: Part;
       powerPip: Part;
       shadowPip: Part;
-      pointer: Part;
+      pointer: Part & {
+        SurfaceGui: SurfaceGui & {
+          ImageLabel: ImageLabel;
+        };
+      };
       pipPositions: Model & {
         "1": Part;
         "2": Part;
@@ -33,5 +39,5 @@ interface ReplicatedStorage extends Instance {
     enemies: Folder;
     npcs: Folder;
     questArrow: MeshPart;
-  }
+  };
 }

@@ -16,9 +16,12 @@ export class CameraManager {
     this.pose.update(dt);
   }
 
-  public transitionPose(newPose: BaseCameraPose, duration: number): void {
+  public transitionPose(newPose: BaseCameraPose, duration: number, onCompleted?: () => void): void {
     this.pose = undefined;
-    newPose.transitionInto(duration, () => this.pose = newPose);
+    newPose.transitionInto(duration, () => {
+      this.pose = newPose;
+      onCompleted?.();
+    });
   }
 
   public setPose(newPose: BaseCameraPose): void {

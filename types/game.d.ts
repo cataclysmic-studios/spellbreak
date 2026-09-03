@@ -27,7 +27,7 @@ interface NpcModel extends Model {
 
 }
 
-interface EnemyModel extends Model {
+interface EnemyModel extends Model, WithAnimationController {
   collider: Part;
 }
 

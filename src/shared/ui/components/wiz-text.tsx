@@ -79,8 +79,8 @@ export function WizText(props: WizTextProps): Vide.Node {
           <WizText
             {...props}
             dropShadow={undefined}
-            anchorPoint={anchorPoints.topLeft}
-            position={() => UDim2.fromOffset(read(dropShadow)!, read(dropShadow)!)}
+            anchorPoint={anchorPoints.center}
+            position={() => new UDim2(0.5, read(dropShadow)!, 0.5, read(dropShadow)!)}
             textColor={palette.black}
             zIndex={() => getZIndex() - 1}
           />

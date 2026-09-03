@@ -34,12 +34,12 @@ export interface PageProps {
 interface BookProps {
   readonly isOpen: Source<boolean>;
   readonly character: Source<CharacterData>;
-  readonly initialPage?: BookPage;
+  readonly page?: Source<BookPage>;
   readonly onlyOptions?: Derivable<boolean>;
 }
 
-export function Spellbook({ isOpen, character, initialPage = BookPage.Options, onlyOptions = false }: BookProps): Vide.Node {
-  const selectedPage = source(initialPage);
+export function Spellbook({ isOpen, character, page, onlyOptions = false }: BookProps): Vide.Node {
+  const selectedPage = page ?? source<BookPage>(BookPage.Options);
   const nonOptionsActive = () => read(onlyOptions) === false;
   const px = usePx();
 

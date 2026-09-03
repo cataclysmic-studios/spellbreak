@@ -4,6 +4,8 @@ import { Enemy } from "./enemy";
 import { getEnemyByName } from "shared/utility/enemy";
 import Log from "shared/log";
 
+const log = Log.scoped("enemy path loop");
+
 export class EnemyPathLoop {
   public readonly enemies: Enemy[] = [];
 
@@ -27,7 +29,7 @@ export class EnemyPathLoop {
     }
 
     if (this.enemyNames.size() === 0)
-      Log.warn(`EnemyPathLoop @ ${model.GetFullName()} does not contain any enemy spawns.`);
+      log.warn(`EnemyPathLoop @ ${model.GetFullName()} does not contain any enemy spawns.`);
   }
 
   public update(dt: number): void {
@@ -35,16 +37,18 @@ export class EnemyPathLoop {
   }
 
   public canSpawn(): boolean {
-    return this.enemyNames.size() > 0 &&
-      this.enemies.size() < this.maxEnemies &&
-      os.clock() - this.lastSpawn >= this.spawnInterval;
+    return this.enemyNames.size() > 0
+      && this.enemies.size() < this.maxEnemies
+      && os.clock() - this.lastSpawn >= this.spawnInterval;
   }
 
-  public getRandomEnemy(): Enemy {
+  public getRandomEnemy(): Maybe<Enemy> {
     const enemyName = this.enemyNames[math.random(1, this.enemyNames.size()) - 1];
     const descriptor = getEnemyByName(enemyName);
-    if (descriptor === undefined)
-      return Log.warn(`Failed to spawn enemy: Failed to find enemy descriptor with name "${enemyName}"`, ["enemy path loop"]);
+    if (descriptor === undefined) {
+      log.warn(`Failed to spawn enemy: Failed to find enemy descriptor with name "${enemyName}"`);
+      return;
+    }
 
     return new Enemy(descriptor);
   }

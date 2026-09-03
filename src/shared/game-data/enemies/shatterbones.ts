@@ -7,7 +7,7 @@ import { DamageModifierKind, EnemyID, type EnemyDescriptor } from "shared/struct
 export = {
   id: EnemyID.Shatterbones,
   name: "Shatterbones",
-  zone: ZoneID.WC_PegasusLane_ShatterbonesTower,
+  zone: ZoneID.ShatterbonesTower,
   health: 280,
   schools: [School.Ice],
   rank: 1,

@@ -1,9 +1,20 @@
 import type { BaseID } from "@rbxts/id";
 import type { u8, f24 } from "@rbxts/serio";
 
+import type { SpellReferenceData } from "./spell";
+
 export interface TransitionPosePacket {
   readonly poseKind: u8;
   readonly duration: f24;
+}
+
+export interface DuelStartPacket extends BaseID<u8> {
+  readonly model: DuelCircleModel;
+  readonly onOpposingTeam: boolean;
+  readonly firstTurnOnTeam: boolean;
+  readonly opponentCount: u8;
+  readonly teamCount: u8;
+  readonly hand: SpellReferenceData[];
 }
 
 export interface PickUpQuestPacket extends BaseID<u8> {

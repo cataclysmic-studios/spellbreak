@@ -9,5 +9,5 @@ export = {
   title: "Headmaster",
   portrait: Images.Portrait_HeadmasterHale,
   questsGiven: [QuestID.WC_1],
-  zone: ZoneID.WC_TownSquare_HeadmastersOffice
+  zone: ZoneID.HeadmastersOffice
 } satisfies NpcDescriptor;

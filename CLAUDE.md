@@ -41,6 +41,10 @@ When debugging a runtime error reported from Roblox Studio, the line numbers ref
 
 **In-world entities**: `server/classes/npc.tsx`, `enemy.tsx` extend `named-npc.tsx`'s `NamedNPC`, which mounts a `NametagContainer` (BillboardGui) onto the entity's model root and owns cleanup via `@rbxts/destroyable`'s `Destroyable`/`trash`.
 
+## Style
+
+Avoid comments as much as possible. Don't explain what code does or restate types/props in a comment — well-named identifiers should carry that. Only write one when the WHY is genuinely non-obvious (a hidden constraint, a workaround for a specific bug, behavior that would surprise a reader).
+
 ## Known gotchas
 
 - `@rbxts/pretty-vide-utils` declares `@rbxts/vide: ^0.5.0` while this project pins `@rbxts/vide: ^0.6.1`; npm previously resolved this by installing a second, nested copy of `@rbxts/vide` inside `pretty-vide-utils`'s own `node_modules`. Because Rojo syncs each copy as a *separate* Luau ModuleScript tree, they hold independent reactive-scope state — hooks compiled against the nested copy (`useCamera`, `useEventListener`, etc.) can't see scopes pushed by the top-level copy's `root()`/`mount()`/`jsx()`, producing `cannot cleanup outside a stable or reactive scope` at runtime. Fixed via a root `"overrides"` entry in `package.json` forcing a single `@rbxts/vide` version tree-wide — keep that override in place, and if a similar error reappears after adding/upgrading a Vide-adjacent dependency, check `node_modules/**/node_modules/@rbxts/vide` for a reintroduced duplicate before debugging the UI code itself.

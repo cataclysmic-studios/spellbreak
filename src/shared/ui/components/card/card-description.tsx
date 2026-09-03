@@ -1,8 +1,9 @@
-import Vide, { For, source } from "@rbxts/vide";
-import { RunService, TextService } from "@rbxts/services";
+import Vide, { For } from "@rbxts/vide";
+import { TextService } from "@rbxts/services";
 
 import { palette } from "shared/ui/palette";
 import { anchorPoints, positions } from "shared/ui/utility/positioning";
+import { cardReferenceWidth, cardReferenceHeight } from "shared/constants";
 import { CardDescriptionImageKind, type CardDescriptionPart } from "shared/structs/spell";
 
 import { WizText } from "../wiz-text";
@@ -17,17 +18,22 @@ interface CardDescriptionProps {
 const ICON_SIZE = 0.3;
 const FRAME_SIZE = UDim2.fromScale(0.85, ICON_SIZE);
 
-const FRAME_SCALE_VECTOR = new Vector2(FRAME_SIZE.X.Scale, FRAME_SIZE.Y.Scale);
-const FRAME_OFFSET_VECTOR = new Vector2(FRAME_SIZE.X.Offset, FRAME_SIZE.Y.Offset);
-export function CardDescription({ parts }: CardDescriptionProps): Vide.Node {
-  const containerSize = source(Vector2.zero);
+// The card is laid out at a fixed reference resolution (see `cardReferenceWidth`)
+// and scaled as a whole via UIScale, so this frame's absolute size is a known
+// constant - measuring it once here (instead of reactively off AbsoluteSizeChanged)
+// avoids re-running TextService.GetTextSize every time the card's on-screen
+// scale changes, which was a source of visible per-frame text jitter.
+const FRAME_ABSOLUTE_SIZE = new Vector2(
+  cardReferenceWidth * FRAME_SIZE.X.Scale,
+  cardReferenceHeight * FRAME_SIZE.Y.Scale
+);
 
+export function CardDescription({ parts }: CardDescriptionProps): Vide.Node {
   return (
     <Container name="Description"
       anchorPoint={anchorPoints.topCenter}
-      position={positions.topCenter.add(UDim2.fromScale(0, 0.6625))}
+      position={positions.topCenter.add(UDim2.fromScale(0, 0.675))}
       size={FRAME_SIZE}
-      absoluteSizeChanged={containerSize}
     >
       <uilistlayout
         Padding={new UDim(0.04, 0)}
@@ -45,27 +51,20 @@ export function CardDescription({ parts }: CardDescriptionProps): Vide.Node {
               : <SpellKindIcon kind={part.value} size={new UDim(ICON_SIZE)} layoutOrder={index} />;
           }
 
+          const fontSize = 2 + (FRAME_ABSOLUTE_SIZE.Y * ICON_SIZE);
+          const targetTextSize = TextService.GetTextSize(part, fontSize, Enum.Font.Cartoon, FRAME_ABSOLUTE_SIZE);
+
           return (
             <WizText name="DescriptionPart"
               anchorPoint={anchorPoints.center}
               backgroundTransparency={1}
               text={part}
               textColor={palette.black}
-              textScaled={true}
+              textSize={fontSize}
               font={Enum.Font.Cartoon}
               alignX={Enum.TextXAlignment.Left}
               alignY={Enum.TextYAlignment.Top}
-              size={() => {
-                const frameSize = containerSize();
-                const targetTextSize = TextService.GetTextSize(
-                  part,
-                  frameSize.Y * ICON_SIZE, // font size proportional to container height
-                  Enum.Font.Cartoon,
-                  new Vector2(frameSize.X, frameSize.Y)
-                );
-
-                return new UDim2(targetTextSize.X / frameSize.X, 0, ICON_SIZE, 0);
-              }}
+              size={UDim2.fromScale(targetTextSize.X / FRAME_ABSOLUTE_SIZE.X, ICON_SIZE)}
               layoutOrder={index}
             />
           );

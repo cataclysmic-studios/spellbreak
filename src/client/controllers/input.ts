@@ -10,7 +10,16 @@ export class InputController implements OnStart {
     left: new StandardActionBuilder("A", "Left"),
     right: new StandardActionBuilder("D", "Right"),
 
-    interact: new StandardActionBuilder("X", "ButtonX")
+    interact: new StandardActionBuilder("X", "ButtonX"),
+
+    openDeck: new StandardActionBuilder("P"),
+    openPets: new StandardActionBuilder("I"),
+    openCrafting: new StandardActionBuilder("J"),
+    openBackpack: new StandardActionBuilder("B"),
+    openQuests: new StandardActionBuilder("Q"),
+    openCharacter: new StandardActionBuilder("C"),
+    openMap: new StandardActionBuilder("M"),
+    openOptions: new StandardActionBuilder("Escape")
   }
 
   private readonly manager = new InputManager;

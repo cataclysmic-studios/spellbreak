@@ -4,11 +4,14 @@ import Sift from "@rbxts/sift";
 import { Message, type MessageData } from "shared/messaging";
 import { OnServerMessage } from "shared/meta";
 import { npcGivesQuest } from "shared/utility/npc";
-import { canReceiveQuest, getCurrentGoalIndex, getQuestByID, hasQuest } from "shared/utility/quests";
-import type { QuestID } from "shared/structs/quests";
+import { canReceiveQuest, getActiveQuestIDs, getCurrentGoalIndex, getQuestByID, hasQuest } from "shared/utility/quests";
+import { QuestGoalAction, type QuestID } from "shared/structs/quests";
+import type { ZoneID } from "shared/structs/zone";
 import Log from "shared/log";
 
 import type { DatabaseService } from "./database";
+
+const log = Log.scoped("quest service");
 
 @Service()
 export class QuestService {
@@ -22,9 +25,9 @@ export class QuestService {
     const character = this.database.getCharacter(player);
     if (!canReceiveQuest(character, id)) return;
     if (!npcGivesQuest(npcID, id))
-      return Log.warn(`Cannot pick up quest ${id}: NPC ${player} does not give this quest`, ["quest service"]);
+      return log.warn(`Cannot pick up quest ${id}: NPC ${player} does not give this quest`);
 
-    Log.info(`${player} picked up quest ${id} from NPC ${npcID}`, ["quest service"]);
+    log.info(`${player} picked up quest ${id} from NPC ${npcID}`);
     if (this.checkCompletion(player, id, 0)) return; // some quests can be picked up and immediately completed w/o doing anything
     this.setActiveQuestGoal(player, id, 0, true);
   }
@@ -38,15 +41,34 @@ export class QuestService {
     const currentGoalIndex = getCurrentGoalIndex(character, id);
     const goalNumber = goalIndex + 1;
     if (currentGoalIndex !== goalIndex)
-      return Log.warn(`Cannot complete goal #${goalNumber} for ${player} on quest ${id}: Current goal is #${goalNumber}`, ["quest service"]);
+      return log.warn(`Cannot complete goal #${goalNumber} for ${player} on quest ${id}: Current goal is #${goalNumber}`);
 
-    Log.info(`${player} completed goal #${goalNumber} for quest ${id}`, ["quest service"]);
+    log.info(`${player} completed goal #${goalNumber} for quest ${id}`);
     if (this.checkCompletion(player, id, goalNumber)) return;
     this.setActiveQuestGoal(player, id, goalNumber);
   }
 
+  /** Completes the current goal of any active quest that's waiting on the player to reach `zoneID`. Call this whenever a player is transferred into a zone. */
+  public onZoneEntered(player: Player, zoneID: ZoneID): void {
+    const character = this.database.getCharacter(player);
+
+    for (const id of getActiveQuestIDs(character)) {
+      const goalIndex = getCurrentGoalIndex(character, id);
+      if (goalIndex === undefined) continue;
+
+      const goal = getQuestByID(id).goals[goalIndex];
+      if (goal.action !== QuestGoalAction.Explore) continue;
+      if (goal.target !== zoneID) continue;
+
+      const goalNumber = goalIndex + 1;
+      log.info(`${player} completed goal #${goalNumber} for quest ${id} by entering zone ${zoneID}`);
+      if (this.checkCompletion(player, id, goalNumber)) continue;
+      this.setActiveQuestGoal(player, id, goalNumber);
+    }
+  }
+
   public async complete(player: Player, id: QuestID): Promise<void> {
-    Log.info(`${player} completed quest ${id}!`, ["quest service"]);
+    log.info(`${player} completed quest ${id}!`);
     await this.database.updateCharacter(player, character =>
       Sift.Dictionary.merge(character, {
         selectedQuest: character.selectedQuest === id ? undefined : character.selectedQuest,
@@ -59,7 +81,7 @@ export class QuestService {
   private checkCompletion(player: Player, id: QuestID, goalIndex: number): boolean {
     const quest = getQuestByID(id);
     const completed = goalIndex === quest.goals.size();
-    Log.info(`Is quest ${id} @ goal #${goalIndex + 1} complete for player ${player}?: ${completed ? "yes" : "no"}`, ["quest service"]);
+    log.debug(`Is quest ${id} @ goal #${goalIndex + 1} complete for player ${player}?: ${completed ? "yes" : "no"}`);
 
     if (completed)
       this.complete(player, id);

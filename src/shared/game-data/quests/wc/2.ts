@@ -8,11 +8,11 @@ export = {
   requiredLevel: 0,
   main: true,
   prequests: [QuestID.WC_1],
-  dialog: DialogID.new_savior_intro,
+  dialog: DialogID.Wc2_NewSaviorIntro,
   goals: [
     {
       action: QuestGoalAction.Explore,
-      target: ZoneID.WC_PegasusLane
+      target: ZoneID.PegasusLane
     }
   ],
   rewards: [

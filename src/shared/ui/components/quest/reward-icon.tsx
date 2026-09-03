@@ -13,7 +13,7 @@ interface RewardIconProps {
 
 export function RewardIcon({ icon, amount, layoutOrder }: RewardIconProps): Vide.Node {
   const px = usePx();
-  const size = 0.65;
+  const size = 0.6;
 
   return (
     <imagelabel Name="RewardIcon"
@@ -27,9 +27,9 @@ export function RewardIcon({ icon, amount, layoutOrder }: RewardIconProps): Vide
         amount !== undefined
           ? <TinyParchmentBanner name="AmountBanner"
               anchorPoint={anchorPoints.bottomCenter}
-              position={positions.bottomCenter.add(UDim2.fromScale(0, 0.14))}
+              position={positions.bottomCenter.add(UDim2.fromScale(0, 0.215))}
               textSize={px(16)}
-              size={UDim2.fromScale(1.2, 0.52)}
+              size={UDim2.fromScale(1.45, 0.6)}
               text={tostring(amount)}
             />
           : undefined

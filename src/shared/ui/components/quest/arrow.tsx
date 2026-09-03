@@ -20,7 +20,11 @@ const FINAL_ROTATION = angles(rad(90), 0, 0);
 const FADE_DISTANCE = 6;
 const STUDS_TO_METERS = 25 / 7;
 
-export function QuestArrow({ info, offset, visible }: QuestHelperProps): Vide.Node {
+interface QuestArrowProps extends QuestHelperProps {
+  readonly activated?: () => void;
+}
+
+export function QuestArrow({ info, offset, visible, activated }: QuestArrowProps): Vide.Node {
   const px = usePx();
   const hovered = source(false);
   const transparency = source(0);
@@ -87,6 +91,10 @@ export function QuestArrow({ info, offset, visible }: QuestHelperProps): Vide.No
       MouseLeave={() => {
         hovered(false);
         transparency(0);
+      }}
+      InputBegan={input => {
+        if (input.UserInputType !== Enum.UserInputType.MouseButton1 && input.UserInputType !== Enum.UserInputType.Touch) return;
+        activated?.();
       }}
     >
       <uiaspectratioconstraint />

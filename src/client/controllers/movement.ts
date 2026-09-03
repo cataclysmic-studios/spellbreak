@@ -32,9 +32,9 @@ export class MovementController implements OnPhysics {
   }
 
   public onPhysics(dt: number): void {
+    if (!this.enabled) return;
     this.updateOrientationAlignment();
 
-    if (!this.enabled) return;
     const [x, y] = this.input.getInputVector();
     const velocity = character.getCFrame().LookVector
       .mul(y * this.walkSpeed)
@@ -48,6 +48,11 @@ export class MovementController implements OnPhysics {
   public toggleMovement(on: boolean): void {
     Log.info("Movement toggled " + (on ? "on" : "off"));
     this.enabled = on;
+
+    // RigidityEnabled means this constraint actively fights any orientation it doesn't own -
+    // disabling it here too is what lets server-driven rotation (e.g. facing into a duel
+    // position) actually stick while movement is off, instead of snapping back every frame.
+    this.alignOrientation.Enabled = on;
   }
 
   /**

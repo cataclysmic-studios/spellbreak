@@ -23,6 +23,7 @@ export const enum Images {
 
   // icons
   Icon_Gold = "rbxassetid://120546981073024",
+  Icon_XP = "rbxassetid://99806776497589",
 
   // inputs
   Input_X = "rbxassetid://85088521586876",

@@ -9,5 +9,5 @@ export = {
   title: "Pegasus Lane Guard",
   portrait: Images.Portrait_PrivatePike,
   questsGiven: [QuestID.WC_2],
-  zone: ZoneID.WC_TownSquare
+  zone: ZoneID.TownSquare
 } satisfies NpcDescriptor;

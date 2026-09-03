@@ -30,6 +30,7 @@ export function TinyParchmentBanner({ name, text, textSize, textColor = palette.
       <WizText
         position={positions.center.sub(UDim2.fromScale(0, 0.16))}
         font={Enum.Font.Cartoon}
+        alignX={Enum.TextXAlignment.Center}
         textSize={textSize}
         textColor={textColor}
         text={text}

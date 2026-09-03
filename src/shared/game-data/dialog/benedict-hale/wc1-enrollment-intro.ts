@@ -3,7 +3,7 @@ import { QuestID } from "shared/structs/quests";
 import { type DialogDescriptor, DialogID } from "shared/structs/npc/dialog";
 
 export = {
-  id: DialogID.enrollment_day_intro,
+  id: DialogID.Wc1_EnrollmentIntro,
   speaker: NpcID.HeadmasterHale,
   givesQuest: QuestID.WC_1,
   paragraphs: [

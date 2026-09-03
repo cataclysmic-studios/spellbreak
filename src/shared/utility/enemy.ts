@@ -1,12 +1,10 @@
 import { getInstanceAtPath } from "@rbxts/flamework-meta-utils";
-import { getDescendantsOfType } from "@rbxts/instance-utility";
 
+import { loadDescriptors } from "./data-registry";
 import { EnemyID, type EnemyDescriptor } from "../structs/enemy/descriptor";
 
-const allEnemies = new Map<EnemyID, EnemyDescriptor>;;
-const descriptorFolder = getInstanceAtPath("src/shared/game-data/enemies")!;
-for (const descriptor of getDescendantsOfType(descriptorFolder, "ModuleScript").map(require<EnemyDescriptor>))
-  allEnemies.set(descriptor.id, descriptor);
+const enemiesFolder = getInstanceAtPath("src/shared/game-data/enemies") as Folder;
+const allEnemies = loadDescriptors<EnemyID, EnemyDescriptor>(enemiesFolder, "enemy");
 
 export function getEnemyByID(id: EnemyID): EnemyDescriptor {
   assert(allEnemies.has(id), "enemy with ID " + id + " not found");

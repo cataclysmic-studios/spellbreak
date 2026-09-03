@@ -4,7 +4,7 @@ import { usePx } from "shared/ui/hooks/use-px";
 import { anchorPoints, positions } from "shared/ui/utility/positioning";
 import { palette } from "shared/ui/palette";
 import { getGoalTargetName, getGoalTargetPortrait, getGoalTargetZone, getQuestByID } from "shared/utility/quests";
-import { getZoneName, getZoneWorldName } from "shared/utility/zone";
+import { getZoneByID, getWorldName } from "shared/utility/zone";
 import { Images } from "shared/ui/utility/images";
 import { QuestRewardKind, type QuestInfo } from "shared/structs/quests";
 
@@ -14,7 +14,7 @@ import { RewardIcon } from "./reward-icon";
 
 const REWARD_ICONS: Record<QuestRewardKind, string> = {
   [QuestRewardKind.Gold]: Images.Icon_Gold,
-  [QuestRewardKind.XP]: ""
+  [QuestRewardKind.XP]: Images.Icon_XP
 };
 
 interface QuestFrameProps {
@@ -37,10 +37,8 @@ export function QuestFrame({
   const art = quest.main ? Images.Background_MainQuestFrame : Images.Background_QuestFrame;
   const px = usePx();
   const locationText = () => {
-    const zoneID = getGoalTargetZone(currentGoal);
-    const name = getZoneName(zoneID);
-    const worldName = getZoneWorldName(zoneID);
-    return `${worldName}\n${name}`;
+    const zone = getZoneByID(getGoalTargetZone(currentGoal));
+    return `${getWorldName(zone.world)}\n${zone.name}`;
   };
 
   return (
@@ -53,16 +51,17 @@ export function QuestFrame({
       LayoutOrder={layoutOrder}
     >
       <uiaspectratioconstraint />
-      <uipadding PaddingTop={new UDim(0, px(2))} />
+      <uipadding PaddingTop={new UDim(0, px(0.5))} />
       <WizText name="Title"
         anchorPoint={anchorPoints.topCenter}
-        position={positions.topCenter}
-        size={UDim2.fromScale(1, 0.17)}
+        position={positions.topCenter.add(UDim2.fromScale(0, 0.06))}
+        size={UDim2.fromScale(0.75, 0.08)}
+        textScaled={true}
         text={quest.name}
       />
       <WizText name="Action"
         anchorPoint={anchorPoints.topCenter}
-        position={positions.topCenter.add(UDim2.fromScale(0, 0.16))}
+        position={positions.topCenter.add(UDim2.fromScale(0, 0.15))}
         size={UDim2.fromScale(1, 0.1)}
         font={Enum.Font.Cartoon}
         textSize={px(15)}
@@ -71,7 +70,7 @@ export function QuestFrame({
       />
       <imagelabel Name="Portrait"
         AnchorPoint={anchorPoints.topCenter}
-        Position={positions.topCenter.add(UDim2.fromScale(0, 0.25))}
+        Position={positions.topCenter.add(UDim2.fromScale(0, 0.24))}
         BackgroundTransparency={1}
         Image={getGoalTargetPortrait(currentGoal)}
         Size={UDim2.fromScale(0.25, 0.25)}
@@ -99,7 +98,7 @@ export function QuestFrame({
       <Container name="RewardsContainer"
         anchorPoint={anchorPoints.bottomCenter}
         position={positions.bottomCenter}
-        size={UDim2.fromScale(1, 0.285)}
+        size={UDim2.fromScale(1, 0.295)}
       >
         <uilistlayout
           VerticalAlignment="Center"

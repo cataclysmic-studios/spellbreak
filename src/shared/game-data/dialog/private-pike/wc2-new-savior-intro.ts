@@ -3,7 +3,7 @@ import { type DialogDescriptor, DialogID } from "shared/structs/npc/dialog";
 import { QuestID } from "shared/structs/quests";
 
 export = {
-  id: DialogID.new_savior_intro,
+  id: DialogID.Wc2_NewSaviorIntro,
   speaker: NpcID.PrivatePike,
   givesQuest: QuestID.WC_2,
   paragraphs: [

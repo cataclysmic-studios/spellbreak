@@ -1,21 +1,17 @@
 import { getInstanceAtPath } from "@rbxts/flamework-meta-utils";
-import { getDescendantsOfType } from "@rbxts/instance-utility";
 import Object from "@rbxts/object-utils";
 
+import { loadDescriptors } from "./data-registry";
 import { getNpcByID, getNpcModelByID } from "./npc";
 import { getEnemyByID } from "./enemy";
-import { getZoneName } from "./zone";
+import { getZoneByID } from "./zone";
 import { QuestGoalAction, type TalkQuestGoal, type QuestDescriptor, type QuestGoal, type QuestID, type QuestInfo } from "shared/structs/quests";
 import type { CharacterData } from "shared/structs/data";
 import type { NpcDescriptor, NpcID } from "shared/structs/npc/descriptor";
 import type { ZoneID } from "shared/structs/zone";
 
-const allQuests = new Map<QuestID, QuestDescriptor>;
 const questsFolder = getInstanceAtPath("src/shared/game-data/quests") as Folder;
-for (const questModule of getDescendantsOfType(questsFolder, "ModuleScript")) {
-  const quest = require<QuestDescriptor>(questModule);
-  allQuests.set(quest.id, quest);
-}
+const allQuests = loadDescriptors<QuestID, QuestDescriptor>(questsFolder, "quest");
 
 export function getAllQuests(): Map<QuestID, QuestDescriptor> {
   return allQuests;
@@ -107,7 +103,7 @@ export function getGoalTargetName({ action, target }: QuestGoal): string {
     case QuestGoalAction.Talk:
       return getNpcByID(target).name;
     case QuestGoalAction.Explore:
-      return getZoneName(target);
+      return getZoneByID(target).name;
     case QuestGoalAction.Defeat:
       return getEnemyByID(target).name;
   }
@@ -151,7 +147,7 @@ export function getQuestDescription(id: QuestID, goalIndex = 0): string {
   const goal = quest.goals[goalIndex];
   const zone = getGoalTargetZone(goal);
 
-  return `${goal.action} ${getGoalTargetName(goal)} in ${getZoneName(zone)}`;
+  return `${goal.action} ${getGoalTargetName(goal)} in ${getZoneByID(zone).name}`;
 }
 
 export function getSelectedQuestInfo({ selectedQuest, activeQuests }: CharacterData): Maybe<QuestInfo> {

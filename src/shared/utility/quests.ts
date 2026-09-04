@@ -5,7 +5,7 @@ import { loadDescriptors } from "./data-registry";
 import { getNpcByID, getNpcModelByID } from "./npc";
 import { getEnemyByID } from "./enemy";
 import { getZoneByID } from "./zone";
-import { QuestGoalAction, type TalkQuestGoal, type QuestDescriptor, type QuestGoal, type QuestID, type QuestInfo } from "shared/structs/quests";
+import { QuestGoalAction, QuestID, type TalkQuestGoal, type QuestDescriptor, type QuestGoal, type QuestInfo } from "shared/structs/quests";
 import type { CharacterData } from "shared/structs/data";
 import type { NpcDescriptor, NpcID } from "shared/structs/npc/descriptor";
 import type { ZoneID } from "shared/structs/zone";
@@ -20,6 +20,13 @@ export function getAllQuests(): Map<QuestID, QuestDescriptor> {
 export function getQuestByID(id: QuestID): QuestDescriptor {
   assert(allQuests.has(id), "quest with ID " + id + " not found");
   return allQuests.get(id)!;
+}
+
+/** Looks up a `QuestID` by its enum member name (e.g. Studio attribute values, which store "WC_1" rather than its numeric value). */
+export function getQuestIDByName(name: string): QuestID {
+  const id = QuestID[name as keyof typeof QuestID];
+  assert(id !== undefined, "quest with name " + name + " not found");
+  return id;
 }
 
 function getID(quest: QuestID | QuestDescriptor): QuestID {

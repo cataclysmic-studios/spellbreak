@@ -5,7 +5,7 @@ import type { EnemyID } from "./enemy/descriptor";
 import type { DialogID } from "./npc/dialog";
 import type { ZoneID } from "./zone";
 
-export const enum QuestID {
+export enum QuestID {
   WC_1,
   WC_2,
 }

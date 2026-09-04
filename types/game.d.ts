@@ -27,6 +27,11 @@ interface NpcModel extends Model {
 
 }
 
+interface TunnelModel extends Model {
+  gate: BasePart;
+  collider: Part;
+}
+
 interface EnemyModel extends Model, WithAnimationController {
   collider: Part;
 }

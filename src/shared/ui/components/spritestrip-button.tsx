@@ -12,6 +12,7 @@ interface SpritestripButtonProps {
   readonly transparency?: Derivable<number>;
   readonly scaleType?: Derivable<Enum.ScaleType>;
   readonly layoutOrder?: Derivable<number>;
+  readonly zIndex?: Derivable<number>;
   readonly active?: Derivable<boolean>;
   readonly visible?: Derivable<boolean>;
   readonly hovered?: () => void;
@@ -25,7 +26,7 @@ export function SpritestripButton({
   offset = Vector2.zero, hoveredOffset = DEFAULT_HOVER_OFFSET,
   tileSize, spritestripImage: spritesheetImage, anchorPoint, position,
   size = UDim2.fromScale(1, 1), transparency = 0,
-  scaleType, layoutOrder, active = true, visible,
+  scaleType, layoutOrder, zIndex, active = true, visible,
   hovered, unhovered, activated
 }: SpritestripButtonProps): Vide.Node {
   const isHovered = source(false);
@@ -43,6 +44,7 @@ export function SpritestripButton({
       ImageRectOffset={() => imageOffset().mul(read(tileSize))}
       ScaleType={scaleType}
       LayoutOrder={layoutOrder}
+      ZIndex={zIndex}
       Visible={visible}
 
       MouseEnter={() => {

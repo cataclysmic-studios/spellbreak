@@ -44,6 +44,27 @@ export function updateCharacter(data: PlayerData, index: number, newCharacter: C
 
 type GenericRecord = Record<string, unknown>;
 
+/** A table is treated as an array/numeric-keyed dictionary if its first key (if any) is a number. */
+function isNumericKeyed(value: object): boolean {
+  for (const [key] of pairs(value))
+    return typeIs(key, "number");
+
+  return false;
+}
+
+function deepEquals(a: unknown, b: unknown): boolean {
+  if (a === b) return true;
+  if (!typeIs(a, "table") || !typeIs(b, "table")) return false;
+
+  for (const [key, value] of pairs(a as GenericRecord))
+    if (!deepEquals(value, (b as GenericRecord)[key])) return false;
+
+  for (const [key] of pairs(b as GenericRecord))
+    if ((a as GenericRecord)[key] === undefined) return false;
+
+  return true;
+}
+
 export function createDiff<T>(oldData: T, newData: T): Diff<T> {
   if (oldData === newData)
     return {};
@@ -71,6 +92,30 @@ export function createDiff<T>(oldData: T, newData: T): Diff<T> {
     if ((!typeIs(oldValue, "table") || !typeIs(newValue, "table")) && oldValue !== newValue) {
       changed ??= {} as never;
       (changed as GenericRecord)[key] = newValue;
+      continue;
+    }
+
+    // Arrays and other numeric-keyed tables can't be diffed key-by-key: a partial result either
+    // isn't a contiguous array anymore (the wire format rejects it) or silently drops entries
+    // whose index didn't change. Replace the whole value instead whenever it actually differs.
+    if (typeIs(oldValue, "table") && typeIs(newValue, "table") && (isNumericKeyed(oldValue) || isNumericKeyed(newValue))) {
+      if (deepEquals(oldValue, newValue)) continue;
+
+      changed ??= {} as never;
+      (changed as GenericRecord)[key] = newValue;
+
+      let removedKeys: GenericRecord | undefined;
+      for (const [k] of pairs(oldValue as GenericRecord)) {
+        if ((newValue as GenericRecord)[k] !== undefined) continue;
+        removedKeys ??= {};
+        removedKeys[k] = true;
+      }
+
+      if (removedKeys !== undefined) {
+        removed ??= {};
+        (removed as GenericRecord)[key] = removedKeys;
+      }
+
       continue;
     }
 

@@ -1,0 +1,44 @@
+import { Players } from "@rbxts/services";
+import Signal from "@rbxts/lemon-signal";
+
+import { getZoneIDByName } from "shared/utility/zone";
+import { getQuestIDByName } from "shared/utility/quests";
+import type { QuestID } from "shared/structs/quests";
+import type { ZoneID } from "shared/structs/zone";
+
+/** A character has several body parts that can each independently touch the collider within the same crossing, so debounce by time rather than by touch state. */
+const DEBOUNCE_SECONDS = 2;
+
+export class ZoneTunnel {
+  public readonly zoneID: ZoneID;
+  public readonly requiredQuestID?: QuestID;
+  /** Fires whenever a player touches this tunnel's collider, regardless of whether their gate is open. */
+  public readonly touchedByPlayer = new Signal<(player: Player) => void>;
+
+  private readonly debounced = new Set<Player>;
+
+  /** `ZoneID`/`RequiredQuestID` are set in Studio as the *name* of the enum member (e.g. "PegasusLane"), not its numeric value. */
+  public constructor(public readonly model: TunnelModel) {
+    const zoneName = model.GetAttribute<string>("ZoneID");
+    assert(zoneName !== undefined, `ZoneTunnel @ ${model.GetFullName()} is missing a "ZoneID" attribute`);
+
+    this.zoneID = getZoneIDByName(zoneName);
+
+    const questName = model.GetAttribute<string>("RequiredQuestID");
+    this.requiredQuestID = questName !== undefined ? getQuestIDByName(questName) : undefined;
+
+    this.registerTouch();
+  }
+
+  private registerTouch(): void {
+    this.model.collider.Touched.Connect(hit => {
+      const player = Players.GetPlayerFromCharacter(hit.FindFirstAncestorOfClass("Model"));
+      if (player === undefined || this.debounced.has(player)) return;
+
+      this.debounced.add(player);
+      task.delay(DEBOUNCE_SECONDS, () => this.debounced.delete(player));
+
+      this.touchedByPlayer.Fire(player);
+    });
+  }
+}

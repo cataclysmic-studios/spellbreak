@@ -8,7 +8,7 @@ export const WorldNames: Record<World, string> = {
   [World.WizardCity]: "Wizard City",
 };
 
-export const enum ZoneID {
+export enum ZoneID {
   TownSquare,
   HeadmastersOffice,
   PegasusLane,

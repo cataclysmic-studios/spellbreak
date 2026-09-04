@@ -22,6 +22,7 @@ export const enum Message {
   Hydrate_NPCs,
   Duel_Start,
   Duel_BeginCasting,
+  Zone_Transferring,
 
   // Client -> Server
   Quest_PickUp,
@@ -37,6 +38,7 @@ export interface MessageData {
   [Message.Hydrate_NPCs]: Set<u8>;
   [Message.Duel_Start]: DuelStartPacket;
   [Message.Duel_BeginCasting]: u8; // duel id
+  [Message.Zone_Transferring]: u8; // destination zone id
   [Message.Quest_PickUp]: PickUpQuestPacket;
   [Message.Quest_CompleteGoal]: CompleteGoalPacket;
   [Message.Duel_ChoiceMade]: DuelChoiceMadePacket;

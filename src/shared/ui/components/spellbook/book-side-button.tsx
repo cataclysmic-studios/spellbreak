@@ -9,10 +9,11 @@ interface BookSideButtonProps {
   readonly iconSize?: Derivable<number>;
   readonly active?: Derivable<boolean>;
   readonly layoutOrder?: Derivable<number>;
+  readonly zIndex?: Derivable<number>;
   readonly activated?: () => void;
 }
 
-export function BookSideButton({ icon, iconSize = 32, active = true, layoutOrder, activated }: BookSideButtonProps): Vide.Node {
+export function BookSideButton({ icon, iconSize = 32, active = true, layoutOrder, zIndex, activated }: BookSideButtonProps): Vide.Node {
   const px = usePx();
 
   return (
@@ -21,6 +22,7 @@ export function BookSideButton({ icon, iconSize = 32, active = true, layoutOrder
       BackgroundTransparency={1}
       Size={UDim2.fromOffset(px(80), px(50))}
       LayoutOrder={layoutOrder}
+      ZIndex={zIndex}
     >
       <SpritestripButton name="Icon"
         anchorPoint={anchorPoints.center}
@@ -32,6 +34,7 @@ export function BookSideButton({ icon, iconSize = 32, active = true, layoutOrder
         size={UDim2.fromScale(0.75, 0.75)}
         active={active}
         activated={activated}
+        zIndex={zIndex}
       />
     </imagelabel>
   )

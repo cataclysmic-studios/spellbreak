@@ -47,7 +47,6 @@ export function QuestFrame({
       Position={position}
       BackgroundTransparency={1}
       Image={art}
-      ImageTransparency={0.5}
       Size={size}
       LayoutOrder={layoutOrder}
     >

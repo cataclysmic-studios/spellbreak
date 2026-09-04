@@ -54,9 +54,9 @@ export function Spellbook({ isOpen, character, page, onlyOptions = false }: Book
     >
       <Container name="SideButtons"
         anchorPoint={anchorPoints.rightCenter}
-        position={positions.rightCenter.add(UDim2.fromScale(0.005, 0.02))}
-        size={UDim2.fromScale(0.1, 1)}
-        zIndex={2}
+        position={positions.rightCenter.add(UDim2.fromScale(0.005, 0.008))}
+        size={UDim2.fromScale(0.1, 0.975)}
+        zIndex={4}
       >
         <uilistlayout
           FillDirection="Vertical"
@@ -65,16 +65,16 @@ export function Spellbook({ isOpen, character, page, onlyOptions = false }: Book
           SortOrder="LayoutOrder"
           Padding={new UDim(0.013, 0)}
         />
-        <BookSideButton icon={Images.Button_Book_CharacterStats} active={nonOptionsActive} activated={() => selectedPage(BookPage.Character)} />
-        <BookSideButton icon={Images.Button_Book_Backpack} active={nonOptionsActive} activated={() => selectedPage(BookPage.Backpack)} />
-        <BookSideButton icon={Images.Button_Book_Pets} active={nonOptionsActive} activated={() => selectedPage(BookPage.Pets)} />
-        <BookSideButton icon={Images.Button_Book_Deck} active={nonOptionsActive} activated={() => selectedPage(BookPage.Deck)} />
-        <BookSideButton icon={Images.Button_Book_Quests} active={nonOptionsActive} activated={() => selectedPage(BookPage.Quests)} />
-        <BookSideButton icon={Images.Button_Book_Map} active={nonOptionsActive} activated={() => selectedPage(BookPage.Map)} />
-        <BookSideButton icon={Images.Button_Book_Crafting} active={nonOptionsActive} activated={() => selectedPage(BookPage.Crafting)} />
-        <BookSideButton icon={Images.Button_Book_Options} activated={() => selectedPage(BookPage.Options)} />
-        <BookSideButton icon={Images.Button_Book_Help} activated={() => selectedPage(BookPage.Help)} />
-        <BookSideButton icon={Images.Button_Book_Exit} iconSize={80} activated={() => isOpen(false)} />
+        <BookSideButton zIndex={5} icon={Images.Button_Book_CharacterStats} active={nonOptionsActive} activated={() => selectedPage(BookPage.Character)} />
+        <BookSideButton zIndex={5} icon={Images.Button_Book_Backpack} active={nonOptionsActive} activated={() => selectedPage(BookPage.Backpack)} />
+        <BookSideButton zIndex={5} icon={Images.Button_Book_Pets} active={nonOptionsActive} activated={() => selectedPage(BookPage.Pets)} />
+        <BookSideButton zIndex={5} icon={Images.Button_Book_Deck} active={nonOptionsActive} activated={() => selectedPage(BookPage.Deck)} />
+        <BookSideButton zIndex={5} icon={Images.Button_Book_Quests} active={nonOptionsActive} activated={() => selectedPage(BookPage.Quests)} />
+        <BookSideButton zIndex={5} icon={Images.Button_Book_Map} active={nonOptionsActive} activated={() => selectedPage(BookPage.Map)} />
+        <BookSideButton zIndex={5} icon={Images.Button_Book_Crafting} active={nonOptionsActive} activated={() => selectedPage(BookPage.Crafting)} />
+        <BookSideButton zIndex={5} icon={Images.Button_Book_Options} activated={() => selectedPage(BookPage.Options)} />
+        <BookSideButton zIndex={5} icon={Images.Button_Book_Help} activated={() => selectedPage(BookPage.Help)} />
+        <BookSideButton zIndex={5} icon={Images.Button_Book_Exit} iconSize={80} activated={() => isOpen(false)} />
       </Container>
       <imagelabel
         AnchorPoint={anchorPoints.center}

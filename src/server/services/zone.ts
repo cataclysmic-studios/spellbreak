@@ -1,5 +1,6 @@
 import { Service } from "@flamework/core";
 
+import { Message, messaging } from "shared/messaging";
 import type { ZoneID } from "shared/structs/zone";
 import Log from "shared/log";
 
@@ -20,6 +21,7 @@ export class ZoneService {
    */
   public transferToZone(player: Player, zoneID: ZoneID): void {
     log.info(`${player} transferred to zone ${zoneID}`);
+    messaging.client.emit(player, Message.Zone_Transferring, zoneID);
     this.quest.onZoneEntered(player, zoneID);
   }
 }

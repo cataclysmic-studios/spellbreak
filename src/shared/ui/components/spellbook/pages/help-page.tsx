@@ -2,7 +2,7 @@ import Vide from "@rbxts/vide";
 
 import { BookPageContainer } from "./book-page-container";
 
-export function OptionsPage(): Vide.Node {
+export function HelpPage(): Vide.Node {
   return <BookPageContainer>
 
   </BookPageContainer>

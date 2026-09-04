@@ -8,6 +8,7 @@ import { usePx } from "../hooks/use-px";
 import { Images } from "../utility/images";
 import { positions } from "../utility/positioning";
 import { maxCardsInHand } from "shared/constants";
+import { canAffordSpellCost } from "shared/utility/spell";
 import Log from "shared/log";
 
 import { Container } from "../utility/components/container";
@@ -29,7 +30,7 @@ interface HandCardEntry {
 const mouse = Players.LocalPlayer.GetMouse();
 
 export function DeckHand({ duelInfo }: DeckHandProps): Vide.Node {
-  const { state: { hand } } = duelInfo
+  const { state: { hand, pipValue } } = duelInfo
   const absolutePosition = source(Vector2.zero);
   const absoluteSize = source(Vector2.zero);
   const px = usePx();
@@ -75,6 +76,7 @@ export function DeckHand({ duelInfo }: DeckHandProps): Vide.Node {
         layoutOrder={i}
         duelInfo={duelInfo}
         scale={targetScale}
+        grayscale={() => !canAffordSpellCost(pipValue(), card.spell.cost)}
       /> as Frame;
 
       cleanup(cardFrame);

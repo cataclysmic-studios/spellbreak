@@ -2,14 +2,12 @@ import Vide, { source, For } from "@rbxts/vide";
 import Object from "@rbxts/object-utils";
 import Sift from "@rbxts/sift";
 
-import { anchorPoints, positions } from "shared/ui/utility/positioning";
-import { palette } from "shared/ui/palette";
+import { usePx } from "shared/ui/hooks/use-px";
 import type { QuestID, QuestInfo } from "shared/structs/quests";
 import type { PageProps } from "..";
 
-import { Container } from "shared/ui/utility/components/container";
 import { QuestSlot } from "../../quest/slot";
-import { usePx } from "shared/ui/hooks/use-px";
+import { BookPageContainer } from "./book-page-container";
 
 const QUESTS_PER_PAGE = 4;
 
@@ -41,18 +39,13 @@ export function QuestsPage({ character }: PageProps): Vide.Node {
   };
 
   return (
-    <Container
-      anchorPoint={anchorPoints.center}
-      position={positions.center}
-      size={UDim2.fromScale(0.9, 0.9)}
-      zIndex={4}
-    >
+    <BookPageContainer>
       <uigridlayout
         CellSize={UDim2.fromScale(0.5, 0.5)}
         FillDirectionMaxCells={2}
         SortOrder="LayoutOrder"
         CellPadding={UDim2.fromOffset(0, px(10))}
-      />
+        />
       <For each={questsOnPage}>
         {(quest, index) => {
           const goalIndex = character().activeQuests[quest];
@@ -60,6 +53,6 @@ export function QuestsPage({ character }: PageProps): Vide.Node {
           return <QuestSlot info={info} slot={index() as never} />
         }}
       </For>
-    </Container>
+    </BookPageContainer>
   );
 }

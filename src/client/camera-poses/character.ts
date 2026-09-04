@@ -1,4 +1,4 @@
-import { RunService } from "@rbxts/services";
+import { RunService, TweenService } from "@rbxts/services";
 
 import { character } from "client/constants";
 import { CameraPoseKind } from "shared/structs/camera";
@@ -13,20 +13,23 @@ export class CharacterCameraPose extends BaseCameraPose {
     this.camera.manager.setCFrame(this.getTargetCFrame());
   }
 
-  public transitionInto(duration: number, onCompleted?: () => void): void {
+  public transitionInto(duration: number, onCompleted?: () => void): Maybe<RBXScriptConnection> {
     const startCFrame = this.camera.manager.getCFrame();
     const targetCFrame = this.getTargetCFrame();
     const startTime = os.clock();
 
     const connection = RunService.RenderStepped.Connect(dt => {
       const progress = math.clamp((os.clock() - startTime) / duration, 0, 1);
-      this.camera.manager.setCFrame(startCFrame.Lerp(targetCFrame, progress));
+      const eased = TweenService.GetValue(progress, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut);
+      this.camera.manager.setCFrame(startCFrame.Lerp(targetCFrame, eased));
 
       if (progress >= 1) {
         connection.Disconnect();
         onCompleted?.();
       }
     });
+
+    return connection;
   }
 
   private getTargetCFrame(): CFrame {

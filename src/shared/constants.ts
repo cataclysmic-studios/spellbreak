@@ -21,6 +21,8 @@ export const duelCastingFocusDelay = 0.5;
 export const duelGatherWindowDuration = 3;
 /** Studs in front of the player (along their facing direction) that a duel circle spawns when the zone has no designated duel spawns nearby - keeps the circle from appearing centered on the player's body, since the enemy's position at the moment of the triggering touch is right on top of theirs. */
 export const duelCircleSpawnOffset = 12;
+/** Pips every player starts a duel with, before any gear-granted starting-pip bonuses (not implemented yet). */
+export const basePlayerStartingPips = 1;
 export const cardAspectRatio = 0.68;
 /**
  * All spell card content (`BaseCardButton`, `CardDescription`) is laid out at

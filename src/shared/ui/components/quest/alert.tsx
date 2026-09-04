@@ -41,13 +41,13 @@ export function QuestAlert({ mode }: QuestAlertProps): Vide.Node {
       <WizText
         anchorPoint={anchorPoints.center}
         position={positions.center.add(UDim2.fromScale(0, 0.08))}
-        size={UDim2.fromScale(1, 1)}
+        size={UDim2.fromScale(1.1, 1.1)}
         text={() => mode() === AlertMode.PickUp ? "!" : "?"}
         textColor={() => mode() === AlertMode.InProgress ? palette.mediumGray : palette.yellow}
         textScaled={true}
         visible={visible}
       >
-        <uistroke Thickness={px(1)} Transparency={0.2} />
+        <uistroke Thickness={px.scale(1)} Transparency={0.2} />
       </WizText>
     </>
   );

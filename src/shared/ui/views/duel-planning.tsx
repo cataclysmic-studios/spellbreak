@@ -33,13 +33,15 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
   const redTimerText = () => timerRemaining() <= RED_TIMER_THRESHOLD;
   const px = usePx();
 
-  const { hand, choosing, selectedCard } = duelInfo.state;
+  const { hand, choosing, selectedCard, chosenSpellReference } = duelInfo.state;
   // Passing counts as a choice too - the moment `choosing` drops, whatever the player decided
-  // (pass, a no-target spell, or a spell+target) has already been locked in by the card/pass
-  // button that flipped it, so just let the server know they're ready.
+  // (pass, a no-target spell, or a spell+target) has already been locked into
+  // `chosenSpellReference` (`undefined` for a pass) by the card/pass button that flipped
+  // `choosing`, so just forward it and reset for next time.
   effect(() => {
     if (choosing()) return;
-    messaging.server.emit(Message.Duel_ChoiceMade, duelInfo.id);
+    messaging.server.emit(Message.Duel_ChoiceMade, { id: duelInfo.id, spellReference: chosenSpellReference() });
+    chosenSpellReference(undefined);
   });
   effect(() => {
     const currentTimer = timer();

@@ -1,9 +1,9 @@
-import { Service } from "@flamework/core";
+import { Dependency, Service } from "@flamework/core";
 import { Players, Workspace as World } from "@rbxts/services";
 import { safeCast } from "@rbxts/flamework-meta-utils";
 
 import { assets, duelCameraTransitionDuration, duelCastingFocusDelay, duelCircleSpawnOffset, XZ } from "shared/constants";
-import { messaging, Message } from "shared/messaging";
+import { messaging, Message, type MessageData } from "shared/messaging";
 import { OnServerMessage } from "shared/meta";
 import { CameraPoseKind } from "shared/structs/camera";
 import { getClosestDuelCircleLocation, getShuffledHand, playCircleIdleAnimation, playCircleSpawnAnimation } from "shared/utility/duel";
@@ -11,6 +11,7 @@ import { ActiveDuel } from "server/classes/duel";
 import Log from "shared/log";
 
 import type { DatabaseService } from "./database";
+import type { EnemyService } from "./enemy";
 import type { Enemy } from "server/classes/enemy";
 
 const log = Log.scoped("duel service");
@@ -20,6 +21,7 @@ export class DuelService {
   private cumulativeID = 0;
   private readonly duelsByID = new Map<number, ActiveDuel>();
   private readonly duelsByPlayer = new Map<Player, ActiveDuel>();
+  private readonly duelsByEnemy = new Map<Enemy, ActiveDuel>();
 
   public constructor(
     private readonly database: DatabaseService
@@ -33,6 +35,8 @@ export class DuelService {
    * this places a brand new circle and starts the two of them approaching it.
    */
   public startDuel(player: Player, enemy: Enemy): void {
+    if (this.duelsByEnemy.has(enemy)) return;
+
     const forming = this.duelsByPlayer.get(player);
     if (forming !== undefined) {
       if (forming.locked) {
@@ -45,6 +49,7 @@ export class DuelService {
       }
 
       log.info(`${enemy.descriptor.name} joining ${player.Name}'s forming duel (#${forming.id})`);
+      this.duelsByEnemy.set(enemy, forming);
       forming.addEnemy(enemy, true);
       return;
     }
@@ -62,32 +67,50 @@ export class DuelService {
     const duel = new ActiveDuel(this.cumulativeID++, circle);
     this.duelsByID.set(duel.id, duel);
     this.duelsByPlayer.set(player, duel);
+    this.duelsByEnemy.set(enemy, duel);
     duel.onceLockedIn(lockedDuel => this.beginPlanning(lockedDuel));
-    this.wirePlayerJoinByTouch(duel);
+    this.wireCircleTouch(duel);
 
     messaging.client.emit(player, Message.Movement_Toggle, false);
 
     // Founding combatants - no join effect for either of them.
-    duel.addPlayer(player, character, false);
+    duel.addPlayer(player, character, this.database.getCharacter(player).stats.powerPipChance, false);
     duel.addEnemy(enemy, false);
   }
 
-  /** Lets a second (and third, fourth...) player join a still-forming duel by walking into its circle's hitbox, same as another enemy joining by touching the player. */
-  private wirePlayerJoinByTouch(duel: ActiveDuel): void {
+  /**
+   * Lets any player or enemy still outside a still-forming duel join it just by touching its
+   * circle's hitbox - covers a second (and third, fourth...) player walking in, as well as any
+   * enemy that's standing on or wanders onto the circle without ever having touched a player
+   * directly (an enemy's own touch-detection collider is one-shot, so an enemy that spawns
+   * already overlapping the circle, or that the founding touch never targeted, would otherwise
+   * never get pulled into the duel).
+   */
+  private wireCircleTouch(duel: ActiveDuel): void {
     const connection = duel.circle.hitbox.Touched.Connect(hit => {
       if (duel.locked) return connection.Disconnect();
 
-      const player = Players.GetPlayerFromCharacter(hit.FindFirstAncestorOfClass("Model"));
-      if (player === undefined || this.duelsByPlayer.has(player)) return;
-      if (!duel.hasRoomForPlayer()) return;
+      const touchedModel = hit.FindFirstAncestorOfClass("Model");
+      const player = Players.GetPlayerFromCharacter(touchedModel);
+      if (player !== undefined) {
+        if (this.duelsByPlayer.has(player) || !duel.hasRoomForPlayer()) return;
 
-      const character = safeCast<CharacterModel>(player.Character);
-      if (character === undefined) return;
+        const character = safeCast<CharacterModel>(player.Character);
+        if (character === undefined) return;
 
-      log.info(`${player.Name} joining forming duel #${duel.id} via the circle`);
-      this.duelsByPlayer.set(player, duel);
-      messaging.client.emit(player, Message.Movement_Toggle, false);
-      duel.addPlayer(player, character, true);
+        log.info(`${player.Name} joining forming duel #${duel.id} via the circle`);
+        this.duelsByPlayer.set(player, duel);
+        messaging.client.emit(player, Message.Movement_Toggle, false);
+        duel.addPlayer(player, character, this.database.getCharacter(player).stats.powerPipChance, true);
+        return;
+      }
+
+      const enemy = Dependency<EnemyService>().findEnemyFromTouch(hit);
+      if (enemy === undefined || this.duelsByEnemy.has(enemy) || !duel.hasRoomForEnemy()) return;
+
+      log.info(`${enemy.descriptor.name} joining forming duel #${duel.id} via the circle`);
+      this.duelsByEnemy.set(enemy, duel);
+      duel.addEnemy(enemy, true);
     });
 
     duel.onceLockedIn(() => connection.Disconnect());
@@ -97,6 +120,8 @@ export class DuelService {
   private beginPlanning(duel: ActiveDuel): void {
     for (const player of duel.players) {
       const hand = getShuffledHand(this.database.getCharacter(player));
+      const character = safeCast<CharacterModel>(player.Character);
+      const pipValue = character !== undefined ? duel.getPips(character)?.getValue() ?? 0 : 0;
       messaging.client.emit(player, Message.Duel_Start, {
         id: duel.id,
         model: duel.circle,
@@ -104,6 +129,7 @@ export class DuelService {
         firstTurnOnTeam: duel.firstTurnOnTeam,
         opponentCount: duel.enemies.size(),
         teamCount: duel.players.size(),
+        pipValue,
         hand
       });
       messaging.client.emit(player, Message.Camera_TransitionPose, {
@@ -111,24 +137,31 @@ export class DuelService {
         duration: duelCameraTransitionDuration
       });
     }
+
+    // Reveal pips once the camera's actually finished easing into the planning pose - same
+    // timing as when the client's DuelPlanning subview appears (see UIController.showDuelPlanning,
+    // gated on CameraController.transitionCompleted).
+    task.delay(duelCameraTransitionDuration, () => duel.revealPips());
   }
 
   /**
    * A combatant locked in their choice for the round (passing counts). Once every player in the
-   * duel has (the enemy side doesn't make real choices yet), tells every player to drop the
-   * planning UI and ease into the casting overview camera - hovering above their corner of the
-   * circle, looking at its center. Once the first caster's cast animation would start
-   * (`duelCastingFocusDelay` later), the camera eases in again to focus on them.
+   * duel has (the enemy side doesn't make real choices yet), spends everyone's chosen spell's pip
+   * cost, then tells every player to drop the planning UI and ease into the casting overview
+   * camera - hovering above their corner of the circle, looking at its center. Once the first
+   * caster's cast animation would start (`duelCastingFocusDelay` later), the camera eases in
+   * again to focus on them.
    * @hidden
    */
   @OnServerMessage(Message.Duel_ChoiceMade)
-  public onChoiceMade(player: Player, id: number): void {
+  public onChoiceMade(player: Player, { id, spellReference }: MessageData[Message.Duel_ChoiceMade]): void {
     const duel = this.duelsByID.get(id);
-    if (duel === undefined || !duel.locked || !duel.players.includes(player) || duel.readyPlayers.has(player)) return;
+    if (duel === undefined || !duel.locked || !duel.players.includes(player) || duel.choices.has(player)) return;
 
-    duel.readyPlayers.add(player);
-    if (duel.readyPlayers.size() < duel.players.size()) return;
+    duel.choices.set(player, spellReference);
+    if (duel.choices.size() < duel.players.size()) return;
 
+    duel.spendChosenPips();
     for (const p of duel.players) {
       messaging.client.emit(p, Message.Duel_BeginCasting, id);
       messaging.client.emit(p, Message.Camera_TransitionPose, {

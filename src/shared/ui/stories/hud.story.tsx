@@ -20,6 +20,7 @@ const mockHudState: HudProps = {
   bookPage: source<BookPage>(BookPage.Options),
   activeDialog: source<Maybe<DialogID>>(undefined),
   activeInteractable: source<Maybe<Interactable>>(undefined),
+  duelStarted: source(false),
   activeDuel: source<Maybe<ActiveDuelState>>(undefined)
 };
 

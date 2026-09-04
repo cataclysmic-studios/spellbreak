@@ -10,5 +10,6 @@ export abstract class BaseCameraPose {
   ) { }
 
   public abstract update(dt: number): void;
-  public abstract transitionInto(duration: number, onCompleted?: () => void): void;
+  /** Returns the connection driving the transition, so a subsequent transition can cancel it if it starts before this one finishes - `undefined` if the transition never actually started. */
+  public abstract transitionInto(duration: number, onCompleted?: () => void): Maybe<RBXScriptConnection>;
 }

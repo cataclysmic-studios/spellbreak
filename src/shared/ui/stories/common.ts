@@ -35,6 +35,8 @@ export const createMockDuelInfo = () => ({
       })
     ]),
     selectedCard: source<Maybe<SpellCard>>(),
+    chosenSpellReference: source<Maybe<SpellReference>>(),
+    pipValue: source(7),
     opponentCount: 1,
     teamCount: 1
   }

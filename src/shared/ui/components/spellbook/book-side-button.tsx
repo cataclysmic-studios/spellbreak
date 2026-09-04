@@ -2,7 +2,6 @@ import Vide, { type Derivable, read } from "@rbxts/vide";
 
 import { usePx } from "../../hooks/use-px";
 import { anchorPoints, positions } from "../../utility/positioning";
-import { Images } from "../../utility/images";
 import { SpritestripButton } from "../spritestrip-button";
 
 interface BookSideButtonProps {
@@ -20,8 +19,7 @@ export function BookSideButton({ icon, iconSize = 32, active = true, layoutOrder
     <imagelabel Name="BookSideButton"
       AnchorPoint={anchorPoints.leftCenter}
       BackgroundTransparency={1}
-      Size={UDim2.fromOffset(px(80), px(54))}
-      Image={Images.RedRibbon}
+      Size={UDim2.fromOffset(px(80), px(50))}
       LayoutOrder={layoutOrder}
     >
       <SpritestripButton name="Icon"

@@ -10,6 +10,9 @@ import type { DeckData, DeckLinkedData } from "shared/structs/data/items/gear/de
 import type { CharacterData } from "shared/structs/data";
 import type { SpellReferenceData } from "shared/structs/spell";
 import { getEquippedGear } from "./data";
+import Log from "shared/log";
+
+const log = Log.scoped("duel pips");
 
 export function getDuelCirclePositionPart(positions: DuelCirclePositions, position: DuelCirclePosition): Part {
   switch (position) {
@@ -48,6 +51,9 @@ export function getGroundedTargetCFrame(combatant: CombatantModel, targetPart: B
   return targetPart.CFrame.add(new Vector3(0, size.Y / 2 - targetPart.Size.Y / 2, 0));
 }
 
+/** Corrects `assets.duel.combatantSigil`'s authored orientation to lie flat on the ground. */
+const SIGIL_FLAT_ROTATION = CFrame.Angles(math.rad(90), 0, 0);
+
 /**
  * Places `assets.duel.combatantSigil` at `combatant`'s feet and welds it there so it tracks
  * them for the rest of the fight; destroyed automatically along with `combatant`.
@@ -58,7 +64,20 @@ export function getGroundedTargetCFrame(combatant: CombatantModel, targetPart: B
 export function attachCombatantSigil(combatant: CombatantModel): MeshPart {
   const sigil = assets.duel.combatantSigil.Clone();
   const [boundsCFrame, size] = combatant.GetBoundingBox();
-  sigil.CFrame = new CFrame(boundsCFrame.Position.sub(new Vector3(0, size.Y / 2, 0)));
+
+  // X/Z come from `collider` (the same part everything else - movement, facing, welds - treats
+  // as the combatant's true anchor) rather than the bounding box's center, which is only
+  // axis-aligned and drifts off-center for rigs that aren't perfectly symmetric. Y comes from the
+  // bounding box's own bottom edge instead, since `collider` isn't necessarily centered within
+  // the full model's vertical extent (a hat, weapon, or hair sticking up above the head shifts
+  // the box's center higher than the collider's) - using collider.Position.Y here left the sigil
+  // sunk slightly into the ground.
+  const collider = combatant.collider.Position;
+  const feetPosition = new Vector3(collider.X, boundsCFrame.Position.Y - size.Y / 2, collider.Z);
+
+  // Rotating 90 degrees about X swaps which of the sigil's own local axes maps onto world Y, so
+  // its ground clearance now comes from its local Z size instead of Y.
+  sigil.CFrame = new CFrame(feetPosition.add(new Vector3(0, sigil.Size.Z / 2, 0))).mul(SIGIL_FLAT_ROTATION);
   sigil.Parent = combatant;
 
   const weld = new Instance("WeldConstraint");
@@ -67,6 +86,44 @@ export function attachCombatantSigil(combatant: CombatantModel): MeshPart {
   weld.Parent = sigil;
 
   return sigil;
+}
+
+/**
+ * Clones `assets.duel.pipPositions` at `combatant`'s feet, facing the same direction, and welds
+ * each of its 7 slot parts to `combatant.collider` so they track them for the rest of the fight;
+ * destroyed automatically along with `combatant`.
+ */
+export function attachPipPositions(combatant: CombatantModel): typeof assets.duel.pipPositions {
+  const positions = assets.duel.pipPositions.Clone();
+
+  // X/Z centered on `collider`, Y from the bounding box's own bottom edge - see
+  // attachCombatantSigil for why.
+  const [boundsCFrame, size] = combatant.GetBoundingBox();
+  const collider = combatant.collider.Position;
+  const feetPosition = new Vector3(collider.X, boundsCFrame.Position.Y - size.Y / 2, collider.Z);
+  const facing = combatant.collider.CFrame.LookVector.mul(XZ);
+  const facingUnit = facing.Magnitude > 0.01 ? facing.Unit : facing;
+  const facingCFrame = CFrame.lookAt(feetPosition, feetPosition.add(facingUnit));
+  positions.PivotTo(facingCFrame);
+
+  // pipPositions' own pivot defaults to its bounding-box center (no PrimaryPart/authored pivot),
+  // so anchoring straight to `facingCFrame` buried half of it below ground - same fix as
+  // `spawnSelectionAura`: re-measure the AABB (reflects the post-rotation extent) and nudge up
+  // so the model's own bottom face rests at `feetPosition` instead of its center.
+  const [, positionsSize] = positions.GetBoundingBox();
+  positions.PivotTo(facingCFrame.add(new Vector3(0, positionsSize.Y / 2, 0)));
+  positions.Parent = combatant;
+
+  const slots = getChildrenOfType(positions, "Part");
+  for (const slot of slots) {
+    const weld = new Instance("WeldConstraint");
+    weld.Part0 = slot;
+    weld.Part1 = combatant.collider;
+    weld.Parent = slot;
+  }
+
+  log.debug(`attached ${positions.GetFullName()} to ${combatant.GetFullName()} at ${feetPosition} (${slots.size()} slot part(s) found and welded)`);
+  return positions;
 }
 
 /**
@@ -131,7 +188,7 @@ export function playCombatantAddedAnimation(circle: DuelCircleModel): void {
 }
 
 const POINTER_FORWARD_OFFSET = 6;
-const POINTER_FLASH_COUNT = 2;
+const POINTER_FLASH_COUNT = 3;
 const POINTER_FLASH_DURATION = 0.15;
 const POINTER_FLASH_COLOR = new Color3(1, 1, 1);
 
@@ -140,18 +197,23 @@ const POINTER_FLASH_COLOR = new Color3(1, 1, 1);
  * `POINTER_FLASH_COUNT` times in a row, to draw the eye to who it's pointing at. Tweening the
  * `Part`'s own `Color` did nothing visible - the pointer's rendered as an image on its
  * `SurfaceGui`, not the part's surface color.
+ *
+ * Also tweens `ImageTransparency` down to fully opaque alongside the color - a color-only tween
+ * is invisible if the label is authored with any transparency, since a whiter tint on a
+ * partially-see-through image can look identical to the untinted version.
  */
 function flashPointer(pointer: typeof assets.duel.pointer): void {
   const { ImageLabel } = pointer.SurfaceGui;
   const originalColor = ImageLabel.ImageColor3;
+  const originalTransparency = ImageLabel.ImageTransparency;
   let flashesLeft = POINTER_FLASH_COUNT;
 
   const flashOnce = () => {
     if (flashesLeft-- <= 0) return;
 
-    const flashIn = TweenService.Create(ImageLabel, new TweenInfo(POINTER_FLASH_DURATION, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { ImageColor3: POINTER_FLASH_COLOR });
+    const flashIn = TweenService.Create(ImageLabel, new TweenInfo(POINTER_FLASH_DURATION, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { ImageColor3: POINTER_FLASH_COLOR, ImageTransparency: 0 });
     flashIn.Completed.Once(() => {
-      const flashOut = TweenService.Create(ImageLabel, new TweenInfo(POINTER_FLASH_DURATION, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { ImageColor3: originalColor });
+      const flashOut = TweenService.Create(ImageLabel, new TweenInfo(POINTER_FLASH_DURATION, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { ImageColor3: originalColor, ImageTransparency: originalTransparency });
       flashOut.Completed.Once(flashOnce);
       flashOut.Play();
     });
@@ -250,12 +312,17 @@ export function spawnSelectionTargets(
   }
 }
 
+/** Fraction of the approach's duration into which the turn from travel-facing to `targetCFrame`'s exact facing is compressed - see `moveCombatantToDuelPosition`. */
+const ARRIVAL_TURN_START = 0.75;
+
 /**
  * Runs `combatant` toward `targetCFrame` over exactly `duration` seconds
  * (regardless of distance, so combatants starting further away don't lag
- * behind - both should arrive together). Faces the travel direction while
- * moving, then snaps to `targetCFrame`'s exact facing on arrival, since the
- * two can differ.
+ * behind - both should arrive together). Faces the travel direction for most
+ * of the approach, then eases into `targetCFrame`'s exact facing over the
+ * final `1 - ARRIVAL_TURN_START` of the duration, since the two can differ -
+ * blending the whole way through would have it facing sideways to its own
+ * movement for the entire approach instead of just the last stretch.
  *
  * `runningAnimation` is not wired up yet (no run animation plays for either
  * combatant during the approach) - pass it once dedicated duel-approach
@@ -272,9 +339,10 @@ export function moveCombatantToDuelPosition(
   const startPosition = collider.Position;
   const targetPosition = targetCFrame.Position;
   const travelDirection = targetPosition.sub(startPosition).mul(XZ);
-  const facingRotation = travelDirection.Magnitude > 0.01
+  const startFacing = travelDirection.Magnitude > 0.01
     ? CFrame.lookAt(Vector3.zero, travelDirection)
     : collider.CFrame.sub(startPosition);
+  const endFacing = targetCFrame.sub(targetPosition);
 
   const track = runningAnimation && combatant.AnimationController.Animator.LoadAnimation(runningAnimation);
   if (track) {
@@ -296,7 +364,14 @@ export function moveCombatantToDuelPosition(
   const startTime = os.clock();
   const connection = RunService.Heartbeat.Connect(() => {
     const progress = math.clamp((os.clock() - startTime) / duration, 0, 1);
-    collider.CFrame = new CFrame(startPosition.Lerp(targetPosition, progress)).mul(facingRotation);
+    const eased = TweenService.GetValue(progress, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut);
+    const position = startPosition.Lerp(targetPosition, eased);
+
+    const turnProgress = math.clamp((progress - ARRIVAL_TURN_START) / (1 - ARRIVAL_TURN_START), 0, 1);
+    const turnEased = TweenService.GetValue(turnProgress, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut);
+    const facing = startFacing.Lerp(endFacing, turnEased);
+
+    collider.CFrame = new CFrame(position).mul(facing);
 
     if (progress >= 1) {
       connection.Disconnect();

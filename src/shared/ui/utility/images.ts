@@ -16,10 +16,11 @@ export const enum Images {
   Background_XP = "rbxassetid://78695210211208",
   Background_MainQuestFrame = "rbxassetid://72251088033236",
   Background_QuestFrame = "rbxassetid://123137161798867",
-  Background_QuestSketch1 = "rbxassetid://136091759861800",
-  Background_QuestSketch2 = "rbxassetid://130530493513222",
-  Background_QuestSketch3 = "rbxassetid://118698903024559",
-  Background_QuestSketch4 = "rbxassetid://81287145746042",
+  Background_QuestSketch1 = "rbxassetid://81287145746042",
+  Background_QuestSketch2 = "rbxassetid://118698903024559",
+  Background_QuestSketch3 = "rbxassetid://136091759861800",
+  Background_QuestSketch4 = "rbxassetid://130530493513222",
+  Background_BookPages = "rbxassetid://127231701835352",
 
   // icons
   Icon_Gold = "rbxassetid://120546981073024",
@@ -48,6 +49,7 @@ export const enum Images {
   Button_Book_Deck = "rbxassetid://120485483338515",
   Button_Book_Map = "rbxassetid://126587941578717",
   Button_Book_Crafting = "rbxassetid://125673038077458",
+  Button_Book_Help = "rbxassetid://85619994462094",
   Button_Book_Options = "rbxassetid://130775053254795",
   Button_Book_Exit = "rbxassetid://84638639671372",
   Button_Orange = "rbxassetid://127532649463801",

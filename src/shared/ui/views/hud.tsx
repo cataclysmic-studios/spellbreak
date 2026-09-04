@@ -24,15 +24,17 @@ export interface HudProps {
   readonly bookPage: Source<BookPage>;
   readonly activeDialog: Source<Maybe<DialogID>>;
   readonly activeInteractable: Source<Maybe<Interactable>>;
+  /** Set the instant a duel starts (camera easing into the planning pose) - drops the main HUD immediately, ahead of `activeDuel`/`planning` which wait for that transition to finish before showing cards. */
+  readonly duelStarted: Source<boolean>;
   readonly activeDuel: Source<Maybe<ActiveDuelState>>;
 }
 
 const UDIM2_ZERO = new UDim2;
-export function HUD({ character, bookOpen, bookPage, activeDialog, activeInteractable, activeDuel }: HudProps): Vide.Node {
+export function HUD({ character, bookOpen, bookPage, activeDialog, activeInteractable, duelStarted, activeDuel }: HudProps): Vide.Node {
   const px = usePx();
   const questInfo = () => getSelectedQuestInfo(character());
   const hiddenByDialog = () => activeDialog() === undefined;
-  const hiddenByDuel = () => activeDuel() === undefined;
+  const hiddenByDuel = () => !duelStarted();
   const mainUiVisible = () => hiddenByDialog() && hiddenByDuel();
   const showsWithQuest = () => mainUiVisible() && questInfo() !== undefined;
   const questHelperOffset = () => activeInteractable() !== undefined ? UDim2.fromOffset(0, -px(112)) : UDIM2_ZERO;

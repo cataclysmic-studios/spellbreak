@@ -13,6 +13,16 @@ export function getSpellCardFromReferenceData({ reference, data }: SpellReferenc
   };
 }
 
+/** Whether `pipValue` pips (regular=1, power=2, summed) covers `cost` - an `"X"` cost is affordable with any pips at all. */
+export function canAffordSpellCost(pipValue: number, cost: Spell["cost"]): boolean {
+  return cost.pips === "X" ? pipValue > 0 : pipValue >= cost.pips;
+}
+
+/** The actual number of pips `cost` takes to cast, given `pipValue` pips currently available - an `"X"` cost spends everything. */
+export function resolveSpellCost(pipValue: number, cost: Spell["cost"]): number {
+  return cost.pips === "X" ? pipValue : cost.pips;
+}
+
 const cachedSpells: Partial<Record<SpellReference, Spell>> = {};
 export function getSpellFromReference(reference: SpellReference): Spell {
   if (cachedSpells[reference] !== undefined)

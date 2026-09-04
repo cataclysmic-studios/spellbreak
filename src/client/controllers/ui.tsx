@@ -27,6 +27,7 @@ export class UIController implements OnStart {
     bookPage: source<BookPage>(BookPage.Options),
     activeDialog: source<Maybe<DialogID>>(undefined),
     activeInteractable: source<Maybe<Interactable>>(undefined),
+    duelStarted: source(false),
     activeDuel: source<Maybe<ActiveDuelState>>(undefined)
   };
 
@@ -91,6 +92,11 @@ export class UIController implements OnStart {
 
   public disableInteractPrompt(): void {
     this.hudState.activeInteractable(undefined);
+  }
+
+  /** A duel's just started - hides the main HUD immediately, ahead of the camera actually finishing its ease into the planning pose (see `showDuelPlanning`). */
+  public beginDuel(): void {
+    this.hudState.duelStarted(true);
   }
 
   public showDuelPlanning(info: ClientDuelInfo): void {

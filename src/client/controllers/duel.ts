@@ -6,6 +6,7 @@ import { OnClientMessage } from "shared/meta";
 import { CameraPoseKind } from "shared/structs/camera";
 import type { ClientDuelInfo } from "shared/structs/duel";
 import type { SpellCard } from "shared/structs/spell/card";
+import type { SpellReference } from "shared/structs/data/reference/spell";
 import { getSpellCardFromReferenceData } from "shared/utility/spell";
 import { currentDuel } from "client/state/duel";
 
@@ -40,12 +41,15 @@ export class DuelController {
         hand: source<SpellCard[]>(packet.hand.map(getSpellCardFromReferenceData)),
         choosing: source(true),
         selectedCard: source<Maybe<SpellCard>>(undefined),
+        chosenSpellReference: source<Maybe<SpellReference>>(undefined),
+        pipValue: source(packet.pipValue),
         opponentCount: packet.opponentCount,
         teamCount: packet.teamCount
       }
     };
 
     currentDuel(info);
+    this.ui.beginDuel();
   }
 
   /** @hidden */

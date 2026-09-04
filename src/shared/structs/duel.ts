@@ -32,6 +32,9 @@ export interface ClientDuelState {
   readonly hand: Source<SpellCard[]>;
   readonly choosing: Source<boolean>;
   readonly selectedCard: Source<Maybe<SpellCard>>;
+  /** The spell reference locked in once `choosing` drops, `undefined` for a pass. Set by whatever confirms the choice (the Pass button, a no-target spell's card button, or a target pick), then read (and reset) by the `Duel_ChoiceMade` effect in `DuelPlanning`. */
+  readonly chosenSpellReference: Source<Maybe<SpellReference>>;
+  readonly pipValue: Source<number>;
   opponentCount: number;
   teamCount: number;
 }

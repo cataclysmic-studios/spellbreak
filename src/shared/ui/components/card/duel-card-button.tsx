@@ -32,7 +32,7 @@ const SCALE_SPRING_DAMPING = 0.6;
 export function DuelCardButton({
   spellCard, layoutOrder, grayscale, scale, duelInfo
 }: PropsWithChildren<DuelCardButtonProps>): Vide.Node {
-  const { model, onOpposingTeam, state: { hand, selectedCard, choosing, teamCount, opponentCount } } = duelInfo;
+  const { model, onOpposingTeam, state: { hand, selectedCard, choosing, chosenSpellReference, teamCount, opponentCount } } = duelInfo;
   const selected = source(false);
   const hovered = source(false);
   const isGrayscale = () => read(grayscale) ?? false;
@@ -83,6 +83,7 @@ export function DuelCardButton({
     const isOpponent = auraModel.GetAttribute<boolean>("OpposingTeam")!;
     log.info(`click: hit ${result.Instance.GetFullName()} -> aura ${auraModel.Name} (position=${position}, isOpponent=${isOpponent})`);
     deselectAll();
+    chosenSpellReference(card.spell.reference);
     choosing(false);
     // deck.chooseCard(card, position, isOpponent);
   });
@@ -129,6 +130,7 @@ export function DuelCardButton({
               return selectCard();
 
             deselectAll();
+            chosenSpellReference(spellCard.spell.reference);
             choosing(false);
             // deck.chooseCard(spellCard);
           }}

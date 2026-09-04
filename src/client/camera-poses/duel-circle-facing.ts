@@ -1,4 +1,4 @@
-import { RunService } from "@rbxts/services";
+import { RunService, TweenService } from "@rbxts/services";
 
 import { currentDuel } from "client/state/duel";
 import { BaseCameraPose } from "./base";
@@ -8,6 +8,7 @@ import type { CameraController } from "client/controllers/camera";
 import type { ClientDuelInfo } from "shared/structs/duel";
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+const ease = (progress: number) => TweenService.GetValue(progress, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut);
 
 /** Shared vantage point (this player's corner of the duel circle) for every duel camera pose - only the look target and FOV differ between them. */
 export abstract class DuelCircleFacingPose extends BaseCameraPose {
@@ -26,10 +27,10 @@ export abstract class DuelCircleFacingPose extends BaseCameraPose {
     this.camera.manager.setFOV(this.fov);
   }
 
-  public transitionInto(duration: number, onCompleted?: () => void): void {
+  public transitionInto(duration: number, onCompleted?: () => void): Maybe<RBXScriptConnection> {
     if (currentDuel() === undefined) {
       Log.warn("Attempt to transition into a duel camera pose with no client duel info set");
-      return;
+      return undefined;
     }
 
     const startCFrame = this.camera.manager.getCFrame();
@@ -39,14 +40,17 @@ export abstract class DuelCircleFacingPose extends BaseCameraPose {
 
     const connection = RunService.RenderStepped.Connect(dt => {
       const progress = math.clamp((os.clock() - startTime) / duration, 0, 1);
-      this.camera.manager.setCFrame(startCFrame.Lerp(targetCFrame, progress));
-      this.camera.manager.setFOV(lerp(startFOV, this.fov, progress));
+      const eased = ease(progress);
+      this.camera.manager.setCFrame(startCFrame.Lerp(targetCFrame, eased));
+      this.camera.manager.setFOV(lerp(startFOV, this.fov, eased));
 
       if (progress >= 1) {
         connection.Disconnect();
         onCompleted?.();
       }
     });
+
+    return connection;
   }
 
   protected abstract getLookTarget(info: ClientDuelInfo): Vector3;

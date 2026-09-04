@@ -2,7 +2,7 @@ import { MessageEmitter, type MiddlewareContext } from "@rbxts/tether";
 import type { Packed, u8 } from "@rbxts/serio";
 
 import { fixNumericKeys } from "./utility/data";
-import type { CompleteGoalPacket, DuelStartPacket, PickUpQuestPacket, TransitionPosePacket } from "./structs/packets";
+import type { CompleteGoalPacket, DuelChoiceMadePacket, DuelStartPacket, PickUpQuestPacket, TransitionPosePacket } from "./structs/packets";
 import type { PlayerDataSchema, Diff } from "./structs/data/serialization";
 import Log from "./log";
 
@@ -39,5 +39,5 @@ export interface MessageData {
   [Message.Duel_BeginCasting]: u8; // duel id
   [Message.Quest_PickUp]: PickUpQuestPacket;
   [Message.Quest_CompleteGoal]: CompleteGoalPacket;
-  [Message.Duel_ChoiceMade]: u8; // duel id
+  [Message.Duel_ChoiceMade]: DuelChoiceMadePacket;
 }

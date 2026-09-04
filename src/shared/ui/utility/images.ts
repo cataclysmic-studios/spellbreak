@@ -16,10 +16,10 @@ export const enum Images {
   Background_XP = "rbxassetid://78695210211208",
   Background_MainQuestFrame = "rbxassetid://72251088033236",
   Background_QuestFrame = "rbxassetid://123137161798867",
-  Background_QuestSketch1 = "rbxassetid://81287145746042",
+  Background_QuestSketch1 = "rbxassetid://130530493513222",
   Background_QuestSketch2 = "rbxassetid://118698903024559",
   Background_QuestSketch3 = "rbxassetid://136091759861800",
-  Background_QuestSketch4 = "rbxassetid://130530493513222",
+  Background_QuestSketch4 = "rbxassetid://81287145746042",
   Background_BookPages = "rbxassetid://127231701835352",
 
   // icons
@@ -33,6 +33,9 @@ export const enum Images {
   // portraits
   Portrait_HeadmasterHale = "rbxassetid://131377265144889",
   Portrait_PrivatePike = "rbxassetid://108261292143077",
+  Portrait_CorporalVance = "rbxassetid://0",
+  Portrait_OldMiriam = "rbxassetid://0",
+  Portrait_DarkWizard = "rbxassetid://137979679635761",
 
   // spritesheets
   LargeIconSpritesheet = "rbxassetid://16821859312",

@@ -29,7 +29,23 @@ export class QuestService {
 
     log.info(`${player} picked up quest ${id} from NPC ${npcID}`);
     if (this.checkCompletion(player, id, 0)) return; // some quests can be picked up and immediately completed w/o doing anything
-    this.setActiveQuestGoal(player, id, 0, true);
+
+    const hasNoQuests = getActiveQuestIDs(character).isEmpty();
+    const selectQuest = hasNoQuests && getQuestByID(id).main;
+    this.setActiveQuestGoal(player, id, 0, selectQuest);
+  }
+
+  /** @hidden */
+  @OnServerMessage(Message.Quest_Select)
+  public select(player: Player, id: MessageData[Message.Quest_Select]): void {
+    const character = this.database.getCharacter(player);
+    if (!hasQuest(character, id)) return;
+    if (character.selectedQuest === id) return;
+
+    log.info(`${player} selected quest ${id}`);
+    this.database.updateCharacter(player, character =>
+      Sift.Dictionary.merge(character, { selectedQuest: id })
+    );
   }
 
   /** @hidden */

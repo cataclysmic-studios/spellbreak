@@ -55,6 +55,12 @@ interface WithAnimationController {
   };
 }
 
+interface LoadScreenPageModel extends Model, WithAnimationController {
+  Page_FrontSide: MeshPart;
+  Page_BackSide: MeshPart;
+  RootPart: Part;
+}
+
 interface Player extends Instance {
   PlayerGui: PlayerGui;
 }

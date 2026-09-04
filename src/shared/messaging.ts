@@ -4,6 +4,7 @@ import type { Packed, u8 } from "@rbxts/serio";
 import { fixNumericKeys } from "./utility/data";
 import type { CompleteGoalPacket, DuelChoiceMadePacket, DuelStartPacket, PickUpQuestPacket, TransitionPosePacket } from "./structs/packets";
 import type { PlayerDataSchema, Diff } from "./structs/data/serialization";
+import type { QuestID } from "./structs/quests";
 import Log from "./log";
 
 export const messaging = MessageEmitter.create<MessageData>();
@@ -29,6 +30,7 @@ export const enum Message {
   // Client -> Server
   Quest_PickUp,
   Quest_CompleteGoal,
+  Quest_Select,
   Duel_ChoiceMade,
   Client_Ready,
 }
@@ -46,6 +48,7 @@ export interface MessageData {
   [Message.Zone_Entered]: u8; // the player's new current zone id
   [Message.Quest_PickUp]: PickUpQuestPacket;
   [Message.Quest_CompleteGoal]: CompleteGoalPacket;
+  [Message.Quest_Select]: QuestID;
   [Message.Duel_ChoiceMade]: DuelChoiceMadePacket;
   [Message.Client_Ready]: undefined;
 }

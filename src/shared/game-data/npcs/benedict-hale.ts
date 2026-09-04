@@ -10,5 +10,5 @@ export = {
   portrait: Images.Portrait_HeadmasterHale,
   questsGiven: [QuestID.WC_1],
   zone: ZoneID.HeadmastersOffice,
-  spawnCFrame: new CFrame(28.5, 3, 5, 0, 0, -1, 0, 1, 0, 1, 0, 0)
+  spawnCFrame: new CFrame(0, 3, -604, 0, 0, 1, 0, 1, 0, -1, 0, 0)
 } satisfies NpcDescriptor;

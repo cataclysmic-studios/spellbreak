@@ -2,7 +2,7 @@ import { Service } from "@flamework/core";
 import { CollectionService } from "@rbxts/services";
 
 import { ZoneTunnel } from "server/classes/zone-tunnel";
-import { hasCompletedQuest } from "shared/utility/quests";
+import { hasCompletedQuest, hasQuest } from "shared/utility/quests";
 import Log from "shared/log";
 
 import type { DatabaseService } from "./database";
@@ -29,7 +29,15 @@ export class ZoneTunnelService {
   }
 
   private onTouch(tunnel: ZoneTunnel, player: Player): void {
-    if (tunnel.requiredQuestID !== undefined && !hasCompletedQuest(this.database.getCharacter(player), tunnel.requiredQuestID))
+    const character = this.database.getCharacter(player);
+    if (tunnel.requiredQuestID !== undefined && !hasCompletedQuest(character, tunnel.requiredQuestID))
+      return;
+
+    if (
+      tunnel.requiredActiveQuestID !== undefined
+      && !hasQuest(character, tunnel.requiredActiveQuestID)
+      && !hasCompletedQuest(character, tunnel.requiredActiveQuestID)
+    )
       return;
 
     const destinationTunnel = this.tunnels.find(other => other.homeZoneID === tunnel.zoneID && other.zoneID === tunnel.homeZoneID);

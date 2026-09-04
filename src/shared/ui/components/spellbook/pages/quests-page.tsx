@@ -50,7 +50,8 @@ export function QuestsPage({ character }: PageProps): Vide.Node {
         {(quest, index) => {
           const goalIndex = character().activeQuests[quest];
           const info: Maybe<QuestInfo> = goalIndex !== undefined ? { questID: quest, goalIndex } : undefined;
-          return <QuestSlot info={info} slot={index() as never} />
+          const selected = () => character().selectedQuest === quest;
+          return <QuestSlot info={info} slot={index() as never} selected={selected} />
         }}
       </For>
     </BookPageContainer>

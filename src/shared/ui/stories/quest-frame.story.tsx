@@ -1,4 +1,4 @@
-import Vide from "@rbxts/vide";
+import Vide, { source } from "@rbxts/vide";
 
 import { anchorPoints, positions } from "../utility/positioning";
 import { hoarcekat } from "../utility/hoarcekat";
@@ -13,6 +13,7 @@ export = hoarcekat(() => (
       questID: QuestID.WC_1,
       goalIndex: 0
     }}
+    selected={source(true)}
     anchorPoint={anchorPoints.center}
     position={positions.center}
     size={UDim2.fromScale(0.4, 0.4)}

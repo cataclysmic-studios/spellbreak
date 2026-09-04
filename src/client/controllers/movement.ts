@@ -40,7 +40,11 @@ export class MovementController implements OnPhysics {
       .mul(y * this.walkSpeed)
       .mul(XZ);
 
-    character.setVelocity(velocity);
+    // Only drive horizontal movement here - forcing Y to 0 every step would fight gravity's
+    // own velocity accumulation (this runs on Stepped, right before physics simulates), so
+    // an airborne character (e.g. right after a zone tunnel teleport) would sink at a fraction
+    // of its real fall speed instead of dropping normally.
+    character.setVelocity(new Vector3(velocity.X, character.getVelocity().Y, velocity.Z));
     this.turnAngle += x * (this.turnSpeed / 3) * 60 * dt;
   }
 

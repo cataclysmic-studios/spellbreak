@@ -127,18 +127,14 @@ export function getGoalTargetZone({ action, target }: QuestGoal): ZoneID {
   }
 }
 
-/** Routes through the nearest tunnel into `zoneID` unless the player is already standing in that zone. */
-function routeThroughNearestTunnel(zoneID: ZoneID, targetPosition: Vector3, fromPosition: Vector3, currentZone: Maybe<ZoneID>): Vector3 {
-  if (currentZone === zoneID) return targetPosition;
-  return getNearestTunnelPosition(zoneID, fromPosition) ?? targetPosition;
-}
-
 export function getGoalTargetPosition({ action, target }: QuestGoal, fromPosition: Vector3, currentZone: Maybe<ZoneID>): Vector3 {
   switch (action) {
     case QuestGoalAction.Talk: {
       const npc = getNpcByID(target);
-      const npcPosition = getNpcModelByID(target).PrimaryPart!.Position;
-      return routeThroughNearestTunnel(npc.zone, npcPosition, fromPosition, currentZone);
+      if (currentZone !== npc.zone)
+        return getNearestTunnelPosition(npc.zone, fromPosition) ?? fromPosition;
+
+      return getNpcModelByID(target).PrimaryPart!.Position;
     }
     case QuestGoalAction.Explore:
       return getNearestTunnelPosition(target, fromPosition) ?? Vector3.zero;

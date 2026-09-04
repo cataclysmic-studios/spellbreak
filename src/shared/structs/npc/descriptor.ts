@@ -5,7 +5,9 @@ import type { ZoneID } from "../zone";
 
 export const enum NpcID {
   HeadmasterHale,
-  PrivatePike
+  PrivatePike,
+  CorporalVance,
+  OldMiriam
 }
 
 export interface NpcDescriptor extends BaseID<NpcID> {

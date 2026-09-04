@@ -43,19 +43,15 @@ export function getWorldName(world: WorldEnum): string {
   return WorldNames[world];
 }
 
-/** Finds the `ZoneModel` a zone is physically built under in `Workspace.Zones` - scans once, lazily, and caches the result. */
+/** Finds the `ZoneModel` a zone is physically built under in `Workspace.Zones`, waiting on streaming if it hasn't replicated in yet - caches the result per zone. */
 export function getZoneModel(zoneID: ZoneID): ZoneModel {
-  if (zoneModels.size() === 0) {
-    const zonesRoot = World.WaitForChild("Zones");
-    for (const worldFolder of zonesRoot.GetChildren())
-      for (const candidate of worldFolder.GetChildren()) {
-        const id = findZoneIDByName(candidate.Name);
-        if (id !== undefined) zoneModels.set(id, candidate as ZoneModel);
-      }
-  }
+  const cached = zoneModels.get(zoneID);
+  if (cached !== undefined) return cached;
 
-  const model = zoneModels.get(zoneID);
-  assert(model !== undefined, `no Workspace model found for zone ${zoneID}`);
+  const zonesRoot = World.WaitForChild("Zones");
+  const worldFolder = zonesRoot.WaitForChild(WorldEnum[getZoneByID(zoneID).world]);
+  const model = worldFolder.WaitForChild(ZoneID[zoneID]) as ZoneModel;
+  zoneModels.set(zoneID, model);
   return model;
 }
 

@@ -6,6 +6,7 @@ export const palette = {
   brightRed: Color3.fromRGB(255, 0, 0),
   wizRed: Color3.fromRGB(166, 61, 74),
   wizDeepRed: Color3.fromRGB(133, 39, 55),
+  lightYellow: Color3.fromRGB(255, 250, 219),
   yellow: Color3.fromRGB(255, 230, 0),
   brightYellow: Color3.fromRGB(255, 255, 72),
   deepYellow: Color3.fromRGB(247, 202, 74),

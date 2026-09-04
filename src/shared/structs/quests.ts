@@ -8,6 +8,8 @@ import type { ZoneID } from "./zone";
 export enum QuestID {
   WC_1,
   WC_2,
+  WC_3,
+  WC_4,
 }
 
 export const enum QuestGoalAction {

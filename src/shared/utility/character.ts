@@ -77,10 +77,10 @@ export function newCharacterData(name: string, school: PlayableSchool): Characte
       ]
     },
     lastLocation: {
-      position: { x: 0, y: 0, z: 0 },
-      lookAlong: { x: 0, z: 1 }
+      position: { x: 0, y: 1, z: -594 },
+      lookAlong: { x: 0, z: -1 }
     },
-    currentZone: ZoneID.TownSquare,
+    currentZone: ZoneID.HeadmastersOffice,
     stats: {
       maxHealth,
       maxMana,

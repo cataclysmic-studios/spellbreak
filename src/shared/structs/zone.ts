@@ -1,6 +1,6 @@
 import type { BaseID } from "@rbxts/id";
 
-export const enum World {
+export enum World {
   WizardCity,
 }
 

@@ -1,25 +1,20 @@
 import { NpcID } from "shared/structs/npc/descriptor";
 import { DialogID } from "shared/structs/npc/dialog";
 import { QuestGoalAction, QuestID, QuestRewardKind, type QuestDescriptor } from "shared/structs/quests";
-import { ZoneID } from "shared/structs/zone";
 
 export = {
-  id: QuestID.WC_2,
-  name: "New Savior",
+  id: QuestID.WC_3,
+  name: "Watch and Whisper",
   requiredLevel: 0,
   main: true,
-  prequests: [QuestID.WC_1],
-  dialog: DialogID.Wc2_NewSaviorIntro,
+  prequests: [QuestID.WC_2],
+  dialog: DialogID.Wc3_LaneWatch,
   goals: [
     {
-      action: QuestGoalAction.Explore,
-      target: ZoneID.PegasusLane
-    },
-    {
       action: QuestGoalAction.Talk,
-      target: NpcID.CorporalVance,
-      completionDialog: DialogID.Wc2_VanceReport
-    },
+      target: NpcID.OldMiriam,
+      completionDialog: DialogID.Wc3_MiriamTestimony
+    }
   ],
   rewards: [
     {
@@ -27,7 +22,7 @@ export = {
       amount: 5
     }, {
       kind: QuestRewardKind.XP,
-      amount: 15
+      amount: 20
     }
   ]
 } satisfies QuestDescriptor;

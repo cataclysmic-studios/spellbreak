@@ -14,12 +14,14 @@ export class ZoneTunnel {
   /** The zone this tunnel is physically parented under, i.e. the zone it's the *exit* of. */
   public readonly homeZoneID: ZoneID;
   public readonly requiredQuestID?: QuestID;
+  /** Unlike `requiredQuestID` (which demands full completion), this only demands the quest be picked up - e.g. gating an NPC's own room shut until you've taken the quest they hand you. */
+  public readonly requiredActiveQuestID?: QuestID;
   /** Fires whenever a player touches this tunnel's collider, regardless of whether their gate is open. */
   public readonly touchedByPlayer = new Signal<(player: Player) => void>;
 
   private readonly debounced = new Set<Player>;
 
-  /** `ZoneID`/`RequiredQuestID` are set in Studio as the *name* of the enum member (e.g. "PegasusLane"), not its numeric value. */
+  /** `ZoneID`/`RequiredQuestID`/`RequiredActiveQuestID` are set in Studio as the *name* of the enum member (e.g. "PegasusLane"), not its numeric value. */
   public constructor(public readonly model: TunnelModel) {
     const zoneName = model.GetAttribute<string>("ZoneID");
     assert(zoneName !== undefined, `ZoneTunnel @ ${model.GetFullName()} is missing a "ZoneID" attribute`);
@@ -29,6 +31,9 @@ export class ZoneTunnel {
 
     const questName = model.GetAttribute<string>("RequiredQuestID");
     this.requiredQuestID = questName !== undefined ? getQuestIDByName(questName) : undefined;
+
+    const activeQuestName = model.GetAttribute<string>("RequiredActiveQuestID");
+    this.requiredActiveQuestID = activeQuestName !== undefined ? getQuestIDByName(activeQuestName) : undefined;
 
     this.registerTouch();
   }

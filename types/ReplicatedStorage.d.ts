@@ -39,5 +39,6 @@ interface ReplicatedStorage extends Instance {
     enemies: Folder;
     npcs: Folder;
     questArrow: MeshPart;
+    loadScreenPage: LoadScreenPageModel;
   };
 }

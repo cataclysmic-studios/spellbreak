@@ -12,6 +12,10 @@ export const enum DialogID {
   Wc1_EnrollmentIntro,
   Wc1_EnrollmentEnd,
   Wc2_NewSaviorIntro,
+  Wc2_VanceReport,
+  Wc3_LaneWatch,
+  Wc3_MiriamTestimony,
+  Wc4_MiriamsPlea,
 }
 
 /**

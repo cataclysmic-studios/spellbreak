@@ -18,23 +18,27 @@ import { BookPage } from "shared/ui/components/spellbook";
 
 import type { CharacterController } from "./character";
 import type { InputController } from "./input";
+import type { ZoneController } from "./zone";
 
 @Controller()
 export class UIController implements OnStart {
-  private readonly hudState: HudProps = {
-    character: source(defaultData.characters[0]),
-    bookOpen: source(false),
-    bookPage: source<BookPage>(BookPage.Options),
-    activeDialog: source<Maybe<DialogID>>(undefined),
-    activeInteractable: source<Maybe<Interactable>>(undefined),
-    duelStarted: source(false),
-    activeDuel: source<Maybe<ActiveDuelState>>(undefined)
-  };
+  private readonly hudState: HudProps;
 
   public constructor(
     character: CharacterController,
+    zone: ZoneController,
     private readonly input: InputController
   ) {
+    this.hudState = {
+      character: source(defaultData.characters[0]),
+      bookOpen: source(false),
+      bookPage: source<BookPage>(BookPage.Options),
+      activeDialog: source<Maybe<DialogID>>(undefined),
+      activeInteractable: source<Maybe<Interactable>>(undefined),
+      duelStarted: source(false),
+      activeDuel: source<Maybe<ActiveDuelState>>(undefined),
+      currentZone: zone.currentZone
+    };
     character.updated.Connect(() => this.hudState.character(character.getData()));
   }
 

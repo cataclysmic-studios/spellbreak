@@ -1,8 +1,8 @@
 import Vide, { type Source } from "@rbxts/vide";
 
-import { usePx } from "../hooks/use-px";
-import { Images } from "../utility/images";
-import { anchorPoints, positions } from "../utility/positioning";
+import { usePx } from "../../hooks/use-px";
+import { Images } from "../../utility/images";
+import { anchorPoints, positions } from "../../utility/positioning";
 
 interface XpBarProps {
   readonly progress: Source<number>;

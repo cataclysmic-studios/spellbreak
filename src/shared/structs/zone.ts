@@ -15,10 +15,11 @@ export enum ZoneID {
   ShatterbonesTower,
 }
 
+export const ALL_ZONE_IDS: readonly ZoneID[] = [ZoneID.TownSquare, ZoneID.HeadmastersOffice, ZoneID.PegasusLane, ZoneID.ShatterbonesTower];
+
 export interface ZoneDescriptor extends BaseID<ZoneID> {
   readonly name: string;
   readonly world: World;
   /** The zone this one is nested inside of (e.g. a building interior within a town), if any. */
   readonly parent?: ZoneID;
-  readonly exits: Map<ZoneID, Vector3>;
 }

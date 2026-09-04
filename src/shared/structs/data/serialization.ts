@@ -1,4 +1,4 @@
-import type { f16, u8, u16, u32, u24, String, HashMap } from "@rbxts/serio";
+import type { f16, u8, u12, u16, u32, u24, String, HashMap } from "@rbxts/serio";
 
 import type { School } from "../school";
 import type { CharacterStats, PerSchoolStats } from "./character-stats";
@@ -7,9 +7,9 @@ import type { DeckLinkedData } from "./items/gear/deck";
 import type { PetLinkedData } from "./items/gear/pet";
 import type { BackpackData, CharacterData, EquippedGearData } from ".";
 
-type QuestIDSchema = u16;
-type SpellReferenceSchema = u16;
-type GearReferenceSchema = u16;
+type QuestIDSchema = u12;
+type SpellReferenceSchema = u12;
+type GearReferenceSchema = u12;
 
 type Primitive =
   | string
@@ -50,7 +50,6 @@ interface ReferenceWithDataSchema<T, R extends number = u16> {
   readonly data: T;
 }
 
-
 export type EquippedGearDataSchema = { [K in keyof EquippedGearData]: u8; };
 
 export interface BackpackDataSchema extends BackpackData {
@@ -67,8 +66,8 @@ export interface BackpackDataSchema extends BackpackData {
 }
 
 interface CharacterLocationSchema {
-  readonly position: { x: f16; y: f16; z: f16 };
-  readonly lookAlong: { x: f16; z: f16 };
+  readonly position: { x: f16; y: f16; z: f16; };
+  readonly lookAlong: { x: f16; z: f16; };
 }
 
 export interface CharacterStatsSchema extends CharacterStats {
@@ -108,6 +107,7 @@ export interface CharacterDataSchema extends Omit<CharacterData, "activeQuests">
   readonly backpack: BackpackDataSchema;
   readonly stats: CharacterStatsSchema;
   readonly lastLocation: CharacterLocationSchema;
+  readonly currentZone: u8;
 }
 
 export interface PlayerDataSchema {

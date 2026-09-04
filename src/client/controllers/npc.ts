@@ -43,14 +43,24 @@ export class NpcController implements OnStart, OnTick {
   public onNpcHydrate(toHydrate: MessageData[Message.Hydrate_NPCs]): void {
     Log.info("Hydrating NPCs...");
     for (const id of toHydrate) {
-      const model = getNpcModelByID(id);
-      if (model === undefined) {
-        Log.warn(`Failed to hydrate NPC with ID ${id}, no model found`);
-        continue;
-      }
+      if (this.questGivers.has(id)) continue;
 
+      const model = getNpcModelByID(id);
       const questGiver = new QuestGiver(this.character, model);
       this.questGivers.set(id, questGiver);
+    }
+  }
+
+  /** @hidden */
+  @OnClientMessage(Message.Dehydrate_NPCs)
+  public onNpcDehydrate(toDehydrate: MessageData[Message.Dehydrate_NPCs]): void {
+    Log.info("Dehydrating NPCs...");
+    for (const id of toDehydrate) {
+      const questGiver = this.questGivers.get(id);
+      if (questGiver === undefined) continue;
+
+      questGiver.destroy();
+      this.questGivers.delete(id);
     }
   }
 

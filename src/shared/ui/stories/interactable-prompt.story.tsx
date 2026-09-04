@@ -5,7 +5,7 @@ import { hoarcekat } from "../utility/hoarcekat";
 import type { Interactable } from "shared/structs/interactable";
 import "../dev";
 
-import { InteractPrompt } from "../components/interact-prompt";
+import { InteractPrompt } from "../components/hud/interact-prompt";
 import { Images } from "../utility/images";
 
 const interactable = source<Maybe<Interactable>>(NpcID.HeadmasterHale);

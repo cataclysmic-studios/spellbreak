@@ -3,6 +3,7 @@ import { SpellReference } from "shared/structs/data/reference/spell";
 import { DeckReference } from "shared/structs/data/reference/gear/deck";
 import { SpellCardKind } from "shared/structs/spell/card";
 import { type PlayableSchool, School } from "shared/structs/school";
+import { ZoneID } from "shared/structs/zone";
 import type { CharacterData } from "shared/structs/data";
 
 const { min, floor } = math;
@@ -79,6 +80,7 @@ export function newCharacterData(name: string, school: PlayableSchool): Characte
       position: { x: 0, y: 0, z: 0 },
       lookAlong: { x: 0, z: 1 }
     },
+    currentZone: ZoneID.TownSquare,
     stats: {
       maxHealth,
       maxMana,
@@ -170,5 +172,22 @@ export function newCharacterData(name: string, school: PlayableSchool): Characte
         [School.Shadow]: 0
       }
     }
+  };
+}
+
+export function locationToCFrame({ position, lookAlong }: CharacterData["lastLocation"]): CFrame {
+  const worldPosition = new Vector3(position.x, position.y, position.z);
+  const lookDirection = new Vector3(lookAlong.x, 0, lookAlong.z);
+  return lookDirection.Magnitude > 0
+    ? CFrame.lookAt(worldPosition, worldPosition.add(lookDirection))
+    : new CFrame(worldPosition);
+}
+
+export function cframeToLocation(cframe: CFrame): CharacterData["lastLocation"] {
+  const { X, Y, Z } = cframe.Position;
+  const { X: lookX, Z: lookZ } = cframe.LookVector;
+  return {
+    position: { x: X, y: Y, z: Z },
+    lookAlong: { x: lookX, z: lookZ }
   };
 }

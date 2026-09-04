@@ -20,14 +20,17 @@ export const enum Message {
   Camera_TransitionPose,
   Data_Updated,
   Hydrate_NPCs,
+  Dehydrate_NPCs,
   Duel_Start,
   Duel_BeginCasting,
   Zone_Transferring,
+  Zone_Entered,
 
   // Client -> Server
   Quest_PickUp,
   Quest_CompleteGoal,
   Duel_ChoiceMade,
+  Client_Ready,
 }
 
 export interface MessageData {
@@ -36,10 +39,13 @@ export interface MessageData {
   [Message.Camera_TransitionPose]: TransitionPosePacket;
   [Message.Data_Updated]: Packed<Diff<PlayerDataSchema>>;
   [Message.Hydrate_NPCs]: Set<u8>;
+  [Message.Dehydrate_NPCs]: Set<u8>;
   [Message.Duel_Start]: DuelStartPacket;
   [Message.Duel_BeginCasting]: u8; // duel id
   [Message.Zone_Transferring]: u8; // destination zone id
+  [Message.Zone_Entered]: u8; // the player's new current zone id
   [Message.Quest_PickUp]: PickUpQuestPacket;
   [Message.Quest_CompleteGoal]: CompleteGoalPacket;
   [Message.Duel_ChoiceMade]: DuelChoiceMadePacket;
+  [Message.Client_Ready]: undefined;
 }

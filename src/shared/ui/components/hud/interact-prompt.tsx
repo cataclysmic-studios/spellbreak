@@ -1,15 +1,15 @@
-import Vide, { Derivable, For, read, Show, type Source } from "@rbxts/vide";
+import Vide, { read, Derivable, For, type Source } from "@rbxts/vide";
 
-import { usePx } from "../hooks/use-px";
-import { anchorPoints, positions } from "../utility/positioning";
+import { usePx } from "../../hooks/use-px";
+import { anchorPoints, positions } from "../../utility/positioning";
 import { getNpcByID } from "shared/utility/npc";
 import type { Interactable } from "shared/structs/interactable";
 
-import { PromptPanel } from "./prompt-panel";
-import { Container } from "../utility/components/container";
-import { WizText } from "./wiz-text";
-import { palette } from "../palette";
-import { Images } from "../utility/images";
+import { PromptPanel } from "../prompt-panel";
+import { Container } from "../../utility/components/container";
+import { WizText } from "../wiz-text";
+import { palette } from "../../palette";
+import { Images } from "../../utility/images";
 
 interface InteractPromptProps {
   readonly interactable: Source<Maybe<Interactable>>;

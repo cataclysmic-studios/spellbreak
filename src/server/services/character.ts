@@ -2,20 +2,21 @@ import { Service } from "@flamework/core";
 import { getDescendantsOfType } from "@rbxts/instance-utility";
 import { Workspace as World } from "@rbxts/services";
 
-import type { OnPlayerJoin } from "server/hooks/players";
 import { assets } from "shared/constants";
 import Log from "shared/log";
 
 @Service()
-export class CharacterService implements OnPlayerJoin {
+export class CharacterService {
   private selectedIndex = 0; // TODO: selection
-
-  public onPlayerJoin(player: Player): void {
-    this.load(player, "roslyn", new CFrame(0, 5, 0));
-  }
 
   public getSelected(): number {
     return this.selectedIndex;
+  }
+
+  public teleportTo(player: Player, location: CFrame): void {
+    const character = player.Character;
+    assert(character !== undefined, `${player} has no character to teleport`);
+    character.PivotTo(location);
   }
 
   public load(player: Player, modelName: ExtractKeys<typeof assets.characters, CharacterModel>, location: CFrame): void {

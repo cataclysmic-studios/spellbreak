@@ -1,7 +1,7 @@
 import { Players } from "@rbxts/services";
 import Signal from "@rbxts/lemon-signal";
 
-import { getZoneIDByName } from "shared/utility/zone";
+import { getZoneIDByName, getZoneOfInstance } from "shared/utility/zone";
 import { getQuestIDByName } from "shared/utility/quests";
 import type { QuestID } from "shared/structs/quests";
 import type { ZoneID } from "shared/structs/zone";
@@ -11,6 +11,8 @@ const DEBOUNCE_SECONDS = 2;
 
 export class ZoneTunnel {
   public readonly zoneID: ZoneID;
+  /** The zone this tunnel is physically parented under, i.e. the zone it's the *exit* of. */
+  public readonly homeZoneID: ZoneID;
   public readonly requiredQuestID?: QuestID;
   /** Fires whenever a player touches this tunnel's collider, regardless of whether their gate is open. */
   public readonly touchedByPlayer = new Signal<(player: Player) => void>;
@@ -23,6 +25,7 @@ export class ZoneTunnel {
     assert(zoneName !== undefined, `ZoneTunnel @ ${model.GetFullName()} is missing a "ZoneID" attribute`);
 
     this.zoneID = getZoneIDByName(zoneName);
+    this.homeZoneID = getZoneOfInstance(model);
 
     const questName = model.GetAttribute<string>("RequiredQuestID");
     this.requiredQuestID = questName !== undefined ? getQuestIDByName(questName) : undefined;

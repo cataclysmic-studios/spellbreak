@@ -4,7 +4,7 @@ import { hoarcekat } from "../utility/hoarcekat";
 import "../dev";
 
 import { newCharacterData } from "shared/utility/character";
-import { Dialog } from "../components/dialog";
+import { Dialog } from "../components/hud/dialog";
 import { DialogID } from "shared/structs/npc/dialog";
 import { School } from "shared/structs/school";
 

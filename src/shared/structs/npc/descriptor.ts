@@ -14,4 +14,6 @@ export interface NpcDescriptor extends BaseID<NpcID> {
   readonly portrait: string;
   readonly questsGiven: QuestID[];
   readonly zone: ZoneID;
+  /** Where this NPC's model is placed when its zone spawns it in. */
+  readonly spawnCFrame: CFrame;
 }

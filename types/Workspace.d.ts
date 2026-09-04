@@ -1,7 +1,11 @@
 interface Workspace extends WorldRoot {
-  DuelCircleLocations: Folder;
-  DuelCircles: Folder;
-  EnemyPathLoops: Folder;
-  NPCs: Folder;
+  Zones: Folder & {
+    WizardCity: Folder & {
+      TownSquare: ZoneModel;
+      PegasusLane: ZoneModel;
+      HeadmastersOffice: ZoneModel;
+      ShatterbonesTower: ZoneModel;
+    };
+  };
   TargetSelectionStorage: Folder;
 }

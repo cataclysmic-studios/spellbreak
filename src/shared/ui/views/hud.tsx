@@ -7,15 +7,16 @@ import type { DialogID } from "shared/structs/npc/dialog";
 import type { Interactable } from "shared/structs/interactable";
 import type { CharacterData } from "shared/structs/data";
 import type { ActiveDuelState } from "shared/structs/duel";
+import type { ZoneID } from "shared/structs/zone";
 
 import { Container } from "../utility/components/container";
-import { Dialog } from "../components/dialog";
-import { XpBar } from "../components/xp-bar";
+import { Dialog } from "../components/hud/dialog";
+import { XpBar } from "../components/hud/xp-bar";
 import { Spellbook, BookPage } from "../components/spellbook";
-import { BookButton } from "../components/spellbook/book-button";
+import { BookButton } from "../components/hud/book-button";
 import { QuestDescription } from "../components/quest/description";
 import { QuestArrow } from "../components/quest/arrow";
-import { InteractPrompt } from "../components/interact-prompt";
+import { InteractPrompt } from "../components/hud/interact-prompt";
 import { DuelPlanning } from "./duel-planning";
 
 export interface HudProps {
@@ -27,10 +28,11 @@ export interface HudProps {
   /** Set the instant a duel starts (camera easing into the planning pose) - drops the main HUD immediately, ahead of `activeDuel`/`planning` which wait for that transition to finish before showing cards. */
   readonly duelStarted: Source<boolean>;
   readonly activeDuel: Source<Maybe<ActiveDuelState>>;
+  readonly currentZone: Source<Maybe<ZoneID>>;
 }
 
 const UDIM2_ZERO = new UDim2;
-export function HUD({ character, bookOpen, bookPage, activeDialog, activeInteractable, duelStarted, activeDuel }: HudProps): Vide.Node {
+export function HUD({ character, bookOpen, bookPage, activeDialog, activeInteractable, duelStarted, activeDuel, currentZone }: HudProps): Vide.Node {
   const px = usePx();
   const questInfo = () => getSelectedQuestInfo(character());
   const hiddenByDialog = () => activeDialog() === undefined;
@@ -55,7 +57,7 @@ export function HUD({ character, bookOpen, bookPage, activeDialog, activeInterac
       />
       <Dialog character={character} id={activeDialog} />
       <InteractPrompt interactable={activeInteractable} visible={() => activeInteractable() !== undefined && mainUiVisible()} />
-      <QuestArrow info={questInfo} offset={questHelperOffset} visible={showsWithQuest}
+      <QuestArrow info={questInfo} offset={questHelperOffset} visible={showsWithQuest} currentZone={currentZone}
         activated={() => {
           bookPage(BookPage.Quests);
           bookOpen(true);

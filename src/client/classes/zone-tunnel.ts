@@ -6,6 +6,7 @@ import type { CharacterController } from "client/controllers/character";
 const OPEN_OFFSET = new Vector3(0, 9, 0);
 
 export class ZoneTunnel {
+  private readonly gate: BasePart;
   private readonly closedCFrame: CFrame;
   private readonly requiredQuestID?: QuestID;
 
@@ -14,7 +15,9 @@ export class ZoneTunnel {
     private readonly character: CharacterController,
     public readonly model: TunnelModel
   ) {
-    this.closedCFrame = model.gate.CFrame;
+    // Zones are spread far apart with StreamingEnabled on, so `gate` may not have streamed in yet even though `model` has.
+    this.gate = model.WaitForChild("gate") as BasePart;
+    this.closedCFrame = this.gate.CFrame;
 
     const questName = model.GetAttribute<string>("RequiredQuestID");
     this.requiredQuestID = questName !== undefined ? getQuestIDByName(questName) : undefined;
@@ -27,7 +30,7 @@ export class ZoneTunnel {
     if (!this.character.isLoaded()) return;
 
     const open = this.requiredQuestID === undefined || hasCompletedQuest(this.character.getData(), this.requiredQuestID);
-    this.model.gate.CFrame = open ? this.closedCFrame.add(OPEN_OFFSET) : this.closedCFrame;
-    this.model.gate.CanCollide = !open;
+    this.gate.CFrame = open ? this.closedCFrame.add(OPEN_OFFSET) : this.closedCFrame;
+    this.gate.CanCollide = !open;
   }
 }

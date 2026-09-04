@@ -32,6 +32,15 @@ interface TunnelModel extends Model {
   collider: Part;
 }
 
+interface ZoneModel extends Model {
+  DuelCircles: Folder;
+  DuelCircleLocations: Folder;
+  EnemyPathLoops: Folder;
+  NPCs: Folder;
+  /** Where players land when they teleport into this zone directly (e.g. via console command), separate from the ZoneTunnel entrances. */
+  Spawn: BasePart;
+}
+
 interface EnemyModel extends Model, WithAnimationController {
   collider: Part;
 }

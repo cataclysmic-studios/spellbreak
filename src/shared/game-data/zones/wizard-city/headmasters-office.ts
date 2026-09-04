@@ -4,6 +4,5 @@ export = {
   id: ZoneID.HeadmastersOffice,
   name: "Headmaster's Office",
   world: World.WizardCity,
-  parent: ZoneID.TownSquare,
-  exits: new Map()
+  parent: ZoneID.TownSquare
 } satisfies ZoneDescriptor;

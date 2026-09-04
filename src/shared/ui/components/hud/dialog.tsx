@@ -2,19 +2,19 @@ import Vide, { derive, Show, source, Source } from "@rbxts/vide";
 import type { BaseID } from "@rbxts/id";
 
 import { Message, messaging } from "shared/messaging";
-import { anchorPoints, positions } from "../utility/positioning";
+import { anchorPoints, positions } from "../../utility/positioning";
 import { getNpcByID } from "shared/utility/npc";
 import { getDialogByID } from "shared/utility/dialog";
 import { getFirstCompletableTalkGoal, getQuestByID, hasQuest } from "shared/utility/quests";
-import { usePx } from "../hooks/use-px";
-import { palette } from "../palette";
+import { usePx } from "../../hooks/use-px";
+import { palette } from "../../palette";
 import type { CharacterData } from "shared/structs/data";
 import type { DialogDescriptor, DialogID } from "shared/structs/npc/dialog";
 
-import { WizText } from "./wiz-text";
-import { WizButton } from "./wiz-button";
-import { PromptPanel } from "./prompt-panel";
-import { QuestFrame } from "./quest/frame";
+import { WizText } from "../wiz-text";
+import { WizButton } from "../wiz-button";
+import { PromptPanel } from "../prompt-panel";
+import { QuestFrame } from "../quest/frame";
 
 interface DialogProps extends BaseID<Source<Maybe<DialogID>>> {
   readonly character: Source<CharacterData>;

@@ -6,6 +6,7 @@ import type { PetReferenceData } from "./items/gear/pet";
 import type { GearReference } from "./reference/gear";
 import type { SpellReference } from "./reference/spell";
 import type { QuestID } from "../quests";
+import type { ZoneID } from "../zone";
 
 export interface EquippedGearData {
   readonly [GearCategory.Hat]?: number;
@@ -54,6 +55,7 @@ export interface CharacterData {
   readonly backpack: BackpackData;
   readonly stats: CharacterStats;
   readonly lastLocation: CharacterLocation;
+  readonly currentZone: ZoneID;
 }
 
 export interface PlayerData {

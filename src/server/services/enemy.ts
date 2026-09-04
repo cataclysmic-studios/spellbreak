@@ -1,16 +1,25 @@
 import { Service, type OnTick } from "@flamework/core";
-import { Workspace as World } from "@rbxts/services";
 import { getChildrenOfType } from "@rbxts/instance-utility";
 
 import { EnemyPathLoop } from "server/classes/enemy-path-loop";
+import { getZoneModel } from "shared/utility/zone";
+import { ALL_ZONE_IDS } from "shared/structs/zone";
 import type { Enemy } from "server/classes/enemy";
 
 import type { DuelService } from "./duel";
 
+function collectPathLoops(): EnemyPathLoop[] {
+  const loops: EnemyPathLoop[] = [];
+  for (const zoneID of ALL_ZONE_IDS)
+    for (const model of getChildrenOfType(getZoneModel(zoneID).EnemyPathLoops, "Model"))
+      loops.push(new EnemyPathLoop(model));
+
+  return loops;
+}
+
 @Service()
 export class EnemyService implements OnTick {
-  private readonly pathLoops = getChildrenOfType(World.WaitForChild("EnemyPathLoops"), "Model")
-    .map(model => new EnemyPathLoop(model));
+  private readonly pathLoops = collectPathLoops();
 
   public constructor(
     private readonly duel: DuelService

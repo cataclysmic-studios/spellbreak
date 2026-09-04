@@ -4,6 +4,5 @@ export = {
   id: ZoneID.ShatterbonesTower,
   name: "Shatterbones' Tower",
   world: World.WizardCity,
-  parent: ZoneID.PegasusLane,
-  exits: new Map()
+  parent: ZoneID.PegasusLane
 } satisfies ZoneDescriptor;

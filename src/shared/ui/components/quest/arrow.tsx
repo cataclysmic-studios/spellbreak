@@ -1,12 +1,13 @@
 import { Players, RunService, Workspace as World } from "@rbxts/services";
 import { useEventListener } from "@rbxts/pretty-vide-utils";
-import Vide, { cleanup, source } from "@rbxts/vide";
+import Vide, { cleanup, source, type Source } from "@rbxts/vide";
 
 import { usePx } from "../../hooks/use-px";
 import { anchorPoints, positions } from "../../utility/positioning";;
 import { palette } from "shared/ui/palette";
 import { getGoalTargetPosition, getQuestByID } from "shared/utility/quests";
 import { assets, XZ } from "shared/constants";
+import type { ZoneID } from "shared/structs/zone";
 import type { QuestHelperProps } from "./description";
 
 import { WizText } from "../wiz-text";
@@ -21,10 +22,11 @@ const FADE_DISTANCE = 6;
 const STUDS_TO_METERS = 25 / 7;
 
 interface QuestArrowProps extends QuestHelperProps {
+  readonly currentZone: Source<Maybe<ZoneID>>;
   readonly activated?: () => void;
 }
 
-export function QuestArrow({ info, offset, visible, activated }: QuestArrowProps): Vide.Node {
+export function QuestArrow({ info, offset, visible, currentZone, activated }: QuestArrowProps): Vide.Node {
   const px = usePx();
   const hovered = source(false);
   const transparency = source(0);
@@ -56,8 +58,8 @@ export function QuestArrow({ info, offset, visible, activated }: QuestArrowProps
 
     const quest = getQuestByID(questInfo.questID);
     const goal = quest.goals[questInfo.goalIndex];
-    const goalPosition = getGoalTargetPosition(goal);
     const rootPosition = root.Position;
+    const goalPosition = getGoalTargetPosition(goal, rootPosition, currentZone());
     const difference = rootPosition.sub(goalPosition).mul(XZ);
     const distance = difference.Magnitude;
     updateTransparencyAndText(distance);

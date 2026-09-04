@@ -7,11 +7,13 @@ import { messaging, Message, type MessageData } from "shared/messaging";
 import { OnServerMessage } from "shared/meta";
 import { CameraPoseKind } from "shared/structs/camera";
 import { getClosestDuelCircleLocation, getShuffledHand, playCircleIdleAnimation, playCircleSpawnAnimation } from "shared/utility/duel";
+import { getZoneModel } from "shared/utility/zone";
 import { ActiveDuel } from "server/classes/duel";
 import Log from "shared/log";
 
 import type { DatabaseService } from "./database";
 import type { EnemyService } from "./enemy";
+import type { ZoneService } from "./zone";
 import type { Enemy } from "server/classes/enemy";
 
 const log = Log.scoped("duel service");
@@ -24,7 +26,8 @@ export class DuelService {
   private readonly duelsByEnemy = new Map<Enemy, ActiveDuel>();
 
   public constructor(
-    private readonly database: DatabaseService
+    private readonly database: DatabaseService,
+    private readonly zone: ZoneService
   ) { }
 
   /**
@@ -60,7 +63,7 @@ export class DuelService {
       return;
     }
 
-    const circle = this.placeDuelCircle(character, enemy);
+    const circle = this.placeDuelCircle(player, character, enemy);
     playCircleSpawnAnimation(circle);
     playCircleIdleAnimation(circle);
 
@@ -189,13 +192,14 @@ export class DuelService {
    * so a plain midpoint would place the circle inside the player instead of out in front of
    * them, and `collider.Position` sits at the player's center of mass rather than ground level.
    */
-  private placeDuelCircle(character: CharacterModel, enemy: Enemy): DuelCircleModel {
+  private placeDuelCircle(player: Player, character: CharacterModel, enemy: Enemy): DuelCircleModel {
     const circle = assets.duel.circle.Clone();
     const playerPosition = character.collider.Position;
     const enemyPosition = enemy.root.Position;
     const midpoint = playerPosition.Lerp(enemyPosition, 0.5);
+    const zoneID = this.zone.getCurrentZone(player);
 
-    const location = getClosestDuelCircleLocation(midpoint);
+    const location = getClosestDuelCircleLocation(zoneID, midpoint);
     const desiredRootCFrame = location?.CFrame ?? this.fallbackCircleCFrame(character, enemy);
 
     // Move the whole model by the same delta needed to bring `Root` to its target CFrame,
@@ -203,7 +207,7 @@ export class DuelService {
     // may not be its configured pivot.
     const delta = desiredRootCFrame.mul(circle.Root.CFrame.Inverse());
     circle.PivotTo(delta.mul(circle.GetPivot()));
-    circle.Parent = World.DuelCircles;
+    circle.Parent = getZoneModel(zoneID).DuelCircles;
 
     return circle;
   }

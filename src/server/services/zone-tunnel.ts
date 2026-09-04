@@ -10,6 +10,8 @@ import type { ZoneService } from "./zone";
 
 const log = Log.scoped("zone tunnel service");
 const TAG = "ZoneTunnel";
+/** How far in front of the destination tunnel's collider (along its facing direction) to land the player, so they don't spawn inside the trigger and immediately bounce back. */
+const ARRIVAL_OFFSET = 10;
 
 @Service()
 export class ZoneTunnelService {
@@ -30,6 +32,10 @@ export class ZoneTunnelService {
     if (tunnel.requiredQuestID !== undefined && !hasCompletedQuest(this.database.getCharacter(player), tunnel.requiredQuestID))
       return;
 
-    this.zone.transferToZone(player, tunnel.zoneID);
+    const destinationTunnel = this.tunnels.find(other => other.homeZoneID === tunnel.zoneID && other.zoneID === tunnel.homeZoneID);
+    assert(destinationTunnel !== undefined, `no return ZoneTunnel found from zone ${tunnel.zoneID} back to zone ${tunnel.homeZoneID}`);
+
+    const arrival = destinationTunnel.model.collider.CFrame.mul(new CFrame(0, 0, -ARRIVAL_OFFSET));
+    this.zone.transferToZone(player, tunnel.zoneID, arrival);
   }
 }

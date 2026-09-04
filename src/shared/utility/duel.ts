@@ -9,6 +9,8 @@ import { SpellTargetKind } from "shared/structs/spell";
 import type { DeckData, DeckLinkedData } from "shared/structs/data/items/gear/deck";
 import type { CharacterData } from "shared/structs/data";
 import type { SpellReferenceData } from "shared/structs/spell";
+import type { ZoneID } from "shared/structs/zone";
+import { getZoneModel } from "./zone";
 import { getEquippedGear } from "./data";
 import Log from "shared/log";
 
@@ -23,9 +25,9 @@ export function getDuelCirclePositionPart(positions: DuelCirclePositions, positi
   }
 }
 
-/** The `Workspace.DuelCircleLocations` marker closest to `position`, or `undefined` if none are placed yet. */
-export function getClosestDuelCircleLocation(position: Vector3): Maybe<BasePart> {
-  const locations = getChildrenOfType(World.WaitForChild("DuelCircleLocations") as Folder, "BasePart");
+/** The `zoneID` zone's `DuelCircleLocations` marker closest to `position`, or `undefined` if none are placed yet. */
+export function getClosestDuelCircleLocation(zoneID: ZoneID, position: Vector3): Maybe<BasePart> {
+  const locations = getChildrenOfType(getZoneModel(zoneID).DuelCircleLocations, "BasePart");
   let closest: Maybe<BasePart>;
   let closestDistance = math.huge;
 

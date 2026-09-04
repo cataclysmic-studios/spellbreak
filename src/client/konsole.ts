@@ -1,3 +1,3 @@
 import Konsole = require("@kyrorblx/konsole");
 
-Konsole.show();
+Konsole.setActivationKeys([Enum.KeyCode.Backquote]);

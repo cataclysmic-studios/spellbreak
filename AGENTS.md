@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+`AGENTS.md` in this repo is a separate physical file with identical content (not a symlink) — when editing this file, apply the same edit to `AGENTS.md` too.
+
 ## Project
 
 Spellbreak — a Wizard101-style Roblox game, written in roblox-ts (TypeScript compiled to Luau) on top of Flamework (DI/services) and Vide (reactive UI).
@@ -52,8 +54,14 @@ When debugging a runtime error reported from Roblox Studio, the line numbers ref
 
 ## Style
 
-Avoid comments as much as possible. Don't explain what code does or restate types/props in a comment — well-named identifiers should carry that. Only write one when the WHY is genuinely non-obvious (a hidden constraint, a workaround for a specific bug, behavior that would surprise a reader).
+Avoid comments as much as possible. Don't explain what code does or restate types/props in a comment — well-named identifiers should carry that. Only write one when the WHY is genuinely non-obvious (a hidden constraint, a workaround for a specific bug, behavior that would surprise a reader). This includes doc comments (JSDoc/docblocks) on functions, props, and interfaces — don't add one out of convention just because a function or prop exists; the same non-obvious bar applies, and no comment at all is the default. Avoid inline (trailing, same-line) comments specifically — if a WHY-comment is warranted, put it on its own line above the code it explains, not appended after it.
+
+Fix code smells and structural issues encountered in code you're touching for a prompted change, rather than leaving them or just flagging them — don't defer beneficial structural cleanup to a separate pass. This overrides the general default of not refactoring beyond what a task requires; use judgment on scope (folding in a local cleanup while editing a file is expected, a repo-wide rewrite is not — raise that separately instead).
 
 ## Known gotchas
 
 - `@rbxts/pretty-vide-utils` declares `@rbxts/vide: ^0.5.0` while this project pins `@rbxts/vide: ^0.6.1`; npm previously resolved this by installing a second, nested copy of `@rbxts/vide` inside `pretty-vide-utils`'s own `node_modules`. Because Rojo syncs each copy as a *separate* Luau ModuleScript tree, they hold independent reactive-scope state — hooks compiled against the nested copy (`useCamera`, `useEventListener`, etc.) can't see scopes pushed by the top-level copy's `root()`/`mount()`/`jsx()`, producing `cannot cleanup outside a stable or reactive scope` at runtime. Fixed via a root `"overrides"` entry in `package.json` forcing a single `@rbxts/vide` version tree-wide — keep that override in place, and if a similar error reappears after adding/upgrading a Vide-adjacent dependency, run `npm run check:vide` (walks the physical `node_modules` layout — plain `npm ls @rbxts/vide` still reports two logical entries even when the override has deduped them to one copy on disk, so it isn't a reliable check here) before debugging the UI code itself.
+
+## Commits
+
+Commit subjects follow `<type>: <description>` (`feat`/`fix`/`build` observed so far), lowercase, no trailing period, no scope — see `git log --oneline` for examples.

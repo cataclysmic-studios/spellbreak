@@ -4,7 +4,12 @@
   "main": "index.js",
   "scripts": {
     "build": "rbxtsc",
-    "watch": "rbxtsc -w"
+    "watch": "rbxtsc -w",
+    "list:services": "node scripts/list-services.mjs",
+    "list:stories": "node scripts/list-stories.mjs",
+    "find:content": "node scripts/find-content.mjs",
+    "check:vide": "node scripts/check-vide.mjs",
+    "map-error": "node scripts/map-error.mjs"
   },
   "keywords": [],
   "author": "",

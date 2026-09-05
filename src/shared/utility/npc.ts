@@ -2,7 +2,6 @@ import { getInstanceAtPath } from "@rbxts/flamework-meta-utils";
 
 import { loadDescriptors } from "./data-registry";
 import { getZoneModel } from "./zone";
-import type { QuestID } from "shared/structs/quests";
 import type { ZoneID } from "shared/structs/zone";
 import type { NpcID, NpcDescriptor } from "shared/structs/npc/descriptor";
 
@@ -29,10 +28,6 @@ export function getNpcsInZone(zoneID: ZoneID): NpcDescriptor[] {
       result.push(descriptor);
 
   return result;
-}
-
-export function npcGivesQuest(id: NpcID, questID: QuestID): boolean {
-  return getNpcByID(id).questsGiven.some(id => id === questID);
 }
 
 /** NPCs only exist in the world while their zone is occupied, so this waits on their zone's `NPCs` folder rather than assuming the model is already there. */

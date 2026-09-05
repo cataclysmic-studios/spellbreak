@@ -58,7 +58,7 @@ interface NumericQuestReward extends BaseQuestReward {
   readonly amount: number;
 }
 
-type QuestReward = NumericQuestReward;
+export type QuestReward = NumericQuestReward;
 
 export interface QuestDescriptor extends BaseID<QuestID> {
   readonly name: string;
@@ -66,7 +66,7 @@ export interface QuestDescriptor extends BaseID<QuestID> {
   readonly main: boolean;
   readonly prequests?: QuestID[];
   readonly goals: QuestGoal[];
-  readonly dialog: DialogID;
+  readonly offerDialog: DialogID;
   readonly rewards: QuestReward[];
 }
 

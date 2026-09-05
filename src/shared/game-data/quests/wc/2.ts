@@ -1,7 +1,8 @@
 import { NpcID } from "shared/structs/npc/descriptor";
 import { DialogID } from "shared/structs/npc/dialog";
-import { QuestGoalAction, QuestID, QuestRewardKind, type QuestDescriptor } from "shared/structs/quests";
+import { QuestID, type QuestDescriptor } from "shared/structs/quests";
 import { ZoneID } from "shared/structs/zone";
+import { talkGoal, exploreGoal, goldReward, xpReward } from "shared/utility/quest-builders";
 
 export = {
   id: QuestID.WC_2,
@@ -9,25 +10,13 @@ export = {
   requiredLevel: 0,
   main: true,
   prequests: [QuestID.WC_1],
-  dialog: DialogID.Wc2_NewSaviorIntro,
+  offerDialog: DialogID.Wc2_NewSaviorIntro,
   goals: [
-    {
-      action: QuestGoalAction.Explore,
-      target: ZoneID.PegasusLane
-    },
-    {
-      action: QuestGoalAction.Talk,
-      target: NpcID.CorporalVance,
-      completionDialog: DialogID.Wc2_VanceReport
-    },
+    exploreGoal(ZoneID.PegasusLane),
+    talkGoal(NpcID.CorporalVance, DialogID.Wc2_VanceReport)
   ],
   rewards: [
-    {
-      kind: QuestRewardKind.Gold,
-      amount: 5
-    }, {
-      kind: QuestRewardKind.XP,
-      amount: 15
-    }
+    goldReward(5),
+    xpReward(15)
   ]
 } satisfies QuestDescriptor;

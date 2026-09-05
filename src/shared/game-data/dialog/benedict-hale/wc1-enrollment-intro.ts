@@ -1,11 +1,9 @@
 import { NpcID } from "shared/structs/npc/descriptor";
-import { QuestID } from "shared/structs/quests";
 import { type DialogDescriptor, DialogID } from "shared/structs/npc/dialog";
 
 export = {
   id: DialogID.Wc1_EnrollmentIntro,
   speaker: NpcID.HeadmasterHale,
-  givesQuest: QuestID.WC_1,
   paragraphs: [
     "Wizard, the situation in Pegasus Lane has grown beyond rumor and into consequence. Whatever force has taken root there is spreading fear faster than the city guard can contain it.",
 

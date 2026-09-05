@@ -1,11 +1,9 @@
 import { NpcID } from "shared/structs/npc/descriptor";
-import { QuestID } from "shared/structs/quests";
 import { type DialogDescriptor, DialogID } from "shared/structs/npc/dialog";
 
 export = {
   id: DialogID.Wc3_LaneWatch,
-  speaker: NpcID.PrivatePike,
-  givesQuest: QuestID.WC_3,
+  speaker: NpcID.CorporalVance,
   paragraphs: [
     "So the lane didn't take you. Small mercy. But don't mistake a quiet street for an empty one—Corporal Vance still walks patrol somewhere past the gate, and he'll have seen more than I have from out here.",
 

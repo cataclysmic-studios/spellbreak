@@ -5,7 +5,7 @@ import { Message, messaging } from "shared/messaging";
 import { anchorPoints, positions } from "../../utility/positioning";
 import { getNpcByID } from "shared/utility/npc";
 import { getDialogByID } from "shared/utility/dialog";
-import { getFirstCompletableTalkGoal, getQuestByID, hasQuest } from "shared/utility/quests";
+import { getFirstCompletableTalkGoal, getQuestByID, getQuestGivenByDialog, hasQuest } from "shared/utility/quests";
 import { usePx } from "../../hooks/use-px";
 import { palette } from "../../palette";
 import type { CharacterData } from "shared/structs/data";
@@ -50,7 +50,10 @@ export function Dialog({ id, character }: DialogProps): Vide.Node {
     return dialog.paragraphs[paragraphIndex()()];
   }
   const isOnLastParagraph = (dialog: DialogDescriptor) => paragraphIndex()() + 1 === dialog.paragraphs.size();
-  const canAcceptQuest = (dialog: DialogDescriptor) => dialog.givesQuest !== undefined && !hasQuest(character(), dialog.givesQuest);
+  const canAcceptQuest = (dialog: DialogDescriptor) => {
+    const id = getQuestGivenByDialog(dialog.id);
+    return id !== undefined && !hasQuest(character(), id);
+  }
   const advanceButtonText = () => {
     const dialog = getDialog();
     if (!dialog) return "";
@@ -65,9 +68,10 @@ export function Dialog({ id, character }: DialogProps): Vide.Node {
     const dialog = getDialog();
     if (!dialog) return false;
 
+    const id = getQuestGivenByDialog(dialog.id);
     return isOnLastParagraph(dialog)
-      && dialog.givesQuest !== undefined
-      && !getQuestByID(dialog.givesQuest).main;
+      && id !== undefined
+      && !getQuestByID(id).main;
   }
   const advance = () => {
     const dialog = getDialog();
@@ -82,7 +86,7 @@ export function Dialog({ id, character }: DialogProps): Vide.Node {
         messaging.server.emit(Message.Quest_CompleteGoal, { id, goalIndex });
       } else if (canAcceptQuest(dialog))
         messaging.server.emit(Message.Quest_PickUp, {
-          id: dialog.givesQuest!,
+          id: getQuestGivenByDialog(dialog.id)!,
           npcID: dialog.speaker,
         });
     }
@@ -94,7 +98,7 @@ export function Dialog({ id, character }: DialogProps): Vide.Node {
     const dialog = getDialog();
     if (!dialog) return false;
 
-    return dialog.givesQuest !== undefined && isOnLastParagraph(dialog);
+    return getQuestGivenByDialog(dialog.id) !== undefined && isOnLastParagraph(dialog);
   };
 
   const rightPad = 0.08;
@@ -116,7 +120,7 @@ export function Dialog({ id, character }: DialogProps): Vide.Node {
             anchorPoint={anchorPoints.topRight}
             position={positions.topRight.sub(UDim2.fromScale(rightPad / 6, 1.4))}
             size={UDim2.fromScale(1.36, 1.36)}
-            info={{ questID: getDialog()!.givesQuest!, goalIndex: 0 }}
+            info={{ questID: getQuestGivenByDialog(getDialog()!.id)!, goalIndex: 0 }}
           />
         )}
       </Show>

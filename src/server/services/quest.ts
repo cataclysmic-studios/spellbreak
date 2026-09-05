@@ -3,8 +3,7 @@ import Sift from "@rbxts/sift";
 
 import { Message, type MessageData } from "shared/messaging";
 import { OnServerMessage } from "shared/meta";
-import { npcGivesQuest } from "shared/utility/npc";
-import { canReceiveQuest, getActiveQuestIDs, getCurrentGoalIndex, getQuestByID, hasQuest } from "shared/utility/quests";
+import { canReceiveQuest, getActiveQuestIDs, getCurrentGoalIndex, getQuestByID, hasQuest, npcGivesQuest } from "shared/utility/quests";
 import { QuestGoalAction, type QuestID } from "shared/structs/quests";
 import type { ZoneID } from "shared/structs/zone";
 import Log from "shared/log";
@@ -25,7 +24,7 @@ export class QuestService {
     const character = this.database.getCharacter(player);
     if (!canReceiveQuest(character, id)) return;
     if (!npcGivesQuest(npcID, id))
-      return log.warn(`Cannot pick up quest ${id}: NPC ${player} does not give this quest`);
+      return log.warn(`Cannot pick up quest ${id}: NPC ${npcID} does not give this quest`);
 
     log.info(`${player} picked up quest ${id} from NPC ${npcID}`);
     if (this.checkCompletion(player, id, 0)) return; // some quests can be picked up and immediately completed w/o doing anything

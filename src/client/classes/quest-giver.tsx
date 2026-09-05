@@ -1,7 +1,7 @@
 import Vide, { source } from "@rbxts/vide";
 
 import { getNpcByID } from "shared/utility/npc";
-import { canReceiveQuest, getActiveQuestIDs, getFirstCompletableTalkGoal, getQuestByID, hasQuest, canGiveNewQuest, hasActiveQuestFrom } from "shared/utility/quests";
+import { canReceiveQuest, getActiveQuestIDs, getFirstCompletableTalkGoal, getQuestByID, getQuestsGivenBy, hasQuest, canGiveNewQuest, hasActiveQuestFrom } from "shared/utility/quests";
 import { character } from "client/constants";
 import { nametagColors } from "shared/constants";
 import { NpcID, type NpcDescriptor } from "shared/structs/npc/descriptor";
@@ -51,16 +51,17 @@ export class QuestGiver<ModelShape extends Model = NpcModel> {
   }
 
   public interact(character: CharacterData): Maybe<DialogID> {
-    const {descriptor} = this;
-    const ids = [...getActiveQuestIDs(character), ...descriptor.questsGiven];
+    const { descriptor } = this;
+    const questsGiven = getQuestsGivenBy(descriptor.id);
+    const ids = [...getActiveQuestIDs(character), ...questsGiven];
     const result = getFirstCompletableTalkGoal(character, descriptor.id, ids);
     if (result !== undefined)
       return result.goal.completionDialog;
 
-    for (const id of descriptor.questsGiven) {
+    for (const id of questsGiven) {
       const givenQuest = getQuestByID(id);
       if (canReceiveQuest(character, givenQuest) || hasQuest(character, givenQuest))
-        return givenQuest.dialog;
+        return givenQuest.offerDialog;
     }
 
     return;

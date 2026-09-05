@@ -1,6 +1,8 @@
+import { NpcID } from "shared/structs/npc/descriptor";
 import { DialogID } from "shared/structs/npc/dialog";
-import { QuestGoalAction, QuestID, QuestRewardKind, type QuestDescriptor } from "shared/structs/quests";
+import { QuestID, type QuestDescriptor } from "shared/structs/quests";
 import { EnemyID } from "shared/structs/enemy/descriptor";
+import { talkGoal, defeatGoal, goldReward, xpReward } from "shared/utility/quest-builders";
 
 export = {
   id: QuestID.WC_4,
@@ -8,20 +10,13 @@ export = {
   requiredLevel: 0,
   main: true,
   prequests: [QuestID.WC_3],
-  dialog: DialogID.Wc4_MiriamsPlea,
+  offerDialog: DialogID.Wc4_MiriamsRequest,
   goals: [
-    {
-      action: QuestGoalAction.Defeat,
-      target: EnemyID.DarkWizard
-    }
+    defeatGoal(EnemyID.DarkWizard),
+    talkGoal(NpcID.OldMiriam, DialogID.Wc4_MiriamsPlea)
   ],
   rewards: [
-    {
-      kind: QuestRewardKind.Gold,
-      amount: 10
-    }, {
-      kind: QuestRewardKind.XP,
-      amount: 25
-    }
+    goldReward(10),
+    xpReward(25)
   ]
 } satisfies QuestDescriptor;

@@ -1,11 +1,9 @@
 import { NpcID } from "shared/structs/npc/descriptor";
 import { type DialogDescriptor, DialogID } from "shared/structs/npc/dialog";
-import { QuestID } from "shared/structs/quests";
 
 export = {
   id: DialogID.Wc2_NewSaviorIntro,
   speaker: NpcID.PrivatePike,
-  givesQuest: QuestID.WC_2,
   paragraphs: [
     "I won't pretend I'm not afraid. The sounds coming from the lane at night—scraping stone, whispers where there shouldn't be any—no guard should face that alone, and the others won't step inside.",
 

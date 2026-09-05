@@ -3,15 +3,48 @@ import Object from "@rbxts/object-utils";
 
 import { loadDescriptors } from "./data-registry";
 import { getNpcByID, getNpcModelByID } from "./npc";
+import { getDialogByID } from "./dialog";
 import { getEnemyByID } from "./enemy";
 import { getZoneByID, getNearestTunnelPosition } from "./zone";
 import { QuestGoalAction, QuestID, type TalkQuestGoal, type QuestDescriptor, type QuestGoal, type QuestInfo } from "shared/structs/quests";
 import type { CharacterData } from "shared/structs/data";
 import type { NpcDescriptor, NpcID } from "shared/structs/npc/descriptor";
+import type { DialogID } from "shared/structs/npc/dialog";
 import type { ZoneID } from "shared/structs/zone";
 
 const questsFolder = getInstanceAtPath("src/shared/game-data/quests") as Folder;
 const allQuests = loadDescriptors<QuestID, QuestDescriptor>(questsFolder, "quest");
+
+/** Which NPC's `offerDialog` starts each quest - derived once so nothing has to declare it twice (see `shared/structs/npc/dialog.ts`). */
+const questsGivenByNpc = new Map<NpcID, QuestID[]>();
+/** Which quest (if any) a dialog starts, keyed by that quest's `offerDialog`. */
+const questGivenByDialog = new Map<DialogID, QuestID>();
+
+for (const [id, quest] of allQuests) {
+  const giver = getDialogByID(quest.offerDialog).speaker;
+  questsGivenByNpc.set(giver, [...(questsGivenByNpc.get(giver) ?? []), id]);
+  questGivenByDialog.set(quest.offerDialog, id);
+
+  for (const goal of quest.goals) {
+    if (goal.action !== QuestGoalAction.Talk) continue;
+    assert(
+      getDialogByID(goal.completionDialog).speaker === goal.target,
+      `quest ${id}'s completion dialog for its Talk goal doesn't speak for the NPC it targets`
+    );
+  }
+}
+
+export function getQuestsGivenBy(npcID: NpcID): QuestID[] {
+  return questsGivenByNpc.get(npcID) ?? [];
+}
+
+export function getQuestGivenByDialog(dialogID: DialogID): Maybe<QuestID> {
+  return questGivenByDialog.get(dialogID);
+}
+
+export function npcGivesQuest(npcID: NpcID, questID: QuestID): boolean {
+  return getQuestsGivenBy(npcID).some(id => id === questID);
+}
 
 export function getAllQuests(): Map<QuestID, QuestDescriptor> {
   return allQuests;
@@ -97,12 +130,12 @@ export function hasPrequests(quest: QuestDescriptor): quest is QuestDescriptor &
   return quest.prequests !== undefined && quest.prequests.size() > 0;
 }
 
-export function canGiveNewQuest(character: CharacterData, { questsGiven }: NpcDescriptor): boolean {
-  return questsGiven.some(quest => canReceiveQuest(character, quest));
+export function canGiveNewQuest(character: CharacterData, { id }: NpcDescriptor): boolean {
+  return getQuestsGivenBy(id).some(quest => canReceiveQuest(character, quest));
 }
 
-export function hasActiveQuestFrom(character: CharacterData, { questsGiven }: NpcDescriptor): boolean {
-  return questsGiven.some(quest => hasQuest(character, quest));
+export function hasActiveQuestFrom(character: CharacterData, { id }: NpcDescriptor): boolean {
+  return getQuestsGivenBy(id).some(quest => hasQuest(character, quest));
 }
 
 export function getGoalTargetName({ action, target }: QuestGoal): string {

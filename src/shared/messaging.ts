@@ -2,7 +2,10 @@ import { MessageEmitter, type MiddlewareContext } from "@rbxts/tether";
 import type { Packed, u8 } from "@rbxts/serio";
 
 import { fixNumericKeys } from "./utility/data";
-import type { CompleteGoalPacket, DuelChoiceMadePacket, DuelStartPacket, PickUpQuestPacket, TransitionPosePacket } from "./structs/packets";
+import type {
+  CompleteGoalPacket, DuelCastResolvedPacket, DuelChoiceMadePacket, DuelEndedPacket,
+  DuelNextRoundPacket, DuelSideboardDrawnPacket, DuelStartPacket, PickUpQuestPacket, TransitionPosePacket
+} from "./structs/packets";
 import type { PlayerDataSchema, Diff } from "./structs/data/serialization";
 import type { QuestID } from "./structs/quests";
 import Log from "./log";
@@ -24,6 +27,10 @@ export const enum Message {
   Dehydrate_NPCs,
   Duel_Start,
   Duel_BeginCasting,
+  Duel_CastResolved,
+  Duel_NextRound,
+  Duel_Ended,
+  Duel_SideboardDrawn,
   Zone_Transferring,
   Zone_Entered,
 
@@ -32,6 +39,7 @@ export const enum Message {
   Quest_CompleteGoal,
   Quest_Select,
   Duel_ChoiceMade,
+  Duel_DrawSideboard,
   Client_Ready,
 }
 
@@ -44,11 +52,16 @@ export interface MessageData {
   [Message.Dehydrate_NPCs]: Set<u8>;
   [Message.Duel_Start]: DuelStartPacket;
   [Message.Duel_BeginCasting]: u8; // duel id
+  [Message.Duel_CastResolved]: DuelCastResolvedPacket;
+  [Message.Duel_NextRound]: DuelNextRoundPacket;
+  [Message.Duel_Ended]: DuelEndedPacket;
+  [Message.Duel_SideboardDrawn]: DuelSideboardDrawnPacket;
   [Message.Zone_Transferring]: u8; // destination zone id
   [Message.Zone_Entered]: u8; // the player's new current zone id
   [Message.Quest_PickUp]: PickUpQuestPacket;
   [Message.Quest_CompleteGoal]: CompleteGoalPacket;
   [Message.Quest_Select]: QuestID;
   [Message.Duel_ChoiceMade]: DuelChoiceMadePacket;
+  [Message.Duel_DrawSideboard]: u8; // duel id
   [Message.Client_Ready]: undefined;
 }

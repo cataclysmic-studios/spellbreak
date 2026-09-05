@@ -8,6 +8,7 @@ import { palette } from "../palette";
 import { Images } from "../utility/images";
 import { anchorPoints, positions } from "../utility/positioning";
 import { messaging, Message } from "shared/messaging";
+import { maxCardsInHand } from "shared/constants";
 import type { ClientDuelInfo } from "shared/structs/duel";
 
 import { Container } from "../utility/components/container";
@@ -33,15 +34,33 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
   const redTimerText = () => timerRemaining() <= RED_TIMER_THRESHOLD;
   const px = usePx();
 
-  const { hand, choosing, selectedCard, chosenSpellReference } = duelInfo.state;
+  const { hand, sideboardCount, choosing, selectedCard, chosenSpellReference, chosenTarget } = duelInfo.state;
   // Passing counts as a choice too - the moment `choosing` drops, whatever the player decided
   // (pass, a no-target spell, or a spell+target) has already been locked into
-  // `chosenSpellReference` (`undefined` for a pass) by the card/pass button that flipped
-  // `choosing`, so just forward it and reset for next time.
+  // `chosenSpellReference`/`chosenTarget` (both `undefined` for a pass) by the card/pass button
+  // that flipped `choosing`, so just forward it, drop the played card from hand, and reset both
+  // for next round.
   effect(() => {
     if (choosing()) return;
-    messaging.server.emit(Message.Duel_ChoiceMade, { id: duelInfo.id, spellReference: chosenSpellReference() });
+
+    const spellReference = chosenSpellReference();
+    const target = chosenTarget();
+    messaging.server.emit(Message.Duel_ChoiceMade, {
+      id: duelInfo.id,
+      spellReference,
+      target: target?.position,
+      targetIsOpponent: target?.isOpponent
+    });
+
+    if (spellReference !== undefined) {
+      const currentHand = hand();
+      const playedIndex = currentHand.findIndex(card => card.spell.reference === spellReference);
+      if (playedIndex !== -1) currentHand.remove(playedIndex);
+      hand(currentHand);
+    }
+
     chosenSpellReference(undefined);
+    chosenTarget(undefined);
   });
   effect(() => {
     const currentTimer = timer();
@@ -93,13 +112,8 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
           <DuelButton text="Draw"
             size={buttonSize}
             position={UDim2.fromScale(0.5, 0.85)}
-            // active={() => deck.canDrawSideboard(hand())}
-            // activated={() => {
-            //   const treasureCard = deck.drawSideboard();
-            //   const currentHand = hand();
-            //   currentHand.unshift(treasureCard);
-            //   hand(currentHand);
-            // }}
+            active={() => hand().size() < maxCardsInHand && sideboardCount() > 0}
+            activated={() => messaging.server.emit(Message.Duel_DrawSideboard, duelInfo.id)}
           />
           <DuelButton text="Flee"
             size={buttonSize}

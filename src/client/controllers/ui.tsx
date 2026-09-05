@@ -113,4 +113,9 @@ export class UIController implements OnStart {
   public hideDuelPlanning(): void {
     this.hudState.activeDuel()?.planning(false);
   }
+
+  public endDuel(): void {
+    this.hudState.duelStarted(false);
+    this.hudState.activeDuel(undefined);
+  }
 }

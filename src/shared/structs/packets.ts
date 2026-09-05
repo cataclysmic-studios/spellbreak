@@ -1,5 +1,5 @@
 import type { BaseID } from "@rbxts/id";
-import type { u8, f24 } from "@rbxts/serio";
+import type { u8, u16, f24 } from "@rbxts/serio";
 
 import type { SpellReferenceData } from "./spell";
 import type { SpellReference } from "./data/reference/spell";
@@ -17,11 +17,43 @@ export interface DuelStartPacket extends BaseID<u8> {
   readonly teamCount: u8;
   readonly pipValue: u8;
   readonly hand: SpellReferenceData[];
+  readonly sideboardCount: u8;
 }
 
-/** `spellReference` is `undefined` for a pass. */
+/** `spellReference` is `undefined` for a pass. `target`/`targetIsOpponent` are only present for a targeted spell. */
 export interface DuelChoiceMadePacket extends BaseID<u8> {
   readonly spellReference?: SpellReference;
+  readonly target?: u8; // DuelCirclePosition
+  readonly targetIsOpponent?: boolean;
+}
+
+export interface DuelCastTargetResult {
+  readonly targetPosition: u8; // DuelCirclePosition
+  readonly targetIsOpponent: boolean;
+  readonly missed: boolean;
+  /** Actual damage dealt - absent for a miss or a non-damaging effect. */
+  readonly damage?: u16;
+}
+
+/** One resolved spell cast from a round - for A3/A4 (turn indicator, spell animations) to eventually animate against. */
+export interface DuelCastResolvedPacket extends BaseID<u8> {
+  readonly casterPosition: u8; // DuelCirclePosition
+  readonly casterIsOpponent: boolean;
+  readonly spellReference: SpellReference;
+  readonly results: DuelCastTargetResult[];
+}
+
+export interface DuelNextRoundPacket extends BaseID<u8> {
+  readonly pipValue: u8;
+}
+
+export interface DuelSideboardDrawnPacket extends BaseID<u8> {
+  readonly spellReference: SpellReference;
+  readonly sideboardRemaining: u8;
+}
+
+export interface DuelEndedPacket extends BaseID<u8> {
+  readonly victory: boolean;
 }
 
 export interface PickUpQuestPacket extends BaseID<u8> {

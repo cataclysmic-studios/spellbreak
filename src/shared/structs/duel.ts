@@ -27,21 +27,28 @@ export interface ClientDuelInfo extends BaseID<number> {
   readonly state: ClientDuelState;
 }
 
+export interface DuelChoiceTarget {
+  readonly position: DuelCirclePosition;
+  readonly isOpponent: boolean;
+}
+
 export interface ClientDuelState {
-  // readonly deck: ClientDuelDeckState;
   readonly hand: Source<SpellCard[]>;
+  readonly sideboardCount: Source<number>;
   readonly choosing: Source<boolean>;
   readonly selectedCard: Source<Maybe<SpellCard>>;
   /** The spell reference locked in once `choosing` drops, `undefined` for a pass. Set by whatever confirms the choice (the Pass button, a no-target spell's card button, or a target pick), then read (and reset) by the `Duel_ChoiceMade` effect in `DuelPlanning`. */
   readonly chosenSpellReference: Source<Maybe<SpellReference>>;
+  /** The target locked in alongside `chosenSpellReference`, `undefined` for a pass or a no-target spell. */
+  readonly chosenTarget: Source<Maybe<DuelChoiceTarget>>;
   readonly pipValue: Source<number>;
   opponentCount: number;
   teamCount: number;
 }
 
-export interface DuelChoice<T extends number = DuelCirclePosition> {
+export interface DuelChoice {
   readonly spellReference: SpellReference;
-  readonly target?: T;
+  readonly target?: DuelCirclePosition;
   readonly targetIsOpponent?: boolean;
 }
 

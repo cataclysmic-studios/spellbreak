@@ -7,6 +7,7 @@ import { DuelCirclePosition } from "shared/structs/duel";
 import { GearCategory } from "shared/structs/data/items/gear";
 import { SpellTargetKind } from "shared/structs/spell";
 import type { DeckData, DeckLinkedData } from "shared/structs/data/items/gear/deck";
+import type { SpellReference } from "shared/structs/data/reference/spell";
 import type { CharacterData } from "shared/structs/data";
 import type { SpellReferenceData } from "shared/structs/spell";
 import type { ZoneID } from "shared/structs/zone";
@@ -128,6 +129,10 @@ export function attachPipPositions(combatant: CombatantModel): typeof assets.due
   return positions;
 }
 
+function getEquippedDeck(character: CharacterData): Maybe<DeckData & DeckLinkedData> {
+  return getEquippedGear<DeckData & DeckLinkedData>(GearCategory.Deck, character);
+}
+
 /**
  * Shuffles `character`'s equipped deck and deals a starting hand from it, capped at
  * `maxCardsInHand`. Returns bare references rather than full `SpellCard`s - `Spell`'s
@@ -136,7 +141,7 @@ export function attachPipPositions(combatant: CombatantModel): typeof assets.due
  * into a `SpellCard` via `getSpellCardFromReferenceData`.
  */
 export function getShuffledHand(character: CharacterData): SpellReferenceData[] {
-  const deck = getEquippedGear<DeckData & DeckLinkedData>(GearCategory.Deck, character);
+  const deck = getEquippedDeck(character);
   if (deck === undefined) return [];
 
   const shuffled = Sift.Array.shuffle(deck.spellReferences);
@@ -145,6 +150,11 @@ export function getShuffledHand(character: CharacterData): SpellReferenceData[] 
     hand.push(shuffled[i]);
 
   return hand;
+}
+
+/** `character`'s equipped deck's sideboard treasure card references, or `[]` if they have no deck equipped. */
+export function getDeckSideboard(character: CharacterData): SpellReference[] {
+  return getEquippedDeck(character)?.sideboardSpellReferences ?? [];
 }
 
 const CIRCLE_FLASH_IN_DURATION = 0.25;

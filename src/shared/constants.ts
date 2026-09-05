@@ -23,6 +23,10 @@ export const duelGatherWindowDuration = 3;
 export const duelCircleSpawnOffset = 12;
 /** Pips every player starts a duel with, before any gear-granted starting-pip bonuses (not implemented yet). */
 export const basePlayerStartingPips = 1;
+/** Pips every combatant gains at the start of each round after the first, flat for every school for now - real per-school/gear pip income is still an open design question. */
+export const duelPipsPerRound = 1;
+/** Seconds to sit on the casting-focus pose once a round's casts have all resolved, before either the next round's planning phase or the duel's end - a placeholder for the real per-cast timing spell animations will eventually drive. */
+export const duelCastResolutionPause = 1.5;
 export const cardAspectRatio = 0.68;
 /**
  * All spell card content (`BaseCardButton`, `CardDescription`) is laid out at

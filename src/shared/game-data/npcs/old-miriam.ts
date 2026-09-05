@@ -4,7 +4,7 @@ import { type NpcDescriptor, NpcID } from "shared/structs/npc/descriptor";
 
 export = {
   id: NpcID.OldMiriam,
-  name: "Old Miriam",
+  name: "Old Miriam Ashgrove",
   title: "Pegasus Lane Resident",
   portrait: Images.Portrait_OldMiriam,
   zone: ZoneID.PegasusLane,

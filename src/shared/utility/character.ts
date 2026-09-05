@@ -15,6 +15,21 @@ export function getRequiredXpForNextLevel(level: number): number {
   return min(floor(base * level * level * growth), hardCap);
 }
 
+/** Adds `amount` XP to `xp`, rolling any levels gained (and their leftover XP) forward. */
+export function applyXp(level: number, xp: number, amount: number): { level: number; xp: number } {
+  let newLevel = level;
+  let newXp = xp + amount;
+
+  let required = getRequiredXpForNextLevel(newLevel);
+  while (newXp >= required) {
+    newXp -= required;
+    newLevel += 1;
+    required = getRequiredXpForNextLevel(newLevel);
+  }
+
+  return { level: newLevel, xp: newXp };
+}
+
 const maxMana = 15;
 const maxEnergy = 40;
 

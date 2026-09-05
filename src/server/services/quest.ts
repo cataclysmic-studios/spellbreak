@@ -4,7 +4,8 @@ import Sift from "@rbxts/sift";
 import { Message, type MessageData } from "shared/messaging";
 import { OnServerMessage } from "shared/meta";
 import { canReceiveQuest, getActiveQuestIDs, getCurrentGoalIndex, getQuestByID, hasQuest, npcGivesQuest } from "shared/utility/quests";
-import { QuestGoalAction, type QuestID } from "shared/structs/quests";
+import { applyXp } from "shared/utility/character";
+import { QuestGoalAction, QuestRewardKind, type QuestID } from "shared/structs/quests";
 import type { ZoneID } from "shared/structs/zone";
 import Log from "shared/log";
 
@@ -84,13 +85,26 @@ export class QuestService {
 
   public async complete(player: Player, id: QuestID): Promise<void> {
     log.info(`${player} completed quest ${id}!`);
-    await this.database.updateCharacter(player, character =>
-      Sift.Dictionary.merge(character, {
+    const { rewards } = getQuestByID(id);
+
+    let goldGained = 0;
+    let xpGained = 0;
+    for (const reward of rewards) {
+      if (reward.kind === QuestRewardKind.Gold) goldGained += reward.amount;
+      else xpGained += reward.amount;
+    }
+
+    await this.database.updateCharacter(player, character => {
+      const { level, xp } = applyXp(character.level, character.xp, xpGained);
+      return Sift.Dictionary.merge(character, {
         selectedQuest: character.selectedQuest === id ? undefined : character.selectedQuest,
         activeQuests: Sift.Dictionary.filter(character.activeQuests, key => key !== id),
-        completedQuests: Sift.Array.push(character.completedQuests, id)
-      })
-    );
+        completedQuests: Sift.Array.push(character.completedQuests, id),
+        gold: character.gold + goldGained,
+        level,
+        xp
+      });
+    });
   }
 
   private checkCompletion(player: Player, id: QuestID, goalIndex: number): boolean {

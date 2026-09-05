@@ -3,7 +3,7 @@ import { type DialogDescriptor, DialogID } from "shared/structs/npc/dialog";
 
 export = {
   id: DialogID.Wc4_MiriamsRequest,
-  speaker: NpcID.OldMiriam,
+  speaker: NpcID.MiriamAshgrove,
   paragraphs: [
     "You're still here. Good—that means you were listening. I've been sitting with what I told you, and I can't keep hiding behind this door while they wander closer every night.",
 

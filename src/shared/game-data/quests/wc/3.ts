@@ -11,7 +11,7 @@ export = {
   prequests: [QuestID.WC_2],
   offerDialog: DialogID.Wc3_LaneWatch,
   goals: [
-    talkGoal(NpcID.OldMiriam, DialogID.Wc3_MiriamTestimony)
+    talkGoal(NpcID.MiriamAshgrove, DialogID.Wc3_MiriamTestimony)
   ],
   rewards: [
     goldReward(5),

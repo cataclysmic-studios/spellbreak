@@ -34,7 +34,7 @@ export const enum Images {
   Portrait_HeadmasterHale = "rbxassetid://131377265144889",
   Portrait_PrivatePike = "rbxassetid://108261292143077",
   Portrait_CorporalVance = "rbxassetid://0",
-  Portrait_OldMiriam = "rbxassetid://0",
+  Portrait_MiriamAshgrove = "rbxassetid://0",
 
   // enemy portraits
   Portrait_DarkWizard = "rbxassetid://137979679635761",

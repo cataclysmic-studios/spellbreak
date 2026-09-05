@@ -3,7 +3,7 @@ import { type DialogDescriptor, DialogID } from "shared/structs/npc/dialog";
 
 export = {
   id: DialogID.Wc3_MiriamTestimony,
-  speaker: NpcID.OldMiriam,
+  speaker: NpcID.MiriamAshgrove,
   paragraphs: [
     "Oh—a wizard, and a young one. Don't linger on my step, dear, not with them about. I've lived on this lane sixty years and I've never once locked my door until now.",
 

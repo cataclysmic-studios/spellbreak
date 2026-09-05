@@ -13,7 +13,7 @@ export = {
   offerDialog: DialogID.Wc4_MiriamsRequest,
   goals: [
     defeatGoal(EnemyID.DarkWizard),
-    talkGoal(NpcID.OldMiriam, DialogID.Wc4_MiriamsPlea)
+    talkGoal(NpcID.MiriamAshgrove, DialogID.Wc4_MiriamsPlea)
   ],
   rewards: [
     goldReward(10),

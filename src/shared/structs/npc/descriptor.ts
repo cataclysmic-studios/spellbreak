@@ -6,7 +6,7 @@ export const enum NpcID {
   HeadmasterHale,
   PrivatePike,
   CorporalVance,
-  OldMiriam
+  MiriamAshgrove
 }
 
 export interface NpcDescriptor extends BaseID<NpcID> {

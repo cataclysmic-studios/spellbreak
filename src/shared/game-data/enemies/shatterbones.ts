@@ -3,10 +3,12 @@ import { ZoneID } from "shared/structs/zone";
 import { EnemyKind } from "shared/structs/enemy/kind";
 import { EnemyClass } from "shared/structs/enemy/class";
 import { DamageModifierKind, EnemyID, type EnemyDescriptor } from "shared/structs/enemy/descriptor";
+import { Images } from "shared/ui/utility/images";
 
 export = {
   id: EnemyID.Shatterbones,
   name: "Shatterbones",
+  portrait: Images.Portrait_Shatterbones,
   zone: ZoneID.ShatterbonesTower,
   health: 280,
   schools: [School.Ice],

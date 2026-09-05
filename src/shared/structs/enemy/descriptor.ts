@@ -21,6 +21,7 @@ export const enum DamageModifierKind {
 export interface BaseEnemyDescriptor extends BaseID<EnemyID> {
   readonly zone: ZoneID;
   readonly name: string;
+  readonly portrait: string;
   readonly health: number;
   readonly schools: School[];
   readonly rank: number;

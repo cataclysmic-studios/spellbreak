@@ -20,6 +20,7 @@ export const ALL_ZONE_IDS: readonly ZoneID[] = [ZoneID.TownSquare, ZoneID.Headma
 export interface ZoneDescriptor extends BaseID<ZoneID> {
   readonly name: string;
   readonly world: World;
+  readonly portrait: string;
   /** The zone this one is nested inside of (e.g. a building interior within a town), if any. */
   readonly parent?: ZoneID;
 }

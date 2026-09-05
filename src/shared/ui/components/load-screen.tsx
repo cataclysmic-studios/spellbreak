@@ -127,10 +127,18 @@ export function LoadScreen({ trigger }: LoadScreenProps): Vide.Node {
     const renderConnection = RunService.RenderStepped.Connect(() => mirrorPose(puppet, page));
     cleanup(renderConnection);
 
-    track.Ended.Once(() => {
+    const hide = () => {
       renderConnection.Disconnect();
       visible(false);
-    });
+    };
+
+    /** `Length` can still read 0 right after `LoadAnimation` while the KeyframeSequence is loading in - scheduling off of it then would hide the screen almost instantly, so only do it once a real duration is known. `Ended` still covers hiding it regardless. */
+    if (track.Length > 0) {
+      const hideThread = task.delay(0.98 * track.Length, hide);
+      cleanup(() => task.cancel(hideThread));
+    }
+    track.Ended.Once(hide);
+
     task.delay(PAGE_FLIP_TIMEOUT, () => visible(false));
     track.Play();
   });

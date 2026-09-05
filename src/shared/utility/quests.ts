@@ -181,9 +181,9 @@ export function getGoalTargetPortrait({ action, target }: QuestGoal): string {
     case QuestGoalAction.Talk:
       return getNpcByID(target).portrait;
     case QuestGoalAction.Explore:
-      return "";
+      return getZoneByID(target).portrait;
     case QuestGoalAction.Defeat:
-      return "";
+      return getEnemyByID(target).portrait;
   }
 }
 

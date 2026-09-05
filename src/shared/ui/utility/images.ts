@@ -30,12 +30,21 @@ export const enum Images {
   Input_X = "rbxassetid://85088521586876",
   Input_LeftClick = "rbxassetid://100792763769033",
 
-  // portraits
+  // npc portraits
   Portrait_HeadmasterHale = "rbxassetid://131377265144889",
   Portrait_PrivatePike = "rbxassetid://108261292143077",
   Portrait_CorporalVance = "rbxassetid://0",
   Portrait_OldMiriam = "rbxassetid://0",
+
+  // enemy portraits
   Portrait_DarkWizard = "rbxassetid://137979679635761",
+  Portrait_Shatterbones = "rbxassetid://0",
+
+  // zone portraits
+  Portrait_TownSquare = "rbxassetid://0",
+  Portrait_HeadmastersOffice = "rbxassetid://0",
+  Portrait_PegasusLane = "rbxassetid://0",
+  Portrait_ShatterbonesTower = "rbxassetid://0",
 
   // spritesheets
   LargeIconSpritesheet = "rbxassetid://16821859312",

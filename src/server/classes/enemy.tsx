@@ -3,7 +3,7 @@ import type { BaseID } from "@rbxts/id";
 import Signal from "@rbxts/lemon-signal";
 import Vide from "@rbxts/vide";
 
-import { assets } from "shared/constants";
+import { assets, XZ } from "shared/constants";
 import type { EnemyDescriptor } from "shared/structs/enemy/descriptor";
 
 import { NamedNPC } from "./named-npc";
@@ -17,6 +17,8 @@ export class Enemy extends NamedNPC<EnemyModel> implements BaseID<number> {
   public readonly id = Enemy.cumulativeID++;
   /** Fires once, the first time a player touches this enemy, with the player who touched it. */
   public readonly touchedByPlayer = new Signal<(player: Player) => void>;
+  /** Set once this enemy's joined a duel - `EnemyPathLoop` stops advancing its patrol while this is true. */
+  public dueling = false;
 
   private moveConnection?: RBXScriptConnection;
 
@@ -30,22 +32,35 @@ export class Enemy extends NamedNPC<EnemyModel> implements BaseID<number> {
     this.registerTouch();
   }
 
-  public moveTo(newPosition: Vector3): void {
+  /** Timed off `os.clock()` elapsed-since-start rather than accumulating `dt` per frame - the previous per-frame `SPEED / dt` step moved far too fast on any low-`dt` frame. */
+  public moveTo(newPosition: Vector3, onCompleted?: () => void): void {
     this.moveConnection?.Disconnect();
 
-    const direction = newPosition.sub(this.root.Position).Unit;
-    const distance = this.root.Position.sub(newPosition).Magnitude;
+    const startPosition = this.root.Position;
+    const offset = newPosition.sub(startPosition);
+    const distance = offset.Magnitude;
+    if (distance < 0.01) {
+      onCompleted?.();
+      return;
+    }
+
+    const facingDirection = offset.mul(XZ);
+    const facing = facingDirection.Magnitude > 0.01
+      ? CFrame.lookAt(Vector3.zero, facingDirection)
+      : this.root.CFrame.sub(startPosition);
+
     const duration = distance / SPEED;
     const startTime = os.clock();
 
-    this.moveConnection = RunService.Heartbeat.Connect(dt => {
-      const elapsed = os.clock() - startTime;
-      if (elapsed >= duration) {
-        this.root.CFrame = new CFrame(newPosition);
-        return this.moveConnection!.Disconnect();
-      }
+    this.moveConnection = RunService.Heartbeat.Connect(() => {
+      const progress = math.clamp((os.clock() - startTime) / duration, 0, 1);
+      this.root.CFrame = new CFrame(startPosition.Lerp(newPosition, progress)).mul(facing);
 
-      this.root.CFrame = this.root.CFrame.add(direction.mul(SPEED / dt));
+      if (progress >= 1) {
+        this.moveConnection!.Disconnect();
+        this.moveConnection = undefined;
+        onCompleted?.();
+      }
     });
   }
 

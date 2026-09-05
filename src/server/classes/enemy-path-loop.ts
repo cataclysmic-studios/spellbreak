@@ -6,6 +6,13 @@ import Log from "shared/log";
 
 const log = Log.scoped("enemy path loop");
 
+interface PatrolState {
+  nodeIndex: number;
+  direction: 1 | -1;
+  moving: boolean;
+  idleUntil: number;
+}
+
 export class EnemyPathLoop {
   public readonly enemies: Enemy[] = [];
 
@@ -13,6 +20,8 @@ export class EnemyPathLoop {
   private readonly nodes: BasePart[];
   private readonly maxEnemies: number;
   private readonly spawnInterval: number;
+  private readonly patrolPauseDuration: number;
+  private readonly patrolStates = new Map<Enemy, PatrolState>();
   private lastSpawn = 0;
   private lastSpawnNode?: BasePart;
 
@@ -20,6 +29,7 @@ export class EnemyPathLoop {
     this.nodes = getChildrenOfType(model, "BasePart");
     this.maxEnemies = model.GetAttribute("MaxEnemies") ?? 6;
     this.spawnInterval = model.GetAttribute("SpawnInterval") ?? 1.5;
+    this.patrolPauseDuration = model.GetAttribute("PatrolPauseDuration") ?? 2;
 
     for (const tag of model.GetTags()) {
       const [enemyName] = tag.match("Spawns%[(.-)%]");
@@ -33,7 +43,25 @@ export class EnemyPathLoop {
   }
 
   public update(dt: number): void {
+    for (const enemy of this.enemies) {
+      if (enemy.dueling) continue;
 
+      const state = this.patrolStates.get(enemy);
+      if (state === undefined || state.moving || os.clock() < state.idleUntil || this.nodes.size() < 2) continue;
+
+      const nextIndex = state.nodeIndex + state.direction;
+      if (nextIndex < 0 || nextIndex >= this.nodes.size()) state.direction *= -1;
+
+      const targetIndex = state.nodeIndex + state.direction;
+      const targetNode = this.nodes[targetIndex];
+
+      state.moving = true;
+      enemy.moveTo(targetNode.Position, () => {
+        state.nodeIndex = targetIndex;
+        state.moving = false;
+        state.idleUntil = os.clock() + this.patrolPauseDuration;
+      });
+    }
   }
 
   public canSpawn(): boolean {
@@ -62,6 +90,17 @@ export class EnemyPathLoop {
     this.enemies.push(enemy);
     this.lastSpawn = os.clock();
     this.lastSpawnNode = spawnNode;
+    this.patrolStates.set(enemy, {
+      nodeIndex: this.nodes.indexOf(spawnNode),
+      direction: math.random() < 0.5 ? 1 : -1,
+      moving: false,
+      idleUntil: os.clock() + this.patrolPauseDuration
+    });
+  }
+
+  /** Call alongside removing `enemy` from `enemies` for good. */
+  public forget(enemy: Enemy): void {
+    this.patrolStates.delete(enemy);
   }
 
   private getRandomNode(): BasePart {

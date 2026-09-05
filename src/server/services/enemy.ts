@@ -58,4 +58,17 @@ export class EnemyService implements OnTick {
   public findEnemyInPathLoopByID(pathLoop: EnemyPathLoop, id: number): Maybe<Enemy> {
     return pathLoop.enemies.find(enemy => enemy.id === id);
   }
+
+  public removeEnemy(enemy: Enemy): void {
+    for (const pathLoop of this.pathLoops) {
+      const index = pathLoop.enemies.indexOf(enemy);
+      if (index === -1) continue;
+
+      pathLoop.enemies.remove(index);
+      pathLoop.forget(enemy);
+      break;
+    }
+
+    enemy.model.Destroy();
+  }
 }

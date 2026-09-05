@@ -1,9 +1,28 @@
 import Vide, { cleanup, effect, source, type Source } from "@rbxts/vide";
+import { RunService, Workspace as World } from "@rbxts/services";
 
 import { assets } from "shared/constants";
 
 /** Ultimate fallback in case the page-flip animation never fires `Ended` - the load screen must never softlock the game. */
 const PAGE_FLIP_TIMEOUT = 5;
+
+/** Far below the map, out of sight - AnimationTracks never advance for a rig parented inside a ViewportFrame, so the page-flip has to actually play out here and get mirrored onto the ViewportFrame's display rig every frame. */
+const PUPPET_CFRAME = new CFrame(0, -500, 0);
+
+function mirrorPose(source: Instance, target: Instance): void {
+  if (source.IsA("Bone") && target.IsA("Bone")) {
+    target.Transform = source.Transform;
+  } else if (source.IsA("Motor6D") && target.IsA("Motor6D")) {
+    target.Transform = source.Transform;
+  }
+
+  for (const child of source.GetChildren()) {
+    const targetChild = target.FindFirstChild(child.Name);
+    if (targetChild !== undefined) {
+      mirrorPose(child, targetChild);
+    }
+  }
+}
 
 interface BoneRestState {
   readonly bone: Bone;
@@ -50,6 +69,15 @@ export function LoadScreen({ trigger }: LoadScreenProps): Vide.Node {
    * axis is scaled, which keeps the page-flip rig from warping.
    */
   const updateAspectRatio = (viewportSize: Vector2) => {
+    /**
+     * Vide fires `*Changed` props synchronously before the instance is parented (see
+     * `apply.luau`), so this first fires with `AbsoluteSize` still `(0, 0)` - dividing by
+     * that produces NaN, which silently no-ops for `BasePart.Size` but permanently corrupts
+     * `Bone.WorldPosition` below. A real `AbsoluteSizeChanged` follows once the ViewportFrame
+     * is actually laid out; skip the bogus zero-size call and let that one apply instead.
+     */
+    if (viewportSize.X <= 0 || viewportSize.Y <= 0) return;
+
     const width = originalHeight * (viewportSize.X / viewportSize.Y);
     const scale = width / originalWidth;
 
@@ -73,14 +101,36 @@ export function LoadScreen({ trigger }: LoadScreenProps): Vide.Node {
     }
 
     visible(true);
-    const [loaded, track] = pcall(() => page.AnimationController.Animator.LoadAnimation(assets.animations.pageFlip));
+
+    const puppet = assets.loadScreenPage.Clone();
+    for (const part of puppet.GetDescendants()) {
+      if (part.IsA("BasePart")) {
+        part.Anchored = true;
+        part.CanCollide = false;
+        part.CanQuery = false;
+        part.CanTouch = false;
+        part.Transparency = 1;
+      }
+    }
+    puppet.PivotTo(PUPPET_CFRAME);
+    puppet.Parent = World;
+    cleanup(puppet);
+
+    const [loaded, track] = pcall(() => puppet.AnimationController.Animator.LoadAnimation(assets.animations.pageFlip));
     if (!loaded) {
       visible(false);
       return;
     }
 
     track.Looped = false;
-    track.Ended.Once(() => visible(false));
+
+    const renderConnection = RunService.RenderStepped.Connect(() => mirrorPose(puppet, page));
+    cleanup(renderConnection);
+
+    track.Ended.Once(() => {
+      renderConnection.Disconnect();
+      visible(false);
+    });
     task.delay(PAGE_FLIP_TIMEOUT, () => visible(false));
     track.Play();
   });

@@ -3,6 +3,7 @@ import Signal from "@rbxts/lemon-signal";
 import Sift from "@rbxts/sift";
 
 import { Message, messaging } from "shared/messaging";
+import { cframeToLocation } from "shared/utility/character";
 import type { ZoneID } from "shared/structs/zone";
 import type { OnPlayerLeave } from "server/hooks/players";
 import Log from "shared/log";
@@ -63,7 +64,7 @@ export class ZoneService implements OnPlayerLeave {
     log.info(`${player} transferred to zone ${zoneID}`);
     messaging.client.emit(player, Message.Zone_Transferring, zoneID);
     this.character.teleportTo(player, destination);
-    this.setCurrentZone(player, zoneID);
+    this.setCurrentZone(player, zoneID, true, destination);
     this.quest.onZoneEntered(player, zoneID);
   }
 
@@ -81,13 +82,23 @@ export class ZoneService implements OnPlayerLeave {
       this.setCurrentZone(player, zoneID, false);
   }
 
-  private setCurrentZone(player: Player, zoneID: ZoneID, persist = true): void {
+  /**
+   * `destination` is only passed for an actual physical transfer (see {@link transferToZone}) so
+   * `lastLocation` gets persisted alongside `currentZone` in the same write - otherwise a save
+   * that ends before the next clean `onPlayerLeave` (e.g. Studio's Stop button) leaves the two
+   * out of sync: `currentZone` points at the new zone but the character reloads at the old
+   * `lastLocation`, which then never streams in for that zone.
+   */
+  private setCurrentZone(player: Player, zoneID: ZoneID, persist = true, destination?: CFrame): void {
     const previousZoneID = this.currentZones.get(player);
     this.currentZones.set(player, zoneID);
     messaging.client.emit(player, Message.Zone_Entered, zoneID);
 
     if (persist)
-      this.database.updateCharacter(player, character => Sift.Dictionary.merge(character, { currentZone: zoneID }));
+      this.database.updateCharacter(player, character => Sift.Dictionary.merge(character, {
+        currentZone: zoneID,
+        ...(destination !== undefined ? { lastLocation: cframeToLocation(destination) } : {})
+      }));
 
     if (previousZoneID !== undefined && previousZoneID !== zoneID)
       this.playerLeftZone.Fire(player, previousZoneID);

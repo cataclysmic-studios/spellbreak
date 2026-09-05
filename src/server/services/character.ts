@@ -17,6 +17,11 @@ export class CharacterService {
     const character = player.Character;
     assert(character !== undefined, `${player} has no character to teleport`);
     character.PivotTo(location);
+    // Zones are spread far apart with StreamingEnabled on, so without this the client's
+    // streaming region is still centered on the old location when callers like ZoneService
+    // immediately act on the new zone (e.g. hydrating NPCs), yielding on content that hasn't
+    // streamed in yet.
+    player.RequestStreamAroundAsync(location.Position);
   }
 
   public load(player: Player, modelName: ExtractKeys<typeof assets.characters, CharacterModel>, location: CFrame): void {
@@ -30,6 +35,10 @@ export class CharacterService {
     character.Parent = World;
     character.PivotTo(location);
     player.Character = character;
+    // Without this the client's streaming region is still centered wherever it defaulted to
+    // (e.g. the baseplate origin) when DatabaseService fires dataLoaded right after this call,
+    // which drives ZoneService into hydrating NPCs for a zone that hasn't streamed in yet.
+    player.RequestStreamAroundAsync(location.Position);
 
     for (const part of getDescendantsOfType(character, "BasePart"))
       part.CollisionGroup = "Character";

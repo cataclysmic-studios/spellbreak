@@ -27,6 +27,7 @@ export = hoarcekat(() => {
         scale={() => 1 + n()}
         layoutOrder={0}
         duelInfo={createMockDuelInfo()}
+        commitChoice={() => { }}
       />
     </Container>
   );

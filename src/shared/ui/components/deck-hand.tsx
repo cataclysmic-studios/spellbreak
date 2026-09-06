@@ -15,10 +15,11 @@ import { Container } from "../utility/components/container";
 import { CardBackground } from "./card/card-background";
 import { DuelCardButton } from "./card/duel-card-button";
 import { WizText } from "./wiz-text";
-import { ClientDuelInfo } from "shared/structs/duel";
+import { ClientDuelInfo, CommitDuelChoice } from "shared/structs/duel";
 
 interface DeckHandProps {
   readonly duelInfo: ClientDuelInfo;
+  readonly commitChoice: CommitDuelChoice;
 }
 
 interface HandCardEntry {
@@ -29,7 +30,7 @@ interface HandCardEntry {
 
 const mouse = Players.LocalPlayer.GetMouse();
 
-export function DeckHand({ duelInfo }: DeckHandProps): Vide.Node {
+export function DeckHand({ duelInfo, commitChoice }: DeckHandProps): Vide.Node {
   const { state: { hand, pipValue } } = duelInfo
   const absolutePosition = source(Vector2.zero);
   const absoluteSize = source(Vector2.zero);
@@ -75,6 +76,7 @@ export function DeckHand({ duelInfo }: DeckHandProps): Vide.Node {
       const cardFrame = <DuelCardButton spellCard={card}
         layoutOrder={i}
         duelInfo={duelInfo}
+        commitChoice={commitChoice}
         scale={targetScale}
         grayscale={() => !canAffordSpellCost(pipValue(), card.spell.cost)}
       /> as Frame;

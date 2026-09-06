@@ -32,6 +32,14 @@ export interface DuelChoiceTarget {
   readonly isOpponent: boolean;
 }
 
+/**
+ * Locks in `spellReference` (and `target`, `undefined` for a no-target spell) as this round's
+ * choice - owned by `DuelPlanning` (the `Show` that unmounts the hand once `choosing` drops lives
+ * there too), not by whichever card button's click ends up calling it, so that unmount never
+ * races the native callback that triggered it.
+ */
+export type CommitDuelChoice = (spellReference: SpellReference, target: Maybe<DuelChoiceTarget>) => void;
+
 export interface ClientDuelState {
   readonly hand: Source<SpellCard[]>;
   readonly sideboardCount: Source<number>;

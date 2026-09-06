@@ -1,5 +1,6 @@
-import Vide, { type Source, Show, effect, source } from "@rbxts/vide";
+import Vide, { type Source, Show, batch, effect, source, untrack } from "@rbxts/vide";
 import { useEventListener } from "@rbxts/pretty-vide-utils";
+import { Players, Workspace as World } from "@rbxts/services";
 import type { Timer } from "@rbxts/timer";
 import { $nameof } from "rbxts-transform-debug";
 
@@ -9,13 +10,17 @@ import { Images } from "../utility/images";
 import { anchorPoints, positions } from "../utility/positioning";
 import { messaging, Message } from "shared/messaging";
 import { maxCardsInHand } from "shared/constants";
-import type { ClientDuelInfo } from "shared/structs/duel";
+import type { ClientDuelInfo, CommitDuelChoice, DuelCirclePosition } from "shared/structs/duel";
+import Log from "shared/log";
 
 import { Container } from "../utility/components/container";
 import { DeckHand } from "../components/deck-hand";
 import { DuelButton } from "../components/duel-button";
 import { WizButton } from "../components/wiz-button";
 import { WizText } from "../components/wiz-text";
+
+const log = Log.scoped("target selection");
+const mouse = Players.LocalPlayer.GetMouse();
 
 interface DuelPlanningProps {
   readonly duelInfo: ClientDuelInfo;
@@ -40,11 +45,25 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
   // `chosenSpellReference`/`chosenTarget` (both `undefined` for a pass) by the card/pass button
   // that flipped `choosing`, so just forward it, drop the played card from hand, and reset both
   // for next round.
+  //
+  // Every read in here is `untrack`ed so this effect depends only on `choosing` - reading any of
+  // these normally would have this same run's writes below invalidate a dependency it just
+  // established, re-running itself. That's not just a double `Duel_ChoiceMade` emit (which is all
+  // it looked like for `chosenSpellReference`/`chosenTarget`, both idempotent once reset to
+  // `undefined`): `hand` is a plain table source, and Vide's source setter never short-circuits a
+  // table write even to the identical reference (see `source.luau`), so `hand(currentHand)` below
+  // always marks `hand` dirty. Reading `hand()` tracked here made this effect its own dependent -
+  // the write re-entered this same effect *before* it reached the `chosenSpellReference(undefined)`
+  // reset a few lines down, so the re-entrant run saw the spell reference still set, removed
+  // nothing new (already removed) but still called `hand(currentHand)` again regardless, and
+  // recursed into itself forever - an unbounded Lua-stack recursion (blowing the stack directly,
+  // or hitting the script timeout first) that also flooded `Duel_ChoiceMade` emits into tether's
+  // send queue, overflowing `unpack()` in its relayer once that queue was finally flushed.
   effect(() => {
     if (choosing()) return;
 
-    const spellReference = chosenSpellReference();
-    const target = chosenTarget();
+    const spellReference = untrack(chosenSpellReference);
+    const target = untrack(chosenTarget);
     messaging.server.emit(Message.Duel_ChoiceMade, {
       id: duelInfo.id,
       spellReference,
@@ -53,14 +72,50 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
     });
 
     if (spellReference !== undefined) {
-      const currentHand = hand();
+      const currentHand = untrack(hand);
       const playedIndex = currentHand.findIndex(card => card.spell.reference === spellReference);
-      if (playedIndex !== -1) currentHand.remove(playedIndex);
-      hand(currentHand);
+      if (playedIndex !== -1) {
+        currentHand.remove(playedIndex);
+        untrack(() => hand(currentHand));
+      }
     }
 
     chosenSpellReference(undefined);
     chosenTarget(undefined);
+  });
+  // Owned here rather than by whichever card button ends up calling it - `choosing(false)`
+  // flips the `Show` below, which unmounts the whole hand (every `DuelCardButton`). `DuelPlanning`
+  // itself isn't inside that `Show`, so committing from here can never race a native card-button
+  // callback tearing down its own component mid-callback (see git history for the script timeout
+  // and Studio crash that caused when this lived on the card buttons instead).
+  const commitChoice: CommitDuelChoice = (spellReference, target) => batch(() => {
+    selectedCard(undefined);
+    chosenSpellReference(spellReference);
+    chosenTarget(target);
+    choosing(false);
+  });
+  // A single listener for the whole hand instead of one per card - every `DuelCardButton` used to
+  // register its own, so one click ran this raycast once per card still in hand (all of them
+  // seeing the same `selectedCard()` until the first one cleared it).
+  useEventListener(mouse.Button1Up, () => {
+    const card = selectedCard();
+    if (card === undefined) return;
+
+    const unitRay = World.CurrentCamera!.ScreenPointToRay(mouse.X, mouse.Y);
+    const raycastParams = new RaycastParams;
+    raycastParams.IncludeInstances = [World.TargetSelectionStorage];
+
+    const result = World.Raycast(unitRay.Origin, unitRay.Direction.mul(200), raycastParams);
+    if (result === undefined) {
+      log.info(`click: raycast against ${World.TargetSelectionStorage.GetFullName()} hit nothing - deselecting`);
+      return selectedCard(undefined);
+    }
+
+    const auraModel = result.Instance.FindFirstAncestorOfClass("Model")!;
+    const position = auraModel.GetAttribute<DuelCirclePosition>("DuelCirclePosition")!;
+    const isOpponent = auraModel.GetAttribute<boolean>("OpposingTeam")!;
+    log.info(`click: hit ${result.Instance.GetFullName()} -> aura ${auraModel.Name} (position=${position}, isOpponent=${isOpponent})`);
+    commitChoice(card.spell.reference, { position, isOpponent });
   });
   effect(() => {
     const currentTimer = timer();
@@ -99,7 +154,7 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
       </textlabel>
       <Show when={choosing}>
         {() => <>
-          <DeckHand duelInfo={duelInfo} />
+          <DeckHand duelInfo={duelInfo} commitChoice={commitChoice} />
           <DuelButton text="Pass"
             size={buttonSize}
             position={UDim2.fromScale(0.25, 0.85)}

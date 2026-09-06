@@ -2,7 +2,7 @@ import Vide, { Derivable, read, source } from "@rbxts/vide";
 
 import { usePx } from "shared/ui/hooks/use-px";
 import { palette } from "../../palette";
-import { Images } from "../../utility/images";
+import { Images, cardArtSpritesheets } from "../../utility/images";
 import { anchorPoints, positions } from "../../utility/positioning";
 import { cardReferenceWidth, cardReferenceHeight } from "shared/constants";
 import { School } from "shared/structs/school";
@@ -27,27 +27,6 @@ interface BaseCardButtonProps {
 }
 
 const SPELL_ART_SIZE = 64;
-const CARD_ART_SPRITESHEETS: { colored: string; grayscale: string; }[] = [
-  {
-    colored: "rbxassetid://89063483535157",
-    grayscale: "rbxassetid://131276102206825"
-  }, {
-    colored: "rbxassetid://72199822054271",
-    grayscale: "rbxassetid://119954144892949"
-  }, {
-    colored: "rbxassetid://91690438885961",
-    grayscale: "rbxassetid://98063103618595"
-  }, {
-    colored: "rbxassetid://94488975783253",
-    grayscale: "rbxassetid://85031341614899"
-  }, {
-    colored: "rbxassetid://102232008786766",
-    grayscale: "rbxassetid://75341543912308"
-  }, {
-    colored: "rbxassetid://78641261208589",
-    grayscale: "rbxassetid://103461797304495"
-  }
-];
 
 const GRAYSCALE_CARD_IMAGES: Record<SpellCardKind, string> = {
   [SpellCardKind.Normal]: Images.SchoolCardBW,
@@ -88,7 +67,7 @@ export function BaseCardButton({ spellCard, layoutOrder, grayscale, selected, ho
         : Images.ItemCard;
 
   const cardImage = () => {
-    const art = CARD_ART_SPRITESHEETS[spellCard.spell.cardArtSpritesheetNumber - 1];
+    const art = cardArtSpritesheets[spellCard.spell.cardArtSpritesheetNumber - 1];
     return read(grayscale) ? art.grayscale : art.colored;
   };
 

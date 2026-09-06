@@ -39,6 +39,10 @@ export function LoadScreen({ trigger }: LoadScreenProps): Vide.Node {
 
   const page = assets.loadScreenPage.Clone();
   const { Page_FrontSide: frontSide, Page_BackSide: backSide } = page;
+
+  /** Spins the whole rig 180° about its own face-normal so the curl originates from the opposite corner - the decal is authored to still read right-side-up under this flip. */
+  page.RootPart.CFrame = page.RootPart.CFrame.mul(CFrame.Angles(0, math.rad(180), 0));
+
   const originalWidth = frontSide.Size.X;
   const originalHeight = frontSide.Size.Z;
   const boneRestStates: BoneRestState[] = [];
@@ -124,21 +128,28 @@ export function LoadScreen({ trigger }: LoadScreenProps): Vide.Node {
 
     track.Looped = false;
 
-    const renderConnection = RunService.RenderStepped.Connect(() => mirrorPose(puppet, page));
-    cleanup(renderConnection);
-
+    let renderConnection: RBXScriptConnection;
     const hide = () => {
       renderConnection.Disconnect();
       visible(false);
     };
 
-    /** `Length` can still read 0 right after `LoadAnimation` while the KeyframeSequence is loading in - scheduling off of it then would hide the screen almost instantly, so only do it once a real duration is known. `Ended` still covers hiding it regardless. */
-    if (track.Length > 0) {
-      const hideThread = task.delay(0.98 * track.Length, hide);
-      cleanup(() => task.cancel(hideThread));
-    }
-    track.Ended.Once(hide);
+    /**
+     * `Length` can read 0 (or an inaccurate placeholder) right after `LoadAnimation` while the
+     * KeyframeSequence is still loading in, so a one-shot delay computed from it once can fire far
+     * too early - or, if `Ended` doesn't land promptly, leave the screen sitting on the reset-to-rest
+     * end pose until the `PAGE_FLIP_TIMEOUT` fallback kicks in. Checking live `TimePosition` against
+     * `Length` every frame self-corrects once the real duration is known and can't miss its window.
+     */
+    renderConnection = RunService.RenderStepped.Connect(() => {
+      mirrorPose(puppet, page);
+      if (track.Length > 0 && track.TimePosition >= track.Length * 0.98) {
+        hide();
+      }
+    });
+    cleanup(renderConnection);
 
+    track.Ended.Once(hide);
     task.delay(PAGE_FLIP_TIMEOUT, () => visible(false));
     track.Play();
   });

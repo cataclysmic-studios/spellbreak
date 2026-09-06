@@ -12,7 +12,9 @@ import type { CharacterService } from "./character";
 import type { DatabaseService } from "./database";
 import type { QuestService } from "./quest";
 
-const log = Log.scoped("zone service");
+const log: ReturnType<typeof Log.scoped> = Log.scoped("zone service");
+/** How long to wait for the client's transfer-cover ack before teleporting anyway - see `waitForTransferCoverReady`. */
+const TRANSFER_COVER_TIMEOUT = 3;
 
 @Service()
 export class ZoneService implements OnPlayerLeave {
@@ -42,7 +44,7 @@ export class ZoneService implements OnPlayerLeave {
 
   public getCurrentZone(player: Player): ZoneID {
     const zoneID = this.currentZones.get(player);
-    assert(zoneID !== undefined, `${player} has no tracked current zone`);
+    log.assert(zoneID !== undefined, `${player} has no tracked current zone`);
     return zoneID;
   }
 
@@ -60,12 +62,40 @@ export class ZoneService implements OnPlayerLeave {
    * Teleports the player to `destination` and advances any quest goal that was waiting on them
    * reaching this zone.
    */
-  public transferToZone(player: Player, zoneID: ZoneID, destination: CFrame): void {
+  public async transferToZone(player: Player, zoneID: ZoneID, destination: CFrame): Promise<void> {
     log.info(`${player} transferred to zone ${zoneID}`);
     messaging.client.emit(player, Message.Zone_Transferring, zoneID);
+    await this.waitForTransferCoverReady(player, zoneID);
     this.character.teleportTo(player, destination);
     this.setCurrentZone(player, zoneID, true, destination);
     this.quest.onZoneEntered(player, zoneID);
+  }
+
+  /**
+   * `Zone_Transferring` is tether-batched (up to ~42ms) while the teleport itself is a raw,
+   * unbatched property write - without this, the character's new position can reach the client
+   * before the message telling it to show the load screen does, so the player briefly sees
+   * themselves pop into the new zone before the cover animation appears. Waiting for the client's
+   * ack (sent the instant it starts the cover animation, not once it finishes - see
+   * `LoadScreenController.onZoneTransferring`) guarantees the ordering regardless of network
+   * timing. Falls back to a fixed delay if the ack never arrives (dropped message, client stuck)
+   * so a transfer can never hang forever.
+   */
+  private waitForTransferCoverReady(player: Player, zoneID: ZoneID): Promise<void> {
+    return new Promise(resolve => {
+      let disconnect: () => void;
+      const finish = () => {
+        disconnect();
+        resolve();
+      };
+
+      disconnect = messaging.server.on(Message.Zone_TransferCoverReady, (ackPlayer, ackZoneID) => {
+        if (ackPlayer !== player || ackZoneID !== zoneID) return;
+        finish();
+      });
+
+      task.delay(TRANSFER_COVER_TIMEOUT, finish);
+    });
   }
 
   /**

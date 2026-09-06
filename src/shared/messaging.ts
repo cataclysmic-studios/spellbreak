@@ -41,6 +41,7 @@ export const enum Message {
   Duel_ChoiceMade,
   Duel_DrawSideboard,
   Client_Ready,
+  Zone_TransferCoverReady,
 }
 
 export interface MessageData {
@@ -64,4 +65,5 @@ export interface MessageData {
   [Message.Duel_ChoiceMade]: DuelChoiceMadePacket;
   [Message.Duel_DrawSideboard]: u8; // duel id
   [Message.Client_Ready]: undefined;
+  [Message.Zone_TransferCoverReady]: u8; // the destination zone id being acked
 }

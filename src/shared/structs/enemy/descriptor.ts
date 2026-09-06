@@ -4,6 +4,7 @@ import type { School } from "../school";
 import type { EnemyClass } from "./class";
 import type { EnemyKind } from "./kind";
 import type { ZoneID } from "../zone";
+import type { SpellReference } from "../data/reference/spell";
 
 export const enum EnemyID {
   DarkWizard,
@@ -33,7 +34,8 @@ export interface BaseEnemyDescriptor extends BaseID<EnemyID> {
   readonly resistKind: DamageModifierKind;
   readonly boosts?: Map<School, number>;
   readonly resists?: Map<School, number>;
-  // TODO: drops, deck
+  readonly spellPool: SpellReference[];
+  // TODO: drops
 }
 
 export type EnemyDescriptor = BaseEnemyDescriptor

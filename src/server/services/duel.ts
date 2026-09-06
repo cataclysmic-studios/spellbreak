@@ -17,11 +17,13 @@ import { getClosestDuelCircleLocation, getDeckSideboard, getShuffledHand, playCi
 import { getSpellFromReference } from "shared/utility/spell";
 import { getZoneModel } from "shared/utility/zone";
 import { ActiveDuel } from "server/classes/duel";
+import { chooseEnemyCast } from "server/utility/enemy-cast-ai";
 import Log from "shared/log";
 
 import type { DatabaseService } from "./database";
 import type { EnemyService } from "./enemy";
 import type { ZoneService } from "./zone";
+import type { DuelCombatant } from "server/classes/duel";
 import type { Enemy } from "server/classes/enemy";
 import type { Spell } from "shared/structs/spell";
 import type { SpellAction } from "shared/structs/spell/actions";
@@ -30,7 +32,7 @@ import type { DuelCastTargetResult } from "shared/structs/packets";
 const log = Log.scoped("duel service");
 
 interface QueuedCast {
-  readonly caster: Player;
+  readonly caster: DuelCombatant;
   readonly choice: DuelChoice;
 }
 
@@ -70,6 +72,7 @@ export class DuelService {
       log.info(`${enemy.descriptor.name} joining ${player.Name}'s forming duel (#${forming.id})`);
       this.duelsByEnemy.set(enemy, forming);
       enemy.dueling = true;
+      enemy.stopMoving();
       forming.addEnemy(enemy, true);
       return;
     }
@@ -97,6 +100,7 @@ export class DuelService {
     const stats = this.database.getCharacter(player).stats;
     duel.addPlayer(player, character, stats.powerPipChance, stats.maxHealth, false);
     enemy.dueling = true;
+    enemy.stopMoving();
     duel.addEnemy(enemy, false);
   }
 
@@ -134,6 +138,7 @@ export class DuelService {
       log.info(`${enemy.descriptor.name} joining forming duel #${duel.id} via the circle`);
       this.duelsByEnemy.set(enemy, duel);
       enemy.dueling = true;
+      enemy.stopMoving();
       duel.addEnemy(enemy, true);
     });
 
@@ -170,16 +175,28 @@ export class DuelService {
     // timing as when the client's DuelPlanning subview appears (see UIController.showDuelPlanning,
     // gated on CameraController.transitionCompleted).
     task.delay(duelCameraTransitionDuration, () => duel.revealPips());
+    this.seedEnemyChoices(duel);
+  }
+
+  /** Enemies decide their cast the instant a round starts (rather than waiting on player input) - there's no client round-trip for them, and it's what lets `onChoiceMade`'s gating check below ever see every combatant's choice in. Already-defeated enemies pass. */
+  private seedEnemyChoices(duel: ActiveDuel): void {
+    for (const enemy of duel.enemies) {
+      if (duel.getHealth(enemy.model)?.isDefeated()) continue;
+
+      const choice = chooseEnemyCast(enemy, duel);
+      duel.choices.set(enemy, choice);
+      log.debug(`${enemy.descriptor.name} (duel #${duel.id}) ${choice !== undefined ? `casts "${getSpellFromReference(choice.spellReference).name}"` : "passes"}`);
+    }
   }
 
   /**
-   * A combatant locked in their choice for the round (passing counts). Once every player in the
-   * duel has (the enemy side doesn't make real choices yet), spends everyone's chosen spell's pip
-   * cost, then tells every player to drop the planning UI and ease into the casting overview
-   * camera - hovering above their corner of the circle, looking at its center. Once the first
-   * caster's cast animation would start (`duelCastingFocusDelay` later), the camera eases in
-   * again to focus on them, and the round resolves `duelCastResolutionPause` after that (a
-   * placeholder for real per-cast animation timing).
+   * A player locked in their choice for the round (passing counts). Enemy choices are already
+   * seeded in by `seedEnemyChoices` the moment the round started, so once every player has too,
+   * this spends everyone's chosen spell's pip cost, then tells every player to drop the planning
+   * UI and ease into the casting overview camera - hovering above their corner of the circle,
+   * looking at its center. Once the first caster's cast animation would start
+   * (`duelCastingFocusDelay` later), the camera eases in again to focus on them, and the round
+   * resolves `duelCastResolutionPause` after that (a placeholder for real per-cast animation timing).
    * @hidden
    */
   @OnServerMessage(Message.Duel_ChoiceMade)
@@ -188,7 +205,7 @@ export class DuelService {
     if (duel === undefined || !duel.locked || !duel.players.includes(player) || duel.choices.has(player)) return;
 
     duel.choices.set(player, spellReference === undefined ? undefined : { spellReference, target: target as Maybe<DuelCirclePosition>, targetIsOpponent });
-    if (duel.choices.size() < duel.players.size()) return;
+    if (duel.choices.size() < duel.players.size() + duel.enemies.size()) return;
 
     duel.spendChosenPips();
     for (const p of duel.players) {
@@ -259,7 +276,7 @@ export class DuelService {
 
   /** Only `Damage.Hit` and `Buff.Blade` are resolved so far - every other action kind is skipped with a warning. */
   private resolveCast(duel: ActiveDuel, { caster, choice }: QueuedCast): void {
-    const casterModel = safeCast<CharacterModel>(caster.Character);
+    const casterModel = duel.modelOf(caster);
     const casterLocation = casterModel !== undefined ? duel.locate(casterModel) : undefined;
     if (casterModel === undefined || casterLocation === undefined) return;
 
@@ -321,6 +338,7 @@ export class DuelService {
       if (character !== undefined) duel.getPips(character)?.add(false, duelPipsPerRound);
     }
     for (const enemy of duel.enemies) duel.getPips(enemy.model)?.add(false, duelPipsPerRound);
+    this.seedEnemyChoices(duel);
 
     for (const player of duel.players) {
       const character = safeCast<CharacterModel>(player.Character);

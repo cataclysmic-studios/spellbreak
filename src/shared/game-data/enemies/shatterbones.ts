@@ -3,6 +3,7 @@ import { ZoneID } from "shared/structs/zone";
 import { EnemyKind } from "shared/structs/enemy/kind";
 import { EnemyClass } from "shared/structs/enemy/class";
 import { DamageModifierKind, EnemyID, type EnemyDescriptor } from "shared/structs/enemy/descriptor";
+import { SpellReference } from "shared/structs/data/reference/spell";
 import { Images } from "shared/ui/utility/images";
 
 export = {
@@ -18,5 +19,6 @@ export = {
   stunnable: true,
   startingPips: 1,
   boostKind: DamageModifierKind.Standard,
-  resistKind: DamageModifierKind.Standard
+  resistKind: DamageModifierKind.Standard,
+  spellPool: [SpellReference.Myth_Troll]
 } satisfies EnemyDescriptor;

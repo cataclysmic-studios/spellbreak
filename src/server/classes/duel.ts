@@ -12,10 +12,13 @@ import { CombatantPips } from "./combatant-pips";
 import { CombatantHealth } from "./combatant-health";
 
 import type { SpellReference } from "shared/structs/data/reference/spell";
-import type { Enemy } from "./enemy";
+import type { EnemyAIMemory } from "server/utility/enemy-cast-ai";
+import { Enemy } from "./enemy";
 
 /** Position folders only go up to a 4th slot. */
 const MAX_COMBATANTS_PER_SIDE = 4;
+
+export type DuelCombatant = Player | Enemy;
 
 /**
  * A duel circle from the moment it's placed through the end of its planning phase. Starts out
@@ -26,8 +29,8 @@ const MAX_COMBATANTS_PER_SIDE = 4;
 export class ActiveDuel {
   public readonly players: Player[] = [];
   public readonly enemies: Enemy[] = [];
-  /** Each ready player's chosen spell (and target, if any) for the round, `undefined` for a pass. */
-  public readonly choices = new Map<Player, Maybe<DuelChoice>>();
+  /** Each ready combatant's chosen spell (and target, if any) for the round, `undefined` for a pass. */
+  public readonly choices = new Map<DuelCombatant, Maybe<DuelChoice>>();
   public firstTurnOnTeam = false;
   public locked = false;
 
@@ -35,6 +38,7 @@ export class ActiveDuel {
   private readonly healthByModel = new Map<CombatantModel, CombatantHealth>();
   /** Pending outgoing-damage bonus (percent) per combatant, from an unconsumed Blade - see `addBlade`/`consumeBladeMultiplier`. */
   private readonly bladeBonusByModel = new Map<CombatantModel, number>();
+  private readonly aiMemoryByEnemy = new Map<Enemy, EnemyAIMemory>();
   /** Each player's current hand size this duel - starts at their dealt hand's size, +1 per sideboard draw. Nothing currently reports a card leaving hand (discarding/casting aren't synced to the server yet), so this only ever grows; still correct for gating sideboard draws against `maxCardsInHand`. */
   private readonly handSizeByPlayer = new Map<Player, number>();
   /** Each player's shuffled, per-duel sideboard - drawn from with `drawSideboard`, seeded once from their equipped deck's `sideboardSpellReferences` via `seedDeckState`. */
@@ -150,9 +154,25 @@ export class ActiveDuel {
     return player !== undefined ? safeCast<CharacterModel>(player.Character) : undefined;
   }
 
+  /**
+   * A caster's combatant model, whichever side of `DuelCombatant` they are. `"model" in caster`
+   * looked equivalent but isn't: for the `Player` branch that compiles to a direct `caster.model`
+   * property access, and Roblox Instances throw ("model is not a valid member of Player ...") on
+   * any unknown member instead of returning `nil` the way a plain table would - `instanceof` is
+   * the safe way to distinguish the two here.
+   */
+  public modelOf(caster: DuelCombatant): Maybe<CombatantModel> {
+    return caster instanceof Enemy ? caster.model : safeCast<CharacterModel>(caster.Character);
+  }
+
   /** Adds `percent` to `model`'s pending outgoing-damage bonus, consumed whole by their next `Damage.Hit` cast. */
   public addBlade(model: CombatantModel, percent: number): void {
     this.bladeBonusByModel.set(model, (this.bladeBonusByModel.get(model) ?? 0) + percent);
+  }
+
+  /** Whether `model` has an unconsumed Blade pending, without consuming it - for AI/UI checks that shouldn't clear it (see `consumeBladeMultiplier`). */
+  public hasPendingBlade(model: CombatantModel): boolean {
+    return this.bladeBonusByModel.has(model);
   }
 
   /** `model`'s current outgoing-damage multiplier (1 = no bonus) from any pending Blade, clearing it in the process - call once per damage cast so a Blade only boosts the next hit. */
@@ -160,6 +180,17 @@ export class ActiveDuel {
     const percent = this.bladeBonusByModel.get(model) ?? 0;
     this.bladeBonusByModel.delete(model);
     return 1 + percent / 100;
+  }
+
+  /** `enemy`'s cast-AI scratch state for this duel, created on first use. */
+  public getAIMemory(enemy: Enemy): EnemyAIMemory {
+    let memory = this.aiMemoryByEnemy.get(enemy);
+    if (memory === undefined) {
+      memory = { wardCast: false, trappedTargets: new Set() };
+      this.aiMemoryByEnemy.set(enemy, memory);
+    }
+
+    return memory;
   }
 
   public enemiesDefeated(): boolean {
@@ -173,15 +204,15 @@ export class ActiveDuel {
     });
   }
 
-  /** Spends every ready player's chosen spell's pip cost - call once casting actually begins. Passing players, and any player without a character or pip tracker right now, are skipped. */
+  /** Spends every ready combatant's chosen spell's pip cost - call once casting actually begins. Passing combatants, and any without a model or pip tracker right now, are skipped. */
   public spendChosenPips(): void {
-    for (const [player, choice] of this.choices) {
+    for (const [caster, choice] of this.choices) {
       if (choice === undefined) continue;
 
-      const character = safeCast<CharacterModel>(player.Character);
-      if (character === undefined) continue;
+      const model = this.modelOf(caster);
+      if (model === undefined) continue;
 
-      this.getPips(character)?.spend(getSpellFromReference(choice.spellReference).cost);
+      this.getPips(model)?.spend(getSpellFromReference(choice.spellReference).cost);
     }
   }
 

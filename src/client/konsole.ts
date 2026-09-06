@@ -1,3 +1,3 @@
-import Konsole = require("@kyrorblx/konsole");
+import Konsole from "@kyrorblx/konsole";
 
 Konsole.setActivationKeys([Enum.KeyCode.Backquote]);

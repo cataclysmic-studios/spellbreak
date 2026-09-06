@@ -12,6 +12,11 @@ import { EnemyNametag } from "shared/ui/components/enemy-nametag";
 
 const SPEED = 3; // studs per second
 
+// Throttles patrol CFrame writes below Heartbeat rate - each write replicates to every nearby
+// client, and at 3 studs/sec a 12Hz step (~0.25 studs) is visually indistinguishable from 60Hz
+// while cutting patrol-driven network traffic by ~80%.
+const NETWORK_UPDATE_INTERVAL = 1 / 12;
+
 export class Enemy extends NamedNPC<EnemyModel> implements BaseID<number> {
   public static cumulativeID = 0;
 
@@ -62,12 +67,19 @@ export class Enemy extends NamedNPC<EnemyModel> implements BaseID<number> {
 
     const duration = distance / SPEED;
     const startTime = os.clock();
+    let lastUpdate = 0;
 
     this.moveConnection = RunService.Heartbeat.Connect(() => {
-      const progress = math.clamp((os.clock() - startTime) / duration, 0, 1);
-      this.root.CFrame = new CFrame(startPosition.Lerp(newPosition, progress)).mul(facing);
+      const now = os.clock();
+      const progress = math.clamp((now - startTime) / duration, 0, 1);
+      const finished = progress >= 1;
 
-      if (progress >= 1) {
+      if (finished || now - lastUpdate >= NETWORK_UPDATE_INTERVAL) {
+        lastUpdate = now;
+        this.root.CFrame = new CFrame(startPosition.Lerp(newPosition, progress)).mul(facing);
+      }
+
+      if (finished) {
         this.moveConnection!.Disconnect();
         this.moveConnection = undefined;
         onCompleted?.();

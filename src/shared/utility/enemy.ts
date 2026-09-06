@@ -3,6 +3,7 @@ import { getInstanceAtPath } from "@rbxts/flamework-meta-utils";
 
 import { loadDescriptors } from "./data-registry";
 import { EnemyID, type EnemyDescriptor } from "../structs/enemy/descriptor";
+import Log from "shared/log";
 
 const enemiesFolder = getInstanceAtPath("src/shared/game-data/enemies") as Folder;
 const allEnemies = loadDescriptors<EnemyID, EnemyDescriptor>(enemiesFolder, "enemy");
@@ -11,7 +12,7 @@ const allEnemies = loadDescriptors<EnemyID, EnemyDescriptor>(enemiesFolder, "ene
 export const ENEMY_TAG = "Enemy";
 
 export function getEnemyByID(id: EnemyID): EnemyDescriptor {
-  assert(allEnemies.has(id), "enemy with ID " + id + " not found");
+  Log.assert(allEnemies.has(id), "enemy with ID " + id + " not found");
   return allEnemies.get(id)!;
 }
 

@@ -3,6 +3,7 @@ import { getInstanceAtPath } from "@rbxts/flamework-meta-utils";
 
 import { loadDescriptors } from "./data-registry";
 import { World as WorldEnum, WorldNames, ZoneID, type ZoneDescriptor } from "shared/structs/zone";
+import Log from "shared/log";
 
 const zonesFolder = getInstanceAtPath("src/shared/game-data/zones") as Folder;
 const allZones = loadDescriptors<ZoneID, ZoneDescriptor>(zonesFolder, "zone");
@@ -11,7 +12,7 @@ const TUNNEL_TAG = "ZoneTunnel";
 const zoneModels = new Map<ZoneID, ZoneModel>();
 
 export function getZoneByID(id: ZoneID): ZoneDescriptor {
-  assert(allZones.has(id), "zone with ID " + id + " not found");
+  Log.assert(allZones.has(id), "zone with ID " + id + " not found");
   return allZones.get(id)!;
 }
 
@@ -23,7 +24,7 @@ export function findZoneIDByName(name: string): ZoneID | undefined {
 /** Looks up a `ZoneID` by its enum member name (e.g. Studio attribute values, which store "PegasusLane" rather than its numeric value). */
 export function getZoneIDByName(name: string): ZoneID {
   const id = findZoneIDByName(name);
-  assert(id !== undefined, "zone with name " + name + " not found");
+  Log.assert(id !== undefined, "zone with name " + name + " not found");
   return id;
 }
 

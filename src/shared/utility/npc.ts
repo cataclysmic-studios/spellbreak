@@ -4,6 +4,7 @@ import { loadDescriptors } from "./data-registry";
 import { getZoneModel } from "./zone";
 import type { ZoneID } from "shared/structs/zone";
 import type { NpcID, NpcDescriptor } from "shared/structs/npc/descriptor";
+import Log from "shared/log";
 
 const npcsFolder = getInstanceAtPath("src/shared/game-data/npcs") as Folder;
 const allNPCs = loadDescriptors<NpcID, NpcDescriptor>(npcsFolder, "npc");
@@ -17,7 +18,7 @@ export function getNpcByName(name: string): NpcDescriptor {
 }
 
 export function getNpcByID(id: NpcID): NpcDescriptor {
-  assert(allNPCs.has(id), "npc with ID " + id + " not found");
+  Log.assert(allNPCs.has(id), "npc with ID " + id + " not found");
   return allNPCs.get(id)!;
 }
 

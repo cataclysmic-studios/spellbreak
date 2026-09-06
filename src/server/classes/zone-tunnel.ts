@@ -5,7 +5,9 @@ import { getZoneIDByName, getZoneOfInstance } from "shared/utility/zone";
 import { getQuestIDByName } from "shared/utility/quests";
 import type { QuestID } from "shared/structs/quests";
 import type { ZoneID } from "shared/structs/zone";
+import Log from "shared/log";
 
+const log: ReturnType<typeof Log.scoped> = Log.scoped("zone tunnel");
 /** A character has several body parts that can each independently touch the collider within the same crossing, so debounce by time rather than by touch state. */
 const DEBOUNCE_SECONDS = 2;
 
@@ -24,7 +26,7 @@ export class ZoneTunnel {
   /** `ZoneID`/`RequiredQuestID`/`RequiredActiveQuestID` are set in Studio as the *name* of the enum member (e.g. "PegasusLane"), not its numeric value. */
   public constructor(public readonly model: TunnelModel) {
     const zoneName = model.GetAttribute<string>("ZoneID");
-    assert(zoneName !== undefined, `ZoneTunnel @ ${model.GetFullName()} is missing a "ZoneID" attribute`);
+    log.assert(zoneName !== undefined, `ZoneTunnel @ ${model.GetFullName()} is missing a "ZoneID" attribute`);
 
     this.zoneID = getZoneIDByName(zoneName);
     this.homeZoneID = getZoneOfInstance(model);

@@ -4,6 +4,7 @@ import { getEquippedGear } from "shared/utility/data";
 import { GearCategory } from "shared/structs/data/items/gear";
 import type { CharacterData } from "shared/structs/data";
 import type { DeckData, DeckLinkedData } from "shared/structs/data/items/gear/deck";
+import Log from "shared/log";
 
 import type { ReplicaController } from "./replica";
 
@@ -19,7 +20,7 @@ export class CharacterController {
   }
 
   public getData(): CharacterData {
-    assert(this.isLoaded(), "data accessed before replica load");
+    Log.assert(this.isLoaded(), "data accessed before replica load");
     return this.replica.data.characters[this.index];
   }
 

@@ -19,6 +19,8 @@ interface ScopedLogger {
   readonly fatal: (message: string, tags?: string[]) => never;
   /** Only prints in Studio - use for noisy diagnostic detail that would spam production logs. */
   readonly debug: (message: string, tags?: string[]) => void;
+  /** Like the global `assert`, but routes the failure message through `fatal` instead of Luau's `error` so it's tagged/sinked like every other log. */
+  readonly assert: (condition: unknown, message?: string, tags?: string[]) => asserts condition;
 }
 
 function withTag(tag: string, tags?: string[]): string[] {
@@ -42,6 +44,11 @@ function addSink(sink: LogSink): void {
  * `const log = Log.scoped("quest service")`.
  */
 function scoped(scope: string): ScopedLogger {
+  const fatal: ScopedLogger["fatal"] = (message, tags) => {
+    notifySinks("fatal", scope, message);
+    return logger.fatal(message, withTag(scope, tags));
+  };
+
   return {
     info: (message, tags) => {
       notifySinks("info", scope, message);
@@ -51,17 +58,23 @@ function scoped(scope: string): ScopedLogger {
       notifySinks("warn", scope, message);
       logger.warn(message, withTag(scope, tags));
     },
-    fatal: (message, tags) => {
-      notifySinks("fatal", scope, message);
-      return logger.fatal(message, withTag(scope, tags));
-    },
+    fatal,
     debug: (message, tags) => {
       if (!verbose) return;
       notifySinks("info", scope, message);
       logger.info(message, withTag("debug", withTag(scope, tags)));
+    },
+    assert: (condition, message, tags) => {
+      if (!condition)
+        fatal(message ?? "Assertion failed!", tags);
     }
   };
 }
+
+const fatal: ScopedLogger["fatal"] = (message, tags) => {
+  notifySinks("fatal", undefined, message);
+  return logger.fatal(message, tags);
+};
 
 const Log: ScopedLogger & { readonly scoped: typeof scoped; readonly addSink: typeof addSink } = {
   info: (message, tags) => {
@@ -72,14 +85,15 @@ const Log: ScopedLogger & { readonly scoped: typeof scoped; readonly addSink: ty
     notifySinks("warn", undefined, message);
     logger.warn(message, tags);
   },
-  fatal: (message, tags) => {
-    notifySinks("fatal", undefined, message);
-    return logger.fatal(message, tags);
-  },
+  fatal,
   debug: (message, tags) => {
     if (!verbose) return;
     notifySinks("info", undefined, message);
     logger.info(message, withTag("debug", tags));
+  },
+  assert: (condition, message, tags) => {
+    if (!condition)
+      fatal(message ?? "Assertion failed!", tags);
   },
   scoped,
   addSink

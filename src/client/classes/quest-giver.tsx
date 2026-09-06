@@ -30,7 +30,7 @@ export class QuestGiver<ModelShape extends Model = NpcModel> {
     public readonly npcModel: ModelShape
   ) {
     const id = npcModel.GetAttribute<NpcID>("ID");
-    assert(id !== undefined, "quest giver npc id not found");
+    Log.assert(id !== undefined, "quest giver npc id not found");
 
     this.descriptor = getNpcByID(id);
     this.root = npcModel.PrimaryPart!;

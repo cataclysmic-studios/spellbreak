@@ -11,6 +11,7 @@ import type { CharacterData } from "shared/structs/data";
 import type { NpcDescriptor, NpcID } from "shared/structs/npc/descriptor";
 import type { DialogID } from "shared/structs/npc/dialog";
 import type { ZoneID } from "shared/structs/zone";
+import Log from "shared/log";
 
 const questsFolder = getInstanceAtPath("src/shared/game-data/quests") as Folder;
 const allQuests = loadDescriptors<QuestID, QuestDescriptor>(questsFolder, "quest");
@@ -27,7 +28,7 @@ for (const [id, quest] of allQuests) {
 
   for (const goal of quest.goals) {
     if (goal.action !== QuestGoalAction.Talk) continue;
-    assert(
+    Log.assert(
       getDialogByID(goal.completionDialog).speaker === goal.target,
       `quest ${id}'s completion dialog for its Talk goal doesn't speak for the NPC it targets`
     );
@@ -51,14 +52,14 @@ export function getAllQuests(): Map<QuestID, QuestDescriptor> {
 }
 
 export function getQuestByID(id: QuestID): QuestDescriptor {
-  assert(allQuests.has(id), "quest with ID " + id + " not found");
+  Log.assert(allQuests.has(id), "quest with ID " + id + " not found");
   return allQuests.get(id)!;
 }
 
 /** Looks up a `QuestID` by its enum member name (e.g. Studio attribute values, which store "WC_1" rather than its numeric value). */
 export function getQuestIDByName(name: string): QuestID {
   const id = QuestID[name as keyof typeof QuestID];
-  assert(id !== undefined, "quest with name " + name + " not found");
+  Log.assert(id !== undefined, "quest with name " + name + " not found");
   return id;
 }
 
@@ -112,7 +113,7 @@ export function getCurrentGoalIndex(character: CharacterData, arg: QuestID | Que
   if (!("goals" in quest)) return;
 
   const goalIndex = character.activeQuests[id];
-  assert(goalIndex !== undefined, "cannot get current goal for quest " + id + ", quest is inactive");
+  Log.assert(goalIndex !== undefined, "cannot get current goal for quest " + id + ", quest is inactive");
 
   return goalIndex;
 }

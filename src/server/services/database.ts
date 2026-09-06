@@ -116,7 +116,7 @@ export class DatabaseService implements OnPlayerJoin, OnPlayerLeave {
 
   private getDocument(player: Player): PlayerDataDocument {
     const document = this.documents.get(player);
-    assert(document !== undefined, "Player data document not yet loaded.");
+    Log.assert(document !== undefined, "Player data document not yet loaded.");
     return document;
   }
 }

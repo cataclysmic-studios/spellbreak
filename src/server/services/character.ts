@@ -15,7 +15,7 @@ export class CharacterService {
 
   public teleportTo(player: Player, location: CFrame): void {
     const character = player.Character;
-    assert(character !== undefined, `${player} has no character to teleport`);
+    Log.assert(character !== undefined, `${player} has no character to teleport`);
     character.PivotTo(location);
     // Zones are spread far apart with StreamingEnabled on, so without this the client's
     // streaming region is still centered on the old location when callers like ZoneService

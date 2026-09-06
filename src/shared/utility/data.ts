@@ -8,6 +8,7 @@ import type { DeckReferenceData } from "shared/structs/data/items/gear/deck";
 import type { PetReferenceData } from "shared/structs/data/items/gear/pet";
 import type { GearReference } from "shared/structs/data/reference/gear";
 import type { Diff } from "shared/structs/data/serialization";
+import Log from "shared/log";
 
 type NumericKey =
   | number
@@ -18,7 +19,7 @@ type NumericRecordGuard<T extends {}> = Modding.Generic<{ [K in keyof T as K ext
 
 /** @metadata macro */
 export function fixNumericKeys<T extends {}>(data: T, guard?: NumericRecordGuard<T>): T {
-  assert(guard !== undefined);
+  Log.assert(guard !== undefined);
   if (!guard(data))
     return data;
 
@@ -69,8 +70,8 @@ export function createDiff<T>(oldData: T, newData: T): Diff<T> {
   if (oldData === newData)
     return {};
 
-  assert(typeIs(oldData, "table"), "attempt to create diff of non-table objects");
-  assert(typeIs(newData, "table"), "attempt to create diff of non-table objects");
+  Log.assert(typeIs(oldData, "table"), "attempt to create diff of non-table objects");
+  Log.assert(typeIs(newData, "table"), "attempt to create diff of non-table objects");
 
   let changed: Diff<T>["changed"];
   let removed: Diff<T>["removed"];

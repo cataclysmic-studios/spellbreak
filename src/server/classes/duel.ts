@@ -43,9 +43,9 @@ export class ActiveDuel {
   private readonly handSizeByPlayer = new Map<Player, number>();
   /** Each player's shuffled, per-duel sideboard - drawn from with `drawSideboard`, seeded once from their equipped deck's `sideboardSpellReferences` via `seedDeckState`. */
   private readonly sideboardByPlayer = new Map<Player, SpellReference[]>();
+  private readonly lockedInCallbacks: ((duel: ActiveDuel) => void)[] = [];
   private pendingArrivals = 0;
   private gatherThread?: thread;
-  private readonly lockedInCallbacks: ((duel: ActiveDuel) => void)[] = [];
 
   public constructor(
     public readonly id: number,
@@ -136,7 +136,7 @@ export class ActiveDuel {
   }
 
   /** `isOpponent` is absolute (the model's own side), not relative to a viewer. */
-  public locate(model: CombatantModel): Maybe<{ position: DuelCirclePosition; isOpponent: boolean }> {
+  public locate(model: CombatantModel): Maybe<{ position: DuelCirclePosition; isOpponent: boolean; }> {
     const enemyIndex = this.enemies.findIndex(enemy => enemy.model === model);
     if (enemyIndex !== -1) return { position: enemyIndex as DuelCirclePosition, isOpponent: true };
 
@@ -224,18 +224,12 @@ export class ActiveDuel {
     maxHealth: number,
     announce: boolean
   ): void {
-    // A new arrival means the duel can't lock in yet, even if a gather window from a previous
-    // arrival was already counting down.
     this.cancelGatherWindow();
     this.pendingArrivals++;
 
     const targetPart = getDuelCirclePositionPart(positions, index as DuelCirclePosition);
     const targetCFrame = getGroundedTargetCFrame(model, targetPart);
-
-    // No running animation yet for either combatant - see moveCombatantToDuelPosition.
     moveCombatantToDuelPosition(model, targetCFrame, undefined, duelApproachDuration, () => {
-      // Only active combatants get a sigil/pips - one standing in the circle but still
-      // approaching shouldn't have either yet.
       attachCombatantSigil(model);
       const pips = new CombatantPips(model);
       seedPips(pips);

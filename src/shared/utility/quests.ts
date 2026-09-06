@@ -4,7 +4,7 @@ import Object from "@rbxts/object-utils";
 import { loadDescriptors } from "./data-registry";
 import { getNpcByID, getNpcModelByID } from "./npc";
 import { getDialogByID } from "./dialog";
-import { getEnemyByID } from "./enemy";
+import { getEnemyByID, getNearestEnemyPosition } from "./enemy";
 import { getZoneByID, getNearestTunnelPosition } from "./zone";
 import { QuestGoalAction, QuestID, type TalkQuestGoal, type QuestDescriptor, type QuestGoal, type QuestInfo } from "shared/structs/quests";
 import type { CharacterData } from "shared/structs/data";
@@ -160,19 +160,19 @@ export function getGoalTargetZone({ action, target }: QuestGoal): ZoneID {
   }
 }
 
-export function getGoalTargetPosition({ action, target }: QuestGoal, fromPosition: Vector3, currentZone: Maybe<ZoneID>): Vector3 {
-  switch (action) {
-    case QuestGoalAction.Talk: {
-      const npc = getNpcByID(target);
-      if (currentZone !== npc.zone)
-        return getNearestTunnelPosition(npc.zone, fromPosition) ?? fromPosition;
+export function getGoalTargetPosition(goal: QuestGoal, fromPosition: Vector3, currentZone: Maybe<ZoneID>): Vector3 {
+  const targetZone = getGoalTargetZone(goal);
+  if (currentZone !== targetZone)
+    return getNearestTunnelPosition(targetZone, fromPosition) ?? fromPosition;
 
+  const { action, target } = goal;
+  switch (action) {
+    case QuestGoalAction.Talk:
       return getNpcModelByID(target).PrimaryPart!.Position;
-    }
     case QuestGoalAction.Explore:
-      return getNearestTunnelPosition(target, fromPosition) ?? Vector3.zero;
+      return fromPosition;
     case QuestGoalAction.Defeat:
-      return Vector3.zero;
+      return getNearestEnemyPosition(target, fromPosition) ?? fromPosition;
   }
 }
 

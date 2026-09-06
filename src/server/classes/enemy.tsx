@@ -1,9 +1,10 @@
-import { Players, RunService, Workspace as World } from "@rbxts/services";
+import { CollectionService, Players, RunService, Workspace as World } from "@rbxts/services";
 import type { BaseID } from "@rbxts/id";
 import Signal from "@rbxts/lemon-signal";
 import Vide from "@rbxts/vide";
 
 import { assets, XZ } from "shared/constants";
+import { ENEMY_TAG } from "shared/utility/enemy";
 import type { EnemyDescriptor } from "shared/structs/enemy/descriptor";
 
 import { NamedNPC } from "./named-npc";
@@ -29,13 +30,23 @@ export class Enemy extends NamedNPC<EnemyModel> implements BaseID<number> {
     );
 
     this.model.SetAttribute("ID", this.id);
+    this.model.SetAttribute("EnemyID", descriptor.id);
+    CollectionService.AddTag(this.model, ENEMY_TAG);
     this.registerTouch();
   }
 
-  /** Timed off `os.clock()` elapsed-since-start rather than accumulating `dt` per frame - the previous per-frame `SPEED / dt` step moved far too fast on any low-`dt` frame. */
-  public moveTo(newPosition: Vector3, onCompleted?: () => void): void {
+  /**
+   * Timed off `os.clock()` elapsed-since-start rather than accumulating `dt` per frame - the
+   * previous per-frame `SPEED / dt` step moved far too fast on any low-`dt` frame.
+   *
+   * Grounds the destination the same way `teleport` does - `part.Position` alone sinks the
+   * enemy to the node's own center height rather than standing on top of it.
+   */
+  public moveTo(part: BasePart, onCompleted?: () => void): void {
     this.moveConnection?.Disconnect();
 
+    const [, size] = this.model.GetBoundingBox();
+    const newPosition = part.Position.add(new Vector3(0, size.Y / 2 - part.Size.Y / 2, 0));
     const startPosition = this.root.Position;
     const offset = newPosition.sub(startPosition);
     const distance = offset.Magnitude;
@@ -62,6 +73,12 @@ export class Enemy extends NamedNPC<EnemyModel> implements BaseID<number> {
         onCompleted?.();
       }
     });
+  }
+
+  /** Halts any in-progress `moveTo`, leaving the enemy wherever it currently stands - call before handing positioning off to something else (e.g. a duel), so patrol movement can't keep overwriting `root`'s CFrame every frame and fighting it. */
+  public stopMoving(): void {
+    this.moveConnection?.Disconnect();
+    this.moveConnection = undefined;
   }
 
   public teleport(part: BasePart): void {

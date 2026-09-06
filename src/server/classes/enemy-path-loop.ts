@@ -26,10 +26,17 @@ export class EnemyPathLoop {
   private lastSpawnNode?: BasePart;
 
   public constructor(model: Model) {
-    this.nodes = getChildrenOfType(model, "BasePart");
+    // `GetChildren()`'s order reflects Studio insertion order, not the designer-intended patrol
+    // sequence - node parts are named numerically ("1", "2", ...), so sort on that instead.
+    this.nodes = getChildrenOfType(model, "BasePart").sort((a, b) => {
+      const numA = tonumber(a.Name);
+      const numB = tonumber(b.Name);
+      if (numA !== undefined && numB !== undefined) return numA < numB;
+      return a.Name < b.Name;
+    });
     this.maxEnemies = model.GetAttribute("MaxEnemies") ?? 6;
     this.spawnInterval = model.GetAttribute("SpawnInterval") ?? 1.5;
-    this.patrolPauseDuration = model.GetAttribute("PatrolPauseDuration") ?? 2;
+    this.patrolPauseDuration = model.GetAttribute("PatrolPauseDuration") ?? 1;
 
     for (const tag of model.GetTags()) {
       const [enemyName] = tag.match("Spawns%[(.-)%]");
@@ -56,7 +63,7 @@ export class EnemyPathLoop {
       const targetNode = this.nodes[targetIndex];
 
       state.moving = true;
-      enemy.moveTo(targetNode.Position, () => {
+      enemy.moveTo(targetNode, () => {
         state.nodeIndex = targetIndex;
         state.moving = false;
         state.idleUntil = os.clock() + this.patrolPauseDuration;

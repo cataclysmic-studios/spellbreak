@@ -336,6 +336,13 @@ const ARRIVAL_TURN_START = 0.75;
  * blending the whole way through would have it facing sideways to its own
  * movement for the entire approach instead of just the last stretch.
  *
+ * `targetCFrame` (and every intermediate frame) is expressed in terms of where `collider` should
+ * end up, matching `getGroundedTargetCFrame`, but is applied by pivoting the whole `combatant`
+ * model rather than setting `collider.CFrame` directly - `collider` isn't necessarily the part
+ * driving the rest of the rig's position (an `Enemy`'s visible model follows its `root`, not
+ * `collider`, which is otherwise only used for touch detection), so writing to it alone can leave
+ * the visible model behind while only the hitbox moves.
+ *
  * `runningAnimation` is not wired up yet (no run animation plays for either
  * combatant during the approach) - pass it once dedicated duel-approach
  * clips exist.
@@ -348,6 +355,9 @@ export function moveCombatantToDuelPosition(
   onCompleted: () => void
 ): void {
   const { collider } = combatant;
+  const colliderOffsetFromPivot = combatant.GetPivot().ToObjectSpace(collider.CFrame);
+  const moveColliderTo = (cframe: CFrame) => combatant.PivotTo(cframe.mul(colliderOffsetFromPivot.Inverse()));
+
   const startPosition = collider.Position;
   const targetPosition = targetCFrame.Position;
   const travelDirection = targetPosition.sub(startPosition).mul(XZ);
@@ -364,7 +374,7 @@ export function moveCombatantToDuelPosition(
 
   const finish = () => {
     track?.Stop(0.15);
-    collider.CFrame = targetCFrame;
+    moveColliderTo(targetCFrame);
     onCompleted();
   };
 
@@ -383,7 +393,7 @@ export function moveCombatantToDuelPosition(
     const turnEased = TweenService.GetValue(turnProgress, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut);
     const facing = startFacing.Lerp(endFacing, turnEased);
 
-    collider.CFrame = new CFrame(position).mul(facing);
+    moveColliderTo(new CFrame(position).mul(facing));
 
     if (progress >= 1) {
       connection.Disconnect();

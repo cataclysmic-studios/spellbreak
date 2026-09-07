@@ -7,6 +7,7 @@ export const Images = {
   Vignette: "rbxassetid://94231339640816",
   ParchmentBanner: "rbxassetid://6099008610",
   TinyParchmentBanner: "rbxassetid://139883692158687",
+  TabScroll: "rbxassetid://117254344208299",
   BookBinding: "rbxassetid://92180308011222",
   RedRibbon: "rbxassetid://83791914432890",
   RedSpiral: "http://www.roblox.com/asset/?id=951593731",
@@ -43,6 +44,17 @@ export const Images = {
   // icons
   Icon_Gold: "rbxassetid://120546981073024",
   Icon_XP: "rbxassetid://99806776497589",
+  Icon_Fire: "rbxassetid://76413634460846",
+  Icon_Ice: "rbxassetid://125651624648237",
+  Icon_Storm: "rbxassetid://103541112872184",
+  Icon_Life: "rbxassetid://135756213322884",
+  Icon_Death: "rbxassetid://77114840919007",
+  Icon_Myth: "rbxassetid://99564749203744",
+  Icon_Balance: "rbxassetid://88712629746046",
+  Icon_Solar: "rbxassetid://134001769681363",
+  Icon_Stellar: "rbxassetid://72280903185330",
+  Icon_Lunar: "rbxassetid://109751515248023",
+  Icon_Shadow: "rbxassetid://79584863309963",
 
   // inputs
   Input_X: "rbxassetid://85088521586876",

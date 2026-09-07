@@ -1,27 +1,125 @@
 import Vide, { source, Show } from "@rbxts/vide";
 
 import { usePx } from "shared/ui/hooks/use-px";
-import { anchorPoints } from "shared/ui/utility/positioning";
+import { anchorPoints, positions } from "shared/ui/utility/positioning";
 import { palette } from "shared/ui/palette";
 import { Images } from "shared/ui/utility/images";
-import { getRequiredXpForNextLevel } from "shared/utility/character";
+import { getLevelTitle, getRequiredXpForNextLevel, getSchoolTitle } from "shared/utility/character";
+import { School, type PlayableSchool } from "shared/structs/school";
+import type { CharacterData } from "shared/structs/data";
+import type { CharacterStats } from "shared/structs/data/character-stats";
 
 import { WizText } from "../../wiz-text";
-import { BookPageContainer } from "./book-page-container";
+import { BookPageContainer, BOOK_SPINE_X } from "./book-page-container";
 import { StatGridRow } from "./character/stat-grid-row";
 import { SingleStat } from "./character/single-stat";
 import { CharacterPortrait } from "./character/character-portrait";
-
+import { ParchmentBanner } from "../../parchment-banner";
 import type { PageProps } from "..";
+import { SchoolRoundIcon } from "../../school-round-icon";
+import { SpritestripButton } from "../../spritestrip-button";
+import { Container } from "shared/ui/utility/components/container";
 
 const enum StatsTab {
   Basic,
-  Advanced
+  Advanced,
+  Crafting,
+  Badges,
+  PvP,
+  Timers
 }
 
-/** Fraction of the page width each of the 7 grid slots is centered on, left to right - baked into `Background_Character_Right_Stats*`. */
-const BASIC_SLOT_X = [0.2129, 0.3242, 0.4414, 0.5508, 0.6641, 0.7773, 0.8906];
-const ADVANCED_SLOT_X = [0.2383, 0.3398, 0.4453, 0.5508, 0.6563, 0.7617, 0.8672];
+/** Fraction of the page width each school's grid slot is centered on - baked into `Background_Character_Right_Stats`. */
+const BASIC_SLOT_X: Readonly<Record<PlayableSchool, number>> = {
+  [School.Fire]: 0.2135,
+  [School.Ice]: 0.325,
+  [School.Storm]: 0.4414,
+  [School.Life]: 0.5508,
+  [School.Death]: 0.6641,
+  [School.Myth]: 0.7773,
+  [School.Balance]: 0.8906
+};
+
+/** Fraction of the page width each school's grid slot is centered on - baked into `Background_Character_Right_Stats_Advanced*`. */
+const ADVANCED_SLOT_X: Readonly<Record<PlayableSchool, number>> = {
+  [School.Fire]: 0.2383,
+  [School.Ice]: 0.3398,
+  [School.Storm]: 0.4453,
+  [School.Life]: 0.5508,
+  [School.Death]: 0.6563,
+  [School.Myth]: 0.7617,
+  [School.Balance]: 0.8672
+};
+
+interface StatsTabConfig {
+  readonly tab: StatsTab;
+  readonly image: string;
+}
+
+/** The tab row poking above the right page - one source of truth per tab, shared by its button and its `TabScroll` backdrop. */
+const STATS_TABS: readonly StatsTabConfig[] = [
+  { tab: StatsTab.Basic, image: Images.Button_Character_Stats },
+  { tab: StatsTab.Advanced, image: Images.Button_Character_Stats_Advanced },
+  { tab: StatsTab.Crafting, image: Images.Button_Character_Craft },
+  { tab: StatsTab.Badges, image: Images.Button_Character_Badges },
+  { tab: StatsTab.PvP, image: Images.Button_Character_PvP },
+  { tab: StatsTab.Timers, image: Images.Button_Tab_Timer }
+];
+
+interface LeftPageField {
+  readonly position: UDim2;
+  readonly size: UDim2;
+  readonly textSize: number;
+  readonly textColor?: Color3;
+  readonly alignX?: Enum.TextXAlignment | Enum.TextXAlignment["Name"];
+  readonly text: (character: CharacterData, stats: CharacterStats) => string;
+}
+
+/** Every readout overlaid onto `Background_Character_Left` - positions/sizes are fractions of that page, baked to match its art. Tune freely. */
+const LEFT_PAGE_FIELDS: readonly LeftPageField[] = [
+  {
+    position: UDim2.fromScale(0.58, 0.123), size: UDim2.fromScale(0.5, 0.06),
+    textSize: 18, textColor: palette.yellow,
+    alignX: "Left",
+    text: character => `${getLevelTitle(character.level)} (Level ${character.level})`
+  },
+  {
+    position: UDim2.fromScale(0.63, 0.2), size: UDim2.fromScale(0.5, 0.06),
+    textSize: 18, textColor: palette.yellow,
+    alignX: "Left",
+    text: character => getSchoolTitle(character.school)
+  },
+  {
+    position: UDim2.fromScale(0.43, 0.282), size: UDim2.fromOffset(90, 20),
+    textSize: 18, textColor: palette.black,
+    text: () => "Health"
+  },
+  {
+    position: UDim2.fromScale(0.8, 0.282), size: UDim2.fromOffset(90, 20),
+    textSize: 18, textColor: palette.black,
+    text: () => "Mana"
+  },
+  {
+    position: UDim2.fromScale(0.55, 0.408), size: UDim2.fromOffset(160, 20),
+    textSize: 13, textColor: palette.black,
+    text: () => "Experience"
+  },
+  {
+    position: UDim2.fromScale(0.32, 0.549), size: UDim2.fromOffset(90, 20),
+    textSize: 13, textColor: palette.black,
+    text: () => "Training Points"
+  },
+  {
+    position: UDim2.fromScale(0.78, 0.549), size: UDim2.fromOffset(90, 20),
+    textSize: 13, textColor: palette.black,
+    text: () => "Gold"
+  },
+  {
+    position: UDim2.fromScale(0.55, 0.838), size: UDim2.fromOffset(160, 20),
+    textSize: 13, textColor: palette.black,
+    text: () => "Energy"
+  }
+];
 
 export function CharacterPage({ character }: PageProps): Vide.Node {
   const px = usePx();
@@ -31,10 +129,22 @@ export function CharacterPage({ character }: PageProps): Vide.Node {
 
   return (
     <BookPageContainer>
+      <ParchmentBanner name="NameBanner"
+        anchorPoint={anchorPoints.topCenter}
+        position={positions.topCenter}
+        size={UDim2.fromOffset(px(480), px(52))}
+        stroke={false}
+        textSize={px(24)}
+        textColor={palette.black}
+        text={() => character().name}
+        zIndex={5}
+      />
       {/* left page */}
       <imagelabel Name="LeftPage"
         BackgroundTransparency={1}
-        Size={UDim2.fromScale(0.5, 1)}
+        AnchorPoint={anchorPoints.topLeft}
+        Position={UDim2.fromScale(0, 0)}
+        Size={UDim2.fromScale(BOOK_SPINE_X, 1)}
         Image={Images.Background_Character_Left}
       >
         <frame Name="PortraitFrame"
@@ -48,69 +158,74 @@ export function CharacterPage({ character }: PageProps): Vide.Node {
           <uicorner CornerRadius={new UDim(1, 0)} />
           <CharacterPortrait />
         </frame>
-        <WizText
-          anchorPoint={anchorPoints.center}
-          position={UDim2.fromScale(0.68, 0.095)}
-          size={UDim2.fromScale(0.5, 0.06)}
-          textSize={px(16)}
-          textColor={palette.lightYellow}
-          text={() => character().name}
-        />
-        <WizText
-          anchorPoint={anchorPoints.center}
-          position={UDim2.fromScale(0.68, 0.165)}
-          size={UDim2.fromScale(0.5, 0.06)}
-          textSize={px(14)}
-          textColor={palette.lightYellow}
-          text={() => `Level ${character().level}`}
+        <SchoolRoundIcon
+          school={() => character().school}
+          anchorPoint={anchorPoints.leftCenter}
+          position={UDim2.fromScale(0.23, 0.2)}
+          size={new UDim(0.14)}
         />
 
-        {/* Health / Mana */}
-        <WizText anchorPoint={anchorPoints.center} position={UDim2.fromScale(0.32, 0.28)} size={UDim2.fromOffset(px(90), px(20))} textSize={px(13)}
-          text={() => `${stats().health}/${stats().maxHealth}`} />
-        <WizText anchorPoint={anchorPoints.center} position={UDim2.fromScale(0.78, 0.28)} size={UDim2.fromOffset(px(90), px(20))} textSize={px(13)}
-          text={() => `${stats().mana}/${stats().maxMana}`} />
-
-        {/* Experience */}
-        <WizText anchorPoint={anchorPoints.center} position={UDim2.fromScale(0.55, 0.408)} size={UDim2.fromOffset(px(160), px(20))} textSize={px(13)}
-          text={() => `${character().xp}/${getRequiredXpForNextLevel(character().level)}`} />
-
-        {/* Training Points / Gold */}
-        <WizText anchorPoint={anchorPoints.center} position={UDim2.fromScale(0.32, 0.549)} size={UDim2.fromOffset(px(90), px(20))} textSize={px(13)}
-          text={() => `${character().trainingPoints}`} />
-        <WizText anchorPoint={anchorPoints.center} position={UDim2.fromScale(0.78, 0.549)} size={UDim2.fromOffset(px(90), px(20))} textSize={px(13)}
-          text={() => `${character().gold}`} />
-
-        {/* Energy */}
-        <WizText anchorPoint={anchorPoints.center} position={UDim2.fromScale(0.55, 0.838)} size={UDim2.fromOffset(px(160), px(20))} textSize={px(13)}
-          text={() => `${stats().energy}/${stats().maxEnergy}`} />
+        {LEFT_PAGE_FIELDS.map(field => (
+          <WizText
+            anchorPoint={anchorPoints.center}
+            position={field.position}
+            size={field.size}
+            alignX={field.alignX}
+            textSize={px(field.textSize)}
+            textColor={field.textColor}
+            text={() => field.text(character(), stats())}
+          />
+        ))}
       </imagelabel>
 
       {/* right page */}
-      <frame Name="RightPage" BackgroundTransparency={1} AnchorPoint={anchorPoints.topRight} Position={UDim2.fromScale(1, 0)} Size={UDim2.fromScale(0.5, 1)}>
-        <imagebutton Name="StatsTabButton"
-          BackgroundTransparency={1}
-          AnchorPoint={anchorPoints.bottomCenter}
-          Position={UDim2.fromScale(0.4, -0.01)}
-          Size={UDim2.fromScale(0.13, 0.13)}
-          Image={Images.Button_Character_Stats}
-          ImageTransparency={() => tab() === StatsTab.Basic ? 0 : 0.4}
-          Activated={() => tab(StatsTab.Basic)}
-        />
-        <imagebutton Name="AdvancedStatsTabButton"
-          BackgroundTransparency={1}
-          AnchorPoint={anchorPoints.bottomCenter}
-          Position={UDim2.fromScale(0.6, -0.01)}
-          Size={UDim2.fromScale(0.13, 0.13)}
-          Image={Images.Button_Character_Stats_Advanced}
-          ImageTransparency={() => tab() === StatsTab.Advanced ? 0 : 0.4}
-          Activated={() => tab(StatsTab.Advanced)}
-        />
+      <frame Name="RightPage"
+        BackgroundTransparency={1}
+        AnchorPoint={anchorPoints.topLeft}
+        Position={UDim2.fromScale(0.522, 0)}
+        Size={UDim2.fromScale(0.963 - BOOK_SPINE_X, 1)}
+      >
+        <Container name="ButtonContainer"
+          anchorPoint={anchorPoints.leftCenter}
+          position={UDim2.fromScale(0, 0.12)}
+          size={UDim2.fromScale(0.95, 0.12)}
+          zIndex={5}
+        >
+          <uilistlayout
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            FillDirection="Horizontal"
+            Padding={new UDim(-0.04, 0)}
+          />
+          {STATS_TABS.map(cfg => <>
+            <imagelabel Name="TabScroll"
+              BackgroundTransparency={1}
+              AnchorPoint={anchorPoints.bottomCenter}
+              Size={UDim2.fromScale(0.2, 1)}
+              Image={Images.TabScroll}
+              ImageTransparency={() => tab() === cfg.tab ? 0 : 1}
+            >
+              <SpritestripButton name="TabButton"
+                spritestripImage={cfg.image}
+                tileSize={64}
+                offset={Vector2.zero}
+                hoveredOffset={new Vector2(1, 0)}
+                anchorPoint={anchorPoints.center}
+                position={positions.center.sub(UDim2.fromScale(0, 0.05))}
+                size={UDim2.fromScale(0.75, 0.75)}
+                activated={() => tab(cfg.tab)}
+              >
+                <uiaspectratioconstraint />
+              </SpritestripButton>
+            </imagelabel>
+          </>)}
+
+        </Container>
 
         <Show when={() => tab() === StatsTab.Basic}>
           {() => (
             <imagelabel Name="BasicStats" BackgroundTransparency={1} Size={UDim2.fromScale(1, 1)} Image={Images.Background_Character_Right_Stats}>
-              <StatGridRow y={0.3125} slotX={BASIC_SLOT_X} values={() => stats().damage} suffix="%" />
+              <StatGridRow y={0.34} slotX={BASIC_SLOT_X} values={() => stats().damage} suffix="%" />
               <StatGridRow y={0.585} slotX={BASIC_SLOT_X} values={() => stats().resist} suffix="%" />
               <StatGridRow y={0.8721} slotX={BASIC_SLOT_X} values={() => stats().accuracy} suffix="%" />
             </imagelabel>
@@ -143,24 +258,38 @@ export function CharacterPage({ character }: PageProps): Vide.Node {
 
         <Show when={() => tab() === StatsTab.Advanced}>
           {() => <>
-            <imagebutton Name="PrevPageButton"
-              BackgroundTransparency={1}
-              AnchorPoint={anchorPoints.center}
-              Position={UDim2.fromScale(0.4, 0.98)}
-              Size={UDim2.fromScale(0.12, 0.06)}
-              Image={Images.Button_Arrow01}
-              Visible={() => advancedPage() === 1}
-              Activated={() => advancedPage(0)}
-            />
-            <imagebutton Name="NextPageButton"
-              BackgroundTransparency={1}
-              AnchorPoint={anchorPoints.center}
-              Position={UDim2.fromScale(0.6, 0.98)}
-              Size={UDim2.fromScale(0.12, 0.06)}
-              Image={Images.Button_Arrow03}
-              Visible={() => advancedPage() === 0}
-              Activated={() => advancedPage(1)}
-            />
+            <SpritestripButton name="PrevPageButton"
+              tileSize={64}
+              offset={Vector2.zero}
+              hoveredOffset={new Vector2(1, 0)}
+              pressedOffset={new Vector2(2, 0)}
+              inactiveOffset={new Vector2(3, 0)}
+              anchorPoint={anchorPoints.bottomCenter}
+              position={UDim2.fromScale(0.2, 0.98)}
+              size={UDim2.fromScale(0.15, 0.15)}
+              spritestripImage={Images.Button_Arrow01}
+              active={() => advancedPage() === 1}
+              activated={() => advancedPage(0)}
+              zIndex={5}
+            >
+              <uiaspectratioconstraint />
+            </SpritestripButton>
+            <SpritestripButton name="NextPageButton"
+              tileSize={64}
+              offset={new Vector2(0, 1)}
+              hoveredOffset={new Vector2(1, 1)}
+              pressedOffset={new Vector2(2, 1)}
+              inactiveOffset={new Vector2(3, 1)}
+              anchorPoint={anchorPoints.bottomCenter}
+              position={UDim2.fromScale(0.8, 0.98)}
+              size={UDim2.fromScale(0.15, 0.15)}
+              spritestripImage={Images.Button_Arrow01}
+              active={() => advancedPage() === 0}
+              activated={() => advancedPage(1)}
+              zIndex={5}
+            >
+              <uiaspectratioconstraint />
+            </SpritestripButton>
           </>}
         </Show>
       </frame>

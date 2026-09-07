@@ -14,8 +14,8 @@ const PLAYABLE_SCHOOLS: PlayableSchool[] = [
 interface StatGridRowProps {
   /** Fraction of the page's height the row of slots is vertically centered on. */
   readonly y: Derivable<number>;
-  /** Fraction of the page's width each of the 7 slots is horizontally centered on, left to right. */
-  readonly slotX: readonly number[];
+  /** Fraction of the page's width each slot is horizontally centered on, keyed by school. */
+  readonly slotX: Readonly<Record<PlayableSchool, number>>;
   readonly values: Derivable<PerSchoolStats<number>>;
   readonly suffix?: Derivable<string>;
 }
@@ -23,8 +23,8 @@ interface StatGridRowProps {
 export function StatGridRow({ y, slotX, values, suffix = "" }: StatGridRowProps): Vide.Node {
   return (
     <frame Name="StatGridRow" BackgroundTransparency={1} Size={UDim2.fromScale(1, 1)}>
-      {PLAYABLE_SCHOOLS.map((school, index) => {
-        const x = slotX[index];
+      {PLAYABLE_SCHOOLS.map(school => {
+        const x = slotX[school];
         return <>
           <SchoolIcon school={school}
             anchorPoint={anchorPoints.center}

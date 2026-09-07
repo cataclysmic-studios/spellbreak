@@ -8,6 +8,41 @@ import type { CharacterData } from "shared/structs/data";
 
 const { min, floor } = math;
 
+export function getSchoolTitle(school: PlayableSchool): string {
+  switch (school) {
+    case School.Fire: return "Pyromancer";
+    case School.Ice: return "Thaumaturge";
+    case School.Storm: return "Diviner";
+    case School.Life: return "Theurgist";
+    case School.Death: return "Necromancer";
+    case School.Myth: return "Conjurer";
+    case School.Balance: return "Sorcerer";
+  }
+}
+
+export function getLevelTitle(level: number): string {
+  if (level < 10) return "Novice";
+  if (level < 15) return "Initiate";
+  if (level < 20) return "Apprentice";
+  if (level < 30) return "Adept";
+  if (level < 40) return "Magus";
+  if (level < 50) return "Master";
+  if (level < 60) return "Grandmaster";
+  if (level < 70) return "Legendary";
+  if (level < 80) return "Transcendent";
+  if (level < 90) return "Archmage";
+  if (level < 100) return "Promethean";
+  if (level < 110) return "Exalted";
+  if (level < 120) return "Prodigious";
+  if (level < 130) return "Champion";
+  if (level < 140) return "Visionary";
+  if (level < 150) return "Cosmic";
+  if (level < 160) return "Paragon";
+  if (level < 170) return "Prime";
+  if (level < 180) return "Supreme";
+  return "Eternal";
+}
+
 const base = 100;
 const growth = 1.08;
 const hardCap = 1.25e6;
@@ -16,7 +51,7 @@ export function getRequiredXpForNextLevel(level: number): number {
 }
 
 /** Adds `amount` XP to `xp`, rolling any levels gained (and their leftover XP) forward. */
-export function applyXp(level: number, xp: number, amount: number): { level: number; xp: number } {
+export function applyXp(level: number, xp: number, amount: number): { level: number; xp: number; } {
   let newLevel = level;
   let newXp = xp + amount;
 

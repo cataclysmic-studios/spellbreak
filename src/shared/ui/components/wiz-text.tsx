@@ -19,9 +19,9 @@ export interface WizTextProps {
   readonly anchorPoint?: Derivable<Vector2>;
   readonly font?: Derivable<Enum.Font>;
   readonly fontSize?: Derivable<number>;
-  readonly alignX?: Derivable<Enum.TextXAlignment>;
-  readonly alignY?: Derivable<Enum.TextYAlignment>;
-  readonly automaticSize?: Derivable<Enum.AutomaticSize>;
+  readonly alignX?: Derivable<Enum.TextXAlignment | Enum.TextXAlignment["Name"]>;
+  readonly alignY?: Derivable<Enum.TextYAlignment | Enum.TextYAlignment["Name"]>;
+  readonly automaticSize?: Derivable<Enum.AutomaticSize | Enum.AutomaticSize["Name"]>;
   readonly visible?: Derivable<boolean>;
   readonly layoutOrder?: Derivable<number>;
   readonly zIndex?: Derivable<number>;

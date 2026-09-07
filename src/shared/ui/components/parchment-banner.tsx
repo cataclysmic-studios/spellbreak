@@ -1,4 +1,4 @@
-import Vide, { type Derivable } from "@rbxts/vide";
+import Vide, { read, type Derivable } from "@rbxts/vide";
 
 import { usePx } from "../hooks/use-px";
 import { positions } from "../utility/positioning";
@@ -16,9 +16,10 @@ interface ParchmentBannerProps {
   readonly position?: Derivable<UDim2>;
   readonly anchorPoint?: Derivable<Vector2>;
   readonly zIndex?: Derivable<number>;
+  readonly stroke?: Derivable<boolean>;
 }
 
-export function ParchmentBanner({ name, text, textSize, textColor = palette.black, size, position, anchorPoint, zIndex }: ParchmentBannerProps): Vide.Node {
+export function ParchmentBanner({ name, text, textSize, textColor = palette.black, size, position, anchorPoint, zIndex, stroke = true }: ParchmentBannerProps): Vide.Node {
   const px = usePx();
 
   return (
@@ -35,7 +36,7 @@ export function ParchmentBanner({ name, text, textSize, textColor = palette.blac
         textSize={textSize}
         textColor={textColor}
       >
-        <uistroke Thickness={px.scale(1.4)} Transparency={0.4} />
+        {() => read(stroke) ? <uistroke Thickness={px.scale(1.4)} Transparency={0.4} /> : undefined}
       </WizText>
     </imagelabel>
   );

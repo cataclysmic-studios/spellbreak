@@ -1,4 +1,4 @@
-import type { School } from "../school";
+import type { PlayableSchool } from "../school";
 import type { CharacterStats } from "./character-stats";
 import type { GearCategory } from "./items/gear";
 import type { DeckReferenceData } from "./items/gear/deck";
@@ -35,13 +35,13 @@ export interface BackpackData {
 }
 
 interface CharacterLocation {
-  readonly position: { x: number; y: number; z: number };
-  readonly lookAlong: { x: number; z: number };
+  readonly position: { x: number; y: number; z: number; };
+  readonly lookAlong: { x: number; z: number; };
 }
 
 export interface CharacterData {
   readonly name: string;
-  readonly school: School;
+  readonly school: PlayableSchool;
   readonly level: number;
   readonly xp: number;
   readonly gold: number;

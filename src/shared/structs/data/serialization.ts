@@ -1,6 +1,6 @@
 import type { f16, u8, u12, u16, u32, u24, String, HashMap } from "@rbxts/serio";
 
-import type { School } from "../school";
+import type { PlayableSchool, School } from "../school";
 import type { CharacterStats, PerSchoolStats } from "./character-stats";
 import type { GearCategory } from "./items/gear";
 import type { DeckLinkedData } from "./items/gear/deck";
@@ -92,7 +92,7 @@ export interface CharacterStatsSchema extends CharacterStats {
 
 export interface CharacterDataSchema extends Omit<CharacterData, "activeQuests"> {
   readonly name: String<u8>;
-  readonly school: School;
+  readonly school: u8;
   readonly level: u8;
   readonly xp: u32;
   readonly gold: u24;

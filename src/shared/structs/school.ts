@@ -1,5 +1,5 @@
 export type PlayableSchool = Exclude<School, School.Shadow | School.Stellar | School.Lunar | School.Solar>;
-export const enum School {
+export enum School {
   Fire,
   Ice,
   Storm,

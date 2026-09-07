@@ -1,5 +1,6 @@
 import Vide, { cleanup } from "@rbxts/vide";
 import { Players } from "@rbxts/services";
+import { useEventListener } from "@rbxts/pretty-vide-utils";
 
 /** Frames a head-and-shoulders bust, not the whole body. */
 const TARGET_HEIGHT = 2.2;
@@ -64,10 +65,11 @@ export function CharacterPortrait(): Vide.Node {
   };
 
   const player = Players.LocalPlayer;
-  showCharacter(player.Character ?? player.CharacterAdded.Wait()[0]);
+  if (player.Character !== undefined) {
+    showCharacter(player.Character);
+  }
 
-  const connection = player.CharacterAdded.Connect(showCharacter);
-  cleanup(connection);
+  useEventListener(player.CharacterAdded, showCharacter);
   cleanup(() => displayModel?.Destroy());
 
   return viewport;

@@ -10,9 +10,9 @@ export const CONTAINER_SIZE = new Vector2(240, 40);
 export function NametagContainer({ adornee, offset, children }: PropsWithChildren<NametagContainerProps>): Vide.Node {
   return (
     <billboardgui Name="NametagContainer"
-      Active={true}
+      Active
+      ClipsDescendants
       Adornee={adornee}
-      ClipsDescendants={true}
       LightInfluence={0}
       MaxDistance={80}
       SizeOffset={new Vector2(0, 0.5)}

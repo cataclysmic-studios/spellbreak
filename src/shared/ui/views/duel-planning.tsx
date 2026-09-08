@@ -139,7 +139,7 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
         BackgroundTransparency={1}
         Text={() => timerRemaining() === 0 ? "" : tostring(timerRemaining())}
         TextColor3={palette.white}
-        TextScaled={true}
+        TextScaled
         Size={UDim2.fromOffset(px(100), px(100))}
         FontFace={new Font("rbxassetid://12187364648", Enum.FontWeight.Bold)}
       >

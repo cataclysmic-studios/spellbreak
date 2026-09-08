@@ -41,7 +41,7 @@ export function CardDescription({ parts }: CardDescriptionProps): Vide.Node {
         HorizontalAlignment={Enum.HorizontalAlignment.Center}
         VerticalAlignment={Enum.VerticalAlignment.Top}
         SortOrder={Enum.SortOrder.LayoutOrder}
-        Wraps={true}
+        Wraps
       />
       <For each={() => parts}>
         {(part, index) => {

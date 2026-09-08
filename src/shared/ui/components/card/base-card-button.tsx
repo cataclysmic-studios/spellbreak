@@ -76,7 +76,7 @@ export function BaseCardButton({ spellCard, layoutOrder, grayscale, selected, ho
       AnchorPoint={anchorPoints.center}
       Position={positions.center}
       BackgroundTransparency={1}
-      ClipsDescendants={true}
+      ClipsDescendants
       Size={UDim2.fromOffset(cardReferenceWidth, cardReferenceHeight)}
     >
       <uistroke

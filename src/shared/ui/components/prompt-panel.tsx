@@ -41,7 +41,7 @@ export function PromptPanel({ name, anchorPoint, position, size, title, portrait
         position={positions.topCenter.add(UDim2.fromScale(0, 0.06))}
         size={UDim2.fromScale(0.55, 0.15)}
         alignX={Enum.TextXAlignment.Left}
-        textScaled={true}
+        textScaled
         textColor={palette.black}
         text={title}
       />

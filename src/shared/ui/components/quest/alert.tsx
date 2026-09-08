@@ -44,7 +44,7 @@ export function QuestAlert({ mode }: QuestAlertProps): Vide.Node {
         size={UDim2.fromScale(1.1, 1.1)}
         text={() => mode() === AlertMode.PickUp ? "!" : "?"}
         textColor={() => mode() === AlertMode.InProgress ? palette.mediumGray : palette.yellow}
-        textScaled={true}
+        textScaled
         visible={visible}
       >
         <uistroke Thickness={px.scale(1)} Transparency={0.2} />

@@ -31,7 +31,7 @@ export function Nametag({ name, description, color, children }: NametagProps): V
       Size={UDim2.fromScale(1, 0.55)}
       Text={() => read(name).upper()}
       TextColor3={() => read(color) ?? palette.white}
-      TextScaled={true}
+      TextScaled
     />
     <Container name="Bottom"
       anchorPoint={anchorPoints.bottomCenter}
@@ -53,7 +53,7 @@ export function Nametag({ name, description, color, children }: NametagProps): V
         FontFace={luckiestGuy}
         Text={descriptionText}
         TextColor3={() => read(color) ?? palette.white}
-        TextScaled={true}
+        TextScaled
         Size={() => {
           const descriptionTextSize = CONTAINER_SIZE
             .mul(new Vector2(1, frameSize.Y.Scale)).Y;

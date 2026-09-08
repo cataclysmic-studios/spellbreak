@@ -78,7 +78,7 @@ export function QuestFrame({
         anchorPoint={anchorPoints.topCenter}
         position={positions.topCenter.add(UDim2.fromScale(0, 0.06))}
         size={UDim2.fromScale(0.75, 0.08)}
-        textScaled={true}
+        textScaled
         text={quest.name}
       />
       <WizText name="Action"

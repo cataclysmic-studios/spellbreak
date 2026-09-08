@@ -31,7 +31,7 @@ export function QuestDescription({ info, offset, visible }: QuestHelperProps): V
       size={fromOffset(px(428), px(20))}
       dropShadow={px(1)}
       font={Enum.Font.Cartoon}
-      textScaled={true}
+      textScaled
       text={description}
       visible={visible}
     />

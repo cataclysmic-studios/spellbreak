@@ -11,9 +11,9 @@ const DEFAULT_OFFSET = new Vector3(0, 4.5, 0);
 export function QuestAlertContainer({ adornee, offset = DEFAULT_OFFSET, children }: PropsWithChildren<QuestAlertContainerProps>): Vide.Node {
   return (
     <billboardgui Name="QuestAlertContainer"
-      Active={true}
+      Active
+      ClipsDescendants
       Adornee={adornee}
-      ClipsDescendants={true}
       LightInfluence={0}
       MaxDistance={80}
       SizeOffset={new Vector2(0, 1)}

@@ -129,7 +129,7 @@ export function Dialog({ id, character }: DialogProps): Vide.Node {
         position={positions.bottomRight.sub(UDim2.fromScale(rightPad, 0.19))}
         size={UDim2.fromScale(0.675, 0.55)}
         textSize={px(18)}
-        textWrap={true}
+        textWrap
         font={Enum.Font.Cartoon}
         alignX={Enum.TextXAlignment.Left}
         textColor={palette.black}

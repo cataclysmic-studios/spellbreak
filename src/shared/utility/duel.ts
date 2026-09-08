@@ -72,7 +72,7 @@ export function attachCombatantSigil(combatant: CombatantModel): MeshPart {
   const collider = combatant.collider.Position;
   const feetPosition = new Vector3(collider.X, boundsCFrame.Position.Y - size.Y / 2, collider.Z);
 
-  sigil.CFrame = new CFrame(feetPosition.add(new Vector3(0, sigil.Size.Z / 2 + 1, 0))).mul(SIGIL_FLAT_ROTATION);
+  sigil.CFrame = new CFrame(feetPosition.add(new Vector3(0, sigil.Size.Z / 2 + 0.5, 0))).mul(SIGIL_FLAT_ROTATION);
   sigil.Parent = combatant;
 
   const weld = new Instance("WeldConstraint");

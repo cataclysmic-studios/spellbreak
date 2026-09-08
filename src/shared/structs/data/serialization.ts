@@ -1,6 +1,5 @@
 import type { f16, u8, u12, u16, u32, u24, String, HashMap } from "@rbxts/serio";
 
-import type { PlayableSchool, School } from "../school";
 import type { CharacterStats, PerSchoolStats } from "./character-stats";
 import type { GearCategory } from "./items/gear";
 import type { DeckLinkedData } from "./items/gear/deck";
@@ -60,7 +59,7 @@ export interface BackpackDataSchema extends BackpackData {
   readonly [GearCategory.Athame]: GearReferenceSchema[];
   readonly [GearCategory.Amulet]: GearReferenceSchema[];
   readonly [GearCategory.Ring]: GearReferenceSchema[];
-  readonly [GearCategory.Pet]: ReferenceWithDataSchema<PetLinkedData>[];
+  readonly [GearCategory.Pet]: ReferenceWithDataSchema<PetLinkedData, GearReferenceSchema>[];
   readonly [GearCategory.Mount]: GearReferenceSchema[];
   readonly [GearCategory.Deck]: ReferenceWithDataSchema<DeckLinkedData, GearReferenceSchema>[];
 }
@@ -73,20 +72,20 @@ interface CharacterLocationSchema {
 export interface CharacterStatsSchema extends CharacterStats {
   readonly health: u16;
   readonly mana: u16;
-  readonly energy: u16;
+  readonly energy: u12;
   readonly maxMana: u16;
   readonly maxHealth: u16;
-  readonly maxEnergy: u16;
-  readonly incomingHealing: u16;
-  readonly outgoingHealing: u16;
+  readonly maxEnergy: u12;
+  readonly incomingHealing: u12;
+  readonly outgoingHealing: u12;
   readonly powerPipChance: u8;
-  readonly shadowPipRating: u8;
+  readonly shadowPipRating: u12;
   readonly stunResistance: u8;
-  readonly damage: PerSchoolStats<u16>;
-  readonly resist: PerSchoolStats<u8>;
+  readonly damage: PerSchoolStats<u12>;
+  readonly resist: PerSchoolStats<u12>;
   readonly accuracy: PerSchoolStats<u8>;
-  readonly criticalRating: PerSchoolStats<u16>;
-  readonly criticalBlockRating: PerSchoolStats<u16>;
+  readonly criticalRating: PerSchoolStats<u12>;
+  readonly criticalBlockRating: PerSchoolStats<u12>;
   readonly pierce: PerSchoolStats<u8>;
 }
 
@@ -107,7 +106,7 @@ export interface CharacterDataSchema extends Omit<CharacterData, "activeQuests">
   readonly backpack: BackpackDataSchema;
   readonly stats: CharacterStatsSchema;
   readonly lastLocation: CharacterLocationSchema;
-  readonly currentZone: u8;
+  readonly currentZone: u12;
 }
 
 export interface PlayerDataSchema {

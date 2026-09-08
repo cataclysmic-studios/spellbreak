@@ -1,6 +1,5 @@
 import type { f16, u8, u12, u16, u32, u24, String, HashMap } from "@rbxts/serio";
 
-import type { CharacterStats, PerSchoolStats } from "./character-stats";
 import type { GearCategory } from "./items/gear";
 import type { DeckLinkedData } from "./items/gear/deck";
 import type { PetLinkedData } from "./items/gear/pet";
@@ -69,30 +68,9 @@ interface CharacterLocationSchema {
   readonly lookAlong: { x: f16; z: f16; };
 }
 
-export interface CharacterStatsSchema extends CharacterStats {
-  readonly health: u16;
-  readonly mana: u16;
-  readonly energy: u12;
-  readonly maxMana: u16;
-  readonly maxHealth: u16;
-  readonly maxEnergy: u12;
-  readonly incomingHealing: u12;
-  readonly outgoingHealing: u12;
-  readonly powerPipChance: u8;
-  readonly shadowPipRating: u12;
-  readonly stunResistance: u8;
-  readonly damage: PerSchoolStats<u12>;
-  readonly resist: PerSchoolStats<u12>;
-  readonly accuracy: PerSchoolStats<u8>;
-  readonly criticalRating: PerSchoolStats<u12>;
-  readonly criticalBlockRating: PerSchoolStats<u12>;
-  readonly pierce: PerSchoolStats<u8>;
-}
-
 export interface CharacterDataSchema extends Omit<CharacterData, "activeQuests"> {
   readonly name: String<u8>;
   readonly school: u8;
-  readonly level: u8;
   readonly xp: u32;
   readonly gold: u24;
   readonly arenaTickets: u24;
@@ -105,7 +83,6 @@ export interface CharacterDataSchema extends Omit<CharacterData, "activeQuests">
   /** Values represent index in backpack data */
   readonly equippedGear: EquippedGearDataSchema;
   readonly backpack: BackpackDataSchema;
-  readonly stats: CharacterStatsSchema;
   readonly lastLocation: CharacterLocationSchema;
   readonly currentZone: u12;
 }

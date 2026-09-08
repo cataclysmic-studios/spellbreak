@@ -4,7 +4,6 @@ import Sift from "@rbxts/sift";
 import { Message, type MessageData } from "shared/messaging";
 import { OnServerMessage } from "shared/meta";
 import { canReceiveQuest, getActiveQuestIDs, getCurrentGoalIndex, getQuestByID, hasQuest, npcGivesQuest } from "shared/utility/quests";
-import { applyXp } from "shared/utility/character";
 import { QuestGoalAction, QuestRewardKind, type QuestID } from "shared/structs/quests";
 import type { ZoneID } from "shared/structs/zone";
 import Log from "shared/log";
@@ -95,14 +94,12 @@ export class QuestService {
     }
 
     await this.database.updateCharacter(player, character => {
-      const { level, xp } = applyXp(character.level, character.xp, xpGained);
       return Sift.Dictionary.merge(character, {
         selectedQuest: character.selectedQuest === id ? undefined : character.selectedQuest,
         activeQuests: Sift.Dictionary.filter(character.activeQuests, key => key !== id),
         completedQuests: Sift.Array.push(character.completedQuests, id),
         gold: character.gold + goldGained,
-        level,
-        xp
+        xp: character.xp + xpGained
       });
     });
   }

@@ -7,6 +7,7 @@ import { getDialogByID } from "./dialog";
 import { getEnemyByID, getNearestEnemyPosition } from "./enemy";
 import { getZoneByID, getNearestTunnelPosition } from "./zone";
 import { QuestGoalAction, QuestID, type TalkQuestGoal, type QuestDescriptor, type QuestGoal, type QuestInfo } from "shared/structs/quests";
+import { getCharacterLevel } from "shared/utility/character";
 import type { CharacterData } from "shared/structs/data";
 import type { NpcDescriptor, NpcID } from "shared/structs/npc/descriptor";
 import type { DialogID } from "shared/structs/npc/dialog";
@@ -101,7 +102,7 @@ export function getFirstCompletableTalkGoal(
 
 export function canReceiveQuest(character: CharacterData, id: QuestID | QuestDescriptor): boolean {
   const quest = typeIs(id, "number") ? getQuestByID(id) : id;
-  return character.level >= quest.requiredLevel
+  return getCharacterLevel(character.xp) >= quest.requiredLevel
     && !hasQuest(character, quest)
     && !hasCompletedQuest(character, quest)
     && (!hasPrequests(quest) || quest.prequests.every(prequest => hasCompletedQuest(character, prequest)));

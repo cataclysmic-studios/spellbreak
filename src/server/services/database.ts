@@ -16,7 +16,7 @@ import type { CharacterService } from "./character";
 
 type PlayerDataDocument = Document<PlayerData>;
 
-const VERSION = 20;
+const VERSION = 21;
 
 @Service()
 export class DatabaseService implements OnPlayerJoin, OnPlayerLeave {

@@ -1,12 +1,15 @@
 import { GearCategory } from "shared/structs/data/items/gear";
 import { SpellReference } from "shared/structs/data/reference/spell";
 import { DeckReference } from "shared/structs/data/reference/gear/deck";
-import { SpellCardKind } from "shared/structs/spell/card";
 import { ZoneID } from "shared/structs/zone";
 import { type PlayableSchool, School } from "shared/structs/school";
+import { getGearByReference, hasStats } from "shared/utility/items";
+import type { CharacterStats, PerSchoolStats } from "shared/structs/data/character-stats";
+import type { GearData } from "shared/structs/data/items/gear";
 import type { CharacterData } from "shared/structs/data";
 
-const { min, floor } = math;
+const { min, floor, round } = math;
+type Mutable<T> = { -readonly [K in keyof T]: T[K]; };
 
 export function getMaxGold(level: number): number {
   if (level < 80) return 200_000;
@@ -61,25 +64,32 @@ export function getRequiredXpForNextLevel(level: number): number {
   return min(floor(base * level * level * growth), hardCap);
 }
 
-/** Adds `amount` XP to `xp`, rolling any levels gained (and their leftover XP) forward. */
-export function applyXp(level: number, xp: number, amount: number): { level: number; xp: number; } {
-  let newLevel = level;
-  let newXp = xp + amount;
-
-  let required = getRequiredXpForNextLevel(newLevel);
-  while (newXp >= required) {
-    newXp -= required;
-    newLevel += 1;
-    required = getRequiredXpForNextLevel(newLevel);
-  }
-
-  return { level: newLevel, xp: newXp };
+export interface LevelProgress {
+  readonly level: number;
+  /** XP earned since hitting `level`, i.e. progress toward `xpForNextLevel`. */
+  readonly xpIntoLevel: number;
+  readonly xpForNextLevel: number;
 }
 
-const maxMana = 15;
-const maxEnergy = 40;
+/** Derives level and in-level progress from total accumulated XP - level is never stored, only `xp`. */
+export function getLevelProgress(totalXp: number): LevelProgress {
+  let level = 1;
+  let xpIntoLevel = totalXp;
+  let xpForNextLevel = getRequiredXpForNextLevel(level);
+  while (xpIntoLevel >= xpForNextLevel) {
+    xpIntoLevel -= xpForNextLevel;
+    level += 1;
+    xpForNextLevel = getRequiredXpForNextLevel(level);
+  }
 
-export const DEFAULT_HEALTHS: Record<PlayableSchool, number> = {
+  return { level, xpIntoLevel, xpForNextLevel };
+}
+
+export function getCharacterLevel(totalXp: number): number {
+  return getLevelProgress(totalXp).level;
+}
+
+const DEFAULT_HEALTHS: Record<PlayableSchool, number> = {
   [School.Fire]: 415,
   [School.Ice]: 500,
   [School.Storm]: 400,
@@ -89,12 +99,164 @@ export const DEFAULT_HEALTHS: Record<PlayableSchool, number> = {
   [School.Balance]: 480
 };
 
-export function newCharacterData(name: string, school: PlayableSchool): CharacterData {
-  const maxHealth = DEFAULT_HEALTHS[school];
+/** Per-level health growth rate per school, fit from the wiki's base-stats level chart (https://wizard101.fandom.com/wiki/Level_Chart, levels 1-50). */
+const HEALTH_GROWTH: Record<PlayableSchool, number> = {
+  [School.Fire]: 22.14,
+  [School.Ice]: 31.12,
+  [School.Storm]: 16.33,
+  [School.Myth]: 21.94,
+  [School.Life]: 27.35,
+  [School.Death]: 24.49,
+  [School.Balance]: 26.94
+};
+
+const BASE_MANA = 15;
+const MANA_GROWTH = 2.14;
+const MANA_CAP = 120;
+
+const BASE_ENERGY = 40;
+const ENERGY_GROWTH = 0.51;
+
+export function getBaseMaxHealth(level: number, school: PlayableSchool): number {
+  return floor(DEFAULT_HEALTHS[school] + HEALTH_GROWTH[school] * (level - 1));
+}
+
+export function getBaseMaxMana(level: number): number {
+  return min(floor(BASE_MANA + MANA_GROWTH * (level - 1)), MANA_CAP);
+}
+
+export function getBaseMaxEnergy(level: number): number {
+  return floor(BASE_ENERGY + ENERGY_GROWTH * (level - 1));
+}
+
+/** Starts at level 10, ramping to a 40% cap by level 50 (per the wiki level chart - see `HEALTH_GROWTH`). Returned as a 0-1 chance, matching `CombatantPips.gainWithChance`. */
+export function getBasePowerPipChance(level: number): number {
+  if (level < 10) return 0;
+  return min(round(10 + (level - 10) * 0.75), 40) / 100;
+}
+
+/** Wizard101 doesn't publish an exact per-level shadow pip rating table - approximated as +1 every 30 levels past the level-90 unlock, capped at 3. */
+export function getBaseShadowPipRating(level: number): number {
+  if (level < 90) return 0;
+  return min(floor((level - 90) / 30) + 1, 3);
+}
+
+function zeroPerSchoolStats(): Mutable<PerSchoolStats<number>> {
+  return {
+    [School.Fire]: 0,
+    [School.Ice]: 0,
+    [School.Storm]: 0,
+    [School.Life]: 0,
+    [School.Death]: 0,
+    [School.Myth]: 0,
+    [School.Balance]: 0,
+    [School.Stellar]: 0,
+    [School.Lunar]: 0,
+    [School.Solar]: 0,
+    [School.Shadow]: 0
+  };
+}
+
+function addPerSchoolStats(target: Mutable<PerSchoolStats<number>>, addend?: Partial<PerSchoolStats<number>>): void {
+  if (addend === undefined) return;
+  target[School.Fire] += addend[School.Fire] ?? 0;
+  target[School.Ice] += addend[School.Ice] ?? 0;
+  target[School.Storm] += addend[School.Storm] ?? 0;
+  target[School.Life] += addend[School.Life] ?? 0;
+  target[School.Death] += addend[School.Death] ?? 0;
+  target[School.Myth] += addend[School.Myth] ?? 0;
+  target[School.Balance] += addend[School.Balance] ?? 0;
+  target[School.Stellar] += addend[School.Stellar] ?? 0;
+  target[School.Lunar] += addend[School.Lunar] ?? 0;
+  target[School.Solar] += addend[School.Solar] ?? 0;
+  target[School.Shadow] += addend[School.Shadow] ?? 0;
+}
+
+type EquippableGearCategory = Exclude<GearCategory, GearCategory.Pet | GearCategory.Deck>;
+const EQUIPPABLE_GEAR_CATEGORIES: readonly EquippableGearCategory[] = [
+  GearCategory.Hat, GearCategory.Robe, GearCategory.Boots, GearCategory.Wand,
+  GearCategory.Athame, GearCategory.Amulet, GearCategory.Ring, GearCategory.Mount
+];
+
+function getEquippedGearList(character: CharacterData): GearData[] {
+  const gearList: GearData[] = [];
+  for (const category of EQUIPPABLE_GEAR_CATEGORIES) {
+    const index = character.equippedGear[category];
+    if (index === undefined) continue;
+
+    const reference = character.backpack[category][index];
+    if (reference === undefined) continue;
+
+    gearList.push(getGearByReference(reference));
+  }
+
+  return gearList;
+}
+
+/** Computes a character's full stat sheet from their level (derived from XP) and equipped gear - nothing here is persisted. */
+export function getCharacterStats(character: CharacterData): CharacterStats {
+  const level = getCharacterLevel(character.xp);
+
+  let maxHealth = getBaseMaxHealth(level, character.school);
+  let maxMana = getBaseMaxMana(level);
+  let maxEnergy = getBaseMaxEnergy(level);
+  let powerPipChance = getBasePowerPipChance(level);
+  let shadowPipRating = getBaseShadowPipRating(level);
+  let incomingHealing = 0;
+  let outgoingHealing = 0;
+  let stunResistance = 0;
+
+  const damage = zeroPerSchoolStats();
+  const resist = zeroPerSchoolStats();
+  const accuracy = zeroPerSchoolStats();
+  const criticalRating = zeroPerSchoolStats();
+  const criticalBlockRating = zeroPerSchoolStats();
+  const pierce = zeroPerSchoolStats();
+
+  for (const gear of getEquippedGearList(character)) {
+    if (!hasStats(gear)) continue;
+
+    const { stats } = gear;
+    maxHealth += stats.maxHealth ?? 0;
+    maxMana += stats.maxMana ?? 0;
+    maxEnergy += stats.maxEnergy ?? 0;
+    powerPipChance += stats.powerPipChance ?? 0;
+    shadowPipRating += stats.shadowPipRating ?? 0;
+    incomingHealing += stats.incomingHealing ?? 0;
+    outgoingHealing += stats.outgoingHealing ?? 0;
+    stunResistance += stats.stunResistance ?? 0;
+    addPerSchoolStats(damage, stats.damage);
+    addPerSchoolStats(resist, stats.resist);
+    addPerSchoolStats(accuracy, stats.accuracy);
+    addPerSchoolStats(criticalRating, stats.criticalRating);
+    addPerSchoolStats(criticalBlockRating, stats.criticalBlockRating);
+    addPerSchoolStats(pierce, stats.pierce);
+  }
 
   return {
+    health: maxHealth,
+    mana: maxMana,
+    energy: maxEnergy,
+    maxHealth,
+    maxMana,
+    maxEnergy,
+    powerPipChance,
+    shadowPipRating,
+    incomingHealing,
+    outgoingHealing,
+    stunResistance,
+    damage,
+    resist,
+    accuracy,
+    criticalRating,
+    criticalBlockRating,
+    pierce
+  };
+}
+
+export function newCharacterData(name: string, school: PlayableSchool): CharacterData {
+  return {
     name, school,
-    level: 1,
     xp: 0,
     gold: 0,
     arenaTickets: 0,
@@ -131,98 +293,7 @@ export function newCharacterData(name: string, school: PlayableSchool): Characte
       position: { x: 0, y: 1, z: -594 },
       lookAlong: { x: 0, z: -1 }
     },
-    currentZone: ZoneID.HeadmastersOffice,
-    stats: {
-      maxHealth,
-      maxMana,
-      maxEnergy,
-      health: maxHealth,
-      mana: maxMana,
-      energy: maxEnergy,
-      powerPipChance: 0,
-      shadowPipRating: 0,
-      incomingHealing: 0,
-      outgoingHealing: 0,
-      stunResistance: 0,
-      damage: {
-        [School.Fire]: 0,
-        [School.Ice]: 0,
-        [School.Storm]: 0,
-        [School.Life]: 0,
-        [School.Death]: 0,
-        [School.Myth]: 0,
-        [School.Balance]: 0,
-        [School.Stellar]: 0,
-        [School.Lunar]: 0,
-        [School.Solar]: 0,
-        [School.Shadow]: 0
-      },
-      resist: {
-        [School.Fire]: 0,
-        [School.Ice]: 0,
-        [School.Storm]: 0,
-        [School.Life]: 0,
-        [School.Death]: 0,
-        [School.Myth]: 0,
-        [School.Balance]: 0,
-        [School.Stellar]: 0,
-        [School.Lunar]: 0,
-        [School.Solar]: 0,
-        [School.Shadow]: 0
-      },
-      accuracy: {
-        [School.Fire]: 0,
-        [School.Ice]: 0,
-        [School.Storm]: 0,
-        [School.Life]: 0,
-        [School.Death]: 0,
-        [School.Myth]: 0,
-        [School.Balance]: 0,
-        [School.Stellar]: 0,
-        [School.Lunar]: 0,
-        [School.Solar]: 0,
-        [School.Shadow]: 0
-      },
-      criticalRating: {
-        [School.Fire]: 0,
-        [School.Ice]: 0,
-        [School.Storm]: 0,
-        [School.Life]: 0,
-        [School.Death]: 0,
-        [School.Myth]: 0,
-        [School.Balance]: 0,
-        [School.Stellar]: 0,
-        [School.Lunar]: 0,
-        [School.Solar]: 0,
-        [School.Shadow]: 0
-      },
-      criticalBlockRating: {
-        [School.Fire]: 0,
-        [School.Ice]: 0,
-        [School.Storm]: 0,
-        [School.Life]: 0,
-        [School.Death]: 0,
-        [School.Myth]: 0,
-        [School.Balance]: 0,
-        [School.Stellar]: 0,
-        [School.Lunar]: 0,
-        [School.Solar]: 0,
-        [School.Shadow]: 0
-      },
-      pierce: {
-        [School.Fire]: 0,
-        [School.Ice]: 0,
-        [School.Storm]: 0,
-        [School.Life]: 0,
-        [School.Death]: 0,
-        [School.Myth]: 0,
-        [School.Balance]: 0,
-        [School.Stellar]: 0,
-        [School.Lunar]: 0,
-        [School.Solar]: 0,
-        [School.Shadow]: 0
-      }
-    }
+    currentZone: ZoneID.HeadmastersOffice
   };
 }
 

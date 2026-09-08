@@ -1,5 +1,4 @@
 import type { PlayableSchool } from "../school";
-import type { CharacterStats } from "./character-stats";
 import type { GearCategory } from "./items/gear";
 import type { DeckReferenceData } from "./items/gear/deck";
 import type { PetReferenceData } from "./items/gear/pet";
@@ -42,7 +41,7 @@ interface CharacterLocation {
 export interface CharacterData {
   readonly name: string;
   readonly school: PlayableSchool;
-  readonly level: number;
+  /** Total accumulated XP - level and progress within the current level are derived from this, see `getCharacterLevel`/`getLevelProgress`. */
   readonly xp: number;
   readonly gold: number;
   readonly arenaTickets: number;
@@ -54,7 +53,6 @@ export interface CharacterData {
   /** Values represent index in backpack data */
   readonly equippedGear: EquippedGearData;
   readonly backpack: BackpackData;
-  readonly stats: CharacterStats;
   readonly lastLocation: CharacterLocation;
   readonly currentZone: ZoneID;
 }

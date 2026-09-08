@@ -4,7 +4,7 @@ import { usePx } from "shared/ui/hooks/use-px";
 import { anchorPoints, positions } from "shared/ui/utility/positioning";
 import { palette } from "shared/ui/palette";
 import { Images } from "shared/ui/utility/images";
-import { getLevelTitle, getMaxGold, getRequiredXpForNextLevel, getSchoolTitle } from "shared/utility/character";
+import { getCharacterStats, getLevelProgress, getLevelTitle, getMaxGold, getSchoolTitle } from "shared/utility/character";
 import { commaFormat } from "shared/utility/format";
 import { School, type PlayableSchool } from "shared/structs/school";
 import type { CharacterData, PlayerData } from "shared/structs/data";
@@ -82,7 +82,10 @@ const LEFT_PAGE_FIELDS: readonly LeftPageField[] = [
     position: UDim2.fromScale(0.58, 0.123), size: UDim2.fromScale(0.5, 0.06),
     textSize: 18, textColor: palette.yellow,
     alignX: "Left",
-    text: character => `${getLevelTitle(character.level)} (Level ${character.level})`
+    text: character => {
+      const { level } = getLevelProgress(character.xp);
+      return `${getLevelTitle(level)} (Level ${level})`;
+    }
   },
   {
     position: UDim2.fromScale(0.63, 0.2), size: UDim2.fromScale(0.5, 0.06),
@@ -98,7 +101,10 @@ const LEFT_PAGE_FIELDS: readonly LeftPageField[] = [
   {
     position: UDim2.fromScale(0.385, 0.35), size: UDim2.fromOffset(90, 20),
     textSize: 22, textColor: palette.black, comicSans: true,
-    text: character => `${commaFormat(character.stats.health)}/${commaFormat(character.stats.maxHealth)}`
+    text: character => {
+      const { health, maxHealth } = getCharacterStats(character);
+      return `${commaFormat(health)}/${commaFormat(maxHealth)}`;
+    }
   },
   {
     position: UDim2.fromScale(0.8, 0.282), size: UDim2.fromOffset(90, 20),
@@ -108,7 +114,10 @@ const LEFT_PAGE_FIELDS: readonly LeftPageField[] = [
   {
     position: UDim2.fromScale(0.76, 0.35), size: UDim2.fromOffset(90, 20),
     textSize: 22, textColor: palette.black, comicSans: true,
-    text: character => `${commaFormat(character.stats.mana)}/${commaFormat(character.stats.maxMana)}`
+    text: character => {
+      const { mana, maxMana } = getCharacterStats(character);
+      return `${commaFormat(mana)}/${commaFormat(maxMana)}`;
+    }
   },
   {
     position: UDim2.fromScale(0.55, 0.423), size: UDim2.fromOffset(160, 20),
@@ -118,7 +127,10 @@ const LEFT_PAGE_FIELDS: readonly LeftPageField[] = [
   {
     position: UDim2.fromScale(0.57, 0.49), size: UDim2.fromOffset(90, 20),
     textSize: 22, textColor: palette.black, comicSans: true,
-    text: character => `${commaFormat(character.xp)}/${commaFormat(getRequiredXpForNextLevel(character.level))}`
+    text: character => {
+      const { xpIntoLevel, xpForNextLevel } = getLevelProgress(character.xp);
+      return `${commaFormat(xpIntoLevel)}/${commaFormat(xpForNextLevel)}`;
+    }
   },
   {
     position: UDim2.fromScale(0.43, 0.573), size: UDim2.fromOffset(90, 30),
@@ -138,7 +150,7 @@ const LEFT_PAGE_FIELDS: readonly LeftPageField[] = [
   {
     position: UDim2.fromScale(0.77, 0.625), size: UDim2.fromOffset(110, 50),
     textSize: 22, textColor: palette.black, comicSans: true,
-    text: character => `${commaFormat(character.gold)}\n/${commaFormat(getMaxGold(character.level))}`
+    text: character => `${commaFormat(character.gold)}\n/${commaFormat(getMaxGold(getLevelProgress(character.xp).level))}`
   },
   {
     position: UDim2.fromScale(0.43, 0.702), size: UDim2.fromOffset(90, 20),
@@ -168,7 +180,10 @@ const LEFT_PAGE_FIELDS: readonly LeftPageField[] = [
   {
     position: UDim2.fromScale(0.47, 0.92), size: UDim2.fromOffset(90, 30),
     textSize: 22, textColor: palette.black, comicSans: true,
-    text: character => `${commaFormat(character.stats.energy)}/${commaFormat(character.stats.maxEnergy)}`
+    text: character => {
+      const { energy, maxEnergy } = getCharacterStats(character);
+      return `${commaFormat(energy)}/${commaFormat(maxEnergy)}`;
+    }
   },
   {
     position: UDim2.fromScale(0.82, 0.846), size: UDim2.fromOffset(120, 20),
@@ -188,7 +203,7 @@ interface CharacterPageProps extends PageProps {
 
 export function CharacterPage({ player, character }: CharacterPageProps): Vide.Node {
   const px = usePx();
-  const stats = () => character().stats;
+  const stats = Vide.derive(() => getCharacterStats(character()));
   const tab = source(StatsTab.Basic);
   const advancedPage = source<0 | 1>(0);
 

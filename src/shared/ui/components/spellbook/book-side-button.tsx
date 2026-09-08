@@ -31,6 +31,7 @@ export function BookSideButton({ icon, iconSize = 32, active = true, layoutOrder
         scaleType={Enum.ScaleType.Fit}
         spritestripImage={icon}
         tileSize={iconSize}
+        pressedOffset={new Vector2(1, 0)}
         size={UDim2.fromScale(0.75, 0.75)}
         active={active}
         activated={activated}

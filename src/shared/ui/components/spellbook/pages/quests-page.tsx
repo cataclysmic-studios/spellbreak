@@ -40,12 +40,15 @@ export function QuestsPage({ character }: PageProps): Vide.Node {
 
   return (
     <BookPageContainer>
+      <uipadding PaddingTop={new UDim(0, px(8))} PaddingLeft={new UDim(0, px(35))} />
       <uigridlayout
-        CellSize={UDim2.fromScale(0.5, 0.5)}
+        CellSize={UDim2.fromOffset(px(260), px(260))}
+        CellPadding={UDim2.fromOffset(px(38), 0)}
         FillDirectionMaxCells={2}
         SortOrder="LayoutOrder"
-        CellPadding={UDim2.fromOffset(0, px(10))}
-        />
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+      />
       <For each={questsOnPage}>
         {(quest, index) => {
           const goalIndex = character().activeQuests[quest];

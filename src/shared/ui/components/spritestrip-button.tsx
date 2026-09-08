@@ -59,6 +59,8 @@ export function SpritestripButton({
         hovered?.();
       }}
       MouseLeave={() => {
+        if (isPressed())
+          isPressed(false);
         isHovered(false);
         unhovered?.();
       }}

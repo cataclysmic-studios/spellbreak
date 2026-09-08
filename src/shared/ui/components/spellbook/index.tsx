@@ -49,7 +49,7 @@ export function Spellbook({ isOpen, character, page, onlyOptions = false }: Book
     <Container name="Spellbook"
       anchorPoint={anchorPoints.center}
       position={positions.center}
-      size={UDim2.fromOffset(px(750), px(580))}
+      size={UDim2.fromOffset(px(760), px(580))}
       visible={isOpen}
     >
       <Container name="SideButtons"

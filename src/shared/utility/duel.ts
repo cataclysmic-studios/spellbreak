@@ -68,19 +68,10 @@ export function attachCombatantSigil(combatant: CombatantModel): MeshPart {
   const sigil = assets.duel.combatantSigil.Clone();
   const [boundsCFrame, size] = combatant.GetBoundingBox();
 
-  // X/Z come from `collider` (the same part everything else - movement, facing, welds - treats
-  // as the combatant's true anchor) rather than the bounding box's center, which is only
-  // axis-aligned and drifts off-center for rigs that aren't perfectly symmetric. Y comes from the
-  // bounding box's own bottom edge instead, since `collider` isn't necessarily centered within
-  // the full model's vertical extent (a hat, weapon, or hair sticking up above the head shifts
-  // the box's center higher than the collider's) - using collider.Position.Y here left the sigil
-  // sunk slightly into the ground.
   const collider = combatant.collider.Position;
   const feetPosition = new Vector3(collider.X, boundsCFrame.Position.Y - size.Y / 2, collider.Z);
 
-  // Rotating 90 degrees about X swaps which of the sigil's own local axes maps onto world Y, so
-  // its ground clearance now comes from its local Z size instead of Y.
-  sigil.CFrame = new CFrame(feetPosition.add(new Vector3(0, sigil.Size.Z / 2, 0))).mul(SIGIL_FLAT_ROTATION);
+  sigil.CFrame = new CFrame(feetPosition.add(new Vector3(0, sigil.Size.Z / 2 + 1, 0))).mul(SIGIL_FLAT_ROTATION);
   sigil.Parent = combatant;
 
   const weld = new Instance("WeldConstraint");

@@ -1,18 +1,19 @@
 import { RunService, TweenService, Workspace as World } from "@rbxts/services";
 import { getChildrenOfType } from "@rbxts/instance-utility";
-import Sift from "@rbxts/sift";
+import { concat, shuffle } from "@rbxts/sift/out/Array";
 
+import { getZoneModel } from "./zone";
+import { getEquippedGear } from "./data";
 import { assets, maxCardsInHand, XZ } from "shared/constants";
 import { DuelCirclePosition } from "shared/structs/duel";
 import { GearCategory } from "shared/structs/data/items/gear";
 import { SpellTargetKind } from "shared/structs/spell";
+import { SpellCardKind } from "shared/structs/spell/card";
 import type { DeckData, DeckLinkedData } from "shared/structs/data/items/gear/deck";
-import type { SpellReference } from "shared/structs/data/reference/spell";
+import { SpellReference } from "shared/structs/data/reference/spell";
 import type { CharacterData } from "shared/structs/data";
 import type { SpellReferenceData } from "shared/structs/spell";
 import type { ZoneID } from "shared/structs/zone";
-import { getZoneModel } from "./zone";
-import { getEquippedGear } from "./data";
 import Log from "shared/log";
 
 const log = Log.scoped("duel pips");
@@ -135,7 +136,10 @@ export function getShuffledHand(character: CharacterData): SpellReferenceData[] 
   const deck = getEquippedDeck(character);
   if (deck === undefined) return [];
 
-  const shuffled = Sift.Array.shuffle(deck.spellReferences);
+  const shuffled = shuffle(concat(
+    deck.mainSpellReferences.map(r => ({ reference: r, data: { spellCardKind: SpellCardKind.Normal } })),
+    deck.itemCardSpellReferences.map(r => ({ reference: r, data: { spellCardKind: SpellCardKind.Item } }))
+  ));
   const hand: SpellReferenceData[] = [];
   for (let i = 0; i < math.min(shuffled.size(), maxCardsInHand); i++)
     hand.push(shuffled[i]);

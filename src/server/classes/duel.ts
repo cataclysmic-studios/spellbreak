@@ -154,6 +154,16 @@ export class ActiveDuel {
     return player !== undefined ? safeCast<CharacterModel>(player.Character) : undefined;
   }
 
+  /** The `Enemy` wrapper owning `model`, or `undefined` if it belongs to a player's character instead. */
+  public enemyOf(model: CombatantModel): Maybe<Enemy> {
+    return this.enemies.find(enemy => enemy.model === model);
+  }
+
+  /** The `Player` whose character is `model`, or `undefined` if it belongs to an enemy instead. */
+  public playerOf(model: CombatantModel): Maybe<Player> {
+    return this.players.find(player => safeCast<CharacterModel>(player.Character) === model);
+  }
+
   /**
    * A caster's combatant model, whichever side of `DuelCombatant` they are. `"model" in caster`
    * looked equivalent but isn't: for the `Player` branch that compiles to a direct `caster.model`

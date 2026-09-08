@@ -15,8 +15,11 @@ import { SpellActionKind } from "shared/structs/spell/actions";
 import { SpellTargetKind } from "shared/structs/spell";
 import { getClosestDuelCircleLocation, getDeckSideboard, getShuffledHand, playCircleIdleAnimation, playCircleSpawnAnimation } from "shared/utility/duel";
 import { getSpellFromReference } from "shared/utility/spell";
+import { getCharacterStats } from "shared/utility/character";
+import { getBoosts, getResists } from "shared/utility/damage-modifiers";
 import { getZoneModel } from "shared/utility/zone";
 import { ActiveDuel } from "server/classes/duel";
+import { Enemy } from "server/classes/enemy";
 import { chooseEnemyCast } from "server/utility/enemy-cast-ai";
 import Log from "shared/log";
 
@@ -24,9 +27,9 @@ import type { DatabaseService } from "./database";
 import type { EnemyService } from "./enemy";
 import type { ZoneService } from "./zone";
 import type { DuelCombatant } from "server/classes/duel";
-import type { Enemy } from "server/classes/enemy";
 import type { Spell } from "shared/structs/spell";
 import type { SpellAction } from "shared/structs/spell/actions";
+import type { School } from "shared/structs/school";
 import type { DuelCastTargetResult } from "shared/structs/packets";
 
 const log = Log.scoped("duel service");
@@ -97,7 +100,7 @@ export class DuelService {
     messaging.client.emit(player, Message.Movement_Toggle, false);
 
     // Founding combatants - no join effect for either of them.
-    const stats = this.database.getCharacter(player).stats;
+    const stats = getCharacterStats(this.database.getCharacter(player));
     duel.addPlayer(player, character, stats.powerPipChance, stats.maxHealth, false);
     enemy.dueling = true;
     enemy.stopMoving();
@@ -127,7 +130,7 @@ export class DuelService {
         log.info(`${player.Name} joining forming duel #${duel.id} via the circle`);
         this.duelsByPlayer.set(player, duel);
         messaging.client.emit(player, Message.Movement_Toggle, false);
-        const stats = this.database.getCharacter(player).stats;
+        const stats = getCharacterStats(this.database.getCharacter(player));
         duel.addPlayer(player, character, stats.powerPipChance, stats.maxHealth, true);
         return;
       }
@@ -287,7 +290,7 @@ export class DuelService {
     const results: DuelCastTargetResult[] = [];
     for (const action of spell.actions) {
       if (action.kind === SpellActionKind.Damage.Hit) {
-        for (const targetModel of targets) results.push(this.resolveDamage(duel, casterModel, targetModel, spell, action));
+        for (const targetModel of targets) results.push(this.resolveDamage(duel, caster, casterModel, targetModel, spell, action));
       } else if (action.kind === SpellActionKind.Buff.Blade) {
         for (const targetModel of targets) duel.addBlade(targetModel, action.value as number);
       } else {
@@ -317,7 +320,7 @@ export class DuelService {
     return target !== undefined ? [target] : [];
   }
 
-  private resolveDamage(duel: ActiveDuel, casterModel: CombatantModel, targetModel: CombatantModel, spell: Spell, action: SpellAction): DuelCastTargetResult {
+  private resolveDamage(duel: ActiveDuel, caster: DuelCombatant, casterModel: CombatantModel, targetModel: CombatantModel, spell: Spell, action: SpellAction): DuelCastTargetResult {
     const targetLocation = duel.locate(targetModel);
     const health = duel.getHealth(targetModel);
     const hit = math.random() * 100 < spell.accuracy;
@@ -325,11 +328,38 @@ export class DuelService {
     if (targetLocation === undefined) return { targetPosition: 0, targetIsOpponent: false, missed: true };
     if (!hit || health === undefined) return { targetPosition: targetLocation.position, targetIsOpponent: targetLocation.isOpponent, missed: true };
 
-    const multiplier = duel.consumeBladeMultiplier(casterModel);
     const rolled = Range.fromJSON(action.value as RangeJSON).randomInteger();
-    const damage = health.damage(math.floor(rolled * multiplier));
 
+    // Caster's own gear damage% and the target's elemental boost/resist (enemy) or gear resist% (player)
+    // stack into one percentage, same as a Blade/global/trap would - only Blades exist so far.
+    const casterDamagePercent = this.getCasterDamagePercent(caster, spell.school);
+    const targetModifierPercent = this.getTargetDamageModifierPercent(duel, targetModel, spell.school);
+    const statMultiplier = 1 + (casterDamagePercent + targetModifierPercent) / 100;
+    const bladeMultiplier = duel.consumeBladeMultiplier(casterModel);
+
+    const damage = health.damage(math.floor(rolled * statMultiplier * bladeMultiplier));
     return { targetPosition: targetLocation.position, targetIsOpponent: targetLocation.isOpponent, missed: false, damage };
+  }
+
+  /** Enemies have no gear to draw a damage% from yet - only players benefit here. */
+  private getCasterDamagePercent(caster: DuelCombatant, school: School): number {
+    if (caster instanceof Enemy) return 0;
+    return getCharacterStats(this.database.getCharacter(caster)).damage[school];
+  }
+
+  /** An enemy target's elemental boost/resist against `school` (`shared/utility/damage-modifiers`), or a player target's gear resist%. */
+  private getTargetDamageModifierPercent(duel: ActiveDuel, targetModel: CombatantModel, school: School): number {
+    const enemy = duel.enemyOf(targetModel);
+    if (enemy !== undefined) {
+      const boost = getBoosts(enemy.descriptor).get(school) ?? 0;
+      const resist = getResists(enemy.descriptor).get(school) ?? 0;
+      return boost - resist;
+    }
+
+    const player = duel.playerOf(targetModel);
+    if (player === undefined) return 0;
+
+    return -getCharacterStats(this.database.getCharacter(player)).resist[school];
   }
 
   private beginNextRound(duel: ActiveDuel): void {

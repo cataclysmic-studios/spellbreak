@@ -1,6 +1,6 @@
 import { Players, RunService, Workspace as World } from "@rbxts/services";
 import { useEventListener } from "@rbxts/pretty-vide-utils";
-import Vide, { cleanup, source, type Source } from "@rbxts/vide";
+import Vide, { cleanup, read, source, type Derivable } from "@rbxts/vide";
 
 import { usePx } from "../../hooks/use-px";
 import { anchorPoints, positions } from "../../utility/positioning";;
@@ -22,7 +22,7 @@ const FADE_DISTANCE = 6;
 const STUDS_TO_METERS = 25 / 7;
 
 interface QuestArrowProps extends QuestHelperProps {
-  readonly currentZone: Source<Maybe<ZoneID>>;
+  readonly currentZone: Derivable<Maybe<ZoneID>>;
   readonly activated?: () => void;
 }
 
@@ -50,7 +50,7 @@ export function QuestArrow({ info, offset, visible, currentZone, activated }: Qu
 
   const camera = World.CurrentCamera!;
   useEventListener(RunService.Heartbeat, dt => {
-    const questInfo = info();
+    const questInfo = read(info);
     if (questInfo === undefined) return;
 
     const root = Players.LocalPlayer.Character!.PrimaryPart;
@@ -59,7 +59,7 @@ export function QuestArrow({ info, offset, visible, currentZone, activated }: Qu
     const quest = getQuestByID(questInfo.questID);
     const goal = quest.goals[questInfo.goalIndex];
     const rootPosition = root.Position;
-    const goalPosition = getGoalTargetPosition(goal, rootPosition, currentZone());
+    const goalPosition = getGoalTargetPosition(goal, rootPosition, read(currentZone));
     const difference = rootPosition.sub(goalPosition).mul(XZ);
     const distance = difference.Magnitude;
     updateTransparencyAndText(distance);
@@ -79,7 +79,7 @@ export function QuestArrow({ info, offset, visible, currentZone, activated }: Qu
   return (
     <viewportframe Name="QuestArrow"
       AnchorPoint={anchorPoints.bottomCenter}
-      Position={() => positions.bottomCenter.sub(fromOffset(0, px(70))).add(offset())}
+      Position={() => positions.bottomCenter.sub(fromOffset(0, px(70))).add(read(offset))}
       Size={fromOffset(size, size)}
       BackgroundTransparency={1}
       ImageTransparency={transparency}

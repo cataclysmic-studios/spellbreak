@@ -1,4 +1,4 @@
-import Vide, { read, Derivable, For, type Source } from "@rbxts/vide";
+import Vide, { read, Derivable, For } from "@rbxts/vide";
 
 import { usePx } from "../../hooks/use-px";
 import { anchorPoints, positions } from "../../utility/positioning";
@@ -12,22 +12,22 @@ import { palette } from "../../palette";
 import { Images } from "../../utility/images";
 
 interface InteractPromptProps {
-  readonly interactable: Source<Maybe<Interactable>>;
+  readonly interactable: Derivable<Maybe<Interactable>>;
   readonly inputs?: Derivable<string[]>;
   readonly action?: Derivable<string>;
-  readonly visible: Source<boolean>;
+  readonly visible: Derivable<boolean>;
 }
 
 export function InteractPrompt({ interactable, inputs = [Images.Input_X], action = "Talk", visible }: InteractPromptProps): Vide.Node {
   const px = usePx();
   const portrait = () => {
-    const id = interactable();
+    const id = read(interactable);
     if (id === undefined) return "";
 
     return getNpcByID(id).portrait;
   }
   const title = () => {
-    const id = interactable();
+    const id = read(interactable);
     if (id === undefined) return "";
 
     return getNpcByID(id).name;

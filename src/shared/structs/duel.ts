@@ -1,4 +1,4 @@
-import type { Source } from "@rbxts/vide";
+import type { Derivable, Source } from "@rbxts/vide";
 import type { BaseID } from "@rbxts/id";
 import type { Timer } from "@rbxts/timer";
 
@@ -67,6 +67,6 @@ export interface DuelChoice {
  */
 export interface ActiveDuelState {
   readonly info: ClientDuelInfo;
-  readonly timer: Source<Timer>;
+  readonly timer: Derivable<Timer>;
   readonly planning: Source<boolean>;
 }

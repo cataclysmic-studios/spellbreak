@@ -1,4 +1,4 @@
-import Vide, { type Source, type Derivable, type PropsWithChildren, source, effect, cleanup, read, spring } from "@rbxts/vide";
+import Vide, { type Derivable, type PropsWithChildren, source, effect, cleanup, read, spring } from "@rbxts/vide";
 
 import { anchorPoints, positions } from "../../utility/positioning";
 import { cardAspectRatio, cardReferenceWidth, cardReferenceHeight } from "shared/constants";
@@ -17,7 +17,7 @@ interface DuelCardButtonProps {
   readonly layoutOrder: Derivable<number>;
   readonly duelInfo: ClientDuelInfo;
   readonly commitChoice: CommitDuelChoice;
-  readonly grayscale?: Source<boolean>;
+  readonly grayscale?: Derivable<boolean>;
   /** Target hover-magnification multiplier on top of the card's normal fit-to-slot size (1 = no magnification). Eased internally via a spring so it never snaps. */
   readonly scale?: Derivable<number>;
 }

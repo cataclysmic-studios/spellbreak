@@ -1,12 +1,12 @@
-import Vide, { type Source } from "@rbxts/vide";
+import Vide, { read, type Derivable } from "@rbxts/vide";
 
 import { usePx } from "../../hooks/use-px";
 import { Images } from "../../utility/images";
 import { anchorPoints, positions } from "../../utility/positioning";
 
 interface XpBarProps {
-  readonly progress: Source<number>;
-  readonly visible?: Source<boolean>;
+  readonly progress: Derivable<number>;
+  readonly visible?: Derivable<boolean>;
 }
 
 export function XpBar({ progress, visible }: XpBarProps): Vide.Node {
@@ -34,7 +34,7 @@ export function XpBar({ progress, visible }: XpBarProps): Vide.Node {
         BackgroundTransparency={1}
         AnchorPoint={anchorPoints.leftCenter}
         Position={positions.leftCenter}
-        Size={() => UDim2.fromScale(math.clamp(progress(), 0, 1), 1)}
+        Size={() => UDim2.fromScale(math.clamp(read(progress), 0, 1), 1)}
         Image={Images.XpBar}
         ZIndex={0}
       />

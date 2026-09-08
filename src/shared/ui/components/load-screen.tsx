@@ -1,4 +1,4 @@
-import Vide, { cleanup, effect, source, type Source } from "@rbxts/vide";
+import Vide, { cleanup, effect, read, source, type Derivable } from "@rbxts/vide";
 import { RunService, Workspace as World } from "@rbxts/services";
 
 import { assets } from "shared/constants";
@@ -31,7 +31,7 @@ interface BoneRestState {
 
 interface LoadScreenProps {
   /** Bumped by `LoadScreenController` each time the screen should show and (re)play the page-flip animation. */
-  readonly trigger: Source<number>;
+  readonly trigger: Derivable<number>;
 }
 
 export function LoadScreen({ trigger }: LoadScreenProps): Vide.Node {
@@ -98,7 +98,7 @@ export function LoadScreen({ trigger }: LoadScreenProps): Vide.Node {
 
   let mounted = false;
   effect(() => {
-    trigger();
+    read(trigger);
     if (!mounted) {
       mounted = true;
       return;

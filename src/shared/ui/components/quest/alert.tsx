@@ -1,6 +1,6 @@
 import { RunService } from "@rbxts/services";
 import { useEventListener } from "@rbxts/pretty-vide-utils";
-import Vide, { type Source, source } from "@rbxts/vide";
+import Vide, { type Derivable, read, source } from "@rbxts/vide";
 
 import { Images } from "../../utility/images";
 import { anchorPoints, positions } from "../../utility/positioning";
@@ -17,14 +17,14 @@ export const enum AlertMode {
 }
 
 interface QuestAlertProps {
-  readonly mode: Source<AlertMode>;
+  readonly mode: Derivable<AlertMode>;
 }
 
 const ROTATION_SPEED = 32;
 export function QuestAlert({ mode }: QuestAlertProps): Vide.Node {
   const px = usePx();
   const rotation = source(0);
-  const visible = () => mode() !== AlertMode.Disabled;
+  const visible = () => read(mode) !== AlertMode.Disabled;
   useEventListener(RunService.PreRender, dt => rotation(rotation() + dt * ROTATION_SPEED));
 
   return (
@@ -42,8 +42,8 @@ export function QuestAlert({ mode }: QuestAlertProps): Vide.Node {
         anchorPoint={anchorPoints.center}
         position={positions.center.add(UDim2.fromScale(0, 0.08))}
         size={UDim2.fromScale(1.1, 1.1)}
-        text={() => mode() === AlertMode.PickUp ? "!" : "?"}
-        textColor={() => mode() === AlertMode.InProgress ? palette.mediumGray : palette.yellow}
+        text={() => read(mode) === AlertMode.PickUp ? "!" : "?"}
+        textColor={() => read(mode) === AlertMode.InProgress ? palette.mediumGray : palette.yellow}
         textScaled
         visible={visible}
       >

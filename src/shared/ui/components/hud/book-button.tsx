@@ -1,4 +1,4 @@
-import Vide, { type Source, source, spring } from "@rbxts/vide";
+import Vide, { type Derivable, type Source, source, spring } from "@rbxts/vide";
 
 import { usePx } from "../../hooks/use-px";
 import { anchorPoints, positions } from "../../utility/positioning";
@@ -7,7 +7,7 @@ import { SpritestripButton } from "../spritestrip-button";
 
 interface BookButtonProps {
   readonly isOpen: Source<boolean>;
-  readonly visible: Source<boolean>;
+  readonly visible: Derivable<boolean>;
 }
 
 const buttonSize = 128;

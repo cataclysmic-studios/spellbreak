@@ -1,4 +1,4 @@
-import Vide, { type Source, Show, batch, effect, source, untrack } from "@rbxts/vide";
+import Vide, { type Derivable, Show, batch, effect, read, source, untrack } from "@rbxts/vide";
 import { useEventListener } from "@rbxts/pretty-vide-utils";
 import { Players, Workspace as World } from "@rbxts/services";
 import type { Timer } from "@rbxts/timer";
@@ -24,7 +24,7 @@ const mouse = Players.LocalPlayer.GetMouse();
 
 interface DuelPlanningProps {
   readonly duelInfo: ClientDuelInfo;
-  readonly timer: Source<Timer>;
+  readonly timer: Derivable<Timer>;
 }
 
 const STANDARD_TIMER_COLOR1 = palette.brightYellow;
@@ -35,7 +35,7 @@ const RED_TIMER_THRESHOLD = 10; // seconds left
 
 /** View for passing, choosing cards, drawing cards, etc. */
 export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node {
-  const timerRemaining = source(timer().getTimeLeft());
+  const timerRemaining = source(read(timer).getTimeLeft());
   const redTimerText = () => timerRemaining() <= RED_TIMER_THRESHOLD;
   const px = usePx();
 
@@ -118,7 +118,7 @@ export function DuelPlanning({ duelInfo, timer }: DuelPlanningProps): Vide.Node 
     commitChoice(card.spell.reference, { position, isOpponent });
   });
   effect(() => {
-    const currentTimer = timer();
+    const currentTimer = read(timer);
     timerRemaining(currentTimer.getTimeLeft());
     useEventListener(currentTimer.secondReached, timerRemaining);
     useEventListener(currentTimer.completed, () => {

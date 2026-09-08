@@ -1,4 +1,4 @@
-import Vide, { type Source } from "@rbxts/vide";
+import Vide, { read, type Derivable } from "@rbxts/vide";
 
 import { usePx } from "../../hooks/use-px";
 import { anchorPoints, positions } from "../../utility/positioning";
@@ -10,15 +10,15 @@ import { WizText } from "../wiz-text";
 const { fromOffset } = UDim2;
 
 export interface QuestHelperProps {
-  readonly info: Source<Maybe<QuestInfo>>;
-  readonly offset: Source<UDim2>;
-  readonly visible?: Source<boolean>;
+  readonly info: Derivable<Maybe<QuestInfo>>;
+  readonly offset: Derivable<UDim2>;
+  readonly visible?: Derivable<boolean>;
 }
 
 export function QuestDescription({ info, offset, visible }: QuestHelperProps): Vide.Node {
   const px = usePx();
   const description = () => {
-    const currentInfo = info();
+    const currentInfo = read(info);
     return currentInfo !== undefined
       ? getQuestDescription(currentInfo.questID, currentInfo.goalIndex)
       : "";
@@ -27,7 +27,7 @@ export function QuestDescription({ info, offset, visible }: QuestHelperProps): V
   return (
     <WizText name="QuestDescription"
       anchorPoint={anchorPoints.bottomCenter}
-      position={() => positions.bottomCenter.sub(fromOffset(0, px(50))).add(offset())}
+      position={() => positions.bottomCenter.sub(fromOffset(0, px(50))).add(read(offset))}
       size={fromOffset(px(428), px(20))}
       dropShadow={px(1)}
       font={Enum.Font.Cartoon}

@@ -3,7 +3,7 @@ import Vide, { type Source, type Derivable, source, read, Switch, Case } from "@
 import { usePx } from "../../hooks/use-px";
 import { anchorPoints, positions } from "../../utility/positioning";
 import { Images } from "../../utility/images";
-import type { CharacterData } from "shared/structs/data";
+import type { CharacterData, PlayerData } from "shared/structs/data";
 
 import { Container } from "../../utility/components/container";
 import { CharacterPage } from "./pages/character-page";
@@ -35,12 +35,13 @@ export interface PageProps {
 
 interface BookProps {
   readonly isOpen: Source<boolean>;
+  readonly player: Source<PlayerData>;
   readonly character: Source<CharacterData>;
   readonly page?: Source<BookPage>;
   readonly onlyOptions?: Derivable<boolean>;
 }
 
-export function Spellbook({ isOpen, character, page, onlyOptions = false }: BookProps): Vide.Node {
+export function Spellbook({ isOpen, player, character, page, onlyOptions = false }: BookProps): Vide.Node {
   const selectedPage = page ?? source<BookPage>(BookPage.Options);
   const nonOptionsActive = () => read(onlyOptions) === false;
   const px = usePx();
@@ -85,7 +86,7 @@ export function Spellbook({ isOpen, character, page, onlyOptions = false }: Book
       >
         <Switch condition={selectedPage}>
           <Case match={BookPage.Quests}>{() => <QuestsPage character={character} />}</Case>
-          <Case match={BookPage.Character}>{() => <CharacterPage character={character} />}</Case>
+          <Case match={BookPage.Character}>{() => <CharacterPage player={player} character={character} />}</Case>
           <Case match={BookPage.Backpack}>{() => <BackpackPage character={character} />}</Case>
           <Case match={BookPage.Pets}>{() => <PetsPage character={character} />}</Case>
           <Case match={BookPage.Deck}>{() => <DeckPage character={character} />}</Case>

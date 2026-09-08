@@ -1,13 +1,13 @@
-import Vide, { source, Show } from "@rbxts/vide";
+import Vide, { source, Show, type Source } from "@rbxts/vide";
 
 import { usePx } from "shared/ui/hooks/use-px";
 import { anchorPoints, positions } from "shared/ui/utility/positioning";
 import { palette } from "shared/ui/palette";
 import { Images } from "shared/ui/utility/images";
-import { getLevelTitle, getRequiredXpForNextLevel, getSchoolTitle } from "shared/utility/character";
+import { getLevelTitle, getMaxGold, getRequiredXpForNextLevel, getSchoolTitle } from "shared/utility/character";
+import { commaFormat } from "shared/utility/format";
 import { School, type PlayableSchool } from "shared/structs/school";
-import type { CharacterData } from "shared/structs/data";
-import type { CharacterStats } from "shared/structs/data/character-stats";
+import type { CharacterData, PlayerData } from "shared/structs/data";
 
 import { WizText } from "../../wiz-text";
 import { BookPageContainer, BOOK_SPINE_X } from "./book-page-container";
@@ -15,10 +15,10 @@ import { StatGridRow } from "./character/stat-grid-row";
 import { SingleStat } from "./character/single-stat";
 import { CharacterPortrait } from "./character/character-portrait";
 import { ParchmentBanner } from "../../parchment-banner";
-import type { PageProps } from "..";
 import { SchoolRoundIcon } from "../../school-round-icon";
 import { SpritestripButton } from "../../spritestrip-button";
 import { Container } from "shared/ui/utility/components/container";
+import type { PageProps } from "..";
 
 const enum StatsTab {
   Basic,
@@ -69,10 +69,11 @@ const STATS_TABS: readonly StatsTabConfig[] = [
 interface LeftPageField {
   readonly position: UDim2;
   readonly size: UDim2;
+  readonly comicSans?: boolean;
   readonly textSize: number;
   readonly textColor?: Color3;
   readonly alignX?: Enum.TextXAlignment | Enum.TextXAlignment["Name"];
-  readonly text: (character: CharacterData, stats: CharacterStats) => string;
+  readonly text: (character: CharacterData, player: PlayerData) => string;
 }
 
 /** Every readout overlaid onto `Background_Character_Left` - positions/sizes are fractions of that page, baked to match its art. Tune freely. */
@@ -95,33 +96,97 @@ const LEFT_PAGE_FIELDS: readonly LeftPageField[] = [
     text: () => "Health"
   },
   {
+    position: UDim2.fromScale(0.385, 0.35), size: UDim2.fromOffset(90, 20),
+    textSize: 22, textColor: palette.black, comicSans: true,
+    text: character => `${commaFormat(character.stats.health)}/${commaFormat(character.stats.maxHealth)}`
+  },
+  {
     position: UDim2.fromScale(0.8, 0.282), size: UDim2.fromOffset(90, 20),
     textSize: 18, textColor: palette.black,
     text: () => "Mana"
   },
   {
-    position: UDim2.fromScale(0.55, 0.408), size: UDim2.fromOffset(160, 20),
-    textSize: 13, textColor: palette.black,
+    position: UDim2.fromScale(0.76, 0.35), size: UDim2.fromOffset(90, 20),
+    textSize: 22, textColor: palette.black, comicSans: true,
+    text: character => `${commaFormat(character.stats.mana)}/${commaFormat(character.stats.maxMana)}`
+  },
+  {
+    position: UDim2.fromScale(0.55, 0.423), size: UDim2.fromOffset(160, 20),
+    textSize: 14, textColor: palette.black,
     text: () => "Experience"
   },
   {
-    position: UDim2.fromScale(0.32, 0.549), size: UDim2.fromOffset(90, 20),
-    textSize: 13, textColor: palette.black,
+    position: UDim2.fromScale(0.57, 0.49), size: UDim2.fromOffset(90, 20),
+    textSize: 22, textColor: palette.black, comicSans: true,
+    text: character => `${commaFormat(character.xp)}/${commaFormat(getRequiredXpForNextLevel(character.level))}`
+  },
+  {
+    position: UDim2.fromScale(0.43, 0.573), size: UDim2.fromOffset(90, 30),
+    textSize: 14, textColor: palette.black,
     text: () => "Training Points"
   },
   {
-    position: UDim2.fromScale(0.78, 0.549), size: UDim2.fromOffset(90, 20),
-    textSize: 13, textColor: palette.black,
+    position: UDim2.fromScale(0.39, 0.633), size: UDim2.fromOffset(90, 20),
+    textSize: 22, textColor: palette.black, comicSans: true,
+    text: character => tostring(character.trainingPoints)
+  },
+  {
+    position: UDim2.fromScale(0.81, 0.565), size: UDim2.fromOffset(90, 20),
+    textSize: 18, textColor: palette.black,
     text: () => "Gold"
   },
   {
-    position: UDim2.fromScale(0.55, 0.838), size: UDim2.fromOffset(160, 20),
-    textSize: 13, textColor: palette.black,
+    position: UDim2.fromScale(0.77, 0.625), size: UDim2.fromOffset(110, 50),
+    textSize: 22, textColor: palette.black, comicSans: true,
+    text: character => `${commaFormat(character.gold)}\n/${commaFormat(getMaxGold(character.level))}`
+  },
+  {
+    position: UDim2.fromScale(0.43, 0.702), size: UDim2.fromOffset(90, 20),
+    textSize: 18, textColor: palette.black,
+    text: () => "Crowns"
+  },
+  {
+    position: UDim2.fromScale(0.39, 0.768), size: UDim2.fromOffset(90, 30),
+    textSize: 22, textColor: palette.black, comicSans: true,
+    text: (_, player) => commaFormat(player.crowns)
+  },
+  {
+    position: UDim2.fromScale(0.818, 0.712), size: UDim2.fromOffset(90, 30),
+    textSize: 14, textColor: palette.black,
+    text: () => "Blue Arena Tickets"
+  },
+  {
+    position: UDim2.fromScale(0.77, 0.772), size: UDim2.fromOffset(90, 30),
+    textSize: 22, textColor: palette.black, comicSans: true,
+    text: character => commaFormat(character.arenaTickets)
+  },
+  {
+    position: UDim2.fromScale(0.52, 0.846), size: UDim2.fromOffset(160, 20),
+    textSize: 14, textColor: palette.black,
     text: () => "Energy"
-  }
+  },
+  {
+    position: UDim2.fromScale(0.47, 0.92), size: UDim2.fromOffset(90, 30),
+    textSize: 22, textColor: palette.black, comicSans: true,
+    text: character => `${commaFormat(character.stats.energy)}/${commaFormat(character.stats.maxEnergy)}`
+  },
+  {
+    position: UDim2.fromScale(0.82, 0.846), size: UDim2.fromOffset(120, 20),
+    textSize: 14, textColor: palette.black,
+    text: () => "More in"
+  },
+  {
+    position: UDim2.fromScale(0.83, 0.92), size: UDim2.fromOffset(90, 30),
+    textSize: 22, textColor: palette.black, comicSans: true,
+    text: () => "0:00"
+  },
 ];
 
-export function CharacterPage({ character }: PageProps): Vide.Node {
+interface CharacterPageProps extends PageProps {
+  readonly player: Source<PlayerData>;
+}
+
+export function CharacterPage({ player, character }: CharacterPageProps): Vide.Node {
   const px = usePx();
   const stats = () => character().stats;
   const tab = source(StatsTab.Basic);
@@ -171,9 +236,12 @@ export function CharacterPage({ character }: PageProps): Vide.Node {
             position={field.position}
             size={field.size}
             alignX={field.alignX}
+            textWrap
             textSize={px(field.textSize)}
             textColor={field.textColor}
-            text={() => field.text(character(), stats())}
+            lineHeight={field.comicSans ? 0.7 : 1}
+            font={field.comicSans ? Enum.Font.Cartoon : Enum.Font.LuckiestGuy}
+            text={() => field.text(character(), player())}
           />
         ))}
       </imagelabel>
@@ -257,7 +325,15 @@ export function CharacterPage({ character }: PageProps): Vide.Node {
         </Show>
 
         <Show when={() => tab() === StatsTab.Advanced}>
-          {() => <>
+          {() => <Container zIndex={5} name="AdvancedPageButtons">
+            <WizText
+              anchorPoint={anchorPoints.bottomCenter}
+              position={UDim2.fromScale(0.5, 0.98)}
+              size={UDim2.fromScale(0.4, 0.095)}
+              textSize={px(28)}
+              textColor={palette.black}
+              text={() => `${advancedPage() + 1}/2`}
+            />
             <SpritestripButton name="PrevPageButton"
               tileSize={64}
               offset={Vector2.zero}
@@ -265,12 +341,11 @@ export function CharacterPage({ character }: PageProps): Vide.Node {
               pressedOffset={new Vector2(2, 0)}
               inactiveOffset={new Vector2(3, 0)}
               anchorPoint={anchorPoints.bottomCenter}
-              position={UDim2.fromScale(0.2, 0.98)}
+              position={UDim2.fromScale(0.15, 0.98)}
               size={UDim2.fromScale(0.15, 0.15)}
               spritestripImage={Images.Button_Arrow01}
               active={() => advancedPage() === 1}
               activated={() => advancedPage(0)}
-              zIndex={5}
             >
               <uiaspectratioconstraint />
             </SpritestripButton>
@@ -281,16 +356,15 @@ export function CharacterPage({ character }: PageProps): Vide.Node {
               pressedOffset={new Vector2(2, 1)}
               inactiveOffset={new Vector2(3, 1)}
               anchorPoint={anchorPoints.bottomCenter}
-              position={UDim2.fromScale(0.8, 0.98)}
+              position={UDim2.fromScale(0.85, 0.98)}
               size={UDim2.fromScale(0.15, 0.15)}
               spritestripImage={Images.Button_Arrow01}
               active={() => advancedPage() === 0}
               activated={() => advancedPage(1)}
-              zIndex={5}
             >
               <uiaspectratioconstraint />
             </SpritestripButton>
-          </>}
+          </Container>}
         </Show>
       </frame>
     </BookPageContainer>

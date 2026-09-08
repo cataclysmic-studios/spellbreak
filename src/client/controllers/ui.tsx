@@ -30,6 +30,7 @@ export class UIController implements OnStart {
     private readonly input: InputController
   ) {
     this.hudState = {
+      player: source(defaultData),
       character: source(defaultData.characters[0]),
       bookOpen: source(false),
       bookPage: source<BookPage>(BookPage.Options),

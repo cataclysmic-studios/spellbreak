@@ -42,7 +42,7 @@ export function MainMenu(): Vide.Node {
       zIndex={0}
     />
     {/** temp */}
-    <Spellbook character={() => newCharacterData("Test Monkey", School.Myth)} isOpen={bookIsOpen} onlyOptions={true} />
+    <Spellbook player={() => ({ crowns: 0, characters: [] })} character={() => newCharacterData("Test Monkey", School.Myth)} isOpen={bookIsOpen} onlyOptions />
     <Container name="Buttons"
       anchorPoint={anchorPoints.bottomCenter}
       position={positions.bottomCenter}

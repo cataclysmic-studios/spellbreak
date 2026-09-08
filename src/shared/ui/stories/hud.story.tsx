@@ -16,6 +16,7 @@ const characterData: Writable<CharacterData> = newCharacterData("Mock", School.M
 characterData.xp += 54;
 
 const mockHudState: HudProps = {
+  player: source({ crowns: 0, characters: [characterData] }),
   character: source(characterData),
   bookOpen: source(false),
   bookPage: source<BookPage>(BookPage.Options),

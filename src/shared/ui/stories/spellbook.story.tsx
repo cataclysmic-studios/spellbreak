@@ -7,4 +7,11 @@ import "../dev";
 
 import { BookPage, Spellbook } from "../components/spellbook";
 
-export = hoarcekat(() => <Spellbook isOpen={source(true)} page={source(BookPage.Character as BookPage)} character={() => newCharacterData("Mock", School.Myth)} />);
+export = hoarcekat(() =>
+  <Spellbook
+    isOpen={source(true)}
+    page={source(BookPage.Character as BookPage)}
+    player={() => ({ crowns: 0, characters: [] })}
+    character={() => newCharacterData("Mock", School.Myth)}
+  />
+);

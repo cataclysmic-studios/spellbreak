@@ -95,6 +95,7 @@ export interface CharacterDataSchema extends Omit<CharacterData, "activeQuests">
   readonly level: u8;
   readonly xp: u32;
   readonly gold: u24;
+  readonly arenaTickets: u24;
   readonly trainingPoints: u8;
   readonly trainedSpells: SpellReferenceSchema[];
   readonly selectedQuest?: QuestIDSchema;

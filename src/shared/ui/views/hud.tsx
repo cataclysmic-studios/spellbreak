@@ -5,7 +5,7 @@ import { getSelectedQuestInfo } from "shared/utility/quests";
 import { getRequiredXpForNextLevel } from "shared/utility/character";
 import type { DialogID } from "shared/structs/npc/dialog";
 import type { Interactable } from "shared/structs/interactable";
-import type { CharacterData } from "shared/structs/data";
+import type { CharacterData, PlayerData } from "shared/structs/data";
 import type { ActiveDuelState } from "shared/structs/duel";
 import type { ZoneID } from "shared/structs/zone";
 
@@ -20,6 +20,7 @@ import { InteractPrompt } from "../components/hud/interact-prompt";
 import { DuelPlanning } from "./duel-planning";
 
 export interface HudProps {
+  readonly player: Source<PlayerData>
   readonly character: Source<CharacterData>
   readonly bookOpen: Source<boolean>;
   readonly bookPage: Source<BookPage>;
@@ -32,13 +33,13 @@ export interface HudProps {
 }
 
 const UDIM2_ZERO = new UDim2;
-export function HUD({ character, bookOpen, bookPage, activeDialog, activeInteractable, duelStarted, activeDuel, currentZone }: HudProps): Vide.Node {
+export function HUD({ player, character, bookOpen, bookPage, activeDialog, activeInteractable, duelStarted, activeDuel, currentZone }: HudProps): Vide.Node {
   const px = usePx();
   const questInfo = () => getSelectedQuestInfo(character());
   const hiddenByDialog = () => activeDialog() === undefined;
   const hiddenByDuel = () => !duelStarted();
-  const mainUiVisible = () => hiddenByDialog() && hiddenByDuel();
-  const showsWithQuest = () => mainUiVisible() && questInfo() !== undefined;
+  const mainUIVisible = () => hiddenByDialog() && hiddenByDuel();
+  const showsWithQuest = () => mainUIVisible() && questInfo() !== undefined;
   const questHelperOffset = () => activeInteractable() !== undefined ? UDim2.fromOffset(0, -px(112)) : UDIM2_ZERO;
   const xpProgress = () => {
     const { xp, level } = character();
@@ -56,7 +57,7 @@ export function HUD({ character, bookOpen, bookPage, activeDialog, activeInterac
         PaddingRight={horizontalPad}
       />
       <Dialog character={character} id={activeDialog} />
-      <InteractPrompt interactable={activeInteractable} visible={() => activeInteractable() !== undefined && mainUiVisible()} />
+      <InteractPrompt interactable={activeInteractable} visible={() => activeInteractable() !== undefined && mainUIVisible()} />
       <QuestArrow info={questInfo} offset={questHelperOffset} visible={showsWithQuest} currentZone={currentZone}
         activated={() => {
           bookPage(BookPage.Quests);
@@ -64,9 +65,9 @@ export function HUD({ character, bookOpen, bookPage, activeDialog, activeInterac
         }}
       />
       <QuestDescription info={questInfo} offset={questHelperOffset} visible={showsWithQuest} />
-      <XpBar progress={xpProgress} visible={mainUiVisible} />
-      <BookButton isOpen={bookOpen} visible={mainUiVisible} />
-      <Spellbook isOpen={bookOpen} character={character} page={bookPage} />
+      <XpBar progress={xpProgress} visible={mainUIVisible} />
+      <BookButton isOpen={bookOpen} visible={mainUIVisible} />
+      <Spellbook isOpen={bookOpen} player={player} character={character} page={bookPage} />
       <Show when={activeDuel}>
         {duel => (
           <Show when={duel().planning}>

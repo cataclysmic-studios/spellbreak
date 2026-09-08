@@ -2,11 +2,22 @@ import { GearCategory } from "shared/structs/data/items/gear";
 import { SpellReference } from "shared/structs/data/reference/spell";
 import { DeckReference } from "shared/structs/data/reference/gear/deck";
 import { SpellCardKind } from "shared/structs/spell/card";
-import { type PlayableSchool, School } from "shared/structs/school";
 import { ZoneID } from "shared/structs/zone";
+import { type PlayableSchool, School } from "shared/structs/school";
 import type { CharacterData } from "shared/structs/data";
 
 const { min, floor } = math;
+
+export function getMaxGold(level: number): number {
+  if (level < 80) return 200_000;
+  if (level < 90) return 350_000;
+  if (level < 95) return 375_000;
+  if (level < 100) return 400_000;
+  if (level < 110) return 425_000;
+  if (level < 120) return 450_000;
+  if (level < 130) return 500_000;
+  return 525_000;
+}
 
 export function getSchoolTitle(school: PlayableSchool): string {
   switch (school) {
@@ -86,6 +97,7 @@ export function newCharacterData(name: string, school: PlayableSchool): Characte
     level: 1,
     xp: 0,
     gold: 0,
+    arenaTickets: 0,
     trainingPoints: 0,
     trainedSpells: [SpellReference.Myth_Troll],
     selectedQuest: undefined,

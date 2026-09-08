@@ -45,6 +45,7 @@ export interface CharacterData {
   readonly level: number;
   readonly xp: number;
   readonly gold: number;
+  readonly arenaTickets: number;
   readonly trainingPoints: number;
   readonly trainedSpells: SpellReference[];
   readonly selectedQuest?: QuestID;

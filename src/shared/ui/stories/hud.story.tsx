@@ -17,7 +17,7 @@ characterData.xp += 54;
 
 const mockHudState: HudProps = {
   player: source({ crowns: 0, characters: [characterData] }),
-  character: source(characterData),
+  characterIndex: 0,
   bookOpen: source(false),
   bookPage: source<BookPage>(BookPage.Options),
   activeDialog: source<Maybe<DialogID>>(undefined),

@@ -18,6 +18,7 @@ import { BookPage } from "shared/ui/components/spellbook";
 
 import type { CharacterController } from "./character";
 import type { InputController } from "./input";
+import type { ReplicaController } from "./replica";
 import type { ZoneController } from "./zone";
 
 @Controller()
@@ -26,12 +27,13 @@ export class UIController implements OnStart {
 
   public constructor(
     character: CharacterController,
+    replica: ReplicaController,
     zone: ZoneController,
     private readonly input: InputController
   ) {
     this.hudState = {
       player: source(defaultData),
-      character: source(defaultData.characters[0]),
+      characterIndex: character.getIndex(),
       bookOpen: source(false),
       bookPage: source<BookPage>(BookPage.Options),
       activeDialog: source<Maybe<DialogID>>(undefined),
@@ -40,7 +42,7 @@ export class UIController implements OnStart {
       activeDuel: source<Maybe<ActiveDuelState>>(undefined),
       currentZone: zone.currentZone
     };
-    character.updated.Connect(() => this.hudState.character(character.getData()));
+    replica.updated.Connect(() => this.hudState.player(replica.data));
   }
 
   public onStart(): void {
@@ -65,14 +67,18 @@ export class UIController implements OnStart {
     Log.info("Mounted game UI");
 
     const { actions } = this.input;
-    actions.openDeck.activated.Connect(() => this.openBookToPage(BookPage.Deck));
-    actions.openPets.activated.Connect(() => this.openBookToPage(BookPage.Pets));
-    actions.openCrafting.activated.Connect(() => this.openBookToPage(BookPage.Crafting));
-    actions.openBackpack.activated.Connect(() => this.openBookToPage(BookPage.Backpack));
-    actions.openQuests.activated.Connect(() => this.openBookToPage(BookPage.Quests));
-    actions.openCharacter.activated.Connect(() => this.openBookToPage(BookPage.Character));
-    actions.openMap.activated.Connect(() => this.openBookToPage(BookPage.Map));
-    actions.openOptions.activated.Connect(() => this.openBookToPage(BookPage.Options));
+    const bookPageBindings = [
+      [actions.openDeck, BookPage.Deck],
+      [actions.openPets, BookPage.Pets],
+      [actions.openCrafting, BookPage.Crafting],
+      [actions.openBackpack, BookPage.Backpack],
+      [actions.openQuests, BookPage.Quests],
+      [actions.openCharacter, BookPage.Character],
+      [actions.openMap, BookPage.Map],
+      [actions.openOptions, BookPage.Options],
+    ] as const;
+    for (const [action, page] of bookPageBindings)
+      action.activated.Connect(() => this.openBookToPage(page));
   }
 
   private openBookToPage(page: BookPage): void {

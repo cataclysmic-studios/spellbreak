@@ -1,6 +1,7 @@
 import Vide, { type Source, type Derivable, source, read, Switch, Case } from "@rbxts/vide";
 
 import { usePx } from "../../hooks/use-px";
+import { useCharacter } from "../../hooks/use-character";
 import { anchorPoints, positions } from "../../utility/positioning";
 import { Images } from "../../utility/images";
 import type { CharacterData, PlayerData } from "shared/structs/data";
@@ -30,20 +31,21 @@ export const enum BookPage {
 }
 
 export interface PageProps {
-  readonly character: Source<CharacterData>;
+  readonly character: () => CharacterData;
 }
 
 interface BookProps {
   readonly isOpen: Source<boolean>;
   readonly player: Source<PlayerData>;
-  readonly character: Source<CharacterData>;
+  readonly characterIndex: Derivable<number>;
   readonly page?: Source<BookPage>;
   readonly onlyOptions?: Derivable<boolean>;
 }
 
-export function Spellbook({ isOpen, player, character, page, onlyOptions = false }: BookProps): Vide.Node {
+export function Spellbook({ isOpen, player, characterIndex, page, onlyOptions = false }: BookProps): Vide.Node {
   const selectedPage = page ?? source<BookPage>(BookPage.Options);
   const nonOptionsActive = () => read(onlyOptions) === false;
+  const character = useCharacter(player, characterIndex);
   const px = usePx();
 
   return (

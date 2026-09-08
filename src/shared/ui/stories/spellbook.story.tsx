@@ -11,7 +11,7 @@ export = hoarcekat(() =>
   <Spellbook
     isOpen={source(true)}
     page={source(BookPage.Character as BookPage)}
-    player={() => ({ crowns: 0, characters: [] })}
-    character={() => newCharacterData("Mock", School.Myth)}
+    player={() => ({ crowns: 0, characters: [newCharacterData("Mock", School.Myth)] })}
+    characterIndex={0}
   />
 );

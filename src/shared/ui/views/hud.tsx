@@ -1,11 +1,12 @@
-import Vide, { Show, type Source } from "@rbxts/vide";
+import Vide, { Show, type Derivable, type Source } from "@rbxts/vide";
 
 import { usePx } from "../hooks/use-px";
+import { useCharacter } from "../hooks/use-character";
 import { getSelectedQuestInfo } from "shared/utility/quests";
-import { getRequiredXpForNextLevel } from "shared/utility/character";
+import { getLevelProgress } from "shared/utility/character";
 import type { DialogID } from "shared/structs/npc/dialog";
 import type { Interactable } from "shared/structs/interactable";
-import type { CharacterData, PlayerData } from "shared/structs/data";
+import type { PlayerData } from "shared/structs/data";
 import type { ActiveDuelState } from "shared/structs/duel";
 import type { ZoneID } from "shared/structs/zone";
 
@@ -21,7 +22,7 @@ import { DuelPlanning } from "./duel-planning";
 
 export interface HudProps {
   readonly player: Source<PlayerData>
-  readonly character: Source<CharacterData>
+  readonly characterIndex: Derivable<number>
   readonly bookOpen: Source<boolean>;
   readonly bookPage: Source<BookPage>;
   readonly activeDialog: Source<Maybe<DialogID>>;
@@ -33,8 +34,9 @@ export interface HudProps {
 }
 
 const UDIM2_ZERO = new UDim2;
-export function HUD({ player, character, bookOpen, bookPage, activeDialog, activeInteractable, duelStarted, activeDuel, currentZone }: HudProps): Vide.Node {
+export function HUD({ player, characterIndex, bookOpen, bookPage, activeDialog, activeInteractable, duelStarted, activeDuel, currentZone }: HudProps): Vide.Node {
   const px = usePx();
+  const character = useCharacter(player, characterIndex);
   const questInfo = () => getSelectedQuestInfo(character());
   const hiddenByDialog = () => activeDialog() === undefined;
   const hiddenByDuel = () => !duelStarted();
@@ -42,8 +44,8 @@ export function HUD({ player, character, bookOpen, bookPage, activeDialog, activ
   const showsWithQuest = () => mainUIVisible() && questInfo() !== undefined;
   const questHelperOffset = () => activeInteractable() !== undefined ? UDim2.fromOffset(0, -px(112)) : UDIM2_ZERO;
   const xpProgress = () => {
-    const { xp, level } = character();
-    return xp / getRequiredXpForNextLevel(level);
+    const { xpIntoLevel, xpForNextLevel } = getLevelProgress(character().xp);
+    return xpIntoLevel / xpForNextLevel;
   };
 
   const horizontalPad = new UDim(0, px(10));
@@ -67,7 +69,7 @@ export function HUD({ player, character, bookOpen, bookPage, activeDialog, activ
       <QuestDescription info={questInfo} offset={questHelperOffset} visible={showsWithQuest} />
       <XpBar progress={xpProgress} visible={mainUIVisible} />
       <BookButton isOpen={bookOpen} visible={mainUIVisible} />
-      <Spellbook isOpen={bookOpen} player={player} character={character} page={bookPage} />
+      <Spellbook isOpen={bookOpen} player={player} characterIndex={characterIndex} page={bookPage} />
       <Show when={activeDuel}>
         {duel => (
           <Show when={duel().planning}>

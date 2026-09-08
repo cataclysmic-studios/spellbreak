@@ -24,6 +24,10 @@ export class CharacterController {
     return this.replica.data.characters[this.index];
   }
 
+  public getIndex(): number {
+    return this.index;
+  }
+
   public isLoaded(): boolean {
     return this.replica.data.characters !== undefined;
   }

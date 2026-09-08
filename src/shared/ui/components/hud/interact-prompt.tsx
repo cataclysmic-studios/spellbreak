@@ -5,7 +5,7 @@ import { anchorPoints, positions } from "../../utility/positioning";
 import { getNpcByID } from "shared/utility/npc";
 import type { Interactable } from "shared/structs/interactable";
 
-import { PromptPanel } from "../prompt-panel";
+import { PromptPanel } from "./prompt-panel";
 import { Container } from "../../utility/components/container";
 import { WizText } from "../wiz-text";
 import { palette } from "../../palette";

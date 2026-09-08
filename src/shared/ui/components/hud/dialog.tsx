@@ -13,7 +13,7 @@ import type { DialogDescriptor, DialogID } from "shared/structs/npc/dialog";
 
 import { WizText } from "../wiz-text";
 import { WizButton } from "../wiz-button";
-import { PromptPanel } from "../prompt-panel";
+import { PromptPanel } from "./prompt-panel";
 import { QuestFrame } from "../quest/frame";
 
 interface DialogProps extends BaseID<Source<Maybe<DialogID>>> {

@@ -1,18 +1,18 @@
-import Vide, { type PropsWithChildren, type Derivable, type Source, read } from "@rbxts/vide";
+import Vide, { type PropsWithChildren, type Derivable, read } from "@rbxts/vide";
 
-import { Images } from "../utility/images";
-import { anchorPoints, positions } from "../utility/positioning";
-import { palette } from "../palette";
-import { WizText } from "./wiz-text";
+import { Images } from "../../utility/images";
+import { anchorPoints, positions } from "../../utility/positioning";
+import { palette } from "../../palette";
+import { WizText } from "../wiz-text";
 
 interface PromptPanelProps {
   readonly name?: Derivable<string>;
   readonly anchorPoint: Derivable<Vector2>;
   readonly position: Derivable<UDim2>;
   readonly size: Derivable<UDim2>;
-  readonly title: Source<string>;
-  readonly portrait: Source<string>;
-  readonly visible: Source<boolean>;
+  readonly title: Derivable<string>;
+  readonly portrait: Derivable<string>;
+  readonly visible: Derivable<boolean>;
 }
 
 export function PromptPanel({ name, anchorPoint, position, size, title, portrait, visible, children }: PropsWithChildren<PromptPanelProps>): Vide.Node {
